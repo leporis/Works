@@ -1,0 +1,490 @@
+% LuaLaTeX 컴파일 필요
+\documentclass[aspectratio=169]{beamer}
+
+% === 패키지 ===
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{emoji}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{tikz}
+
+% === 테마 (metropolis) ===
+\usetheme[progressbar=frametitle]{metropolis}
+
+% === 폰트 (한글 + 이모지) ===
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setmonofont{Noto Sans Mono CJK KR}[Scale=0.85]
+\setemojifont{Noto Color Emoji}
+
+% === 색상 (프로젝트 팔레트) ===
+\definecolor{primary}{HTML}{1976D2}
+\definecolor{darkblue}{HTML}{1565C0}
+\definecolor{teal}{HTML}{00897B}
+\definecolor{amber}{HTML}{FFA000}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{tableheader}{HTML}{BBDEFB}
+\definecolor{deepblue}{HTML}{1E3A5F}
+
+\setbeamercolor{frametitle}{bg=primary, fg=white}
+\setbeamercolor{progress bar}{fg=primary}
+\setbeamercolor{title separator}{fg=primary}
+\setbeamercolor{alerted text}{fg=primary}
+\setbeamercolor{example text}{fg=teal}
+\setbeamercolor{block title}{bg=primary, fg=white}
+\setbeamercolor{block body}{bg=lightblue}
+
+% === 슬라이드 번호 ===
+\setbeamertemplate{frame numbering}[fraction]
+
+% === 표 행 간격 ===
+\renewcommand{\arraystretch}{1.3}
+
+% === 문서 정보 ===
+\title{데이터와 딥러닝}
+\subtitle{AI디지털리터러시 — 2주차 1차시}
+\author{청주교육대학교}
+\date{2026학년도}
+
+\begin{document}
+
+% ===== 타이틀 =====
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+% ===== 수업 흐름 =====
+\begin{frame}{오늘의 수업 흐름}
+\begin{center}
+\begin{tabular}{cl}
+\emoji{pencil} & \textbf{퀴즈} — 1주차 이론 퀴즈 (10분) \\[0.3cm]
+\emoji{blue-book} & \textbf{전개 1} — 데이터의 역할: AI 학습의 연료 (10분) \\[0.3cm]
+\emoji{green-book} & \textbf{전개 2} — 데이터 편향: AI도 편견을 배운다 (10분) \\[0.3cm]
+\emoji{orange-book} & \textbf{전개 3} — 딥러닝과 신경망 + 시뮬레이터 체험 (15분) \\[0.3cm]
+\emoji{clipboard} & \textbf{정리} — 핵심 요약, 딥러닝 성공 사례 (5분) \\
+\end{tabular}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{pencil} 퀴즈}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{1주차 이론 퀴즈}
+\begin{center}
+\Large \emoji{memo} 1주차 전체 범위 퀴즈
+\end{center}
+\vspace{0.3cm}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{유형} & \textbf{문항 수} & \textbf{배점} \\
+\hline
+5지선다형 & 10문항 & 0.5점 × 10 = 5점 \\
+\hline
+단답형 & 5문항 & 1점 × 5 = 5점 \\
+\hline
+\rowcolor{lightblue}
+\textbf{합계} & \textbf{15문항} & \textbf{10점} \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0.3cm}
+\begin{center}
+제한 시간: \textbf{10분} \quad | \quad 범위: \textbf{1주차 1차시 + 2차시 전체}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{blue-book} 전개 1: 데이터의 역할}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% --- 그림 01: ML 4단계 복습 ---
+\begin{frame}{머신러닝 4단계 복습}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{images/AI디지털리터러시_2주차1차시_01_머신러닝4단계프로세스.png}
+\end{center}
+\begin{center}
+가장 먼저 나오는 것이 \textbf{데이터 수집}입니다!
+\end{center}
+\end{frame}
+
+% --- 데이터 = AI의 연료 ---
+\begin{frame}{데이터 = AI의 연료}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{자동차} \emoji{automobile} & \textbf{AI} \emoji{robot} \\
+\hline
+좋은 연료 $\rightarrow$ 잘 달린다 & 좋은 데이터 $\rightarrow$ 정확한 AI \\
+\hline
+나쁜 연료 $\rightarrow$ 고장난다 & 나쁜 데이터 $\rightarrow$ 부정확한 AI \\
+\hline
+연료 없으면 $\rightarrow$ 멈춘다 & 데이터 없으면 $\rightarrow$ 학습 불가 \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0.5cm}
+\begin{alertblock}{\emoji{speaking-head} Garbage In, Garbage Out}
+쓰레기가 들어가면, 쓰레기가 나온다!
+\end{alertblock}
+\end{frame}
+
+% --- 그림 02: 데이터 유형 ---
+\begin{frame}{AI가 학습하는 데이터 유형}
+\begin{center}
+\includegraphics[width=0.82\textwidth]{images/AI디지털리터러시_2주차1차시_02_데이터유형_이미지텍스트소리_v1_0_0_0_신규작성_20260213_2230.png}
+\end{center}
+\begin{center}
+\small \emoji{light-bulb} ``AI는 이미지·글·소리를 '디지털 교과서'로 공부합니다''
+\end{center}
+\end{frame}
+
+% --- 양과 질 ---
+\begin{frame}{데이터의 양과 질}
+\begin{center}
+\begin{tabular}{|c|c|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{양} & \textbf{질} & \textbf{결과} \\
+\hline
+\emoji{check-mark-button} 많음 & \emoji{check-mark-button} 좋음 & \textcolor{teal}{\textbf{이상적}} — 좋은 AI \\
+\hline
+\emoji{check-mark-button} 많음 & \emoji{cross-mark} 나쁨 & \textcolor{amber}{\textbf{여전히 문제}} — 편향·오류 확대 \\
+\hline
+\emoji{cross-mark} 적음 & \emoji{check-mark-button} 좋음 & \textcolor{primary}{\textbf{제한적이지만 정확}} \\
+\hline
+\emoji{cross-mark} 적음 & \emoji{cross-mark} 나쁨 & \textcolor{deepblue}{\textbf{학습 자체가 어려움}} \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0.3cm}
+\begin{center}
+``실내 고양이 사진만 10만 장'' vs ``다양한 환경 1만 장'' \\
+$\rightarrow$ \textbf{다양한 1만 장이 더 좋습니다!}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{green-book} 전개 2: 데이터 편향}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% --- 그림 03: 편향 비교 ---
+\begin{frame}{데이터 편향이란?}
+\begin{columns}
+\begin{column}{0.55\textwidth}
+\includegraphics[width=\textwidth]{images/AI디지털리터러시_2주차1차시_03_편향된데이터vs좋은데이터.png}
+\end{column}
+\begin{column}{0.4\textwidth}
+\textbf{편향(Bias)} = \\
+데이터가 특정 방향에 치우친 상태
+
+\vspace{0.3cm}
+\emoji{eyeglasses} \textbf{비유}: \\
+``한쪽에 치우친 안경을 쓰고 세상을 보는 것''
+
+\vspace{0.3cm}
+\begin{itemize}
+\item 다양한 데이터 $\rightarrow$ 공정
+\item 치우친 데이터 $\rightarrow$ 불공정
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+% --- 실제 편향 사례 ---
+\begin{frame}{실제 편향 사례 3가지}
+\begin{center}
+\begin{tabular}{|c|p{4cm}|p{5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{사례} & \textbf{문제} & \textbf{원인} \\
+\hline
+\emoji{bust-in-silhouette} \textbf{얼굴인식} & 어두운 피부 여성 오류율 34.7\% (밝은 피부 남성 0.8\%) & 학습 데이터 77\%가 밝은 피부·남성 위주 \\
+\hline
+\emoji{briefcase} \textbf{채용 AI} & 여성 관련 키워드 $\rightarrow$ 자동 감점 & 과거 10년 남성 위주 채용 기록 학습 \\
+\hline
+\emoji{globe-with-meridians} \textbf{번역 AI} & ``의사'' $\rightarrow$ He, ``간호사'' $\rightarrow$ She & 인터넷 텍스트의 성별 고정관념 반영 \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\large \textbf{AI는 편견도 학습합니다!}
+\end{center}
+\end{frame}
+
+% --- 해결 방향 ---
+\begin{frame}{편향의 원인과 해결 방향}
+\begin{center}
+\begin{tabular}{|p{3.5cm}|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{원인} & \textbf{해결 방향} \\
+\hline
+수집 범위의 편향 & 다양한 집단의 데이터 \textbf{균형 수집} \\
+\hline
+역사적 편향 & 편향 감지 도구로 \textbf{사전 점검} \\
+\hline
+고정관념 포함 & 데이터 전처리 과정에서 \textbf{편향 제거} \\
+\hline
+수집자의 무의식 & \textbf{다양성 체크리스트} 활용 \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0.3cm}
+\begin{exampleblock}{\emoji{light-bulb} 초등교육 연결}
+엔트리 실습 시 학생들에게: 다양한 각도, 밝기, 배경에서 촬영하도록 안내
+\end{exampleblock}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{orange-book} 전개 3: 딥러닝과 신경망}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% --- 신경망이란 ---
+\begin{frame}{신경망이란?}
+\begin{center}
+\Large AI $\supset$ ML $\supset$ \textbf{DL}
+\end{center}
+\vspace{0.3cm}
+\begin{block}{\emoji{brain} 신경망 (Neural Network)}
+인간의 뇌에서 \textbf{영감}을 얻은 AI 모델
+\end{block}
+\vspace{0.3cm}
+\begin{alertblock}{\emoji{warning} 주의}
+``영감''이 핵심! 신경망은 실제 뇌와 같지 않습니다.\\
+뇌의 연결 구조에서 아이디어를 얻었을 뿐, 작동 방식은 매우 다릅니다.
+\end{alertblock}
+\end{frame}
+
+% --- \emoji{star} 심화: 그림 04 뉴런 vs 퍼셉트론 ---
+\begin{frame}{\emoji{star} 심화: 뉴런 vs 퍼셉트론}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{images/AI디지털리터러시_2주차1차시_04_뉴런과퍼셉트론_v1_0_0_0_신규작성_20260213_2230.png}
+\end{center}
+\begin{center}
+\small \textcolor{primary}{\emoji{open-book} 심화 학습 — 퀴즈 출제 범위에 포함되지 않습니다}
+\end{center}
+\end{frame}
+
+% --- 그림 05: 신경망 기본 구조 ---
+\begin{frame}{신경망의 기본 구조}
+\begin{center}
+\includegraphics[width=0.68\textwidth]{images/AI디지털리터러시_2주차1차시_05_신경망기본구조_v1_0_0_0_신규작성_20260213_2230.png}
+\end{center}
+\begin{center}
+\textbf{입력층}(눈) $\rightarrow$ \textbf{은닉층}(뇌) $\rightarrow$ \textbf{출력층}(손)
+\end{center}
+\end{frame}
+
+% --- 학습 = 가중치 조정 ---
+\begin{frame}{신경망의 학습 = 가중치 조정}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{학습 전} & \textbf{학습 후} \\
+\hline
+모든 가중치가 무작위 & 중요한 연결은 큰 가중치 \\
+\hline
+``아무것도 모르는 상태'' & ``패턴을 파악한 상태'' \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm, auto, >=latex, thick]
+\node[draw, rounded corners, fill=lightblue, minimum width=2cm, minimum height=0.8cm] (fwd) {순전파};
+\node[draw, rounded corners, fill=lightblue, minimum width=2cm, minimum height=0.8cm, right of=fwd] (err) {오차 계산};
+\node[draw, rounded corners, fill=lightblue, minimum width=2cm, minimum height=0.8cm, right of=err] (bwd) {역전파};
+\node[draw, rounded corners, fill=lightblue, minimum width=2cm, minimum height=0.8cm, right of=bwd] (rep) {반복};
+\draw[->] (fwd) -- (err);
+\draw[->] (err) -- (bwd);
+\draw[->] (bwd) -- (rep);
+\draw[->, dashed] (rep.south) -- ++(0,-0.5) -| (fwd.south);
+\end{tikzpicture}
+\end{center}
+\vspace{0.2cm}
+\begin{center}
+\small \emoji{light-bulb} ``시험(순전파) $\rightarrow$ 채점(오차) $\rightarrow$ 복습(역전파) $\rightarrow$ 반복!''
+\end{center}
+\end{frame}
+
+% --- 시뮬레이터: 과일분류 ---
+\begin{frame}{\emoji{red-apple} 시뮬레이터 시연: 신경망과일분류}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{내용} \\
+\hline
+입력 & 크기, 빨간 정도 \\
+\hline
+은닉층 & 뉴런 6개 \\
+\hline
+출력 & \emoji{red-apple}\emoji{tangerine}\emoji{lemon}\emoji{grapes} 4종 \\
+\hline
+데이터 & 12개 (4종×3) \\
+\hline
+\end{tabular}
+\end{center}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{block}{\emoji{eyes} 관찰 포인트}
+\small
+\begin{itemize}
+\setlength{\itemsep}{0pt}
+\item 연결선 굵기 변화 = \textbf{학습!}
+\item 오차(Loss) 감소 확인
+\item 학습 후 \textbf{새 과일도 분류}
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+% --- 그림 06: 딥러닝 특징 추출 ---
+\begin{frame}{딥러닝 = 깊은(Deep) 신경망}
+\begin{center}
+\includegraphics[width=0.80\textwidth]{images/AI디지털리터러시_2주차1차시_06_딥러닝특징추출_v1_0_0_0_신규작성_20260213_2230.png}
+\end{center}
+\begin{center}
+은닉층 1\textasciitilde 2개 = ML \quad $\Longrightarrow$ \quad 수십\textasciitilde 수백 개 = \textbf{딥러닝(DL)}
+\end{center}
+\end{frame}
+
+% --- \emoji{star} 심화: CNN ---
+\begin{frame}{\emoji{star} 심화: CNN — 이미지 전문가 신경망}
+\begin{center}
+\small \textcolor{primary}{\emoji{open-book} 심화 학습 — 퀴즈 출제 범위에 포함되지 않습니다}
+\end{center}
+\vspace{0.2cm}
+\begin{block}{\emoji{magnifying-glass-tilted-left} CNN (합성곱 신경망)}
+이미지 처리에 특화된 딥러닝 구조
+\end{block}
+\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{개념} & \textbf{설명} & \textbf{비유} \\
+\hline
+\textbf{필터(커널)} & 특징을 감지하는 작은 격자 (3×3) & \emoji{magnifying-glass-tilted-left} 특수 안경 \\
+\hline
+\textbf{합성곱} & 필터를 이미지 위에서 이동하며 계산 & 돋보기로 훑어봄 \\
+\hline
+\textbf{핵심} & AI가 필터를 \textbf{자동으로 학습}! & 사람이 만들 필요 없음 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% --- \emoji{star} 심화: CNN 시뮬레이터 ---
+\begin{frame}{\emoji{star} 심화: \emoji{magnifying-glass-tilted-left} 시뮬레이터 시연: CNN 필터}
+\begin{center}
+\small \textcolor{primary}{\emoji{open-book} 심화 학습 — 퀴즈 출제 범위에 포함되지 않습니다}
+\end{center}
+\vspace{0.2cm}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{내용} \\
+\hline
+입력 & 10×10 그리드 \\
+\hline
+필터 & 7종 3×3 커널 \\
+\hline
+출력 & 8×8 결과 \\
+\hline
+\end{tabular}
+\end{center}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{block}{\emoji{eyes} 핵심 관찰}
+\begin{itemize}
+\item 같은 십자(+) 그림에 다른 필터 적용
+\item 가로 필터 $\rightarrow$ 세로선 사라짐!
+\item 세로 필터 $\rightarrow$ 가로선 사라짐!
+\item \textbf{필터마다 다른 특징을 추출}
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{clipboard} 정리}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{오늘 배운 핵심 3가지}
+\begin{block}{\emoji{pushpin} 1. 데이터의 역할}
+AI 학습의 연료 — \textbf{양과 질}이 모두 중요
+\end{block}
+
+\begin{block}{\emoji{pushpin} 2. 데이터 편향}
+치우친 데이터 $\rightarrow$ 불공정한 AI $\rightarrow$ \textbf{다양한 데이터}가 해결책
+\end{block}
+
+\begin{block}{\emoji{pushpin} 3. 딥러닝과 신경망}
+여러 층의 신경망으로 복잡한 패턴 학습 (\textbf{입력 $\rightarrow$ 은닉 $\rightarrow$ 출력})
+\end{block}
+\end{frame}
+
+\begin{frame}{딥러닝 성공 사례 — ``제3의 봄''의 핵심}
+\begin{center}
+\begin{tabular}{|c|p{5cm}|p{4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{연도} & \textbf{사건} & \textbf{의미} \\
+\hline
+\textbf{2012} & ImageNet 대회: 딥러닝 이미지 인식 압도적 성능 & 딥러닝의 가능성 증명 \\
+\hline
+\textbf{2016} & AlphaGo: 바둑 세계 챔피언 승리 & 딥러닝 + 강화학습의 힘 \\
+\hline
+\textbf{2022} & ChatGPT 출시: 대규모 언어 모델 대중화 & 딥러닝 기반 생성형 AI \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0.5cm}
+\begin{center}
+\large 이 모든 성공의 비결이 오늘 배운 \textbf{딥러닝}입니다!
+\end{center}
+\end{frame}
+
+\begin{frame}{다음 차시 예고}
+\begin{center}
+\Large \textbf{생성형 AI 심화}
+\end{center}
+\vspace{0.5cm}
+\begin{itemize}
+    \item 오늘 배운 딥러닝이 \textbf{ChatGPT}의 기초!
+    \item LLM(대규모 언어 모델)의 원리
+    \item 프롬프트 엔지니어링 실습
+\end{itemize}
+\vspace{0.5cm}
+\begin{center}
+AI가 \textbf{어떻게 글을 쓰는지}\\그 비밀을 파헤쳐 볼 차례! \emoji{rocket}
+\end{center}
+\end{frame}
+
+\begin{frame}[standout]
+\emoji{clapping-hands} 감사합니다!
+
+\vspace{0.5cm}
+질문이 있으신가요?
+\end{frame}
+
+\end{document}

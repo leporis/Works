@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-auto">
+      <path d="M 0 0 L 10 3.5 L 0 7 z" fill="#666"/>
+    </marker>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="300" rx="12" fill="url(#bgGrad)"/>
+  <text x="400" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#333">📐 R² (결정 계수) 계산 과정</text>
+  <text x="400" y="46" text-anchor="middle" font-size="9" fill="#795548">총 변동 중 모델이 설명하는 비율을 측정</text>
+
+  <!-- Step 1: SS_tot (총변동) -->
+  <rect x="30" y="66" width="220" height="110" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="30" y="66" width="220" height="26" rx="10" fill="#FFEBEE"/>
+  <rect x="30" y="84" width="220" height="8" fill="#FFEBEE"/>
+  <text x="140" y="85" text-anchor="middle" font-size="10" font-weight="600" fill="#C62828">① SS_tot (총 제곱합)</text>
+  <text x="140" y="112" text-anchor="middle" font-size="10" fill="#1976D2">Σ(y_actual − y_mean)²</text>
+  <text x="140" y="132" text-anchor="middle" font-size="8" fill="#555">각 실제값과 평균의 차이²</text>
+  <text x="140" y="148" text-anchor="middle" font-size="8" fill="#888">→ 데이터의 전체 흩어짐 정도</text>
+
+  <!-- 미니 산점도: 평균선 -->
+  <rect x="56" y="155" width="50" height="15" rx="3" fill="#FFF3E0"/>
+  <line x1="60" y1="163" x2="102" y2="163" stroke="#F44336" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="108" y="167" font-size="5" fill="#F44336">ȳ</text>
+  <circle cx="70" cy="157" r="2" fill="#1976D2"/>
+  <circle cx="80" cy="168" r="2" fill="#1976D2"/>
+  <circle cx="90" cy="155" r="2" fill="#1976D2"/>
+  <line x1="70" y1="157" x2="70" y2="163" stroke="#F44336" stroke-width="0.8" opacity="0.5"/>
+  <line x1="80" y1="168" x2="80" y2="163" stroke="#F44336" stroke-width="0.8" opacity="0.5"/>
+  <line x1="90" y1="155" x2="90" y2="163" stroke="#F44336" stroke-width="0.8" opacity="0.5"/>
+
+  <line x1="250" y1="120" x2="280" y2="120" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 2: SS_res (잔차변동) -->
+  <rect x="284" y="66" width="220" height="110" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="284" y="66" width="220" height="26" rx="10" fill="#E3F2FD"/>
+  <rect x="284" y="84" width="220" height="8" fill="#E3F2FD"/>
+  <text x="394" y="85" text-anchor="middle" font-size="10" font-weight="600" fill="#1565C0">② SS_res (잔차 제곱합)</text>
+  <text x="394" y="112" text-anchor="middle" font-size="10" fill="#1976D2">Σ(y_actual − y_predicted)²</text>
+  <text x="394" y="132" text-anchor="middle" font-size="8" fill="#555">실제값과 예측값의 차이²</text>
+  <text x="394" y="148" text-anchor="middle" font-size="8" fill="#888">→ 모델이 설명하지 못한 오차</text>
+
+  <!-- 미니 산점도: 회귀선 -->
+  <rect x="310" y="155" width="50" height="15" rx="3" fill="#FFF3E0"/>
+  <line x1="314" y1="168" x2="356" y2="155" stroke="#1976D2" stroke-width="1"/>
+  <circle cx="324" cy="159" r="2" fill="#1976D2"/>
+  <circle cx="334" cy="166" r="2" fill="#1976D2"/>
+  <circle cx="344" cy="155" r="2" fill="#1976D2"/>
+  <line x1="324" y1="159" x2="324" y2="165" stroke="#FF9800" stroke-width="0.8" opacity="0.7"/>
+  <line x1="334" y1="166" x2="334" y2="161" stroke="#FF9800" stroke-width="0.8" opacity="0.7"/>
+  <line x1="344" y1="155" x2="344" y2="158" stroke="#FF9800" stroke-width="0.8" opacity="0.7"/>
+
+  <line x1="504" y1="120" x2="534" y2="120" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 3: R² 최종 계산 -->
+  <rect x="538" y="66" width="240" height="110" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="538" y="66" width="240" height="26" rx="10" fill="#E8F5E9"/>
+  <rect x="538" y="84" width="240" height="8" fill="#E8F5E9"/>
+  <text x="658" y="85" text-anchor="middle" font-size="10" font-weight="600" fill="#2E7D32">③ R² 계산</text>
+  <text x="658" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#1976D2">R² = 1 − SS_res / SS_tot</text>
+  <text x="658" y="138" text-anchor="middle" font-size="8" fill="#555">1에서 (오차 비율)을 뺌</text>
+  <text x="658" y="155" text-anchor="middle" font-size="8" fill="#888">→ 모델이 설명하는 변동 비율</text>
+
+  <!-- 하단: 해석 예시 -->
+  <rect x="30" y="194" width="740" height="88" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <text x="400" y="216" text-anchor="middle" font-size="11" font-weight="600" fill="#333">💡 해석 예시</text>
+
+  <rect x="50" y="228" width="216" height="42" rx="6" fill="#FFEBEE"/>
+  <text x="158" y="246" text-anchor="middle" font-size="9" font-weight="600" fill="#C62828">SS_tot = 10000</text>
+  <text x="158" y="262" text-anchor="middle" font-size="7" fill="#555">데이터 전체 변동량</text>
+
+  <text x="280" y="254" text-anchor="middle" font-size="12" fill="#666">−</text>
+
+  <rect x="296" y="228" width="216" height="42" rx="6" fill="#E3F2FD"/>
+  <text x="404" y="246" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">SS_res = 800</text>
+  <text x="404" y="262" text-anchor="middle" font-size="7" fill="#555">모델 설명 못한 부분</text>
+
+  <text x="526" y="254" text-anchor="middle" font-size="12" fill="#666">→</text>
+
+  <rect x="544" y="228" width="216" height="42" rx="6" fill="#E8F5E9"/>
+  <text x="652" y="246" text-anchor="middle" font-size="9" font-weight="600" fill="#2E7D32">R² = 1 − 800/10000 = 0.92</text>
+  <text x="652" y="262" text-anchor="middle" font-size="7" fill="#555">변동의 92%를 모델이 설명! ✅</text>
+</svg>

@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 580" font-family="'Noto Sans KR', sans-serif">
+  <defs>
+    <filter id="ds"><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-opacity="0.10"/></filter>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="900" height="580" rx="12" fill="#FAFAFA"/>
+
+  <!-- 제목 영역 -->
+  <rect x="0" y="0" width="900" height="78" rx="12" fill="#1976D2"/>
+  <rect x="0" y="40" width="900" height="38" fill="#1976D2"/>
+  <text x="450" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">기술 → 잉여 → 불평등 : 천 년간 반복된 패턴</text>
+  <text x="450" y="62" text-anchor="middle" font-size="13" font-weight="400" fill="#BBDEFB">『권력과 진보』 전체 · 천 년간 반복된 역사적 패턴</text>
+
+  <!-- ========== 타임라인 축 ========== -->
+  <!-- 카드 배치: x=20,195,370,545,720  w=160  gap=15  center=100,275,450,625,800 -->
+  <line x1="40" y1="120" x2="860" y2="120" stroke="#1976D2" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- 시대 마커 5개 (카드 중심 정렬) -->
+  <circle cx="100" cy="120" r="8" fill="#1A237E" stroke="#fff" stroke-width="2"/>
+  <circle cx="275" cy="120" r="8" fill="#004D40" stroke="#fff" stroke-width="2"/>
+  <circle cx="450" cy="120" r="8" fill="#E65100" stroke="#fff" stroke-width="2"/>
+  <circle cx="625" cy="120" r="8" fill="#4A148C" stroke="#fff" stroke-width="2"/>
+  <circle cx="800" cy="120" r="8" fill="#0D47A1" stroke="#fff" stroke-width="2"/>
+
+  <!-- 시대 라벨 -->
+  <text x="100" y="107" text-anchor="middle" font-size="10" font-weight="500" fill="#757575">BC 3000~</text>
+  <text x="275" y="107" text-anchor="middle" font-size="10" font-weight="500" fill="#757575">11~14세기</text>
+  <text x="450" y="107" text-anchor="middle" font-size="10" font-weight="500" fill="#757575">18~19세기</text>
+  <text x="625" y="107" text-anchor="middle" font-size="10" font-weight="500" fill="#757575">19세기 말</text>
+  <text x="800" y="107" text-anchor="middle" font-size="10" font-weight="500" fill="#757575">21세기</text>
+
+  <!-- 연결선 (마커 → 카드) -->
+  <line x1="100" y1="128" x2="100" y2="150" stroke="#1A237E" stroke-width="1.5"/>
+  <line x1="275" y1="128" x2="275" y2="150" stroke="#004D40" stroke-width="1.5"/>
+  <line x1="450" y1="128" x2="450" y2="150" stroke="#E65100" stroke-width="1.5"/>
+  <line x1="625" y1="128" x2="625" y2="150" stroke="#4A148C" stroke-width="1.5"/>
+  <line x1="800" y1="128" x2="800" y2="150" stroke="#0D47A1" stroke-width="1.5"/>
+
+  <!-- ========== 카드 1: 메소포타미아 (x=20, w=160) ========== -->
+  <rect x="20" y="152" width="160" height="270" rx="10" fill="#E8EAF6" stroke="#5C6BC0" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="20" y="152" width="160" height="40" rx="10" fill="#3F51B5"/>
+  <rect x="20" y="172" width="160" height="20" fill="#3F51B5"/>
+  <text x="100" y="178" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">🌾 메소포타미아</text>
+  <text x="32" y="212" font-size="10" font-weight="700" fill="#283593">기술</text>
+  <text x="32" y="228" font-size="12" fill="#3F51B5">관개 시스템</text>
+  <text x="32" y="244" font-size="12" fill="#3F51B5">농경 기술</text>
+  <line x1="32" y1="252" x2="168" y2="252" stroke="#C5CAE9" stroke-width="1"/>
+  <text x="32" y="270" font-size="10" font-weight="700" fill="#283593">잉여</text>
+  <text x="32" y="286" font-size="12" fill="#3F51B5">식량 잉여 생산</text>
+  <line x1="32" y1="296" x2="168" y2="296" stroke="#C5CAE9" stroke-width="1"/>
+  <text x="32" y="314" font-size="10" font-weight="700" fill="#283593">독점자</text>
+  <text x="32" y="330" font-size="12" fill="#3F51B5">신전 · 궁전</text>
+  <line x1="32" y1="340" x2="168" y2="340" stroke="#C5CAE9" stroke-width="1"/>
+  <text x="32" y="358" font-size="10" font-weight="700" fill="#283593">결과</text>
+  <text x="32" y="374" font-size="11" fill="#5C6BC0">농민은 세금·공물로</text>
+  <text x="32" y="390" font-size="11" fill="#5C6BC0">잉여 대부분 상납</text>
+
+  <!-- ========== 카드 2: 중세 유럽 (x=195, w=160) ========== -->
+  <rect x="195" y="152" width="160" height="270" rx="10" fill="#E0F2F1" stroke="#00897B" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="195" y="152" width="160" height="40" rx="10" fill="#00897B"/>
+  <rect x="195" y="172" width="160" height="20" fill="#00897B"/>
+  <text x="275" y="178" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">⛪ 중세 유럽</text>
+  <text x="207" y="212" font-size="10" font-weight="700" fill="#004D40">기술</text>
+  <text x="207" y="228" font-size="12" fill="#00897B">풍차 · 물레방아</text>
+  <text x="207" y="244" font-size="12" fill="#00897B">삼포식 농법</text>
+  <line x1="207" y1="252" x2="343" y2="252" stroke="#B2DFDB" stroke-width="1"/>
+  <text x="207" y="270" font-size="10" font-weight="700" fill="#004D40">잉여</text>
+  <text x="207" y="286" font-size="12" fill="#00897B">농산물 증산</text>
+  <line x1="207" y1="296" x2="343" y2="296" stroke="#B2DFDB" stroke-width="1"/>
+  <text x="207" y="314" font-size="10" font-weight="700" fill="#004D40">독점자</text>
+  <text x="207" y="330" font-size="12" fill="#00897B">영주 · 교회</text>
+  <line x1="207" y1="340" x2="343" y2="340" stroke="#B2DFDB" stroke-width="1"/>
+  <text x="207" y="358" font-size="10" font-weight="700" fill="#004D40">결과</text>
+  <text x="207" y="374" font-size="11" fill="#00897B">잉여로 거대 성당 건축</text>
+  <text x="207" y="390" font-size="11" fill="#00897B">농민 삶 변화 없음</text>
+
+  <!-- ========== 카드 3: 산업혁명 (x=370, w=160) ========== -->
+  <rect x="370" y="152" width="160" height="270" rx="10" fill="#FFF3E0" stroke="#E65100" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="370" y="152" width="160" height="40" rx="10" fill="#E65100"/>
+  <rect x="370" y="172" width="160" height="20" fill="#E65100"/>
+  <text x="450" y="178" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">🏭 산업혁명</text>
+  <text x="382" y="212" font-size="10" font-weight="700" fill="#BF360C">기술</text>
+  <text x="382" y="228" font-size="12" fill="#E65100">방적기 · 증기기관</text>
+  <text x="382" y="244" font-size="12" fill="#E65100">공장 시스템</text>
+  <line x1="382" y1="252" x2="518" y2="252" stroke="#FFCC80" stroke-width="1"/>
+  <text x="382" y="270" font-size="10" font-weight="700" fill="#BF360C">잉여</text>
+  <text x="382" y="286" font-size="12" fill="#E65100">공산품 대량 생산</text>
+  <line x1="382" y1="296" x2="518" y2="296" stroke="#FFCC80" stroke-width="1"/>
+  <text x="382" y="314" font-size="10" font-weight="700" fill="#BF360C">독점자</text>
+  <text x="382" y="330" font-size="12" fill="#E65100">공장주 · 은행가</text>
+  <line x1="382" y1="340" x2="518" y2="340" stroke="#FFCC80" stroke-width="1"/>
+  <text x="382" y="358" font-size="10" font-weight="700" fill="#BF360C">결과</text>
+  <text x="382" y="374" font-size="11" fill="#E65100">GDP 급성장하나</text>
+  <text x="382" y="390" font-size="11" fill="#E65100">노동자 임금 100년 정체</text>
+
+  <!-- ========== 카드 4: 운하 건설 (x=545, w=160) ========== -->
+  <rect x="545" y="152" width="160" height="270" rx="10" fill="#F3E5F5" stroke="#8E24AA" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="545" y="152" width="160" height="40" rx="10" fill="#7B1FA2"/>
+  <rect x="545" y="172" width="160" height="20" fill="#7B1FA2"/>
+  <text x="625" y="178" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">🚢 운하 건설</text>
+  <text x="557" y="212" font-size="10" font-weight="700" fill="#4A148C">기술</text>
+  <text x="557" y="228" font-size="12" fill="#7B1FA2">수에즈 · 파나마 운하</text>
+  <text x="557" y="244" font-size="12" fill="#7B1FA2">토목 기술</text>
+  <line x1="557" y1="252" x2="693" y2="252" stroke="#CE93D8" stroke-width="1"/>
+  <text x="557" y="270" font-size="10" font-weight="700" fill="#4A148C">잉여</text>
+  <text x="557" y="286" font-size="12" fill="#7B1FA2">무역 이익 · 통행료</text>
+  <line x1="557" y1="296" x2="693" y2="296" stroke="#CE93D8" stroke-width="1"/>
+  <text x="557" y="314" font-size="10" font-weight="700" fill="#4A148C">독점자</text>
+  <text x="557" y="330" font-size="12" fill="#7B1FA2">레셉스 · 투자자</text>
+  <line x1="557" y1="340" x2="693" y2="340" stroke="#CE93D8" stroke-width="1"/>
+  <text x="557" y="358" font-size="10" font-weight="700" fill="#4A148C">결과</text>
+  <text x="557" y="374" font-size="11" fill="#7B1FA2">2만 명 이상 사망</text>
+  <text x="557" y="390" font-size="11" fill="#7B1FA2">비전 과잉 확신의 비극</text>
+
+  <!-- ========== 카드 5: 디지털 혁명 (x=720, w=160) ========== -->
+  <rect x="720" y="152" width="160" height="270" rx="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="720" y="152" width="160" height="40" rx="10" fill="#1565C0"/>
+  <rect x="720" y="172" width="160" height="20" fill="#1565C0"/>
+  <text x="800" y="178" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">💻 디지털</text>
+  <text x="732" y="212" font-size="10" font-weight="700" fill="#0D47A1">기술</text>
+  <text x="732" y="228" font-size="12" fill="#1565C0">플랫폼 · AI</text>
+  <text x="732" y="244" font-size="12" fill="#1565C0">소셜 미디어</text>
+  <line x1="732" y1="252" x2="868" y2="252" stroke="#90CAF9" stroke-width="1"/>
+  <text x="732" y="270" font-size="10" font-weight="700" fill="#0D47A1">잉여</text>
+  <text x="732" y="286" font-size="12" fill="#1565C0">데이터 · 주의력</text>
+  <line x1="732" y1="296" x2="868" y2="296" stroke="#90CAF9" stroke-width="1"/>
+  <text x="732" y="314" font-size="10" font-weight="700" fill="#0D47A1">독점자</text>
+  <text x="732" y="330" font-size="12" fill="#1565C0">빅테크 기업</text>
+  <line x1="732" y1="340" x2="868" y2="340" stroke="#90CAF9" stroke-width="1"/>
+  <text x="732" y="358" font-size="10" font-weight="700" fill="#0D47A1">결과</text>
+  <text x="732" y="374" font-size="11" fill="#1565C0">상위 1% 부 집중</text>
+  <text x="732" y="390" font-size="11" fill="#1565C0">감시 자본주의</text>
+
+  <!-- ========== 반복 화살표 (각 카드 중심 정렬) ========== -->
+  <text x="100" y="436" text-anchor="middle" font-size="18" fill="#1976D2">↓</text>
+  <text x="275" y="436" text-anchor="middle" font-size="18" fill="#1976D2">↓</text>
+  <text x="450" y="436" text-anchor="middle" font-size="18" fill="#1976D2">↓</text>
+  <text x="625" y="436" text-anchor="middle" font-size="18" fill="#1976D2">↓</text>
+  <text x="800" y="436" text-anchor="middle" font-size="18" fill="#1976D2">↓</text>
+
+  <!-- ========== 공통 패턴 강조 박스 (카드 양끝 정렬: x=20, w=860) ========== -->
+  <rect x="20" y="440" width="860" height="56" rx="10" fill="#0D47A1" filter="url(#ds)"/>
+  <text x="450" y="464" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">공통 패턴 :  기술 혁신  →  잉여 생산  →  소수가 독점</text>
+  <text x="450" y="484" text-anchor="middle" font-size="12" fill="#90CAF9">"기술이 바뀌어도, 불평등의 구조는 반복된다"</text>
+
+  <!-- ========== 최하단: 핵심 질문 (카드 양끝 정렬: x=20, w=860) ========== -->
+  <rect x="20" y="514" width="860" height="44" rx="10" fill="#E3F2FD" stroke="#1976D2" stroke-width="1.5"/>
+  <text x="450" y="536" text-anchor="middle" font-size="13" font-weight="500" fill="#0D47A1">💡  디지털 시대의 '잉여'는 무엇이며, 누가 독점하고 있는가?</text>
+  <text x="450" y="552" text-anchor="middle" font-size="11" fill="#1565C0">오늘날 '데이터'는 디지털 시대의 '식량 잉여'에 해당하는가?</text>
+
+</svg>

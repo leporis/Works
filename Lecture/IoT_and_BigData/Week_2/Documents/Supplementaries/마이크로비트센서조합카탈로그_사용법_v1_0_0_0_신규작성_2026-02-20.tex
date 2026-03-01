@@ -1,0 +1,531 @@
+% XeLaTeX 컴파일 필요
+\documentclass[11pt,a4paper]{article}
+
+% === 필수 패키지 ===
+\usepackage{fontspec}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{enumitem}
+
+% === 페이지 설정 ===
+\geometry{left=25mm, right=25mm, top=30mm, bottom=30mm}
+
+% === 폰트 설정 (XeLaTeX) ===
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setmonofont{Noto Sans Mono CJK KR}[Scale=0.9]
+
+% === 색상 정의 ===
+\definecolor{primary}{HTML}{1976D2}
+\definecolor{darkbrown}{HTML}{3E2723}
+\definecolor{mediumbrown}{HTML}{5D4037}
+\definecolor{lightbrown}{HTML}{8D6E63}
+\definecolor{cream}{HTML}{FFF3E0}
+\definecolor{lightgray}{HTML}{F5F5F5}
+\definecolor{tableheader}{HTML}{E8E8E8}
+\definecolor{greenbox}{HTML}{E8F5E9}
+\definecolor{orangebox}{HTML}{FFF3E0}
+\definecolor{bluebox}{HTML}{E3F2FD}
+
+% === tcolorbox 설정 ===
+\tcbuselibrary{skins,breakable}
+\tcbset{
+  tipbox/.style={
+    colback=cream,
+    colframe=primary,
+    boxrule=1.5pt,
+    arc=3mm,
+    left=5mm,
+    right=5mm,
+    top=3mm,
+    bottom=3mm,
+    fonttitle=\bfseries\color{primary}
+  },
+  infobox/.style={
+    colback=bluebox,
+    colframe=primary,
+    boxrule=1pt,
+    arc=2mm,
+    left=5mm,
+    right=5mm,
+    top=3mm,
+    bottom=3mm
+  }
+}
+
+% === 섹션 스타일 ===
+\titleformat{\section}
+  {\Large\bfseries\color{primary}}
+  {\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\large\bfseries\color{darkbrown}}
+  {\thesubsection}{1em}{}
+
+% === 헤더/푸터 ===
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{lightbrown}마이크로비트 센서 조합 카탈로그 사용법}
+\fancyhead[R]{\small\color{lightbrown}v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% === 한글 캡션 ===
+\renewcommand{\contentsname}{목차}
+\renewcommand{\tablename}{표}
+\renewcommand{\figurename}{그림}
+
+% === 하이퍼링크 설정 ===
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primary,
+  urlcolor=primary
+}
+
+% === 문서 정보 ===
+\title{마이크로비트 센서 조합 카탈로그 사용법\\[0.5em]
+\large 시뮬레이터와 연계한 활용 가이드}
+\author{Changmo Yang \& Claude AI}
+\date{2026년 2월 20일 \quad v1.0.0.0}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+%===============================================================================
+\section{개요}
+%===============================================================================
+
+\subsection{목적}
+
+본 문서는 \textbf{마이크로비트 센서 조합 카탈로그} (Excel 파일)의 사용법과 \textbf{Grove 센서 시뮬레이터}와의 연계 활용 방법을 안내합니다.
+
+\subsection{관련 파일}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{파일명} & \textbf{용도} \\
+\hline
+\texttt{마이크로비트센서조합카탈로그\_v3.xlsx} & 848개 센서 조합 목록 \\
+\hline
+\texttt{microbit-sensor-simulator-v9.html} & 드래그앤드롭 센서 시뮬레이터 \\
+\hline
+\texttt{microbit-sensor-search-tool.html} & 웹 기반 센서 검색 도구 \\
+\hline
+\end{tabular}
+\caption{관련 파일 목록}
+\end{table}
+
+\subsection{도구 간 관계}
+
+\begin{tcolorbox}[infobox]
+\centering
+\begin{tabular}{ccc}
+\textbf{엑셀 카탈로그} & \Large$\leftrightarrow$ & \textbf{시뮬레이터} \\[0.5em]
+848개 조합 검색 & & 드래그앤드롭 연결 \\
+필터로 센서 선택 & & 실시간 시각화 \\[1em]
+$\downarrow$ & & $\downarrow$ \\[0.5em]
+\textbf{계획/검색 단계} & & \textbf{체험/확인 단계} \\
+``어떤 센서가 필요할까?'' & & ``이 센서를 연결하면?'' \\
+\end{tabular}
+\end{tcolorbox}
+
+%===============================================================================
+\section{엑셀 시트 구성}
+%===============================================================================
+
+엑셀 파일은 \textbf{3개의 시트}로 구성되어 있습니다.
+
+\subsection{시트 1: 전체 조합 목록}
+
+\textbf{849행 × 18열} (헤더 1행 + 데이터 848행)
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{열} & \textbf{내용} & \textbf{설명} \\
+\hline
+A & 조합번호 & 1\textasciitilde 848 \\
+\hline
+B & 내장센서(6) & 항상 ● (고정) \\
+\hline
+C & 데이터로거 & 항상 ● (고정) \\
+\hline
+D\textasciitilde M & 외장센서 10개 & ● = 포함 \\
+\hline
+N & 외장수 & 외장 센서 개수 (0\textasciitilde 6) \\
+\hline
+\end{tabular}
+\caption{시트 1 열 구성}
+\end{table}
+
+\subsection{시트 2: 센서별 정보}
+
+각 센서가 측정할 수 있는 데이터 정보입니다.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|l|l|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{구분} & \textbf{센서} & \textbf{측정 데이터} & \textbf{데이터 수} \\
+\hline
+\cellcolor{greenbox} 내장 & 가속도계 & X축, Y축, Z축 & 3 \\
+\hline
+\cellcolor{greenbox} 내장 & 나침반 & 방위각 & 1 \\
+\hline
+\cellcolor{greenbox} 내장 & 온도센서 & 온도(대략) & 1 \\
+\hline
+\cellcolor{greenbox} 내장 & 빛센서 & 밝기 & 1 \\
+\hline
+\cellcolor{greenbox} 내장 & 마이크 & 소리크기 & 1 \\
+\hline
+\cellcolor{orangebox} 로거 & RTC & 날짜, 시간 & 2 \\
+\hline
+\cellcolor{orangebox} 로거 & SD카드 & SD저장 & 1 \\
+\hline
+\cellcolor{bluebox} 외장 & SHT40 & 정밀온도, 습도 & 2 \\
+\hline
+\cellcolor{bluebox} 외장 & BMP280 & 기압, 고도 & 2 \\
+\hline
+\end{tabular}
+\caption{센서별 측정 데이터}
+\end{table}
+
+\subsection{시트 3: 통계}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{외장 센서 수} & \textbf{조합 개수} \\
+\hline
+0개 & 1 \\
+\hline
+1개 & 10 \\
+\hline
+2개 & 45 \\
+\hline
+3개 & 120 \\
+\hline
+4개 & 210 \\
+\hline
+5개 & 252 \\
+\hline
+6개 & 210 \\
+\hline
+\textbf{총합} & \textbf{848} \\
+\hline
+\end{tabular}
+\caption{외장 센서 수별 조합 통계}
+\end{table}
+
+%===============================================================================
+\section{필터 사용법}
+%===============================================================================
+
+\subsection{필터 활성화}
+
+\begin{enumerate}
+\item \textbf{1행 선택} (헤더 행)
+\item \textbf{데이터} 탭 클릭
+\item \textbf{필터} 버튼 클릭
+\item 각 열 헤더에 $\blacktriangledown$ 드롭다운 버튼 생성됨
+\end{enumerate}
+
+\subsection{특정 센서 포함 조합 찾기}
+
+\textbf{예시: SHT40 (온습도 센서) 포함 조합 찾기}
+
+\begin{enumerate}
+\item D열(SHT40) 헤더의 $\blacktriangledown$ 클릭
+\item ``전체 선택'' 해제
+\item \textbf{●} 만 선택
+\item 확인 클릭
+\end{enumerate}
+
+\begin{tcolorbox}[tipbox, title={결과}]
+SHT40이 포함된 \textbf{127개 조합}만 표시됩니다.
+\end{tcolorbox}
+
+\subsection{복수 센서 조합 찾기}
+
+\textbf{예시: SHT40 + BMP280 둘 다 포함된 조합 찾기}
+
+\begin{enumerate}
+\item D열(SHT40) 필터 → ● 선택
+\item E열(BMP280) 필터 → ● 선택
+\end{enumerate}
+
+$\rightarrow$ \textbf{두 센서가 모두 포함된 조합만 표시}
+
+\subsection{색상 규칙}
+
+엑셀과 시뮬레이터에서 \textbf{동일한 색상 규칙}을 사용합니다.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|l|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{색상} & \textbf{의미} & \textbf{엑셀} & \textbf{시뮬레이터} \\
+\hline
+\cellcolor{greenbox} 녹색 & 내장 센서 & 글자색 & 테두리/배경 \\
+\hline
+\cellcolor{orangebox} 주황색 & 데이터로거 & 글자색 & 테두리/배경 \\
+\hline
+\cellcolor{bluebox} 파란색 & 외장 센서 & 글자색 & 테두리/배경 \\
+\hline
+\end{tabular}
+\caption{색상 규칙}
+\end{table}
+
+%===============================================================================
+\section{시뮬레이터 연계 활용}
+%===============================================================================
+
+\subsection{Grove 센서 시뮬레이터}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{S4_GroveSensor_screen.png}
+\caption{Grove 센서 시뮬레이터 화면}
+\end{figure}
+
+\textbf{시뮬레이터 주요 기능:}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{영역} & \textbf{기능} \\
+\hline
+내장 센서 (상단) & 마이크로비트 V2 내장 센서 6개 표시 \\
+\hline
+micro:bit V2 & 5×5 LED 화면, 버튼 A/B \\
+\hline
+Grove Shield & I2C, UART, A/D 포트 \\
+\hline
+I2C 버스 & SDA/SCL 공유 배선 시각화 \\
+\hline
+I2C 포트 & 데이터로거(고정) + 빈 포트 6개 \\
+\hline
+센서 목록 & 드래그하여 포트에 연결 \\
+\hline
+\end{tabular}
+\caption{시뮬레이터 영역별 기능}
+\end{table}
+
+\subsection{센서 검색 도구}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{S5_SensorSearch_screen.png}
+\caption{센서 검색 도구 화면}
+\end{figure}
+
+\textbf{검색 도구 주요 기능:}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{모드} & \textbf{사용법} \\
+\hline
+텍스트로 검색 & ``온도'', ``공기질'' 등 입력 \\
+\hline
+데이터로 검색 & 필요한 데이터 버튼 클릭 \\
+\hline
+\end{tabular}
+\caption{검색 모드}
+\end{table}
+
+\textbf{검색 결과 표시:}
+\begin{itemize}
+\item \colorbox{greenbox}{내장 센서 (6개)} -- 필수
+\item \colorbox{orangebox}{데이터로거} -- 필수
+\item \colorbox{bluebox}{외장 센서} -- 추천
+\end{itemize}
+
+\subsection{I2C 연결 구성 예시}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{S2_GroveI2C_screen.png}
+\caption{Grove I2C 센서 구성 예시}
+\end{figure}
+
+\textbf{6개 I2C 장치 연결 예시:}
+\begin{itemize}
+\item OLED 디스플레이 (0x3C)
+\item SHT40 온습도 (0x44)
+\item BMP280 기압 (0x76)
+\item LIS3DHTR 가속도계 (0x18)
+\item TCS34725 컬러 (0x29)
+\item DS1307 RTC (0x68)
+\end{itemize}
+
+\subsection{데이터로거 시스템}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{S3_DataLogger_screen.png}
+\caption{데이터로거 시스템 흐름}
+\end{figure}
+
+\textbf{데이터 수집 → 분석 흐름:}
+
+\begin{tcolorbox}[infobox]
+\centering
+\begin{tabular}{ccccc}
+\textbf{1. 내장+외장} & $\rightarrow$ & \textbf{2. RTC 시간} & $\rightarrow$ & \textbf{3. SD카드 저장} \\
+센서 측정 & & 기록 & & (CSV) \\[0.5em]
+& & & & $\downarrow$ \\[0.5em]
+& & & & \textbf{4. PC 엑셀 분석} \\
+\end{tabular}
+\end{tcolorbox}
+
+%===============================================================================
+\section{수업 활용 시나리오}
+%===============================================================================
+
+\subsection{시나리오 A: 엑셀 → 시뮬레이터}
+
+\textbf{``교실 환경 모니터링 프로젝트''}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{도구} & \textbf{작업} \\
+\hline
+1 & 엑셀 & SGP30(CO2) 열 필터링 → 127개 조합 \\
+\hline
+2 & 엑셀 & + SHT40(온습도) 필터링 → 63개 조합 \\
+\hline
+3 & 엑셀 & 조합 \#42 선택 (SGP30 + SHT40) \\
+\hline
+4 & 시뮬레이터 & SGP30, SHT40 드래그하여 연결 \\
+\hline
+5 & 시뮬레이터 & 데이터 패널에서 측정 가능 데이터 확인 \\
+\hline
+\end{tabular}
+\caption{시나리오 A 워크플로우}
+\end{table}
+
+\subsection{시나리오 B: 시뮬레이터 → 엑셀}
+
+\textbf{``자유 탐색 후 조합 번호 찾기''}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{도구} & \textbf{작업} \\
+\hline
+1 & 시뮬레이터 & 센서들을 자유롭게 연결해봄 \\
+\hline
+2 & 시뮬레이터 & TSL2561, OLED 연결 → 마음에 듦 \\
+\hline
+3 & 엑셀 & TSL2561 열 ● 필터 \\
+\hline
+4 & 엑셀 & + OLED 열 ● 필터 \\
+\hline
+5 & 엑셀 & + 나머지 센서 열 빈칸 필터 \\
+\hline
+6 & 엑셀 & → 조합 번호 확인 및 기록 \\
+\hline
+\end{tabular}
+\caption{시나리오 B 워크플로우}
+\end{table}
+
+\subsection{시나리오 C: 검색 도구 활용}
+
+\textbf{``센서 추천 받기''}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{도구} & \textbf{작업} \\
+\hline
+1 & 검색 도구 & ``온도'' 입력하고 검색 \\
+\hline
+2 & 검색 도구 & 추천 결과: SHT40 온습도 \\
+\hline
+3 & 검색 도구 & 총 센서 수: 8, 외장 센서: 1, 총 데이터: 12 확인 \\
+\hline
+4 & 엑셀 & SHT40 포함 조합 목록 확인 \\
+\hline
+5 & 시뮬레이터 & 해당 조합 시각화 \\
+\hline
+\end{tabular}
+\caption{시나리오 C 워크플로우}
+\end{table}
+
+%===============================================================================
+\section*{참고자료}
+%===============================================================================
+\addcontentsline{toc}{section}{참고자료}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{문서명} & \textbf{버전} & \textbf{용도} \\
+\hline
+마이크로비트센서조합카탈로그 & v3.0.0.0 & 848개 조합 목록 \\
+\hline
+Grove 센서 시뮬레이터 & v9 & 드래그앤드롭 시뮬레이터 \\
+\hline
+센서 검색 도구 & v1 & 웹 기반 검색 \\
+\hline
+\end{tabular}
+\caption{참고자료 목록}
+\end{table}
+
+%===============================================================================
+\section*{생성/수정 이력}
+%===============================================================================
+\addcontentsline{toc}{section}{생성/수정 이력}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{버전} & \textbf{날짜} & \textbf{작성자} & \textbf{변경 내용} \\
+\hline
+v1.0.0.0 & 2026-02-20 & Changmo Yang \& Claude AI & 신규 작성 \\
+\hline
+\end{tabular}
+\caption{생성/수정 이력}
+\end{table}
+
+\end{document}

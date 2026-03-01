@@ -1,0 +1,1009 @@
+\documentclass[aspectratio=169]{beamer}
+
+% 패키지 (LuaLaTeX 컴파일)
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{emoji}
+\setemojifont{Noto Color Emoji}
+
+% 이모지 폴백 폰트 설정
+\directlua{
+  luaotfload.add_fallback("emojifb", {
+    "NotoColorEmoji:mode=harf;"
+  })
+}
+\setmainfont{Noto Sans CJK KR}[RawFeature={fallback=emojifb}]
+\setsansfont{Noto Sans CJK KR}[RawFeature={fallback=emojifb}]
+\setmonofont{Noto Sans Mono CJK KR}[Scale=0.9]
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+
+% 테마 설정
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+% 색상 정의
+\definecolor{mainblue}{RGB}{0, 102, 204}
+\definecolor{accentgreen}{RGB}{40, 167, 69}
+\definecolor{warningorange}{RGB}{255, 152, 0}
+\definecolor{lightgray}{RGB}{245, 245, 245}
+\definecolor{darkgray}{RGB}{60, 60, 60}
+
+% 제목 색상
+\setbeamercolor{frametitle}{fg=mainblue}
+\setbeamercolor{title}{fg=mainblue}
+\setbeamercolor{structure}{fg=mainblue}
+
+% tcolorbox 스타일
+\tcbset{
+  colback=lightgray,
+  colframe=mainblue,
+  boxrule=1pt,
+  arc=3pt,
+  fonttitle=\bfseries
+}
+
+% 메타 정보
+\title{사물인터넷과 빅데이터}
+\subtitle{2주차: 바이브코딩 소개 \& 센서 탐색}
+\author{양창모}
+\institute{청주교육대학교 컴퓨터교육과}
+\date{2026학년도 1학기 | v1.2.1.0}
+
+\begin{document}
+
+%------------------------------------------
+% 표지
+%------------------------------------------
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%------------------------------------------
+% 목차
+%------------------------------------------
+\begin{frame}{오늘의 학습 내용}
+  \tableofcontents
+\end{frame}
+
+%------------------------------------------
+\section{지난 주 복습}
+%------------------------------------------
+
+\begin{frame}{1주차 과제 확인}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{과제 내용}
+    \begin{itemize}
+      \item LED에 이름 표시하기
+      \item 사진 + 개발일지 제출
+    \end{itemize}
+    
+    \vspace{1em}
+    \textbf{점검 포인트}
+    \begin{itemize}
+      \item MakeCode 접속 성공?
+      \item 마이크로비트 연결 성공?
+      \item LED 문자 표시 이해?
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \begin{center}
+      \begin{tikzpicture}[scale=0.8]
+        % 마이크로비트
+        \draw[fill=green!30, rounded corners=5pt] (0,0) rectangle (3,2);
+        % LED 그리드 (5x5)
+        \foreach \x in {0.5,1,1.5,2,2.5} {
+          \foreach \y in {0.3,0.6,0.9,1.2,1.5} {
+            \fill[red] (\x,\y) circle (1.5pt);
+          }
+        }
+        \node at (1.5,-0.3) {\small micro:bit};
+      \end{tikzpicture}
+    \end{center}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{1주차 복습 --- LED 이름 표시 시뮬레이터}
+  \begin{columns}
+    \column{0.55\textwidth}
+    \begin{tcolorbox}[title=복습 자료 안내]
+      \textbf{파일}: MakeCode시뮬레이터LED이름표시\\
+      \_v1\_0\_1\_0\_인코딩복원\_2026-02-19.html
+      
+      \vspace{0.5em}
+      \textbf{위치}: LMS 2주차 복습 자료실
+    \end{tcolorbox}
+    
+    \vspace{0.5em}
+    
+    \textbf{사용 방법}
+    \begin{enumerate}
+      \item 파일 다운로드
+      \item Chrome/Edge 브라우저로 열기
+      \item 자기 이름 입력하여 실습
+      \item LED 패턴 확인
+    \end{enumerate}
+    
+    \column{0.45\textwidth}
+    \begin{center}
+      \begin{tikzpicture}[scale=0.7]
+        % 브라우저 창
+        \draw[fill=white, rounded corners=3pt, thick] (0,0) rectangle (4.5,3.5);
+        \draw[fill=gray!20] (0,3) rectangle (4.5,3.5);
+        \node[right] at (0.2,3.25) {\tiny MakeCode 시뮬레이터};
+        % 마이크로비트
+        \draw[fill=green!20, rounded corners=3pt] (1,0.5) rectangle (3.5,2.5);
+        % LED
+        \foreach \x in {1.3,1.8,2.3,2.8,3.2} {
+          \foreach \y in {0.8,1.1,1.4,1.7,2.0} {
+            \fill[red!70] (\x,\y) circle (2pt);
+          }
+        }
+        \node at (2.25,0.2) {\tiny micro:bit};
+      \end{tikzpicture}
+    \end{center}
+    
+    \begin{alertblock}{과제 미제출 학생}
+      이 시뮬레이터로 복습 후\\
+      과제를 제출하세요!
+    \end{alertblock}
+  \end{columns}
+\end{frame}
+
+%------------------------------------------
+\section{바이브코딩이란?}
+%------------------------------------------
+
+\begin{frame}{바이브코딩 개념}
+  \begin{tcolorbox}[title=💡 핵심 개념]
+    \Large
+    \centering
+    \textbf{"코드를 짜지 않고 코드를 만든다"}
+  \end{tcolorbox}
+  
+  \vspace{1em}
+  
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{전통적 코딩}
+    \begin{itemize}
+      \item 문법 학습
+      \item 직접 코드 작성
+      \item 오류 수정
+      \item 시간 소요 +++
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{바이브코딩}
+    \begin{itemize}
+      \item 문제 정의
+      \item AI와 대화
+      \item 결과물 검증
+      \item 시간 소요 +
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{바이브코딩의 핵심}
+  \begin{center}
+    \begin{tikzpicture}
+      % 중앙 원
+      \node[circle, fill=mainblue!20, minimum size=3cm, text width=2.5cm, align=center] (center) 
+        {\Large\textbf{바이브코딩}\\[0.3em]\small AI와 협업};
+      
+      % 주변 노드들
+      \node[circle, fill=accentgreen!20, minimum size=2cm, text width=1.8cm, align=center] 
+        at (-3,2) (problem) {\textbf{문제\\정의}};
+      \node[circle, fill=accentgreen!20, minimum size=2cm, text width=1.8cm, align=center] 
+        at (3,2) (conversation) {\textbf{대화\\능력}};
+      \node[circle, fill=accentgreen!20, minimum size=2cm, text width=1.8cm, align=center] 
+        at (-3,-2) (verification) {\textbf{결과\\검증}};
+      \node[circle, fill=accentgreen!20, minimum size=2cm, text width=1.8cm, align=center] 
+        at (3,-2) (iteration) {\textbf{반복\\수정}};
+      
+      % 화살표
+      \draw[->, thick] (problem) -- (center);
+      \draw[->, thick] (center) -- (conversation);
+      \draw[->, thick] (conversation) -- (iteration);
+      \draw[->, thick] (iteration) -- (verification);
+      \draw[->, thick] (verification) -- (problem);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{왜 바이브코딩인가?}
+  \begin{block}{초등교사에게 필요한 역량}
+    \begin{itemize}
+      \item \textbf{문제 정의 능력}: "무엇을 만들고 싶은가?"
+      \item \textbf{비판적 사고}: "이 코드가 맞나? 확인해보자"
+      \item \textbf{AI 협업 능력}: "효과적으로 요청하는 방법"
+      \item \textbf{컴퓨팅 사고력}: "문제를 단계별로 나누기"
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.5em}
+  
+  \begin{alertblock}{중요}
+    초등 SW/AI 교육에서 코드 문법보다 \\
+    \textbf{문제 해결 과정}이 더 중요합니다!
+  \end{alertblock}
+\end{frame}
+
+%------------------------------------------
+\section{Claude 사용법}
+%------------------------------------------
+
+\begin{frame}{Claude란?}
+  \begin{columns}
+    \column{0.6\textwidth}
+    \textbf{Claude AI 소개}
+    \begin{itemize}
+      \item Anthropic 개발 AI 어시스턴트
+      \item 긴 대화 컨텍스트 지원
+      \item 코드 생성 및 분석 특화
+      \item 웹사이트: \url{https://claude.ai}
+    \end{itemize}
+    
+    \vspace{1em}
+    \textbf{왜 Claude인가?}
+    \begin{itemize}
+      \item 대화 기록 유지
+      \item 단계적 수정 가능
+      \item 교육용으로 적합
+    \end{itemize}
+    
+    \column{0.4\textwidth}
+    \begin{tcolorbox}[title=ℹ️ 참고]
+      ChatGPT, Copilot 등 다른 AI도 사용 가능합니다.
+      
+      \vspace{0.5em}
+      
+      이 강의에서는 Claude를 예시로 사용합니다.
+    \end{tcolorbox}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{효과적인 프롬프트 작성법}
+  \begin{enumerate}
+    \item \textbf{구체적으로 요청하기}
+    \begin{itemize}
+      \item \textcolor{red}{나쁜 예}: "웹페이지 만들어줘"
+      \item \textcolor{green!60!black}{좋은 예}: "자기소개 웹페이지를 만들어줘. 이름, 전공, 취미를 포함하고 파란색 테마로"
+    \end{itemize}
+    
+    \item \textbf{형식 지정하기}
+    \begin{itemize}
+      \item "HTML 파일 하나로 만들어줘"
+      \item "CSS는 인라인으로 넣어줘"
+    \end{itemize}
+    
+    \item \textbf{단계적으로 수정하기}
+    \begin{itemize}
+      \item 일단 만들고 → 확인하고 → 수정 요청
+      \item "배경색을 연한 회색으로 바꿔줘"
+    \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{프롬프트 예시 1: 기본 웹페이지}
+  \begin{tcolorbox}[title=프롬프트 예시]
+    \small\ttfamily
+    자기소개 웹페이지를 만들어줘.\\[0.3em]
+    이름: 김철수\\
+    전공: 수학교육과\\
+    취미: 등산, 독서\\[0.3em]
+    심플한 디자인으로 HTML 파일 하나로 만들어줘.
+  \end{tcolorbox}
+  
+  \vspace{0.5em}
+  
+  \begin{block}{결과}
+    \begin{itemize}
+      \item Claude가 HTML 코드 생성
+      \item 파일로 저장 → 브라우저에서 열기
+      \item 마음에 안 들면 수정 요청
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{프롬프트 예시 2: 수정 요청}
+  \begin{tcolorbox}[title=수정 프롬프트]
+    \small\ttfamily
+    방금 만든 웹페이지에서:\\[0.3em]
+    1. 배경색을 연한 파란색으로 바꿔줘\\
+    2. 글자 크기를 조금 키워줘\\
+    3. 사진을 넣을 수 있는 공간을 추가해줘
+  \end{tcolorbox}
+  
+  \vspace{0.5em}
+  
+  \begin{alertblock}{팁}
+    한 번에 여러 가지 수정을 요청해도 됩니다!\\
+    단, 너무 많으면 단계적으로 나누세요.
+  \end{alertblock}
+\end{frame}
+
+%------------------------------------------
+\section{바이브코딩 실습}
+%------------------------------------------
+
+\begin{frame}{실습: 자기소개 홈페이지 만들기}
+  \begin{block}{실습 목표}
+    Claude와 대화하여 자신만의 자기소개 웹페이지 만들기
+  \end{block}
+  
+  \vspace{0.5em}
+  
+  \textbf{실습 순서} (20분)
+  \begin{enumerate}
+    \item Claude 접속: \url{https://claude.ai}
+    \item 기본 웹페이지 요청
+    \item 코드 복사 → 메모장에 저장 (*.html)
+    \item 브라우저에서 열어보기
+    \item 수정 요청 (색상, 레이아웃, 내용 등)
+    \item 최종 결과물 저장
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{실습 체크리스트}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{필수 포함 내용}
+    \begin{itemize}
+      \item[✅] 이름
+      \item[✅] 전공
+      \item[✅] 관심사 또는 취미
+    \end{itemize}
+    
+    \vspace{1em}
+    \textbf{선택 추가 내용}
+    \begin{itemize}
+      \item[○] 사진
+      \item[○] 연락처
+      \item[○] 좋아하는 명언
+      \item[○] 기타 자유 내용
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \begin{tcolorbox}[title=⚠️ 주의]
+      \begin{itemize}
+        \item 대화 기록 저장하기
+        \item 최종 코드 백업하기
+        \item 과제 제출용으로 사용
+      \end{itemize}
+    \end{tcolorbox}
+    
+    \vspace{0.5em}
+    
+    \begin{tcolorbox}[colframe=accentgreen, title=💡 팁]
+      막히면 손들고\\
+      옆 친구와 상의도 OK!
+    \end{tcolorbox}
+  \end{columns}
+\end{frame}
+
+%------------------------------------------
+\section{센서 탐색}
+%------------------------------------------
+
+\begin{frame}{마이크로비트 + Grove 센서}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{내장 센서 (기본)}
+    \begin{itemize}
+      \item 🌡️ 온도
+      \item 🎤 소음 (마이크)
+      \item 💡 빛 (조도)
+      \item 📐 가속도
+      \item 🧭 나침반
+      \item 👆 터치
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{Grove 확장 센서}
+    \begin{itemize}
+      \item 💧 습도 (SHT40)
+      \item 💨 CO2/공기질 (SGP30)
+      \item 📏 거리 (VL53L0X)
+      \item 🎨 컬러 (TCS34725)
+      \item 📊 기압 (BMP280)
+      \item ⋯ 기타 다양
+    \end{itemize}
+  \end{columns}
+  
+  \vspace{1em}
+  
+  \begin{center}
+    \textbf{총 848가지 센서 조합 가능!}
+  \end{center}
+\end{frame}
+
+\begin{frame}{센서로 무엇을 측정할 수 있을까?}
+  \begin{block}{학교 현장 적용 예시}
+    \begin{itemize}
+      \item \textbf{교실 환경 측정}: 온도, 습도, CO2 → 쾌적한 학습 환경 조건 찾기
+      \item \textbf{복도 소음 분석}: 시간대별 소음 패턴 파악
+      \item \textbf{급식실 대기 분석}: 거리 센서로 줄 서는 시간 측정
+      \item \textbf{운동장 활동량}: 가속도 센서로 체육 시간 활동량 측정
+      \item \textbf{도서관 이용 패턴}: 빛, 소음으로 조용한 시간대 찾기
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.5em}
+  
+  \begin{alertblock}{중요}
+    센서는 \textbf{현재 상태}를 측정할 뿐,\\
+    \textbf{원인이나 미래를 예측하지 않습니다!}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{센서 탐색 활동}
+  \textbf{활동 목표}
+  \begin{itemize}
+    \item 다양한 센서를 탐색하고 이해하기
+    \item 프로젝트에 필요한 센서 생각해보기
+  \end{itemize}
+  
+  \vspace{1em}
+  
+  \textbf{탐색 방법}
+  \begin{enumerate}
+    \item \textbf{센서 시뮬레이터} 활용
+    \begin{itemize}
+      \item 드래그 앤 드롭으로 센서 연결 체험
+      \item 각 센서가 측정하는 데이터 확인
+    \end{itemize}
+    
+    \item \textbf{센서 검색 도구} 활용
+    \begin{itemize}
+      \item "교실 공기가 탁한지 알고 싶어요" 입력
+      \item AI가 필요한 센서 추천
+    \end{itemize}
+    
+    \item \textbf{실물 센서} 관찰
+    \begin{itemize}
+      \item 교수자가 준비한 센서 둘러보기
+    \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{센서 시뮬레이터 v9 사용법}
+  \begin{columns}
+    \column{0.55\textwidth}
+    \begin{tcolorbox}[title=실습 도구 안내]
+      \textbf{파일}: microbit-sensor-simulator-v9.html
+      
+      \vspace{0.3em}
+      \textbf{위치}: LMS 2주차 실습 자료실
+      
+      \vspace{0.3em}
+      \textbf{기능}: 848가지 센서 조합 체험
+    \end{tcolorbox}
+    
+    \vspace{0.5em}
+    
+    \textbf{조작 방법}
+    \begin{enumerate}
+      \item 좌측 센서 목록에서 센서 선택
+      \item 드래그 앤 드롭으로 마이크로비트에 연결
+      \item 실시간 데이터 확인
+      \item 조합 저장 (최대 6개)
+    \end{enumerate}
+    
+    \column{0.45\textwidth}
+    \begin{tcolorbox}[colframe=accentgreen, title=실습 과제]
+      \begin{enumerate}
+        \item 내장 센서 3개 이상 조합해보기
+        \item Grove 센서 2개 이상 추가해보기
+        \item 교실 환경 측정용 조합 만들기
+        \item 조합 결과 메모하기
+      \end{enumerate}
+    \end{tcolorbox}
+    
+    \vspace{0.5em}
+    
+    \begin{tcolorbox}[title=센서 검색 도구]
+      \small
+      \textbf{파일}: 마이크로비트센서검색도구\\
+      \_v1\_0\_2\_0\_인코딩복원\_2026-02-19.html\\[0.3em]
+      ``교실 공기질 측정하고 싶어요''\\
+      → AI가 필요한 센서를 추천!
+    \end{tcolorbox}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Grove 센서 살펴보기}
+  \begin{columns}[T]
+    \column{0.33\textwidth}
+    \begin{center}
+      \includegraphics[width=\textwidth]{sensor_01_light.jpg}\\
+      \vspace{0.3em}
+      {\small\textbf{TSL2561}}\\
+      {\scriptsize 조도 센서}\\
+      {\tiny 0x29}
+    \end{center}
+    
+    \column{0.33\textwidth}
+    \begin{center}
+      \includegraphics[width=\textwidth]{sensor_02_color.jpg}\\
+      \vspace{0.3em}
+      {\small\textbf{TCS34725}}\\
+      {\scriptsize 컬러 센서}\\
+      {\tiny 0x29}
+    \end{center}
+    
+    \column{0.33\textwidth}
+    \begin{center}
+      \includegraphics[width=\textwidth]{sensor_03_sht35.jpg}\\
+      \vspace{0.3em}
+      {\small\textbf{SHT35/40}}\\
+      {\scriptsize 온습도 센서}\\
+      {\tiny 0x44}
+    \end{center}
+  \end{columns}
+  
+  \vspace{1em}
+  
+  \begin{itemize}
+    \item \textbf{조도}: 교실 밝기 측정 (0.1~40,000 lux)
+    \item \textbf{컬러}: RGB 색상 인식, 물체 분류
+    \item \textbf{온습도}: 정밀 환경 측정 (±0.2°C, ±2\%RH)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Grove 센서 살펴보기 (계속)}
+  \begin{columns}[T]
+    \column{0.33\textwidth}
+    \begin{center}
+      \includegraphics[width=\textwidth]{sensor_04_accel_gyro.jpg}\\
+      \vspace{0.3em}
+      {\small\textbf{LIS3DHTR}}\\
+      {\scriptsize 3축 가속도}\\
+      {\tiny 0x18}
+    \end{center}
+    
+    \column{0.33\textwidth}
+    \begin{center}
+      \includegraphics[width=\textwidth]{sensor_05_tof.jpg}\\
+      \vspace{0.3em}
+      {\small\textbf{VL53L0X}}\\
+      {\scriptsize ToF 거리}\\
+      {\tiny 0x29}
+    \end{center}
+    
+    \column{0.33\textwidth}
+    \begin{center}
+      \includegraphics[width=\textwidth]{sensor_06_bmp280.jpg}\\
+      \vspace{0.3em}
+      {\small\textbf{BMP280}}\\
+      {\scriptsize 기압 센서}\\
+      {\tiny 0x76}
+    \end{center}
+  \end{columns}
+  
+  \vspace{1em}
+  
+  \begin{itemize}
+    \item \textbf{가속도}: 정밀 움직임 감지, 낙상/충격 감지
+    \item \textbf{거리}: 레이저 기반 측정 (30~2000mm)
+    \item \textbf{기압}: 날씨 예측, 고도 계산 (300~1100 hPa)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Grove 센서 살펴보기 (계속)}
+  \begin{columns}[T]
+    \column{0.33\textwidth}
+    \begin{center}
+      \includegraphics[width=\textwidth]{sensor_07_bme680.jpg}\\
+      \vspace{0.3em}
+      {\small\textbf{BME680}}\\
+      {\scriptsize 복합 환경}\\
+      {\tiny 0x76}
+    \end{center}
+    
+    \column{0.33\textwidth}
+    \begin{center}
+      \includegraphics[width=\textwidth]{sensor_08_oled.jpg}\\
+      \vspace{0.3em}
+      {\small\textbf{OLED}}\\
+      {\scriptsize 디스플레이}\\
+      {\tiny 0x3C}
+    \end{center}
+    
+    \column{0.33\textwidth}
+    \begin{center}
+      \includegraphics[width=\textwidth]{sensor_09_mcp9808.jpg}\\
+      \vspace{0.3em}
+      {\small\textbf{MCP9808}}\\
+      {\scriptsize 정밀 온도}\\
+      {\tiny 0x18}
+    \end{center}
+  \end{columns}
+  
+  \vspace{1em}
+  
+  \begin{itemize}
+    \item \textbf{BME680}: 온도+습도+기압+공기질 (4 in 1)
+    \item \textbf{OLED}: 측정값 실시간 표시 (128×64)
+    \item \textbf{정밀온도}: 고정밀 측정 (±0.25°C)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{센서 선택 가이드}
+  \begin{block}{내장 센서로 충분한 경우}
+    \begin{itemize}
+      \item 간단한 온도/소음/빛 측정
+      \item 기울기/방향 감지
+      \item 교육용 데모
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.5em}
+  
+  \begin{block}{Grove 센서가 필요한 경우}
+    \begin{itemize}
+      \item 정밀한 측정이 필요할 때 (온습도, 기압)
+      \item 내장 센서에 없는 기능 (CO\textsubscript{2}, 거리, 컬러)
+      \item 측정값을 화면에 표시 (OLED)
+      \item 여러 환경 데이터 동시 수집 (BME680)
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.5em}
+  
+  \begin{alertblock}{팁}
+    프로젝트 주제에 맞는 센서를 선택하세요!
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Grove I2C 연결 방식}
+  \begin{center}
+    \begin{tikzpicture}[scale=0.9]
+      % 마이크로비트
+      \draw[fill=green!30, rounded corners=8pt, thick] (0,2) rectangle (2.5,4);
+      \node at (1.25,3) {\textbf{micro:bit}};
+      
+      % 연결선
+      \draw[->, very thick, blue] (1.25,2) -- (1.25,1);
+      
+      % Grove Shield
+      \draw[fill=blue!20, rounded corners=8pt, thick] (-1,0) rectangle (3.5,1);
+      \node at (1.25,0.5) {\textbf{Grove Shield}};
+      
+      % I2C 포트들
+      \foreach \x in {-0.5, 0.5, 1.5, 2.5, 3} {
+        \draw[fill=yellow!60, rounded corners=2pt] (\x,-0.5) rectangle (\x+0.3,0);
+      }
+      
+      % 센서들
+      \draw[->, thick, red] (-0.35,-0.5) -- (-0.35,-1.5);
+      \node[fill=red!20, rounded corners=3pt] at (-0.35,-2) {센서1};
+      
+      \draw[->, thick, red] (0.65,-0.5) -- (0.65,-1.5);
+      \node[fill=red!20, rounded corners=3pt] at (0.65,-2) {센서2};
+      
+      \draw[->, thick, red] (1.65,-0.5) -- (1.65,-1.5);
+      \node[fill=red!20, rounded corners=3pt] at (1.65,-2) {센서3};
+      
+      % 레이블
+      \node[right] at (3.7,0.5) {최대 6개};
+      \node[right] at (3.7,3) {V2};
+    \end{tikzpicture}
+  \end{center}
+  
+  \vspace{0.5em}
+  
+  \begin{itemize}
+    \item I2C는 \textbf{2개 선(SDA, SCL)}으로 여러 센서 연결
+    \item 각 센서는 고유 \textbf{주소}로 구분 (예: 0x44, 0x76)
+    \item Grove Shield로 \textbf{쉽게 연결} (납땜 불필요)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{I2C 연결 실습 --- 인터랙티브 연결도}
+  \begin{columns}
+    \column{0.55\textwidth}
+    \begin{tcolorbox}[title=실습 도구 안내]
+      \textbf{파일}: 마이크로비트GroveI2C연결도\\
+      \_v1\_0\_2\_0\_인코딩복원\_2026-02-19.html
+      
+      \vspace{0.3em}
+      \textbf{위치}: LMS 2주차 실습 자료실
+    \end{tcolorbox}
+    
+    \vspace{0.5em}
+    
+    \textbf{사용 방법}
+    \begin{enumerate}
+      \item 센서 아이콘 클릭
+      \item I2C 주소 및 연결 정보 확인
+      \item 여러 센서 동시 연결 시뮬레이션
+    \end{enumerate}
+    
+    \column{0.45\textwidth}
+    \begin{alertblock}{I2C 주소 충돌 주의!}
+      같은 주소 센서는 동시 사용 불가
+      
+      \vspace{0.3em}
+      \textbf{충돌 예시}:\\
+      VL53L0X (0x29)\\
+      + TCS34725 (0x29) → {\large $\times$}
+      
+      \vspace{0.3em}
+      \textbf{정상 예시}:\\
+      SHT40 (0x44)\\
+      + BMP280 (0x76) → {\large ✓}
+    \end{alertblock}
+    
+    \vspace{0.3em}
+    
+    \begin{tcolorbox}[colframe=accentgreen, title=실습 과제]
+      주소가 겹치지 않는\\
+      센서 3개 조합 만들기!
+    \end{tcolorbox}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{데이터로거란?}
+  \begin{columns}
+    \column{0.55\textwidth}
+    \begin{tcolorbox}[title=데이터로거 개념]
+      센서 데이터를 \textbf{자동으로 기록}하는 장치
+      
+      \vspace{0.3em}
+      사람이 매번 기록하지 않아도\\
+      \textbf{정해진 간격}으로 데이터 수집!
+    \end{tcolorbox}
+    
+    \vspace{0.5em}
+    
+    \textbf{활용 예시}
+    \begin{itemize}
+      \item 24시간 교실 온도 변화 측정
+      \item 일주일간 소음 패턴 분석
+      \item 하루 동안 밝기 변화 추적
+    \end{itemize}
+    
+    \vspace{0.5em}
+    
+    \begin{alertblock}{3주차부터 본격 활용!}
+      프로젝트 데이터 수집에 핵심 도구
+    \end{alertblock}
+    
+    \column{0.45\textwidth}
+    \begin{tcolorbox}[title=체험 도구 안내]
+      \textbf{파일}: 마이크로비트데이터로거\\
+      \_v1\_0\_2\_0\_인코딩복원\_2026-02-19.html
+      
+      \vspace{0.3em}
+      \textbf{위치}: LMS 2주차 참고 자료실
+    \end{tcolorbox}
+    
+    \vspace{0.5em}
+    
+    \begin{center}
+      \begin{tikzpicture}[scale=0.65]
+        % 타임라인
+        \draw[->, thick] (0,0) -- (4.5,0);
+        \node[below] at (4.5,0) {\tiny 시간};
+        % 데이터 포인트
+        \foreach \x/\y in {0.5/1.2, 1.0/1.5, 1.5/1.3, 2.0/1.8, 2.5/2.0, 3.0/1.7, 3.5/1.9, 4.0/2.1} {
+          \fill[mainblue] (\x,\y) circle (2pt);
+        }
+        \draw[mainblue, thick] (0.5,1.2) -- (1.0,1.5) -- (1.5,1.3) -- (2.0,1.8) -- (2.5,2.0) -- (3.0,1.7) -- (3.5,1.9) -- (4.0,2.1);
+        \draw[->, thick] (0,0) -- (0,2.5);
+        \node[left, rotate=90] at (-0.2,1.2) {\tiny 온도(°C)};
+        % 간격 표시
+        \draw[<->, red, thick] (0.5,-0.3) -- (1.0,-0.3);
+        \node[below, red] at (0.75,-0.3) {\tiny 5분};
+      \end{tikzpicture}
+    \end{center}
+    
+    \small\centering
+    자동으로 5분 간격 기록
+  \end{columns}
+\end{frame}
+
+%------------------------------------------
+\section{프로젝트 구상}
+%------------------------------------------
+
+\begin{frame}{프로젝트 주제 브레인스토밍}
+  \begin{block}{생각해볼 질문들}
+    \begin{itemize}
+      \item 학교에서 \textbf{무엇이 궁금}한가요?
+      \item 어떤 \textbf{문제를 해결}하고 싶나요?
+      \item 어떤 \textbf{환경 요소}가 영향을 줄까요?
+      \item \textbf{어디서 데이터}를 모을 수 있나요?
+    \end{itemize}
+  \end{block}
+  
+  \vspace{1em}
+  
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{좋은 주제 예시}
+    \begin{itemize}
+      \item 교실 환경과 집중도
+      \item 복도 소음 패턴
+      \item 급식실 대기 시간
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{피해야 할 주제}
+    \begin{itemize}
+      \item 너무 추상적
+      \item 측정 불가능
+      \item 데이터 수집 곤란
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{완성된 프로젝트 예시 --- 수업 집중도 분석}
+  \begin{columns}
+    \column{0.55\textwidth}
+    \begin{tcolorbox}[title=수업 집중도 분석 프로그램]
+      \textbf{사용 센서}: SHT40 + 마이크 + 조도
+      
+      \vspace{0.3em}
+      \textbf{분석 내용}:\\
+      교실 환경(온도, 소음, 밝기)과\\
+      학생 집중도의 상관관계 탐구
+    \end{tcolorbox}
+    
+    \vspace{0.5em}
+    
+    \textbf{이 프로그램이 보여주는 것}
+    \begin{itemize}
+      \item 센서 데이터 실시간 수집
+      \item 환경 요인별 집중도 분석
+      \item 시각적 데이터 표현 (차트)
+    \end{itemize}
+    
+    \column{0.45\textwidth}
+    \begin{tcolorbox}[colframe=accentgreen, title=여러분도 만들 수 있어요!]
+      이 프로그램은 학생이\\
+      Claude와 바이브코딩으로\\
+      \textbf{3$\sim$4주} 만에 완성한\\
+      결과물입니다.
+    \end{tcolorbox}
+    
+    \vspace{0.5em}
+    
+    \begin{tcolorbox}[title=체험 도구 안내]
+      \textbf{파일}: 수업집중도분석프로그램\\
+      \_v2\_2\_0\_0\_코드리뷰수정\\
+      \_2026-02-19.html
+      
+      \vspace{0.3em}
+      \textbf{위치}: LMS 2주차 참고 자료실
+    \end{tcolorbox}
+    
+    \vspace{0.3em}
+    
+    \begin{alertblock}{중요 개념}
+      \small AI가 판단하는 것이 아니라\\
+      \textbf{우리가 설정한 기준}으로 계산!
+    \end{alertblock}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{다음 주 예고}
+  \begin{block}{3주차: 프로젝트 기획}
+    \begin{itemize}
+      \item 프로젝트 주제 확정
+      \item 필요한 센서 선택
+      \item 데이터 수집 계획서 작성
+    \end{itemize}
+  \end{block}
+  
+  \vspace{1em}
+  
+  \begin{alertblock}{과제 안내}
+    \textbf{이번 주 과제}
+    \begin{itemize}
+      \item 바이브코딩 체험: 자기소개 웹페이지
+      \item 센서 탐색: 어떤 센서가 있는지 조사
+    \end{itemize}
+    
+    \textbf{제출물} (일요일 자정까지 LMS)
+    \begin{enumerate}
+      \item 결과물 (HTML 파일)
+      \item 대화목록 전문 (PDF)
+      \item 대화목록 요약본 (PDF)
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+%------------------------------------------
+% 마무리
+%------------------------------------------
+
+\begin{frame}{핵심 요약}
+  \begin{enumerate}
+    \item \textbf{바이브코딩} = AI와 대화하며 코드 만들기
+    \begin{itemize}
+      \item 문제 정의가 가장 중요
+      \item 효과적인 프롬프트 작성법 익히기
+    \end{itemize}
+    
+    \item \textbf{Claude 사용법}
+    \begin{itemize}
+      \item 구체적으로 요청
+      \item 단계적으로 수정
+    \end{itemize}
+    
+    \item \textbf{센서 탐색}
+    \begin{itemize}
+      \item 내장 6개 + Grove 확장
+      \item 848가지 조합 가능
+      \item 센서는 현재 상태만 측정
+    \end{itemize}
+    
+    \item \textbf{프로젝트 구상 시작}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{}
+  \begin{center}
+  \Huge
+  질문 있으신가요?
+  
+  \vspace{2em}
+  
+  \normalsize
+  다음 주에 만나요!
+  \end{center}
+\end{frame}
+
+%------------------------------------------
+% 문서 정보
+%------------------------------------------
+
+\begin{frame}{문서 정보}
+  \begin{center}
+    \begin{tabular}{l|l}
+      \toprule
+      \textbf{항목} & \textbf{내용} \\
+      \midrule
+      문서명 & 사물인터넷과 빅데이터 2주차 슬라이드 \\
+      버전 & v1.2.1.0 \\
+      작성일 & 2026-02-19 \\
+      작성자 & 양창모 \\
+      소속 & 청주교육대학교 컴퓨터교육과 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  
+  \vspace{1em}
+  
+  \begin{center}
+    \small
+    \begin{tabular}{l|l|l}
+      \toprule
+      \textbf{버전} & \textbf{날짜} & \textbf{변경 내용} \\
+      \midrule
+      v1.0.0.0 & 2026-01-26 & 초안 작성 \\
+      v1.1.0.0 & 2026-01-28 & Grove 센서 이미지 추가 \\
+      v1.2.0.0 & 2026-02-19 & 시뮬레이터 5개 슬라이드 추가 \\
+      v1.2.1.0 & 2026-02-19 & TSL2561 주소 정정 (0x39→0x29) \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  
+  \vspace{0.5em}
+  
+  \begin{center}
+    \small
+    \textit{청주교육대학교 컴퓨터교육과}\\
+    \textit{사물인터넷과 빅데이터 --- 2주차}\\
+    \textit{v1.2.1.0 | 2026-02-19}
+  \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,640 @@
+% 사물인터넷과 빅데이터 - 강의계획서
+% AI디지털리터러시 문서 스타일과 동일하게 구성
+% XeLaTeX 컴파일 필요
+\documentclass[11pt, a4paper]{article}
+
+\usepackage{fontspec}
+\setmainfont{Noto Serif CJK KR}
+\setsansfont{Noto Sans CJK KR}
+
+\usepackage{geometry}
+\geometry{a4paper, left=20mm, right=20mm, top=20mm, bottom=20mm}
+
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{colortbl}
+\usepackage{tabularx}
+\usepackage{makecell}
+\usepackage{float}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+
+% ========== 색상 정의 (밝은 톤) ==========
+\definecolor{mainblue}{RGB}{41, 128, 185}
+\definecolor{headerblue}{RGB}{214, 234, 248}
+\definecolor{lightblue}{RGB}{235, 245, 251}
+\definecolor{accentorange}{RGB}{230, 126, 34}
+\definecolor{lightorange}{RGB}{253, 235, 208}
+\definecolor{accentgreen}{RGB}{39, 174, 96}
+\definecolor{lightgreen}{RGB}{212, 239, 223}
+\definecolor{warningred}{RGB}{231, 76, 60}
+\definecolor{lightred}{RGB}{250, 219, 216}
+\definecolor{textgray}{RGB}{44, 62, 80}
+\definecolor{lightgray}{RGB}{248, 249, 250}
+
+\hypersetup{colorlinks=true, linkcolor=mainblue, urlcolor=mainblue}
+
+% ========== 장/절 스타일 (페이지 브레이크 없음) ==========
+\titleformat{\section}
+    {\Large\bfseries\color{mainblue}}
+    {\thesection.}
+    {0.5em}
+    {}
+\titlespacing*{\section}{0pt}{15pt}{10pt}
+
+\titleformat{\subsection}
+    {\large\bfseries\color{mainblue}}
+    {\thesubsection}
+    {0.5em}
+    {}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+
+\titleformat{\subsubsection}
+    {\normalsize\bfseries\color{textgray}}
+    {\thesubsubsection}
+    {0.5em}
+    {}
+\titlespacing*{\subsubsection}{0pt}{8pt}{4pt}
+
+% ========== 헤더/푸터 ==========
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% ========== 표/그림 번호 한글화 ==========
+\renewcommand{\tablename}{표}
+\renewcommand{\figurename}{그림}
+
+% ========== 표 스타일 ==========
+\renewcommand{\arraystretch}{1.4}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% ========== 인용문 스타일 ==========
+\newcommand{\note}[1]{%
+    \vspace{3pt}
+    \noindent\textcolor{textgray}{\textbf{>} #1}
+    \vspace{3pt}
+}
+
+% ========================================
+\begin{document}
+
+% ========== 제목 ==========
+\begin{center}
+{\fontsize{24pt}{28pt}\selectfont\bfseries\color{mainblue} 사물인터넷과 빅데이터}
+
+\vspace{8pt}
+
+{\Large\bfseries 강 의 계 획 서}
+
+\vspace{8pt}
+
+{\normalsize\bfseries 문서 버전: v1.5.4.0}
+\end{center}
+
+\vspace{5pt}
+\noindent\rule{\textwidth}{0.5pt}
+
+% ========================================
+\section{교과목 기본 정보}
+% ========================================
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|C{2.2cm}|L{4.5cm}|C{2.2cm}|L{4.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{항목} & \textbf{내용} & \textbf{항목} & \textbf{내용} \\
+\hline
+\textbf{교과목명} & 사물인터넷과 빅데이터 & \textbf{학점/시간} & 2학점 / 주 2시간 \\
+\hline
+\textbf{수업 기간} & 15주 (총 30시간) & \textbf{수업 대상} & 컴퓨터교육과 4학년 \\
+\hline
+\textbf{수업 방식} & 프로젝트 중심 실습 & \textbf{수강 인원} & 21명 \\
+\hline
+\textbf{강의실} & 정306호 (컴퓨팅교육실습실) & \textbf{담당 교수} & 양창모 \\
+\hline
+\textbf{연락처} & cmyang@cje.ac.kr & \textbf{교재} & 담당교수 제공 자료 \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{교과목 개요}
+% ========================================
+
+본 교과목은 마이크로비트와 Grove 확장 센서를 활용하여 데이터를 수집하고, 이를 분석·해석하는 과정을 통해 \textbf{컴퓨팅 사고력}, \textbf{인공지능 사고력}, \textbf{데이터 리터러시}를 함양하는 것을 목표로 한다. 학생들은 \textbf{학교 현장에 적용할 수 있는 프로젝트}를 직접 선정하고, 기획·제작·수집·분석의 전 과정을 수행한다. 이 과정에서 \textbf{바이브 코딩}(AI 협업 코딩)을 통해 코드 문법 없이 데이터 시각화, 분석, AI 모델 구현을 경험한다.
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{핵심 메시지}
+% ========================================
+
+\begin{enumerate}[leftmargin=*, itemsep=3pt]
+\item \textbf{``데이터는 원인을 말하지 않는다. 우리가 원인을 '추정'할 뿐이다.''}
+\item \textbf{``AI는 집중도를 판단하지 않는다. 우리가 만든 기준을 계산할 뿐이다.''}
+\item \textbf{``이 수업은 코딩을 가르치지 않는다. 코딩을 의심하는 방법을 가르친다.''}
+\end{enumerate}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{2022 개정 교육과정 연계}
+% ========================================
+
+\subsection{관련 성취기준}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|C{2cm}|L{9cm}|C{2.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{성취기준} & \textbf{내용} & \textbf{관련 주차} \\
+\hline
+\textbf{[6실05-04]} & 디지털 데이터와 아날로그 데이터의 특징을 이해하고, 인공지능에 활용할 수 있는 데이터의 유형이나 형태를 탐색한다. & 1-4, 9-13주차 \\
+\hline
+\textbf{[6실05-05]} & 인공지능이 만들어지는 과정을 체험하고, 인공지능이 사회에 미치는 영향을 탐색한다. & 9-13주차 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{예비교사 필수 내용 지식(CK)}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|L{3cm}|L{10.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{CK 영역} & \textbf{세부 내용} \\
+\hline
+\textbf{피지컬 컴퓨팅} & 마이크로비트 구조, Grove 센서 연결, MakeCode 프로그래밍 \\
+\hline
+\textbf{데이터 수집} & 센서 데이터 유형, 수집 방법, 데이터 정리 \\
+\hline
+\textbf{데이터 분석} & 시각화, 상관관계 vs 인과관계, 반례 탐색 \\
+\hline
+\textbf{AI 모델} & 규칙 기반 AI, 모델의 한계와 비판적 분석 \\
+\hline
+\textbf{바이브 코딩} & AI 협업 코딩, 프롬프트 작성, 결과 검토 \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{학습 목표}
+% ========================================
+
+\begin{itemize}[leftmargin=*, itemsep=3pt]
+\item 마이크로비트와 Grove 확장 센서를 활용하여 데이터를 수집할 수 있다.
+\item 수집한 데이터를 정리하고 시각화하여 패턴을 탐색할 수 있다.
+\item 상관관계와 인과관계의 차이를 설명하고, 반례를 통해 가설을 검증할 수 있다.
+\item 바이브 코딩을 활용하여 간단한 규칙 기반 AI 모델을 만들 수 있다.
+\item AI 모델의 작동 원리와 한계를 비판적으로 분석할 수 있다.
+\item 학교 현장에 적용 가능한 데이터 수집·분석 프로젝트를 기획하고 수행할 수 있다.
+\end{itemize}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{수업 운영 방식}
+% ========================================
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|C{2cm}|C{2cm}|L{9.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{구분} & \textbf{주차} & \textbf{운영 방식} \\
+\hline
+대면 수업 & 1-4주 & 강의실 대면 수업 \\
+\hline
+\rowcolor{lightorange}
+\textbf{데이터 수집} & \textbf{5-8주} & \textbf{실습학교에서 데이터 수집 (교육실습 기간)} \\
+\hline
+대면 수업 & 9-15주 & 강의실 대면 수업 \\
+\hline
+\end{tabular}
+\end{table}
+
+\note{실습기간(5-8주)은 교육실습 기간으로, 학생들이 실습학교에서 프로젝트 데이터를 수집합니다.}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{주차별 수업 개요}
+% ========================================
+
+\begin{longtable}{|C{1cm}|L{3cm}|L{5cm}|C{1.5cm}|L{3cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{주차} & \textbf{주제} & \textbf{주요 내용} & \textbf{VC} & \textbf{평가} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{headerblue}
+\textbf{주차} & \textbf{주제} & \textbf{주요 내용} & \textbf{VC} & \textbf{평가} \\
+\hline
+\endhead
+\textbf{1} & 오리엔테이션 & 바이브코딩 시연, 마이크로비트 체험 & — & — \\
+\hline
+\textbf{2} & 바이브코딩 소개 & Claude 사용법, 센서 탐색 & O & 1주차 과제 점검 \\
+\hline
+\textbf{3} & 프로젝트 기획 & 주제 선정, 데이터 수집 계획서 & — & — \\
+\hline
+\textbf{4} & 데이터수집기 제작 & MakeCode 프로그래밍, Grove 연결 & — & — \\
+\hline
+\rowcolor{lightorange}
+\textbf{5} & 데이터 수집 & 실습학교에서 데이터 수집 & — & — \\
+\hline
+\rowcolor{lightorange}
+\textbf{6} & 데이터 수집 & 실습학교에서 데이터 수집 & — & — \\
+\hline
+\rowcolor{lightorange}
+\textbf{7} & 데이터 수집 & 실습학교에서 데이터 수집 & — & — \\
+\hline
+\rowcolor{lightorange}
+\textbf{8} & 데이터 정리 & 수집 완료, 엑셀 정리 & — & — \\
+\hline
+\textbf{9} & 바이브코딩 시각화 & 데이터 그래프 시각화 & O & — \\
+\hline
+\textbf{10} & 바이브코딩 분석 & 상관관계 vs 인과관계 & O & — \\
+\hline
+\textbf{11} & 바이브코딩 분석 심화 & 반례 탐색, 분석 결과 정리 & O & — \\
+\hline
+\textbf{12} & 바이브코딩 AI 모델 & 규칙 기반 AI 모델 구현 & O & — \\
+\hline
+\textbf{13} & 바이브코딩 분석 완료 & 분석 마무리, 보고서 초안 & O & — \\
+\hline
+\textbf{14} & 보고서 + 발표 준비 & 보고서 완성, 슬라이드 제작 & — & — \\
+\hline
+\textbf{15} & 최종 발표 & 발표, 피어평가, 성찰 & — & 피어평가 \\
+\hline
+\caption{주차별 수업 개요}
+\end{longtable}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{평가 방법}
+% ========================================
+
+\subsection{평가 체계 총괄}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|L{4cm}|C{2cm}|C{4cm}|L{4cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{평가 영역} & \textbf{배점} & \textbf{평가 주차} & \textbf{세부 내용} \\
+\hline
+\textbf{주간 과제} & \textbf{35\%} & 2-4주, 8-13주 & 주당 5\% × 7주 \\
+\hline
+\textbf{피어 평가} & \textbf{5\%} & 15주차 & 동료 발표 평가 \\
+\hline
+\textbf{최종 프로젝트} & \textbf{60\%} & 14-15주차 & 보고서 30\% + 발표 10\% + 성찰 15\% + 피어 5\% \\
+\hline
+\textbf{합계} & \textbf{100\%} & & \\
+\hline
+\end{tabular}
+\end{table}
+
+\note{\textbf{상대평가}: A (25\%), B (50\%), C (25\%)}
+
+\note{\textbf{1주차 과제}는 평가 점검용으로 학기 평가에 반영되지 않음}
+
+\subsection{주차별 과제 및 제출물}
+
+\begin{longtable}{|C{1cm}|L{2.5cm}|C{1cm}|L{5.5cm}|C{1.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{주차} & \textbf{과제} & \textbf{VC} & \textbf{제출물} & \textbf{배점} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{headerblue}
+\textbf{주차} & \textbf{과제} & \textbf{VC} & \textbf{제출물} & \textbf{배점} \\
+\hline
+\endhead
+1 & LED 이름 표시 & & 사진 + 개발일지(PDF) & \textcolor{warningred}{점검용} \\
+\hline
+2 & 바이브코딩 체험 & O & 결과물(HTML) + 대화목록 전문(PDF) + 요약본(PDF) & 5\% \\
+\hline
+3 & 프로젝트 기획 & & 데이터 수집 계획서 + 개발일지(PDF) & 5\% \\
+\hline
+4 & 데이터수집기 제작 & & MakeCode 파일 + 테스트 결과 + 개발일지(PDF) & 5\% \\
+\hline
+\rowcolor{lightorange}
+5-7 & 데이터 수집 & & 없음 (8주차에 통합 제출) & - \\
+\hline
+\rowcolor{lightorange}
+8 & 데이터 정리 & & 엑셀 파일 + 개발일지(PDF) & 5\% \\
+\hline
+9 & 바이브코딩 시각화 & O & 결과물(HTML) + 대화목록 전문(PDF) + 요약본(PDF) & 5\% \\
+\hline
+10 & 바이브코딩 분석 & O & 결과물(HTML) + 해석 메모 + 대화목록(PDF) & 5\% \\
+\hline
+11 & 바이브코딩 분석 심화 & O & 결과물(HTML) + 반례 분석 메모 + 대화목록(PDF) & 5\% \\
+\hline
+12 & 바이브코딩 AI 모델 & O & 결과물(HTML) + 대화목록(PDF) & 5\% \\
+\hline
+13 & 바이브코딩 분석 완료 & O & 결과물(HTML) + 보고서 초안(PDF) + 대화목록(PDF) & 5\% \\
+\hline
+\caption{주차별 과제 및 제출물 (VC = 바이브코딩)}
+\end{longtable}
+
+\note{\textbf{VC = 바이브코딩}. O 표시 주차는 대화목록 전문 + 요약본 필수 제출}
+
+\note{주황색 배경: 실습기간 (실습학교에서 데이터 수집)}
+
+\subsection{주간 과제 등급 기준}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|C{1.5cm}|C{1.5cm}|L{10cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{등급} & \textbf{점수} & \textbf{기준} \\
+\hline
+A & 100\% & 과제 완벽 수행 + 개발일지 충실 + 추가 시도/통찰 \\
+\hline
+B & 85\% & 과제 대부분 수행 + 개발일지 충실 \\
+\hline
+C & 70\% & 과제 일부 수행 + 개발일지 기본 작성 \\
+\hline
+D & 55\% & 과제 미흡 또는 개발일지 부실 \\
+\hline
+F & 0\% & 미제출 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{피어 평가 (5\%)}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|L{3cm}|L{10.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{항목} & \textbf{내용} \\
+\hline
+\textbf{실시 시기} & 15주차 최종 발표 시 \\
+\hline
+\textbf{평가 대상} & 동료의 발표 \\
+\hline
+\textbf{평가 기준} & 발표 내용, 통찰력, 완성도 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|C{1.5cm}|L{12cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{점수} & \textbf{기준} \\
+\hline
+3점 & 우수 - 통찰력 있는 분석, 창의적 시도 \\
+\hline
+2점 & 보통 - 기본 요구사항 충족 \\
+\hline
+1점 & 미흡 - 내용 일부만 충족 \\
+\hline
+0점 & 부족 - 발표 불참 또는 미완성 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{최종 프로젝트 (60\%)}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|L{4cm}|C{1.5cm}|L{8cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{구성 요소} & \textbf{배점} & \textbf{핵심 평가 기준} \\
+\hline
+\textbf{프로젝트 보고서} & 30\% & 프로젝트 과정 명확 + 데이터 분석 적절 + 통찰 구체적 \\
+\hline
+\textbf{발표} & 10\% & 발표 내용 명확 + 전달력 우수 \\
+\hline
+\textbf{개인 성찰 보고서} & 15\% & 학습 목표 달성 명확 + 관점 변화 구체적 + 학교 적용 방안 \\
+\hline
+\textbf{피어 평가} & 5\% & 동료 발표 평가 \\
+\hline
+\textbf{합계} & \textbf{60\%} & \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{과제 제출 방법}
+% ========================================
+
+\subsection{바이브코딩 과제 제출물}
+
+바이브코딩 활용 주차(2, 9-13주)에는 \textbf{대화목록 전문}과 \textbf{대화목록 요약본}을 필수 제출한다.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|L{4cm}|L{9.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{제출물} & \textbf{내용} \\
+\hline
+\textbf{대화목록 전문} & 프롬프트 원문 + Claude 응답 전체 \\
+\hline
+\textbf{대화목록 요약본} & 프롬프트 원문 + Claude 응답 3줄 요약 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{대화목록 PDF 생성 방법}
+
+대화목록은 Claude에게 아래 프롬프트를 입력하면 자동으로 PDF가 생성된다.
+
+\begin{tcolorbox}[colback=lightorange, colframe=accentorange, boxrule=0.5pt, title={\textbf{대화목록 PDF 생성 프롬프트}}, fonttitle=\bfseries\color{accentorange!80!black}]
+\small
+이 대화에서 사용한 프롬프트와 답변을 포함한 대화 전문과 프롬프트와 답변을 정리한 요약본을 PDF 문서로 만들어줘. 오늘 날짜, 수업주차 O주차, 작성자 이름 OOO, 학번 XXXXXX을 추가해줘.
+\end{tcolorbox}
+
+\textbf{사용 예시:}
+\begin{quote}
+\small
+이 대화에서 사용한 프롬프트와 답변을 포함한 대화 전문과 프롬프트와 답변을 정리한 요약본을 PDF 문서로 만들어줘. 오늘 날짜, 수업주차 \textbf{2주차}, 작성자 이름 \textbf{홍길동}, 학번 \textbf{202012345}을 추가해줘.
+\end{quote}
+
+\subsection{제출 안내}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|L{3cm}|L{10.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{항목} & \textbf{내용} \\
+\hline
+\textbf{제출처} & LMS \\
+\hline
+\textbf{제출 기한} & 매주 일요일 자정 \\
+\hline
+\textbf{지각 감점} & 1일당 10\% 감점 \\
+\hline
+\textbf{출석 인정} & 과제 제출로 출석 대체 \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{수업 자료 및 도구}
+% ========================================
+
+\subsection{필수 준비물}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|L{5cm}|L{8.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{항목} & \textbf{비고} \\
+\hline
+마이크로비트 V2 & 학교 대여 \\
+\hline
+Grove 확장 보드 + 센서 & 학교 대여 \\
+\hline
+USB 케이블 & 학교 대여 \\
+\hline
+노트북/PC & 개인 지참 \\
+\hline
+Claude 계정 & 학교 제공 예정 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{소프트웨어}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|L{3.5cm}|L{5cm}|L{5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{도구} & \textbf{용도} & \textbf{URL} \\
+\hline
+MakeCode & 마이크로비트 프로그래밍 & makecode.microbit.org \\
+\hline
+Claude & 바이브코딩 & claude.ai \\
+\hline
+엑셀/구글 시트 & 데이터 정리 & — \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{학습 윤리}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|L{6.5cm}|L{6.5cm}|}
+\hline
+\rowcolor{lightgreen}
+\textbf{권장} & \textbf{금지} \\
+\hline
+AI 코드를 수정·검토 & AI 코드 무검증 복붙 \\
+\hline
+``이런 느낌으로'' 자연어 설명 & ``AI가 이렇게 했으니까 맞다'' \\
+\hline
+AI 코드의 문제점 지적 & AI를 정답 생성기로 사용 \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section*{참고자료}
+\addcontentsline{toc}{section}{참고자료}
+% ========================================
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|C{1cm}|L{6cm}|L{2.5cm}|L{4cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & 문서버전관리가이드\_v1.2.2 & 문서 & 버전 관리 규칙 \\
+\hline
+2 & 마이크로비트 공식 문서 & 웹사이트 & microbit.org \\
+\hline
+3 & Grove 센서 문서 & 웹사이트 & wiki.seeedstudio.com \\
+\hline
+4 & 2022 개정 교육과정 & 교육부 문서 & 실과, SW/AI 교육 \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section*{생성/수정 이력}
+\addcontentsline{toc}{section}{생성/수정 이력}
+% ========================================
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|L{1.8cm}|L{2cm}|L{1.5cm}|L{8cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{버전} & \textbf{날짜} & \textbf{수준} & \textbf{변경 내용} \\
+\hline
+v1.0.0.0 & 2026-01-24 & 최초 & 초안 작성 \\
+\hline
+v1.5.0.0 & 2026-01-26 & 마이너 & 프로젝트 중심 재구성: 학생 주도 프로젝트, 실습기간 데이터 수집, 바이브코딩 소개 추가 \\
+\hline
+v1.5.1.0 & 2026-01-26 & 리비전 & 9-13주 바이브코딩 활용 명시, 대화목록 필수 제출로 통일 \\
+\hline
+v1.5.2.0 & 2026-01-26 & 리비전 & 1주차 과제 평가 점검용 명시, 배점 조정(주간과제 35\%, 최종프로젝트 60\%) \\
+\hline
+v1.5.3.0 & 2026-01-26 & 리비전 & 제출물 명칭 변경: 대화목록 전문 + 요약본 \\
+\hline
+\textbf{v1.5.4.0} & \textbf{2026-02-13} & \textbf{리비전} & \textbf{LaTeX 교재형식 변환, AI디지털리터러시 스타일 통일, 주차별 수업 개요 위치 이동(7장)} \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{15pt}
+\begin{center}
+\textit{사물인터넷과 빅데이터 — 15주 강의계획서}\\[3pt]
+\textit{청주교육대학교 컴퓨터교육과}
+\end{center}
+
+\end{document}

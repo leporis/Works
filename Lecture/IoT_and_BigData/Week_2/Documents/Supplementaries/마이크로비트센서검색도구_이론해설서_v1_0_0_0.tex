@@ -1,0 +1,189 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}마이크로비트 센서 검색 도구 이론해설서 v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{magnifying-glass-tilted-left} 마이크로비트 센서 검색 도구}\\[0.5cm]
+{\Huge\bfseries\color{primary} 이론해설서}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v1.0.3.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 이론해설서는 마이크로비트 센서 검색 도구이 다루는 핵심 개념과 원리를 설명합니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{1. 이 문서의 목적}
+
+이 이론해설서는 \textbf{마이크로비트 센서 검색 도구}이 다루는 핵심 개념과 원리를 설명합니다. 시뮬레이터를 사용하기 전에 배경 지식을 쌓거나, 사용 후 깊이 있는 이해를 위해 참조합니다.
+
+
+\begin{tcolorbox}[summarybox]
+\textbf{핵심 주제}: 센서 선택과 프로젝트 설계
+
+\end{tcolorbox}
+
+
+\section*{2. 핵심 개념}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.1cm}|p{11.9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{개념} & \textbf{설명} \\
+\hline
+\textbf{측정 가능성} & 센서로 직접 측정할 수 있는 물리량. '집중도'는 직접 측정 불가, '온도'는 가능 \\
+\hline
+\textbf{프록시 변수} & 직접 측정할 수 없는 것을 대신 나타내는 간접 측정값 (예: 집중도 \textrightarrow{} 자세·시선·소음) \\
+\hline
+\textbf{센서 조합 최적화} & 목표 데이터를 수집하기 위한 최소한의 센서 조합을 찾는 과정 \\
+\hline
+\textbf{내장 vs 외장 센서} & 마이크로비트에 내장된 기본 센서 vs Grove로 확장하는 정밀 센서 \\
+\hline
+\textbf{연구 질문} & 프로젝트의 출발점이 되는 핵심 질문. '측정 가능한 질문'으로 변환 필요 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{3. 원리 상세}
+
+\subsection*{측정 가능한 연구 질문 만들기}
+
+IoT 프로젝트의 첫 단계는 "무엇을 측정할 것인가?"를 결정하는 것입니다.
+
+
+\textbf{좋은 연구 질문의 조건:}
+
+1. \textbf{측정 가능} — 센서로 데이터를 수집할 수 있어야 함
+
+2. \textbf{구체적} — "환경"보다 "교실의 온도와 소음"
+
+3. \textbf{비교 가능} — "높다/낮다"를 판단할 기준이 있어야 함
+
+
+\textbf{변환 예시:}
+
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{4.4cm}|p{10.6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\emoji{cross-mark} 측정 불가능} & \textbf{\emoji{check-mark-button} 측정 가능} \\
+\hline
+"우리 교실은 쾌적한가?" & "교실 온도·습도·CO\textsubscript{2}가 쾌적 기준 이내인가?" \\
+\hline
+"학생들이 집중하는가?" & "소음 수준과 교실 온도가 집중에 적합한 범위인가?" \\
+\hline
+"날씨가 좋은가?" & "기압·온도·습도 변화 추이가 맑은 날 패턴과 일치하는가?" \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{센서 선택 의사결정}
+
+센서 선택 시 고려할 요소:
+
+1. \textbf{필수 데이터}: 연구 질문에 반드시 필요한 측정값
+
+2. \textbf{내장 vs 외장}: 내장 센서로 충분하면 추가 비용 없음
+
+3. \textbf{정밀도}: 대략적 추세면 내장, 정확한 수치면 외장
+
+4. \textbf{비용}: Grove 센서당 5,000\textasciitilde{}20,000원
+
+
+
+\section*{4. 실생활 응용 사례}
+
+\textbf{사례 1}: 스마트 빌딩: 건물 관리에 필요한 센서 종류·위치 계획
+
+
+\textbf{사례 2}: 환경 모니터링: 하천 수질 측정을 위한 센서 조합 설계
+
+
+\textbf{사례 3}: 농업 IoT: 작물별 필요 환경 데이터에 맞는 센서 배치
+
+
+\textbf{사례 4}: 산업 IoT: 공장 설비 이상 감지를 위한 센서 선정
+
+
+
+\section*{5. 더 알아보기}
+
+$\bullet$ \textbf{센서 데이터시트}: 제조사가 제공하는 센서 사양서 읽는 법
+
+$\bullet$ \textbf{센서 퓨전 알고리즘}: 여러 센서 데이터를 결합하는 고급 기법
+
+$\bullet$ \textbf{연구 설계}: 가설 \textrightarrow{} 변수 정의 \textrightarrow{} 데이터 수집 \textrightarrow{} 분석의 연구 방법론
+
+$\bullet$ \textbf{측정 불확실도}: 모든 측정에는 오차가 있다는 개념
+
+
+
+\section*{6. 핵심 용어 사전}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.6cm}|p{2.6cm}|p{9.8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{용어} & \textbf{학술 용어} & \textbf{쉬운 설명} \\
+\hline
+측정 가능성 & — & 센서로 직접 측정할 수 있는 물리량 \\
+\hline
+프록시 변수 & — & 직접 측정할 수 없는 것을 대신 나타내는 간접 측정값 (예: 집중도 \textrightarrow{} \\
+\hline
+센서 조합 최적화 & — & 목표 데이터를 수집하기 위한 최소한의 센서 조합을 찾는 과정 \\
+\hline
+내장 vs 외장 센서 & 내장 vs 외장 센서 & 마이크로비트에 내장된 기본 센서 vs Grove로 확장하는 정밀 센서 \\
+\hline
+연구 질문 & — & 프로젝트의 출발점이 되는 핵심 질문 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{7. 참고자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{7.1cm}|p{6.4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{비고} \\
+\hline
+1 & 마이크로비트센서검색도구\_퀵가이드 & 소프트웨어 사용 중 빠른 참조 \\
+\hline
+2 & 마이크로비트센서검색도구\_사용설명서 & 전체 기능 상세 \\
+\hline
+3 & 마이크로비트센서검색도구\_활용가이드 & 수업 적용 \\
+\hline
+4 & 마이크로비트센서검색도구\_개발참조 & 기술 사양 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{마이크로비트 센서 검색 도구 이론해설서}
+\end{center}
+\end{document}

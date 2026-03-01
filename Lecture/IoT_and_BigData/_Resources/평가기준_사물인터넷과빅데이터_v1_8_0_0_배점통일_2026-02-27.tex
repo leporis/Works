@@ -1,0 +1,531 @@
+% 사물인터넷과 빅데이터 - 평가 기준
+% XeLaTeX 컴파일 필요
+\documentclass[11pt, a4paper]{article}
+
+\usepackage{fontspec}
+\setmainfont{Noto Serif CJK KR}
+\setsansfont{Noto Sans CJK KR}
+
+\usepackage{geometry}
+\geometry{a4paper, left=20mm, right=20mm, top=20mm, bottom=20mm}
+
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+
+% 색상 정의
+\definecolor{mainblue}{RGB}{41, 128, 185}
+\definecolor{headerblue}{RGB}{214, 234, 248}
+\definecolor{lightblue}{RGB}{235, 245, 251}
+\definecolor{lightorange}{RGB}{253, 235, 208}
+\definecolor{accentorange}{RGB}{230, 126, 34}
+\definecolor{textgray}{RGB}{44, 62, 80}
+
+\hypersetup{colorlinks=true, linkcolor=mainblue, urlcolor=mainblue}
+
+% 섹션 스타일
+\titleformat{\section}
+    {\Large\bfseries\color{mainblue}}
+    {\thesection.}
+    {0.5em}
+    {}
+\titlespacing*{\section}{0pt}{15pt}{10pt}
+
+\titleformat{\subsection}
+    {\large\bfseries\color{mainblue}}
+    {\thesubsection}
+    {0.5em}
+    {}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+
+\titleformat{\subsubsection}
+    {\normalsize\bfseries\color{textgray}}
+    {\thesubsubsection}
+    {0.5em}
+    {}
+\titlespacing*{\subsubsection}{0pt}{8pt}{4pt}
+
+% 헤더/푸터
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% 표/그림 한글화
+\renewcommand{\tablename}{표}
+\renewcommand{\figurename}{그림}
+
+% 표 스타일
+\renewcommand{\arraystretch}{1.4}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% 인용문 스타일
+\newcommand{\note}[1]{%
+    \vspace{3pt}
+    \noindent\textcolor{textgray}{\textbf{>} #1}
+    \vspace{3pt}
+}
+
+\begin{document}
+
+% 제목
+\begin{center}
+{\fontsize{24pt}{28pt}\selectfont\bfseries\color{mainblue} 사물인터넷과 빅데이터}
+
+\vspace{8pt}
+
+{\Large\bfseries [부록] 평가 기준}
+
+\vspace{8pt}
+
+{\normalsize\bfseries 문서 버전: v1.8.0.0}
+\end{center}
+
+\vspace{5pt}
+\noindent\rule{\textwidth}{0.5pt}
+
+% ========================================
+\section{평가 배점 요약}
+% ========================================
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|L{4cm}|C{2cm}|C{3cm}|L{4.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{평가 항목} & \textbf{배점} & \textbf{평가 주차} & \textbf{세부 내용} \\
+\hline
+\textbf{주간 과제} & \textbf{35\%} & 2-4주, 8-13주 & 주당 5\% × 7주 \\
+\hline
+\textbf{피어 평가} & \textbf{5\%} & 15주차 & 동료 발표 평가 \\
+\hline
+\textbf{최종 프로젝트} & \textbf{60\%} & 14-15주차 & 보고서 30\% + 발표 10\% + 성찰 15\% + 피어 5\% \\
+\hline
+\textbf{합계} & \textbf{100\%} & & \\
+\hline
+\end{tabular}
+\end{table}
+
+\note{\textbf{상대평가}: A (25\%), B (50\%), C (25\%)}
+
+\note{\textbf{1주차 과제}는 평가 점검용으로 학기 평가에 반영되지 않음}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{주간 과제 (35\%)}
+% ========================================
+
+\subsection{운영 방식}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|L{3.5cm}|L{10cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{항목} & \textbf{내용} \\
+\hline
+\textbf{배점} & 주당 5\% × 7주 = 35\% \\
+\hline
+\textbf{제출 주차} & 2-4주, 8-13주 (1주차는 점검용) \\
+\hline
+\textbf{제출 기한} & 매주 일요일 자정 (LMS) \\
+\hline
+\textbf{지각 감점} & 1일당 10\% 감점 \\
+\hline
+\textbf{출석 인정} & 과제 제출로 출석 대체 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{주차별 과제 및 제출물}
+
+\begin{longtable}{|C{1cm}|L{2.5cm}|C{1cm}|L{5.5cm}|C{1.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{주차} & \textbf{과제} & \textbf{VC} & \textbf{제출물} & \textbf{배점} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{headerblue}
+\textbf{주차} & \textbf{과제} & \textbf{VC} & \textbf{제출물} & \textbf{배점} \\
+\hline
+\endhead
+\textbf{1} & LED 이름 표시 & & 사진 + 개발일지(PDF) & \textbf{점검용} \\
+\hline
+\textbf{2} & 바이브코딩 체험 & O & 결과물(HTML) + 대화목록 전문(PDF) + 요약본(PDF) & 5\% \\
+\hline
+\textbf{3} & 프로젝트 기획 & & 데이터 수집 계획서 + 개발일지(PDF) & 5\% \\
+\hline
+\textbf{4} & 데이터수집기 제작 & & MakeCode 파일 + 테스트 결과 + 개발일지(PDF) & 5\% \\
+\hline
+\textbf{5-7} & 데이터 수집 & & 없음 (교육실습 기간, 8주차에 통합 제출) & - \\
+\hline
+\textbf{8} & 데이터 정리 & & 엑셀 파일 + 개발일지(PDF) & 5\% \\
+\hline
+\textbf{9} & 바이브코딩 시각화 & O & 결과물(HTML) + 대화목록 전문(PDF) + 요약본(PDF) & 5\% \\
+\hline
+\textbf{10} & 바이브코딩 분석 & O & 결과물(HTML) + 해석 메모 + 대화목록(PDF) & 5\% \\
+\hline
+\textbf{11} & 바이브코딩 분석 심화 & O & 결과물(HTML) + 반례 분석 메모 + 대화목록(PDF) & 5\% \\
+\hline
+\textbf{12} & 바이브코딩 AI 모델 & O & 결과물(HTML) + 대화목록(PDF) & 5\% \\
+\hline
+\textbf{13} & 바이브코딩 분석 완료 & O & 결과물(HTML) + 보고서 초안(PDF) + 대화목록(PDF) & 5\% \\
+\hline
+\caption{주차별 과제 및 제출물}
+\end{longtable}
+
+\note{\textbf{VC = 바이브코딩}. O 표시 주차는 대화목록 전문 + 요약본 필수 제출}
+
+\subsection{등급 기준}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|C{1.5cm}|C{1.5cm}|L{10cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{등급} & \textbf{점수} & \textbf{기준} \\
+\hline
+\textbf{A} & 100\% & 과제 완벽 수행 + 개발일지 충실 + 추가 시도/통찰 \\
+\hline
+\textbf{B} & 85\% & 과제 대부분 수행 + 개발일지 충실 \\
+\hline
+\textbf{C} & 70\% & 과제 일부 수행 + 개발일지 기본 작성 \\
+\hline
+\textbf{D} & 55\% & 과제 미흡 또는 개발일지 부실 \\
+\hline
+\textbf{F} & 0\% & 미제출 \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{대화목록 평가 기준}
+% ========================================
+
+\subsection{평가 영역}
+
+바이브코딩 활용 주차(2, 9-13주)의 대화목록은 다음 기준으로 평가합니다.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|L{4cm}|C{2cm}|L{7.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{영역} & \textbf{비중} & \textbf{설명} \\
+\hline
+\textbf{프롬프트 적절성} & 50\% & 목표·맥락·조건 명확성 \\
+\hline
+\textbf{대화 과정 적절성} & 50\% & 개선·수정·검증 과정 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{등급별 기준}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|C{1cm}|C{1cm}|L{5.5cm}|L{5.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{등급} & \textbf{점수} & \textbf{프롬프트 적절성} & \textbf{대화 과정 적절성} \\
+\hline
+\textbf{A} & 100\% & 목표·맥락·조건 명확, 논리적 구조 & 결과 검증 + 문제 발견 시 수정 요청 + 개선 반복 \\
+\hline
+\textbf{B} & 85\% & 목표·맥락 명확, 기본 구조 갖춤 & 결과 확인 + 필요시 수정 요청 \\
+\hline
+\textbf{C} & 70\% & 기본 요청 전달, 일부 모호함 & 결과 수용, 최소한의 수정 \\
+\hline
+\textbf{D} & 55\% & 모호한 요청, 맥락 부족 & 무비판적 수용, 개선 노력 없음 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{등급별 대화 예시}
+
+\begin{tcolorbox}[colback=lightblue, colframe=mainblue, boxrule=0.5pt, title={\textbf{A등급: 목표·맥락·조건 명확 + 결과 검증 + 개선 반복}}, fonttitle=\bfseries]
+\small
+\textbf{[대화 1]} "마이크로비트로 교실 온도를 측정하는 프로그램을 만들고 싶어.
+\begin{itemize}
+\item 목표: 5초마다 온도를 측정해서 LED에 표시
+\item 조건: 25도 이상이면 '더움' 아이콘, 미만이면 '추움' 아이콘
+\item 출력: MakeCode 블록 코드로 설명해줘"
+\end{itemize}
+
+\textbf{[대화 2]} ← 테스트 후 문제 발견, 수정 요청
+
+"테스트해보니까 온도가 너무 자주 바뀌어서 아이콘이 깜빡거려. 최근 3번 측정의 평균으로 바꿔줄 수 있어?"
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightorange!30, colframe=accentorange, boxrule=0.5pt, title={\textbf{B등급: 목표·맥락 명확 + 필요시 수정 요청}}, fonttitle=\bfseries]
+\small
+\textbf{[대화 1]} "마이크로비트로 교실 온도 측정하는 코드 만들어줘. 5초마다 측정해서 LED에 표시하고 싶어."
+
+\textbf{[대화 2]} ← 수정 요청
+
+"숫자 대신 아이콘으로 바꿔줘. 더우면 해 모양, 추우면 눈 모양으로."
+\end{tcolorbox}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{피어 평가 (5\%)}
+% ========================================
+
+\subsection{운영 방식}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|L{3cm}|L{10.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{항목} & \textbf{내용} \\
+\hline
+\textbf{실시 시기} & 15주차 최종 발표 시 \\
+\hline
+\textbf{평가 대상} & 동료의 발표 \\
+\hline
+\textbf{평가 기준} & 발표 내용, 통찰력, 완성도 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{등급별 기준}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|C{1.5cm}|L{12cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{점수} & \textbf{기준} \\
+\hline
+\textbf{3점} & 우수 - 통찰력 있는 분석, 창의적 시도 \\
+\hline
+\textbf{2점} & 보통 - 기본 요구사항 충족 \\
+\hline
+\textbf{1점} & 미흡 - 내용 일부만 충족 \\
+\hline
+\textbf{0점} & 부족 - 발표 불참 또는 미완성 \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{최종 프로젝트 (60\%)}
+% ========================================
+
+\subsection{구성 요소 및 배점}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|L{4cm}|C{1.5cm}|L{8cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{구성 요소} & \textbf{배점} & \textbf{핵심 평가 기준} \\
+\hline
+\textbf{프로젝트 보고서} & 30\% & 프로젝트 과정 명확 + 데이터 분석 적절 + 통찰 구체적 \\
+\hline
+\textbf{발표} & 10\% & 발표 내용 명확 + 전달력 우수 \\
+\hline
+\textbf{개인 성찰 보고서} & 15\% & 학습 목표 달성 명확 + 관점 변화 구체적 + 학교 적용 방안 \\
+\hline
+\textbf{피어 평가} & 5\% & 동료 발표 평가 \\
+\hline
+\textbf{합계} & \textbf{60\%} & \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{프로젝트 보고서 (30\%)}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|C{1.5cm}|C{1.5cm}|L{10.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{등급} & \textbf{점수} & \textbf{기준} \\
+\hline
+\textbf{A} & 100\% & 프로젝트 과정 명확 + 데이터 분석 적절 + 통찰 구체적 \\
+\hline
+\textbf{B} & 85\% & 프로젝트 과정 명확 + 데이터 분석 적절 \\
+\hline
+\textbf{C} & 70\% & 기본 형식 갖춤 + 분석 방법 제시 + 일부 내용 미흡 \\
+\hline
+\textbf{D} & 55\% & 형식 불완전 + 분석 불명확 \\
+\hline
+\textbf{F} & 0\% & 미제출 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{발표 (10\%)}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|C{1.5cm}|C{1.5cm}|L{10.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{등급} & \textbf{점수} & \textbf{기준} \\
+\hline
+\textbf{A} & 100\% & 발표 내용 명확 + 전달력 우수 \\
+\hline
+\textbf{B} & 85\% & 발표 내용 명확 \\
+\hline
+\textbf{C} & 70\% & 기본 내용 전달 \\
+\hline
+\textbf{D} & 55\% & 발표 부실 \\
+\hline
+\textbf{F} & 0\% & 발표 불참 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{개인 성찰 보고서 (15\%)}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|C{1.5cm}|C{1.5cm}|L{10.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{등급} & \textbf{점수} & \textbf{기준} \\
+\hline
+\textbf{A} & 100\% & 학습 목표 달성 명확 + 관점 변화 구체적 + 학교 적용 방안 제시 \\
+\hline
+\textbf{B} & 85\% & 학습 목표 달성 명확 + 관점 변화 서술 \\
+\hline
+\textbf{C} & 70\% & 기본 형식 갖춤 + 성찰 내용 제시 \\
+\hline
+\textbf{D} & 55\% & 형식 불완전 + 성찰 불명확 \\
+\hline
+\textbf{F} & 0\% & 미제출 \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section{제출 방법 및 안내}
+% ========================================
+
+\subsection{바이브코딩 과제 제출물}
+
+바이브코딩 활용 주차(2, 9-13주)에는 \textbf{대화목록 전문}과 \textbf{대화목록 요약본}을 필수 제출합니다.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|L{4cm}|L{9.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{제출물} & \textbf{내용} \\
+\hline
+\textbf{대화목록 전문} & 프롬프트 원문 + Claude 응답 전체 \\
+\hline
+\textbf{대화목록 요약본} & 프롬프트 원문 + Claude 응답 3줄 요약 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{대화목록 PDF 생성 방법}
+
+대화목록은 Claude에게 아래 프롬프트를 입력하면 자동으로 PDF가 생성됩니다.
+
+\begin{tcolorbox}[colback=lightorange, colframe=accentorange, boxrule=0.5pt, title={\textbf{대화목록 PDF 생성 프롬프트}}, fonttitle=\bfseries]
+\small
+이 대화에서 사용한 프롬프트와 답변을 포함한 대화 전문과 프롬프트와 답변을 정리한 요약본을 PDF 문서로 만들어줘. 오늘 날짜, 수업주차 O주차, 작성자 이름 OOO, 학번 XXXXXX을 추가해줘.
+\end{tcolorbox}
+
+\subsection{제출 안내}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|L{3cm}|L{10.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{항목} & \textbf{내용} \\
+\hline
+\textbf{제출처} & LMS \\
+\hline
+\textbf{제출 기한} & 매주 일요일 자정 \\
+\hline
+\textbf{지각 감점} & 1일당 10\% 감점 \\
+\hline
+\textbf{출석 인정} & 과제 제출로 출석 대체 \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section*{참고자료}
+\addcontentsline{toc}{section}{참고자료}
+% ========================================
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|C{1cm}|L{8cm}|L{2cm}|L{2.5cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & 강의계획서\_사물인터넷과빅데이터\_v1.5.4.0 & 문서 & 평가 체계 근거 \\
+\hline
+2 & 문서버전관리가이드\_v1.2.2 & 문서 & 버전 관리 규칙 \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{3pt}
+\noindent\rule{\textwidth}{0.3pt}
+
+% ========================================
+\section*{생성/수정 이력}
+\addcontentsline{toc}{section}{생성/수정 이력}
+% ========================================
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|L{1.8cm}|L{2cm}|L{1.5cm}|L{8cm}|}
+\hline
+\rowcolor{headerblue}
+\textbf{버전} & \textbf{날짜} & \textbf{수준} & \textbf{변경 내용} \\
+\hline
+v1.0.0.0 & 2026-01-24 & 최초 & 초안 작성 \\
+\hline
+v1.7.0.0 & 2026-01-26 & 마이너 & 대화목록 평가 기준 상세화 \\
+\hline
+\textbf{v1.8.0.0} & \textbf{2026-02-27} & \textbf{마이너} & \textbf{강의계획서 v1.5.4.0 배점 체계 반영: 주간 과제 35\%, 최종 프로젝트 60\%, 피어 평가 5\% 독립, 1주차 점검용 명시} \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{15pt}
+\begin{center}
+\textit{사물인터넷과 빅데이터 — 평가 기준}\\[3pt]
+\textit{청주교육대학교 컴퓨터교육과}\\[3pt]
+\textit{Changmo Yang \& Claude AI}
+\end{center}
+
+\end{document}

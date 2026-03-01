@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <filter id="shadowLight" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.06"/>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="200" rx="12" fill="url(#bgGrad)"/>
+  <text x="400" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#333">🎛️ AI 사과 농장 이야기 — 재생 컨트롤 바 상세</text>
+  <text x="400" y="46" text-anchor="middle" font-size="9" fill="#795548">하단 컨트롤 바의 각 버튼·슬라이더 배치</text>
+
+  <!-- 컨트롤 바 전체 프레임 -->
+  <rect x="30" y="60" width="740" height="70" rx="10" fill="#FFF" filter="url(#shadow)" stroke="#E0E0E0" stroke-width="1"/>
+
+  <!-- ▶ 재생/일시정지 버튼 -->
+  <rect x="46" y="76" width="36" height="36" rx="8" fill="#E53935" filter="url(#shadowLight)"/>
+  <text x="64" y="100" text-anchor="middle" font-size="16" fill="#FFF">▶</text>
+
+  <!-- 🔊 음소거 버튼 -->
+  <rect x="92" y="76" width="36" height="36" rx="8" fill="#FFF" stroke="#DDD" stroke-width="1" filter="url(#shadowLight)"/>
+  <text x="110" y="100" text-anchor="middle" font-size="14" fill="#555">🔊</text>
+
+  <!-- 프로그레스 바 -->
+  <rect x="142" y="86" width="320" height="6" rx="3" fill="#E0E0E0"/>
+  <rect x="142" y="86" width="160" height="6" rx="3" fill="#E53935"/>
+  <circle cx="302" cy="89" r="7" fill="#E53935" stroke="#FFF" stroke-width="2"/>
+  <text x="142" y="108" font-size="7" fill="#888">프롤로그</text>
+  <text x="360" y="108" font-size="7" fill="#888" text-anchor="end">0:45 / 3:00</text>
+
+  <!-- 장면 점 표시 -->
+  <circle cx="142" cy="89" r="2.5" fill="#E53935"/>
+  <circle cx="196" cy="89" r="2.5" fill="#E53935"/>
+  <circle cx="250" cy="89" r="2.5" fill="#E53935" opacity="0.4"/>
+  <circle cx="320" cy="89" r="2.5" fill="#CCC"/>
+  <circle cx="374" cy="89" r="2.5" fill="#CCC"/>
+  <circle cx="420" cy="89" r="2.5" fill="#CCC"/>
+  <circle cx="462" cy="89" r="2.5" fill="#CCC"/>
+
+  <!-- 속도 드롭다운 -->
+  <rect x="480" y="78" width="80" height="30" rx="6" fill="#FFF" stroke="#DDD" stroke-width="1" filter="url(#shadowLight)"/>
+  <text x="490" y="98" font-size="9" fill="#555">속도</text>
+  <text x="530" y="98" font-size="9" font-weight="600" fill="#E53935">보통</text>
+  <text x="550" y="98" font-size="8" fill="#AAA">▼</text>
+
+  <!-- TTS 상태 -->
+  <rect x="574" y="78" width="72" height="30" rx="6" fill="#E8F5E9" filter="url(#shadowLight)"/>
+  <circle cx="586" cy="93" r="5" fill="#43A047"/>
+  <text x="612" y="97" text-anchor="middle" font-size="8" font-weight="600" fill="#2E7D32">준비됨</text>
+
+  <!-- 장면 네비게이션 점 -->
+  <circle cx="666" cy="93" r="6" fill="#E53935"/>
+  <circle cx="682" cy="93" r="6" fill="#E53935"/>
+  <circle cx="698" cy="93" r="6" fill="#E53935"/>
+  <circle cx="714" cy="93" r="6" fill="#E53935" opacity="0.3"/>
+  <circle cx="730" cy="93" r="6" fill="#CCC"/>
+  <circle cx="746" cy="93" r="6" fill="#CCC"/>
+  <circle cx="762" cy="93" r="6" fill="#CCC"/>
+
+  <!-- 라벨 화살표 -->
+  <line x1="64" y1="118" x2="64" y2="140" stroke="#E53935" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="64" y="152" text-anchor="middle" font-size="7" font-weight="600" fill="#E53935">재생/정지</text>
+
+  <line x1="110" y1="118" x2="110" y2="140" stroke="#666" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="110" y="152" text-anchor="middle" font-size="7" font-weight="500" fill="#666">음소거</text>
+
+  <line x1="302" y1="118" x2="302" y2="140" stroke="#E53935" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="302" y="152" text-anchor="middle" font-size="7" font-weight="600" fill="#E53935">타임라인</text>
+  <text x="302" y="164" text-anchor="middle" font-size="6" fill="#888">장면 구간 표시</text>
+
+  <line x1="520" y1="118" x2="520" y2="140" stroke="#666" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="520" y="152" text-anchor="middle" font-size="7" font-weight="500" fill="#666">속도 조절</text>
+  <text x="520" y="164" text-anchor="middle" font-size="6" fill="#888">느림/보통/빠름</text>
+
+  <line x1="610" y1="118" x2="610" y2="140" stroke="#43A047" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="610" y="152" text-anchor="middle" font-size="7" font-weight="500" fill="#2E7D32">TTS 상태</text>
+
+  <line x1="714" y1="118" x2="714" y2="140" stroke="#666" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="714" y="152" text-anchor="middle" font-size="7" font-weight="500" fill="#666">장면 이동</text>
+  <text x="714" y="164" text-anchor="middle" font-size="6" fill="#888">●클릭=장면전환</text>
+
+  <!-- 하단 안내 -->
+  <rect x="80" y="174" width="640" height="18" rx="6" fill="#FFF8E1" opacity="0.5"/>
+  <text x="400" y="187" text-anchor="middle" font-size="7" fill="#795548">💡 프로그레스 바 위의 작은 점들은 각 장면 시작점을 표시합니다. 점을 클릭하면 해당 장면으로 바로 이동합니다.</text>
+</svg>

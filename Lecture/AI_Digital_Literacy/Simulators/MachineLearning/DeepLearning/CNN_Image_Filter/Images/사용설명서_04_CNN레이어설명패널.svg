@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+  <rect width="800" height="500" fill="url(#bgGrad)" rx="12"/>
+
+  <text x="400" y="26" text-anchor="middle" font-family="Noto Sans KR" font-size="15" font-weight="700" fill="#3E2723">📖 CNN 레이어 설명 패널 — 8개 레이어 카드 + 수식</text>
+  <text x="400" y="42" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#8D6E63">양쪽 모드 공통 | 왼쪽 하단 | 카드를 클릭하면 아키텍처에서 해당 레이어가 강조됩니다</text>
+
+  <!-- ===== 8개 레이어 카드 ===== -->
+  <!-- 행 1: ①~④ -->
+  <rect x="30" y="58" width="176" height="62" rx="8" fill="white" filter="url(#shadow)" stroke="#E53935" stroke-width="1.5"/>
+  <rect x="30" y="58" width="176" height="20" rx="8" fill="#E53935"/>
+  <rect x="30" y="70" width="176" height="8" fill="#E53935"/>
+  <text x="118" y="73" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="700" fill="white">① 입력층 (Input)</text>
+  <text x="40" y="94" font-family="Noto Sans KR" font-size="8" fill="#5D4037">크기: <tspan font-family="JetBrains Mono" font-weight="600" fill="#E53935">64 × 64 × 3</tspan></text>
+  <text x="40" y="108" font-family="Noto Sans KR" font-size="7.5" fill="#8D6E63">사과 사진을 64×64 픽셀 RGB로 입력</text>
+
+  <rect x="214" y="58" width="176" height="62" rx="8" fill="white" filter="url(#shadow)" stroke="#7B1FA2" stroke-width="1.5"/>
+  <rect x="214" y="58" width="176" height="20" rx="8" fill="#7B1FA2"/>
+  <rect x="214" y="70" width="176" height="8" fill="#7B1FA2"/>
+  <text x="302" y="73" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="700" fill="white">② 합성곱층 1 (Conv2D)</text>
+  <text x="224" y="94" font-family="Noto Sans KR" font-size="8" fill="#5D4037">크기: <tspan font-family="JetBrains Mono" font-weight="600" fill="#7B1FA2">62 × 62 × 8</tspan></text>
+  <text x="224" y="108" font-family="Noto Sans KR" font-size="7.5" fill="#8D6E63">3×3 필터 8개로 에지·색상 검출</text>
+
+  <rect x="398" y="58" width="176" height="62" rx="8" fill="white" filter="url(#shadow)" stroke="#F57C00" stroke-width="1.5"/>
+  <rect x="398" y="58" width="176" height="20" rx="8" fill="#F57C00"/>
+  <rect x="398" y="70" width="176" height="8" fill="#F57C00"/>
+  <text x="486" y="73" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="700" fill="white">③ 풀링층 1 (MaxPool)</text>
+  <text x="408" y="94" font-family="Noto Sans KR" font-size="8" fill="#5D4037">크기: <tspan font-family="JetBrains Mono" font-weight="600" fill="#F57C00">31 × 31 × 8</tspan></text>
+  <text x="408" y="108" font-family="Noto Sans KR" font-size="7.5" fill="#8D6E63">2×2 영역에서 최댓값만 선택</text>
+
+  <rect x="582" y="58" width="196" height="62" rx="8" fill="white" filter="url(#shadow)" stroke="#7B1FA2" stroke-width="1.5"/>
+  <rect x="582" y="58" width="196" height="20" rx="8" fill="#7B1FA2"/>
+  <rect x="582" y="70" width="196" height="8" fill="#7B1FA2"/>
+  <text x="680" y="73" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="700" fill="white">④ 합성곱층 2 (Conv2D)</text>
+  <text x="592" y="94" font-family="Noto Sans KR" font-size="8" fill="#5D4037">크기: <tspan font-family="JetBrains Mono" font-weight="600" fill="#7B1FA2">29 × 29 × 16</tspan></text>
+  <text x="592" y="108" font-family="Noto Sans KR" font-size="7.5" fill="#8D6E63">3×3 필터 16개로 고수준 패턴 인식</text>
+
+  <!-- 행 2: ⑤~⑧ -->
+  <rect x="30" y="130" width="176" height="62" rx="8" fill="white" filter="url(#shadow)" stroke="#F57C00" stroke-width="1.5"/>
+  <rect x="30" y="130" width="176" height="20" rx="8" fill="#F57C00"/>
+  <rect x="30" y="142" width="176" height="8" fill="#F57C00"/>
+  <text x="118" y="145" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="700" fill="white">⑤ 풀링층 2 (MaxPool)</text>
+  <text x="40" y="166" font-family="Noto Sans KR" font-size="8" fill="#5D4037">크기: <tspan font-family="JetBrains Mono" font-weight="600" fill="#F57C00">14 × 14 × 16</tspan></text>
+  <text x="40" y="180" font-family="Noto Sans KR" font-size="7.5" fill="#8D6E63">핵심 특징만 남기고 크기 축소</text>
+
+  <rect x="214" y="130" width="176" height="62" rx="8" fill="white" filter="url(#shadow)" stroke="#1976D2" stroke-width="1.5"/>
+  <rect x="214" y="130" width="176" height="20" rx="8" fill="#1976D2"/>
+  <rect x="214" y="142" width="176" height="8" fill="#1976D2"/>
+  <text x="302" y="145" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="700" fill="white">⑥ 평탄화 (Flatten)</text>
+  <text x="224" y="166" font-family="Noto Sans KR" font-size="8" fill="#5D4037">크기: <tspan font-family="JetBrains Mono" font-weight="600" fill="#1976D2">3,136</tspan></text>
+  <text x="224" y="180" font-family="Noto Sans KR" font-size="7.5" fill="#8D6E63">14×14×16 = 3,136개 숫자로 펼치기</text>
+
+  <rect x="398" y="130" width="176" height="62" rx="8" fill="white" filter="url(#shadow)" stroke="#00897B" stroke-width="1.5"/>
+  <rect x="398" y="130" width="176" height="20" rx="8" fill="#00897B"/>
+  <rect x="398" y="142" width="176" height="8" fill="#00897B"/>
+  <text x="486" y="145" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="700" fill="white">⑦ 완전연결 (Dense)</text>
+  <text x="408" y="166" font-family="Noto Sans KR" font-size="8" fill="#5D4037">크기: <tspan font-family="JetBrains Mono" font-weight="600" fill="#00897B">64 뉴런</tspan></text>
+  <text x="408" y="180" font-family="Noto Sans KR" font-size="7.5" fill="#8D6E63">모든 특징을 조합하여 판단 준비</text>
+
+  <rect x="582" y="130" width="196" height="62" rx="8" fill="white" filter="url(#shadow)" stroke="#43A047" stroke-width="1.5"/>
+  <rect x="582" y="130" width="196" height="20" rx="8" fill="#43A047"/>
+  <rect x="582" y="142" width="196" height="8" fill="#43A047"/>
+  <text x="680" y="145" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="700" fill="white">⑧ 출력층 (Softmax)</text>
+  <text x="592" y="166" font-family="Noto Sans KR" font-size="8" fill="#5D4037">크기: <tspan font-family="JetBrains Mono" font-weight="600" fill="#43A047">2 클래스</tspan></text>
+  <text x="592" y="180" font-family="Noto Sans KR" font-size="7.5" fill="#8D6E63">🍎 익은 / 🍏 덜 익은 확률 출력</text>
+
+  <!-- ===== 수식 박스 ===== -->
+  <rect x="30" y="204" width="370" height="100" rx="10" fill="white" filter="url(#shadow)"/>
+  <text x="215" y="224" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="#3E2723">📐 수식 박스 (레이어 선택 시 표시)</text>
+
+  <rect x="44" y="234" width="342" height="28" rx="6" fill="#F3E5F5"/>
+  <text x="50" y="252" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#7B1FA2">합성곱 출력 크기:</text>
+  <text x="180" y="252" font-family="JetBrains Mono" font-size="9" fill="#3E2723">(W − F + 2P) / S + 1</text>
+  <text x="50" y="260" font-family="JetBrains Mono" font-size="7" fill="#8D6E63">  (64−3+0)/1+1 = 62</text>
+
+  <rect x="44" y="268" width="342" height="28" rx="6" fill="#E8F5E9"/>
+  <text x="50" y="286" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#2E7D32">Softmax 함수:</text>
+  <text x="168" y="286" font-family="JetBrains Mono" font-size="9" fill="#3E2723">P(y=k) = eᶻᵏ / Σeᶻʲ</text>
+
+  <!-- ===== 클릭 인터랙션 설명 ===== -->
+  <rect x="410" y="204" width="370" height="100" rx="10" fill="white" filter="url(#shadow)"/>
+  <text x="595" y="224" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="#3E2723">🖱️ 클릭 인터랙션</text>
+
+  <rect x="424" y="236" width="342" height="60" rx="6" fill="#FFF3E0"/>
+  <text x="434" y="254" font-family="Noto Sans KR" font-size="9" fill="#5D4037">① 레이어 카드를 <tspan font-weight="600" fill="#E53935">클릭</tspan>하면:</text>
+  <text x="450" y="270" font-family="Noto Sans KR" font-size="8.5" fill="#5D4037">→ 아키텍처 시각화에서 해당 블록이 <tspan font-weight="600" fill="#7B1FA2">강조</tspan>됨</text>
+  <text x="450" y="286" font-family="Noto Sans KR" font-size="8.5" fill="#5D4037">→ 수식 박스에 관련 공식이 표시됨</text>
+
+  <!-- ===== 하단: 레이어 크기 변화 흐름 ===== -->
+  <rect x="30" y="316" width="748" height="172" rx="10" fill="white" filter="url(#shadow)"/>
+  <text x="404" y="338" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="#3E2723">📏 데이터 크기 변화 흐름</text>
+
+  <!-- 시각적 크기 변화 (사각형으로 표현) -->
+  <g transform="translate(50, 352)">
+    <!-- Input -->
+    <rect x="0" y="0" width="60" height="60" rx="4" fill="#E53935" opacity="0.8"/>
+    <text x="30" y="30" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="600" fill="white">64×64</text>
+    <text x="30" y="42" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="white">×3</text>
+    <text x="30" y="70" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" font-weight="600" fill="#E53935">Input</text>
+
+    <text x="72" y="34" font-family="Noto Sans KR" font-size="14" fill="#FFCCBC">→</text>
+
+    <!-- Conv1 -->
+    <rect x="88" y="1" width="58" height="58" rx="4" fill="#7B1FA2" opacity="0.7"/>
+    <text x="117" y="30" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="600" fill="white">62×62</text>
+    <text x="117" y="42" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="white">×8</text>
+    <text x="117" y="70" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" font-weight="600" fill="#7B1FA2">Conv1</text>
+
+    <text x="158" y="34" font-family="Noto Sans KR" font-size="14" fill="#FFCCBC">→</text>
+
+    <!-- Pool1 -->
+    <rect x="174" y="14" width="44" height="44" rx="4" fill="#F57C00" opacity="0.7"/>
+    <text x="196" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="600" fill="white">31×31</text>
+    <text x="196" y="49" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="white">×8</text>
+    <text x="196" y="70" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" font-weight="600" fill="#F57C00">Pool1</text>
+
+    <text x="228" y="38" font-family="Noto Sans KR" font-size="14" fill="#FFCCBC">→</text>
+
+    <!-- Conv2 -->
+    <rect x="244" y="16" width="40" height="40" rx="4" fill="#7B1FA2" opacity="0.7"/>
+    <text x="264" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="600" fill="white">29×29</text>
+    <text x="264" y="49" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="white">×16</text>
+    <text x="264" y="70" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" font-weight="600" fill="#7B1FA2">Conv2</text>
+
+    <text x="294" y="38" font-family="Noto Sans KR" font-size="14" fill="#FFCCBC">→</text>
+
+    <!-- Pool2 -->
+    <rect x="310" y="22" width="28" height="28" rx="4" fill="#F57C00" opacity="0.7"/>
+    <text x="324" y="38" text-anchor="middle" font-family="JetBrains Mono" font-size="6.5" font-weight="600" fill="white">14×14</text>
+    <text x="324" y="48" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="white">×16</text>
+    <text x="324" y="70" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" font-weight="600" fill="#F57C00">Pool2</text>
+
+    <text x="348" y="38" font-family="Noto Sans KR" font-size="14" fill="#FFCCBC">→</text>
+
+    <!-- Flatten -->
+    <rect x="364" y="16" width="8" height="40" rx="2" fill="#1976D2" opacity="0.8"/>
+    <text x="368" y="70" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" font-weight="600" fill="#1976D2">Flat</text>
+    <text x="368" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#8D6E63">3,136</text>
+
+    <text x="382" y="38" font-family="Noto Sans KR" font-size="14" fill="#FFCCBC">→</text>
+
+    <!-- Dense -->
+    <rect x="398" y="20" width="6" height="32" rx="2" fill="#00897B" opacity="0.8"/>
+    <text x="401" y="70" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" font-weight="600" fill="#00897B">Dense</text>
+    <text x="401" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#8D6E63">64</text>
+
+    <text x="414" y="38" font-family="Noto Sans KR" font-size="14" fill="#FFCCBC">→</text>
+
+    <!-- Output -->
+    <rect x="430" y="28" width="6" height="16" rx="2" fill="#43A047"/>
+    <text x="433" y="70" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" font-weight="600" fill="#43A047">Out</text>
+    <text x="433" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#8D6E63">2</text>
+  </g>
+
+  <!-- 총 파라미터 -->
+  <rect x="510" y="360" width="250" height="60" rx="8" fill="#FFF3E0"/>
+  <text x="635" y="380" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#3E2723">📊 크기 변화 핵심</text>
+  <text x="520" y="396" font-family="Noto Sans KR" font-size="8" fill="#5D4037">• 2D 이미지 → 점점 작아지면서 핵심 추출</text>
+  <text x="520" y="410" font-family="Noto Sans KR" font-size="8" fill="#5D4037">• 1D 벡터로 변환 → 최종 2개 확률 출력</text>
+
+  <!-- 총 픽셀 수 변화 -->
+  <rect x="510" y="426" width="250" height="52" rx="8" fill="#E8F5E9"/>
+  <text x="635" y="444" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="#2E7D32">총 숫자 개수 변화</text>
+  <text x="520" y="460" font-family="JetBrains Mono" font-size="7.5" fill="#3E2723">12,288 → 30,752 → 7,688 → 13,456</text>
+  <text x="520" y="472" font-family="JetBrains Mono" font-size="7.5" fill="#3E2723">→ 3,136 → 3,136 → 64 → 2</text>
+</svg>

@@ -1,0 +1,3261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌳 의사결정트리 시뮬레이터</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* ===== 1단계: 기본 색상 ===== */
+            --color-blue-500: #1565C0;
+            --color-blue-600: #0D47A1;
+            --color-blue-100: #E3F2FD;
+            --color-blue-200: #BBDEFB;
+            --color-teal-500: #00897B;
+            --color-teal-600: #00695C;
+            --color-orange-500: #EF6C00;
+            --color-orange-600: #E65100;
+            --color-purple-500: #7B1FA2;
+            --color-green-500: #2E7D32;
+            --color-red-500: #C62828;
+            --color-yellow-500: #F9A825;
+            --color-gray-50: #FAFAFA;
+            --color-gray-100: #F5F5F5;
+            --color-gray-200: #EEEEEE;
+            --color-gray-300: #E0E0E0;
+            --color-gray-500: #9E9E9E;
+            --color-gray-700: #616161;
+            --color-gray-900: #212121;
+
+            /* ===== 2단계: 의미적 색상 ===== */
+            --primary: var(--color-blue-500);
+            --primary-dark: var(--color-blue-600);
+            --accent-teal: var(--color-teal-500);
+            --accent-orange: var(--color-orange-500);
+            --accent-purple: var(--color-purple-500);
+            --success: var(--color-green-500);
+            --danger: var(--color-red-500);
+            --bg-correct: #C8E6C9;
+            --bg-correct-subtle: #E8F5E9;
+            --bg-wrong: #FFCDD2;
+            --bg-wrong-subtle: #FFEBEE;
+            --warning: var(--color-yellow-500);
+            --success-dark: var(--color-green-500);
+            --info: var(--color-blue-500);
+            --bg-main: #F0F4F8;
+            --bg-card: #FFFFFF;
+            --bg-subtle: var(--color-gray-100);
+            --text-dark: var(--color-gray-900);
+            --text-medium: var(--color-gray-700);
+            --text-light: var(--color-gray-500);
+            --border: var(--color-gray-300);
+
+            /* ===== 동적 클래스 색상 (JS에서 갱신) ===== */
+            --class-color-0: #FF6B6B;
+            --class-color-1: #4ECDC4;
+            --class-color-2: #45B7D1;
+            --class-color-3: #FFA726;
+            --class-color-4: #AB47BC;
+
+            /* ===== 간격 ===== */
+            --sp-xs: 4px;
+            --sp-sm: 8px;
+            --sp-md: 12px;
+            --sp-lg: 16px;
+            --sp-xl: 20px;
+            --sp-2xl: 24px;
+
+            /* ===== 폰트 ===== */
+            --font-xs: 0.7rem;
+            --font-sm: 0.8rem;
+            --font-md: 0.875rem;
+            --font-lg: 1rem;
+            --font-xl: 1.125rem;
+
+            /* ===== 레이아웃 ===== */
+            --sidebar-width: 280px;
+            --panel-radius: 12px;
+            --btn-radius: 8px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --transition: 0.25s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1500px; margin: 0 auto; padding: var(--sp-lg); }
+
+        /* ===== 헤더 ===== */
+        .header {
+            text-align: center;
+            padding: var(--sp-lg);
+            background: var(--bg-card);
+            border-radius: var(--panel-radius);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--sp-lg);
+        }
+        .header h1 { font-size: 1.4rem; color: var(--text-dark); }
+        .header p { font-size: var(--font-sm); color: var(--text-medium); margin-top: var(--sp-xs); }
+        .version-badge {
+            display: inline-block; font-size: var(--font-xs); background: var(--primary);
+            color: white; padding: 2px 8px; border-radius: 10px; vertical-align: middle; font-weight: 400;
+        }
+
+        /* ===== 데이터셋 선택 바 ===== */
+        .dataset-bar {
+            display: flex; align-items: center; justify-content: center;
+            gap: var(--sp-md); flex-wrap: wrap; margin-top: var(--sp-md);
+        }
+        .dataset-bar label { font-size: var(--font-sm); font-weight: 600; color: var(--text-medium); }
+        .dataset-select {
+            padding: 6px 12px; border: 2px solid var(--primary); border-radius: var(--btn-radius);
+            font-family: inherit; font-size: var(--font-sm); color: var(--primary); background: white;
+            cursor: pointer; font-weight: 500; min-width: 200px;
+        }
+        .dataset-select:focus { outline: none; box-shadow: 0 0 0 3px var(--color-blue-100); }
+        .csv-upload-btn {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 6px 14px; border: 2px dashed var(--accent-teal); border-radius: var(--btn-radius);
+            background: white; color: var(--accent-teal); font-size: var(--font-sm);
+            cursor: pointer; font-family: inherit; font-weight: 500; transition: var(--transition);
+        }
+        .csv-upload-btn:hover { background: #E0F2F1; border-style: solid; }
+        .csv-upload-btn input[type="file"] { display: none; }
+        .csv-info {
+            font-size: var(--font-xs); color: var(--text-light);
+            display: flex; align-items: center; gap: 4px;
+        }
+        .csv-info .csv-name { color: var(--accent-teal); font-weight: 500; }
+        .csv-remove-btn {
+            background: none; border: none; color: var(--danger); cursor: pointer;
+            font-size: var(--font-sm); padding: 0 4px;
+        }
+
+        /* ===== CSV 클래스 선택 모달 ===== */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); z-index: 1000; justify-content: center; align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: white; border-radius: var(--panel-radius); padding: var(--sp-xl);
+            max-width: 480px; width: 90%; box-shadow: var(--shadow-md);
+        }
+        .modal-box h3 { font-size: var(--font-lg); margin-bottom: var(--sp-md); }
+        .modal-box p { font-size: var(--font-sm); color: var(--text-medium); margin-bottom: var(--sp-md); }
+        .modal-preview { max-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; margin-bottom: var(--sp-md); }
+        .modal-preview table { width: 100%; font-size: var(--font-xs); border-collapse: collapse; }
+        .modal-preview th, .modal-preview td { padding: 4px 8px; border-bottom: 1px solid var(--bg-subtle); text-align: left; }
+        .modal-preview th { background: var(--bg-subtle); font-weight: 600; position: sticky; top: 0; }
+        .modal-col-select { margin-bottom: var(--sp-md); }
+        .modal-col-select label { font-size: var(--font-sm); font-weight: 600; display: block; margin-bottom: var(--sp-xs); }
+        .modal-col-select select {
+            width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px;
+            font-family: inherit; font-size: var(--font-sm);
+        }
+        .modal-btn-row { display: flex; gap: var(--sp-sm); justify-content: flex-end; }
+        .modal-btn {
+            padding: 8px 20px; border-radius: var(--btn-radius); font-family: inherit;
+            font-size: var(--font-sm); cursor: pointer; border: none; font-weight: 500;
+        }
+        .modal-btn-primary { background: var(--primary); color: white; }
+        .modal-btn-cancel { background: var(--bg-subtle); color: var(--text-medium); }
+
+        /* ===== 모드 탭 ===== */
+        .mode-tabs { display: flex; gap: var(--sp-sm); margin-bottom: var(--sp-lg); }
+        .mode-tab {
+            flex: 1; padding: var(--sp-md); border: 2px solid var(--primary); background: white;
+            color: var(--primary); font-weight: 600; font-size: var(--font-md); border-radius: var(--btn-radius);
+            cursor: pointer; transition: var(--transition); text-align: center; font-family: inherit;
+        }
+        .mode-tab.active { background: var(--primary); color: white; }
+        .mode-tab:hover:not(.active) { background: var(--color-blue-100); }
+
+        /* ===== 메인 레이아웃 ===== */
+        .main-layout { display: grid; grid-template-columns: var(--sidebar-width) 1fr var(--sidebar-width); gap: var(--sp-lg); }
+
+        /* ===== 사이드바 ===== */
+        .sidebar { display: flex; flex-direction: column; gap: var(--sp-md); }
+        .panel {
+            background: var(--bg-card); border-radius: var(--panel-radius);
+            padding: var(--sp-lg); box-shadow: var(--shadow-sm);
+        }
+        .panel-title { font-size: var(--font-md); font-weight: 700; margin-bottom: var(--sp-md); }
+
+        /* ===== 입력 그룹 ===== */
+        .input-group { margin-bottom: var(--sp-md); }
+        .input-group label { display: block; font-size: var(--font-sm); font-weight: 600; margin-bottom: var(--sp-xs); color: var(--text-dark); }
+        .input-group input[type="range"] { width: 100%; }
+        .value-display { display: flex; justify-content: space-between; font-size: var(--font-xs); color: var(--text-light); }
+        .value-display .current { font-weight: 700; color: var(--primary); font-size: var(--font-sm); }
+
+        /* ===== 특성 체크박스 ===== */
+        .feature-checkbox { display: flex; align-items: center; gap: 6px; font-size: var(--font-sm); margin-bottom: var(--sp-xs); cursor: pointer; }
+        .feature-checkbox input[type="checkbox"] { accent-color: var(--primary); }
+
+        /* ===== 버튼 ===== */
+        .btn {
+            padding: var(--sp-sm) var(--sp-md); border: none; border-radius: var(--btn-radius);
+            cursor: pointer; font-family: inherit; font-size: var(--font-sm); font-weight: 600; transition: var(--transition);
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { background: white; border: 1px solid var(--border); color: var(--text-medium); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-full { width: 100%; }
+        .btn-sm { padding: 6px 10px; font-size: var(--font-xs); }
+
+        /* ===== 알고리즘 설명 ===== */
+        .algo-info { margin-top: var(--sp-md); padding: var(--sp-md); background: var(--color-blue-100); border-radius: 8px; font-size: var(--font-xs); }
+        .algo-info h4 { font-size: var(--font-sm); margin-bottom: var(--sp-sm); }
+        .step { display: flex; gap: 6px; margin-bottom: var(--sp-xs); align-items: flex-start; }
+        .step-num { background: var(--primary); color: white; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+        .step-text { font-size: var(--font-xs); line-height: 1.4; }
+
+        /* ===== 중앙 영역 ===== */
+        .center-area { min-width: 0; }
+        .tree-container {
+            background: var(--bg-card); border-radius: var(--panel-radius);
+            padding: var(--sp-md); box-shadow: var(--shadow-sm);
+            overflow: hidden; min-height: 420px; max-height: 70vh;
+            position: relative; cursor: grab;
+        }
+        .tree-container.panning { cursor: grabbing; user-select: none; }
+        .tree-container canvas { display: block; }
+        /* 트리 컨트롤 버튼 (v2.0) */
+        .tree-controls { position: absolute; top: 8px; right: 10px; z-index: 10; display: flex; gap: 3px; }
+        .tree-controls button {
+            width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border);
+            background: rgba(255,255,255,0.92); color: var(--text-medium);
+            font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s; box-shadow: 0 1px 3px rgba(0,0,0,0.08); line-height: 1;
+        }
+        .tree-controls button:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .chart-title { font-size: var(--font-md); font-weight: 600; margin-bottom: var(--sp-sm); text-align: center; }
+
+        /* ===== 통계 카드 ===== */
+        .stat-cards { display: grid; grid-template-columns: 1fr; gap: var(--sp-sm); }
+        .stat-card { background: var(--bg-subtle); border-radius: 8px; padding: var(--sp-sm) var(--sp-md); text-align: center; }
+        .stat-label { font-size: var(--font-xs); color: var(--text-light); }
+        .stat-value { font-size: var(--font-lg); font-weight: 700; color: var(--text-dark); }
+        .stat-value.good { color: var(--success); }
+        .stat-value.ok { color: var(--warning); }
+        .stat-value.bad { color: var(--danger); }
+
+        /* ===== 종별 배지 (동적) ===== */
+        .class-badge {
+            display: inline-block; padding: 2px 8px; border-radius: 10px;
+            font-size: var(--font-xs); font-weight: 600; color: white;
+        }
+        .class-badge-0 { background: var(--class-color-0); }
+        .class-badge-1 { background: var(--class-color-1); }
+        .class-badge-2 { background: var(--class-color-2); }
+        .class-badge-3 { background: var(--class-color-3); }
+        .class-badge-4 { background: var(--class-color-4); }
+
+        /* ===== 추론 탭 ===== */
+        .inference-tabs { display: flex; gap: 2px; margin-bottom: var(--sp-md); }
+        .inference-tab-btn {
+            flex: 1; padding: 6px; font-size: var(--font-xs); border: 1px solid var(--border);
+            background: white; cursor: pointer; font-family: inherit; transition: var(--transition); text-align: center;
+        }
+        .inference-tab-btn:first-child { border-radius: 6px 0 0 6px; }
+        .inference-tab-btn:last-child { border-radius: 0 6px 6px 0; }
+        .inference-tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .inference-tab-content { display: none; }
+        .inference-tab-content.active { display: block; }
+
+        /* ===== 추론 단계 ===== */
+        .inference-step { padding: var(--sp-sm) var(--sp-md); border-radius: 6px; margin-bottom: var(--sp-xs); background: var(--bg-subtle); font-size: var(--font-sm); }
+
+        /* ===== 직접 입력 ===== */
+        .direct-input-group { margin-bottom: var(--sp-sm); }
+        .direct-input-group label { display: block; font-size: var(--font-xs); font-weight: 600; margin-bottom: 2px; }
+        .range-row { display: flex; align-items: center; gap: var(--sp-sm); }
+        .range-row input[type="range"] { flex: 1; }
+        .range-value { font-size: var(--font-sm); font-weight: 700; color: var(--primary); min-width: 48px; text-align: right; font-family: 'JetBrains Mono', monospace; }
+        .range-bounds { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-light); }
+
+        /* ===== 예측 결과 ===== */
+        .prediction-result { text-align: center; padding: var(--sp-lg); border-radius: 8px; }
+        .prediction-result.correct { background: var(--bg-correct); }
+        .prediction-result.wrong { background: var(--bg-wrong); }
+        .pred-value { font-size: 1.3rem; font-weight: 700; margin: var(--sp-sm) 0; }
+        .pred-label { font-size: var(--font-sm); color: var(--text-medium); }
+
+        /* ===== 데이터 테이블 ===== */
+        .data-table-wrapper { max-height: 250px; overflow-y: auto; border: 1px solid var(--bg-subtle); border-radius: 6px; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: var(--font-xs); }
+        .data-table th { background: var(--bg-subtle); position: sticky; top: 0; padding: 4px 6px; font-weight: 600; }
+        .data-table td { padding: 4px 6px; border-bottom: 1px solid var(--bg-subtle); }
+        .test-table { width: 100%; border-collapse: collapse; font-size: var(--font-xs); }
+        .test-table th { background: var(--bg-subtle); padding: 4px 6px; font-weight: 600; }
+        .test-table td { padding: 4px 6px; border-bottom: 1px solid var(--bg-subtle); }
+        .row-correct { background: var(--bg-correct-subtle); }
+        .row-wrong { background: var(--bg-wrong-subtle); }
+
+        /* ===== 혼동 행렬 ===== */
+        .cm-table { width: 100%; border-collapse: collapse; font-size: var(--font-xs); margin-top: var(--sp-sm); }
+        .cm-table th, .cm-table td { padding: 6px; text-align: center; border: 1px solid var(--bg-subtle); }
+        .cm-table th { background: var(--bg-subtle); font-weight: 600; }
+        .cm-cell-correct { background: var(--bg-correct); font-weight: 700; }
+        .cm-cell-wrong { background: var(--bg-wrong); }
+        .cm-cell-zero { color: var(--text-light); }
+
+        /* ===== 특성 중요도 ===== */
+        .importance-bar-group { margin-bottom: var(--sp-sm); }
+        .importance-bar-label { display: flex; justify-content: space-between; font-size: var(--font-xs); margin-bottom: 2px; }
+        .feat-name { font-weight: 600; }
+        .feat-score { color: var(--text-medium); font-family: 'JetBrains Mono', monospace; }
+        .importance-bar-track { background: var(--bg-subtle); height: 14px; border-radius: 7px; overflow: hidden; }
+        .importance-bar-fill { height: 100%; border-radius: 7px; transition: width 0.5s ease; }
+        .importance-bar-fill.rank-1 { background: linear-gradient(90deg, var(--primary), #42A5F5); }
+        .importance-bar-fill.rank-2 { background: linear-gradient(90deg, var(--accent-teal), #4DB6AC); }
+        .importance-bar-fill.rank-3 { background: linear-gradient(90deg, var(--accent-orange), #FFA726); }
+        .importance-bar-fill.rank-4 { background: linear-gradient(90deg, var(--accent-purple), #AB47BC); }
+        .importance-empty { text-align: center; color: var(--text-light); font-size: var(--font-sm); padding: var(--sp-md) 0; }
+
+        /* ===== 종별 분포 표시 ===== */
+        .class-row { display: flex; align-items: center; gap: 6px; margin-bottom: var(--sp-xs); }
+        .class-row:last-child { margin-bottom: 0; }
+        .stat-cards-2col { grid-template-columns: 1fr 1fr; }
+        .rules-scroll { max-height: 300px; overflow-y: auto; }
+
+        /* ===== 규칙 아이템 ===== */
+        .rule-item { padding: var(--sp-sm); border-bottom: 1px solid var(--bg-subtle); font-size: var(--font-xs); }
+        .rule-item:last-child { border-bottom: none; }
+        .rule-path { color: var(--text-medium); margin-bottom: 2px; }
+        .rule-result { font-weight: 600; }
+
+        /* ===== 산점도 + 결정 경계 ===== */
+        .scatter-section { margin-top: var(--sp-md); background: var(--bg-card); border-radius: var(--panel-radius); box-shadow: var(--shadow-sm); padding: var(--sp-md); }
+        .scatter-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--sp-sm); margin-bottom: var(--sp-md); }
+        .scatter-header h4 { margin: 0; font-size: var(--font-md); color: var(--text-dark); }
+        .scatter-feature-select { display: flex; align-items: center; gap: var(--sp-xs); font-size: var(--font-sm); }
+        .scatter-feature-select select { padding: 4px 8px; border: 1px solid var(--bg-subtle); border-radius: 4px; font-size: var(--font-xs); font-family: inherit; }
+        .scatter-canvas-wrap { display: flex; justify-content: center; overflow-x: auto; }
+        .scatter-legend { display: flex; justify-content: center; gap: var(--sp-md); margin-top: var(--sp-sm); font-size: var(--font-xs); flex-wrap: wrap; }
+        .scatter-legend-item { display: flex; align-items: center; gap: 4px; }
+        .scatter-legend-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,0.3); }
+
+        /* ===== 트리 성장 애니메이션 컨트롤 ===== */
+        .anim-controls { background: var(--bg-subtle); border-radius: 8px; padding: var(--sp-sm) var(--sp-md); margin-top: var(--sp-sm); }
+        .anim-controls .anim-label { font-size: var(--font-xs); font-weight: 600; color: var(--text-medium); margin-bottom: var(--sp-xs); }
+        .anim-btn-row { display: flex; gap: 4px; margin-bottom: var(--sp-xs); }
+        .anim-btn {
+            flex: 1; padding: 5px 0; border: 1px solid var(--primary); border-radius: 5px; background: white;
+            color: var(--primary); font-size: var(--font-xs); cursor: pointer; font-family: inherit;
+            transition: var(--transition); text-align: center;
+        }
+        .anim-btn:hover { background: var(--primary); color: white; }
+        .anim-btn.active { background: var(--primary); color: white; }
+        .anim-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .anim-speed-row { display: flex; align-items: center; gap: var(--sp-xs); font-size: var(--font-xs); color: var(--text-medium); }
+        .anim-speed-row input[type="range"] { flex: 1; height: 4px; }
+        .anim-progress { font-size: var(--font-xs); color: var(--text-light); text-align: center; margin-top: 2px; }
+
+        /* ===== JS 템플릿용 시맨틱 클래스 ===== */
+        .sample-info-box { background: var(--bg-subtle); border-radius: 8px; padding: var(--sp-md); font-size: var(--font-sm); }
+        .section-heading { font-weight: 600; margin-bottom: var(--sp-sm); font-size: var(--font-md); }
+        .step-num-label { font-weight: 600; color: var(--primary); margin-bottom: 2px; }
+        .inference-step-correct { background: var(--bg-correct-subtle); border-left: 3px solid var(--success); }
+        .inference-step-wrong { background: var(--bg-wrong-subtle); border-left: 3px solid var(--danger); }
+        .inference-final-correct { background: var(--bg-correct); border-left: 3px solid var(--success); }
+        .inference-final-wrong { background: var(--bg-wrong); border-left: 3px solid var(--danger); }
+        .test-item-correct { background: var(--bg-correct-subtle); cursor: pointer; }
+        .test-item-wrong { background: var(--bg-wrong-subtle); cursor: pointer; }
+        .hint-text { color: var(--text-light); margin-bottom: var(--sp-md); }
+        .text-muted { color: var(--text-light); }
+        .text-sub { color: var(--text-medium); margin-top: 2px; }
+        .mb-xs { margin-bottom: var(--sp-xs); }
+        .mt-2 { margin-top: 4px; }
+
+        /* ===== 유틸리티 클래스 ===== */
+        .mt-xs { margin-top: var(--sp-xs); }
+        .mt-sm { margin-top: var(--sp-sm); }
+        .mt-md { margin-top: var(--sp-md); }
+        .mb-sm { margin-bottom: var(--sp-sm); }
+        .fw-600 { font-weight: 600; }
+        .font-sm { font-size: var(--font-sm); }
+        .font-md { font-size: var(--font-md); }
+
+        /* ===== 숨김 ===== */
+        .hidden { display: none !important; }
+
+        /* ===== 하단 결과 패널 ===== */
+        .bottom-panel {
+            background: var(--bg-card); border-radius: var(--panel-radius);
+            padding: var(--sp-lg); box-shadow: var(--shadow-sm); margin-top: var(--sp-lg);
+        }
+        .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-lg); }
+        .bottom-section h4 { font-size: var(--font-md); font-weight: 600; margin-bottom: var(--sp-md); padding-bottom: var(--sp-sm); border-bottom: 2px solid var(--bg-subtle); }
+
+        /* ===== 추론 네비 ===== */
+        .inference-nav { display: flex; align-items: center; gap: var(--sp-sm); margin-bottom: var(--sp-md); }
+        .inference-nav .nav-label { font-size: var(--font-sm); color: var(--text-medium); }
+        .inference-nav select { flex: 1; padding: 6px; border-radius: 6px; border: 1px solid var(--border); font-family: inherit; font-size: var(--font-sm); }
+
+        /* ===== 반응형 ===== */
+        @media (max-width: 1200px) {
+            .main-layout { grid-template-columns: 250px 1fr 250px; }
+        }
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .bottom-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ===== 트리 노드 하이라이트 ===== */
+        .tree-highlight-info {
+            background: #FFF9C4; border-radius: 8px; padding: var(--sp-sm) var(--sp-md);
+            font-size: var(--font-sm); margin-top: var(--sp-sm); border-left: 3px solid var(--warning);
+        }
+
+        /* ===== 스크롤바 ===== */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-subtle); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: var(--color-gray-300); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--color-gray-500); }
+
+        /* 트리 노드 툴팁 */
+        .tree-tooltip {
+            display: none;
+            position: fixed;
+            background: #263238;
+            color: #ECEFF1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            line-height: 1.6;
+            pointer-events: none;
+            z-index: 1000;
+            max-width: 260px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            white-space: nowrap;
+        }
+        .tree-tooltip.show { display: block; }
+        .tree-tooltip .tt-title { font-weight: 700; color: #80CBC4; margin-bottom: 2px; }
+        .tree-tooltip .tt-row { display: flex; justify-content: space-between; gap: 12px; }
+        .tree-tooltip .tt-label { color: #90A4AE; }
+        .tree-tooltip .tt-value { color: #FFFFFF; font-family: 'JetBrains Mono', monospace; }
+
+        /* ===== 토스트 알림 (v2.0) ===== */
+        .toast-container {
+            position: fixed; top: 20px; right: 20px; z-index: 10000;
+            display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+        }
+        .toast {
+            padding: 12px 20px; border-radius: 10px; font-size: var(--font-sm);
+            font-family: inherit; color: white; box-shadow: var(--shadow-md);
+            pointer-events: auto; opacity: 0; transform: translateX(60px);
+            animation: toastIn 0.35s ease forwards; max-width: 360px;
+        }
+        .toast.toast-out { animation: toastOut 0.3s ease forwards; }
+        .toast-success { background: linear-gradient(135deg, var(--success) 0%, var(--success-dark) 100%); }
+        .toast-info { background: linear-gradient(135deg, var(--info) 0%, var(--primary) 100%); }
+        .toast-warning { background: linear-gradient(135deg, var(--warning) 0%, #F9A825 100%); color: var(--text-dark); }
+        .toast-error { background: linear-gradient(135deg, var(--danger) 0%, #B71C1C 100%); }
+        @keyframes toastIn { to { opacity: 1; transform: translateX(0); } }
+        @keyframes toastOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(60px); } }
+
+        /* ===== 데이터셋 정보 박스 (v2.0) ===== */
+        .dataset-info-box {
+            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+            border: 1px solid #90CAF9; border-radius: 8px;
+            padding: 8px 10px; margin-top: var(--sp-sm);
+            font-size: 0.68rem; line-height: 1.5;
+        }
+        .dataset-info-box .di-source { color: var(--text-light); font-size: 0.65rem; }
+        .dataset-info-box .di-desc { color: var(--text-dark); margin: 3px 0; }
+        .dataset-info-box .di-rec { color: var(--primary); font-weight: 500; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 헤더 -->
+    <header class="header">
+        <h1 id="headerTitle">🌳 의사결정트리 시뮬레이터 <span class="version-badge">v2.0.0.0</span></h1>
+        <p id="headerDesc">데이터셋을 선택하고 <strong>의사결정트리(Decision Tree)</strong>의 분류 원리를 학습합니다</p>
+        <div class="dataset-bar">
+            <label>📦 데이터셋:</label>
+            <select class="dataset-select" id="datasetSelect" onchange="switchDataset(this.value)">
+                <optgroup label="🌿 자연과학">
+                    <option value="penguins">🐧 펭귄 (N=135)</option>
+                    <option value="iris">🌺 붓꽃 (N=150)</option>
+                    <option value="seeds">🌾 밀씨 (N=70)</option>
+                </optgroup>
+                <optgroup label="🏥 건강/의학">
+                    <option value="heart">❤️ 심장병 (N=60)</option>
+                    <option value="breast_cancer">🔬 유방암 (N=50)</option>
+                </optgroup>
+                <optgroup label="🍷 식품">
+                    <option value="wine">🍷 와인 (N=58)</option>
+                </optgroup>
+                <optgroup label="🏭 공학">
+                    <option value="banknote">💵 위조지폐 (N=52)</option>
+                    <option value="glass">🔍 유리 (N=39)</option>
+                </optgroup>
+            </select>
+            <label class="csv-upload-btn" id="csvUploadBtn">
+                📂 CSV 업로드
+                <input type="file" id="csvFileInput" accept=".csv" onchange="handleCSVFile(event)">
+            </label>
+            <span class="csv-info hidden" id="csvInfo">
+                <span class="csv-name" id="csvFileName"></span>
+                <button class="csv-remove-btn" onclick="removeCSVDataset()" title="CSV 제거">✕</button>
+            </span>
+        </div>
+        <div class="dataset-info-box" id="datasetInfoBox">
+            <div class="di-source" id="diSource"></div>
+            <div class="di-desc" id="diDesc"></div>
+            <div class="di-rec" id="diRec"></div>
+        </div>
+    </header>
+
+    <!-- CSV 클래스 선택 모달 -->
+    <div class="modal-overlay" id="csvModal">
+        <div class="modal-box">
+            <h3>📂 CSV 데이터 설정</h3>
+            <p>업로드된 데이터의 미리보기입니다. <strong>분류 대상(클래스) 열</strong>을 선택해주세요.</p>
+            <div class="modal-preview" id="csvPreview"></div>
+            <div class="modal-col-select">
+                <label>🏷️ 클래스(분류 대상) 열:</label>
+                <select id="csvClassColumn"></select>
+            </div>
+            <div class="modal-btn-row">
+                <button class="modal-btn modal-btn-cancel" onclick="closeCSVModal()">취소</button>
+                <button class="modal-btn modal-btn-primary" onclick="confirmCSVUpload()">✅ 적용</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 모드 탭 -->
+    <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="train" onclick="switchMode('train')">🌳 학습 & 분석</button>
+        <button class="mode-tab" data-mode="inference" onclick="switchMode('inference')">🔍 추론 모드</button>
+    </div>
+
+    <!-- 메인 레이아웃 -->
+    <div class="main-layout" id="mainLayout">
+        <!-- 왼쪽 사이드바 -->
+        <aside class="sidebar">
+            <!-- 학습 모드: 설정 패널 -->
+            <div class="panel" id="settingsPanel">
+                <h3 class="panel-title">⚙️ 트리 설정</h3>
+                <div class="input-group">
+                    <label>최대 깊이 (Max Depth)</label>
+                    <input type="range" id="maxDepth" min="1" max="8" value="4">
+                    <div class="value-display">
+                        <span>1</span>
+                        <span class="current" id="maxDepthValue">4</span>
+                        <span>8</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>최소 샘플 수 (Min Samples)</label>
+                    <input type="range" id="minSamples" min="1" max="10" value="2">
+                    <div class="value-display">
+                        <span>1</span>
+                        <span class="current" id="minSamplesValue">2</span>
+                        <span>10</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>사용할 특성</label>
+                    <div class="mt-xs" id="featureCheckboxes">
+                        <!-- 동적 생성 -->
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-full" onclick="buildTree()" id="btnBuild">🌳 트리 생성</button>
+                <button class="btn btn-outline btn-full mt-sm" onclick="resetAll()">🔄 초기화</button>
+
+                <!-- 트리 성장 애니메이션 컨트롤 -->
+                <div class="anim-controls hidden" id="animControls">
+                    <div class="anim-label">🎬 트리 성장 애니메이션</div>
+                    <div class="anim-btn-row">
+                        <button class="anim-btn" id="btnAnimPlay" onclick="animPlay()">▶ 재생</button>
+                        <button class="anim-btn" id="btnAnimStep" onclick="animStep()">⏭ 단계</button>
+                        <button class="anim-btn" id="btnAnimReset" onclick="animReset()">⏮ 처음</button>
+                    </div>
+                    <div class="anim-speed-row">
+                        <span>🐢</span>
+                        <input type="range" id="animSpeed" min="100" max="1500" step="100" value="600">
+                        <span>🐇</span>
+                    </div>
+                    <div class="anim-progress" id="animProgress">--</div>
+                </div>
+
+                <div class="algo-info">
+                    <h4>📖 의사결정트리란?</h4>
+                    <div class="step"><span class="step-num">1</span><span class="step-text">데이터를 가장 잘 나누는 특성과 기준값을 찾습니다 (지니 불순도 최소화)</span></div>
+                    <div class="step"><span class="step-num">2</span><span class="step-text">기준에 따라 데이터를 둘로 나눕니다 (좌: ≤, 우: >)</span></div>
+                    <div class="step"><span class="step-num">3</span><span class="step-text">각 그룹에서 반복하여 트리를 만듭니다 (순수해질 때까지)</span></div>
+                    <div class="step"><span class="step-num">4</span><span class="step-text">새 데이터가 오면 규칙을 따라가 분류합니다</span></div>
+                    <div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(21,101,192,0.15);font-size:0.65rem;color:var(--text-medium);">
+                        💡 <b>Tip:</b> 깊이가 깊으면 과적합, 얕으면 과소적합! 테스트 정확도를 관찰하세요.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 추론 모드: 입력 패널 -->
+            <div class="panel hidden" id="inferenceInputPanel">
+                <h3 class="panel-title">🔍 추론 입력</h3>
+
+                <!-- 추론 탭 -->
+                <div class="inference-tabs">
+                    <button class="inference-tab-btn active" data-tab="testData" onclick="switchInferenceTab('testData')">📋 테스트 데이터</button>
+                    <button class="inference-tab-btn" data-tab="directInput" onclick="switchInferenceTab('directInput')">🎯 직접 입력</button>
+                </div>
+
+                <!-- 탭 1: 테스트 데이터 선택 -->
+                <div class="inference-tab-content active" id="tabTestData">
+                    <div class="inference-nav">
+                        <select id="testDataSelect" onchange="selectTestSample()">
+                            <option value="-1">테스트 데이터를 선택하세요</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-full btn-sm" onclick="runAllInference()" id="btnRunAll">📊 전체 테스트 실행</button>
+                    <div class="mt-md">
+                        <button class="btn btn-outline btn-sm" onclick="prevTestSample()">◀ 이전</button>
+                        <button class="btn btn-outline btn-sm" onclick="nextTestSample()">다음 ▶</button>
+                        <button class="btn btn-outline btn-sm" onclick="randomTestSample()">🎲 랜덤</button>
+                    </div>
+                    <div id="sampleInfo" class="mt-md"></div>
+                </div>
+
+                <!-- 탭 2: 직접 입력 추론 -->
+                <div class="inference-tab-content" id="tabDirectInput">
+                    <div id="directInputSliders"></div>
+                    <div id="directSampleInfo" class="mt-md"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 중앙 영역 -->
+        <div class="center-area">
+            <!-- 학습 모드: 트리 시각화 -->
+            <div id="trainCenter">
+                <div class="tree-container" id="treeContainer">
+                    <div class="chart-title" id="treeTitle">🌳 의사결정트리</div>
+                    <div class="tree-controls">
+                        <button onclick="zoomTreeBtn('treeCanvas',1)" title="확대 (+)">+</button>
+                        <button onclick="zoomTreeBtn('treeCanvas',-1)" title="축소 (−)">−</button>
+                        <button onclick="homeTree('treeCanvas')" title="전체 보기 (Home)">⌂</button>
+                    </div>
+                    <canvas id="treeCanvas" width="800" height="500"></canvas>
+                </div>
+                <div id="treeHighlightInfo" class="tree-highlight-info hidden"></div>
+
+                <!-- 산점도 + 결정 경계 -->
+                <div class="scatter-section hidden" id="scatterSection">
+                    <div class="scatter-header">
+                        <h4>🎯 2D 결정 경계</h4>
+                        <div class="scatter-feature-select">
+                            <label>X축:</label>
+                            <select id="scatterXFeature" onchange="updateScatterPlot()"></select>
+                            <label>Y축:</label>
+                            <select id="scatterYFeature" onchange="updateScatterPlot()"></select>
+                        </div>
+                    </div>
+                    <div class="scatter-canvas-wrap">
+                        <canvas id="scatterCanvas"></canvas>
+                    </div>
+                    <div class="scatter-legend" id="scatterLegend"></div>
+                </div>
+            </div>
+
+            <!-- 추론 모드: 트리 시각화 (경로 강조) -->
+            <div id="inferenceCenter" class="hidden">
+                <div class="tree-container">
+                    <div class="chart-title">🔍 추론 경로 시각화</div>
+                    <div class="tree-controls">
+                        <button onclick="zoomTreeBtn('inferenceTreeCanvas',1)" title="확대 (+)">+</button>
+                        <button onclick="zoomTreeBtn('inferenceTreeCanvas',-1)" title="축소 (−)">−</button>
+                        <button onclick="homeTree('inferenceTreeCanvas')" title="전체 보기 (Home)">⌂</button>
+                    </div>
+                    <canvas id="inferenceTreeCanvas" width="800" height="500"></canvas>
+                </div>
+                <div id="inferenceSteps" class="mt-md"></div>
+            </div>
+        </div>
+
+        <!-- 오른쪽 사이드바 -->
+        <aside class="sidebar">
+            <!-- 학습 모드: 데이터 정보 -->
+            <div class="panel" id="dataInfoPanel">
+                <h3 class="panel-title">📊 데이터 정보</h3>
+                <div class="stat-cards stat-cards-2col">
+                    <div class="stat-card">
+                        <div class="stat-label">전체 데이터</div>
+                        <div class="stat-value" id="totalCount">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">학습 / 테스트</div>
+                        <div class="stat-value font-md" id="splitCount">--</div>
+                    </div>
+                </div>
+                <div class="mt-md font-sm" id="classDistribution">
+                    <!-- 동적 생성 -->
+                </div>
+
+                <div class="data-table-wrapper mt-md" id="trainDataTable" style="display:none;">
+                    <table class="data-table">
+                        <thead id="trainDataHead"><tr><th>#</th></tr></thead>
+                        <tbody id="trainDataBody"></tbody>
+                    </table>
+                </div>
+                <button class="btn btn-outline btn-sm btn-full mt-sm" onclick="toggleTrainData()" id="btnToggleData">📋 데이터 보기</button>
+            </div>
+
+            <!-- 학습 모드: 성능 지표 -->
+            <div class="panel" id="perfPanel" style="display:none;">
+                <h3 class="panel-title">📏 모델 성능</h3>
+                <div class="stat-cards">
+                    <div class="stat-card">
+                        <div class="stat-label">학습 정확도</div>
+                        <div class="stat-value" id="trainAccuracy">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">테스트 정확도</div>
+                        <div class="stat-value" id="testAccuracy">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">트리 깊이</div>
+                        <div class="stat-value" id="treeDepthStat">--</div>
+                    </div>
+                </div>
+                <div class="confusion-matrix" id="confusionMatrix"></div>
+            </div>
+
+            <!-- 학습 모드: 특성 중요도 -->
+            <div class="panel" id="importancePanel" style="display:none;">
+                <h3 class="panel-title">📊 특성 중요도</h3>
+                <div id="importanceChart"></div>
+            </div>
+
+            <!-- 추론 모드: 추론 결과 -->
+            <div class="panel hidden" id="inferenceResultPanel">
+                <h3 class="panel-title">💡 추론 결과</h3>
+                <div id="inferenceResult"></div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- 하단 패널: 규칙 & 테스트 결과 -->
+    <div class="bottom-panel" id="bottomPanel" style="display:none;">
+        <div class="bottom-grid">
+            <div class="bottom-section">
+                <h4>📜 학습된 규칙</h4>
+                <div id="rulesContainer" class="rules-scroll"></div>
+            </div>
+            <div class="bottom-section">
+                <h4>📊 테스트 결과 상세</h4>
+                <div class="test-results-wrapper" id="testResultsContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// 설정 상수 (데이터셋 독립적인 부분)
+// ============================================================
+const CONFIG = {
+    TREE: {
+        MAX_DEPTH_DEFAULT: 4,
+        MIN_SAMPLES_DEFAULT: 2,
+        GINI_THRESHOLD: 0.01,
+        GOOD_ACCURACY: 0.9,
+        OK_ACCURACY: 0.7,
+        OVERALL_GOOD_ACCURACY: 0.8
+    },
+    ANIMATION: {
+        DEFAULT_SPEED: 600,
+        MIN_SPEED: 100,
+        MAX_SPEED: 1500
+    },
+    SPLIT: {
+        TRAIN_RATIO: 0.8,
+        RANDOM_SEED: 42
+    },
+    VIS: {
+        NODE_WIDTH: 48,
+        NODE_HEIGHT: 20,
+        NODE_RADIUS: 4,
+        LEVEL_GAP: 36,
+        SIBLING_GAP: 6,
+        FONT_CONDITION: '8px JetBrains Mono',
+        FONT_LABEL: 'bold 8px Noto Sans KR',
+        FONT_SMALL: '7px JetBrains Mono',
+        LINE_WIDTH: 1.2,
+        HIGHLIGHT_WIDTH: 2.5,
+        EDGE_LABEL_OFFSET: 6,
+        LEAF_PADDING: 4,
+        SCATTER: {
+            WIDTH: 480,
+            HEIGHT: 400,
+            MARGIN: { top: 20, right: 20, bottom: 50, left: 60 },
+            POINT_RADIUS: 4,
+            POINT_STROKE: 1.5,
+            GRID_RES: 100,
+            BOUNDARY_ALPHA: 0.25,
+            AXIS_COLOR: '#90A4AE',
+            GRID_COLOR: '#ECEFF1',
+            TICK_COUNT: 6
+        },
+        COLORS: {
+            NODE_BG: '#FFFFFF',
+            NODE_BORDER: '#B0BEC5',
+            NODE_TEXT: '#333333',
+            NODE_TEXT_SUB: '#888888',
+            LEAF_TEXT_SUB: '#555555',
+            LINE: '#90A4AE',
+            EDGE_LABEL: '#78909C',
+            HIGHLIGHT: '#F9A825',
+            HIGHLIGHT_BG: 'rgba(249, 168, 37, 0.15)'
+        }
+    },
+    // 토스트 (v2.0)
+    TOAST_DURATION: 2500,
+    // 동적 속성 (데이터셋 전환 시 갱신)
+    FEATURES: {},
+    CLASSES: {},
+    CLASS_KEY: 'species'
+};
+
+const UI_TEXT = {
+    NO_TREE: '먼저 트리를 생성해주세요',
+    NO_FEATURES: '특성을 1개 이상 선택해주세요',
+    BUILDING: '🌳 트리 생성 중...',
+    BUILD_DONE: '🌳 트리 생성',
+    SELECT_TEST: '테스트 데이터를 선택하세요',
+    DIRECT_INPUT_HINT: '슬라이더를 조절하면 실시간으로 추론합니다',
+    DIRECT_RESULT_LABEL: '직접 입력 추론 결과',
+    ANIM_PROGRESS: (cur, total) => `${cur} / ${total} 노드`,
+    ANIM_COMPLETE: '✅ 트리 완성!',
+    ANIM_PLAY: '▶ 재생',
+    ANIM_PAUSE: '⏸ 일시정지'
+};
+
+// ============================================================
+// 토스트 알림 시스템 (v2.0)
+// ============================================================
+function showToast(message, type = 'info', duration = CONFIG.TOAST_DURATION) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('toast-out');
+        toast.addEventListener('animationend', () => toast.remove());
+    }, duration);
+}
+
+// ============================================================
+// 기본 클래스 색상 팔레트
+// ============================================================
+const CLASS_COLOR_PALETTE = [
+    '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA726', '#AB47BC',
+    '#66BB6A', '#EF5350', '#42A5F5', '#FFC107', '#78909C'
+];
+
+// ============================================================
+// 내장 데이터셋 정의
+// ============================================================
+
+// --- 펭귄 데이터 ---
+const PENGUINS_RAW = [
+    {bill_length_mm:39.1,bill_depth_mm:18.7,flipper_length_mm:181,body_mass_g:3750,species:'Adelie'},
+    {bill_length_mm:39.5,bill_depth_mm:17.4,flipper_length_mm:186,body_mass_g:3800,species:'Adelie'},
+    {bill_length_mm:40.3,bill_depth_mm:18.0,flipper_length_mm:195,body_mass_g:3250,species:'Adelie'},
+    {bill_length_mm:36.7,bill_depth_mm:19.3,flipper_length_mm:193,body_mass_g:3450,species:'Adelie'},
+    {bill_length_mm:39.3,bill_depth_mm:20.6,flipper_length_mm:190,body_mass_g:3650,species:'Adelie'},
+    {bill_length_mm:38.9,bill_depth_mm:17.8,flipper_length_mm:181,body_mass_g:3625,species:'Adelie'},
+    {bill_length_mm:39.2,bill_depth_mm:19.6,flipper_length_mm:195,body_mass_g:4675,species:'Adelie'},
+    {bill_length_mm:34.1,bill_depth_mm:18.1,flipper_length_mm:193,body_mass_g:3475,species:'Adelie'},
+    {bill_length_mm:42.0,bill_depth_mm:20.2,flipper_length_mm:190,body_mass_g:4250,species:'Adelie'},
+    {bill_length_mm:37.8,bill_depth_mm:17.1,flipper_length_mm:186,body_mass_g:3300,species:'Adelie'},
+    {bill_length_mm:37.8,bill_depth_mm:17.3,flipper_length_mm:180,body_mass_g:3700,species:'Adelie'},
+    {bill_length_mm:41.1,bill_depth_mm:17.6,flipper_length_mm:182,body_mass_g:3200,species:'Adelie'},
+    {bill_length_mm:38.6,bill_depth_mm:21.2,flipper_length_mm:191,body_mass_g:3800,species:'Adelie'},
+    {bill_length_mm:34.6,bill_depth_mm:21.1,flipper_length_mm:198,body_mass_g:4400,species:'Adelie'},
+    {bill_length_mm:36.6,bill_depth_mm:17.8,flipper_length_mm:185,body_mass_g:3700,species:'Adelie'},
+    {bill_length_mm:38.7,bill_depth_mm:19.0,flipper_length_mm:195,body_mass_g:3450,species:'Adelie'},
+    {bill_length_mm:42.5,bill_depth_mm:20.7,flipper_length_mm:197,body_mass_g:4500,species:'Adelie'},
+    {bill_length_mm:34.4,bill_depth_mm:18.4,flipper_length_mm:184,body_mass_g:3325,species:'Adelie'},
+    {bill_length_mm:46.0,bill_depth_mm:21.5,flipper_length_mm:194,body_mass_g:4200,species:'Adelie'},
+    {bill_length_mm:37.8,bill_depth_mm:18.3,flipper_length_mm:174,body_mass_g:3400,species:'Adelie'},
+    {bill_length_mm:37.7,bill_depth_mm:18.7,flipper_length_mm:180,body_mass_g:3600,species:'Adelie'},
+    {bill_length_mm:35.9,bill_depth_mm:19.2,flipper_length_mm:189,body_mass_g:3800,species:'Adelie'},
+    {bill_length_mm:38.2,bill_depth_mm:18.1,flipper_length_mm:185,body_mass_g:3950,species:'Adelie'},
+    {bill_length_mm:38.8,bill_depth_mm:17.2,flipper_length_mm:180,body_mass_g:3800,species:'Adelie'},
+    {bill_length_mm:35.3,bill_depth_mm:18.9,flipper_length_mm:187,body_mass_g:3800,species:'Adelie'},
+    {bill_length_mm:40.6,bill_depth_mm:18.6,flipper_length_mm:183,body_mass_g:3550,species:'Adelie'},
+    {bill_length_mm:40.5,bill_depth_mm:17.9,flipper_length_mm:187,body_mass_g:3200,species:'Adelie'},
+    {bill_length_mm:37.9,bill_depth_mm:18.6,flipper_length_mm:172,body_mass_g:3150,species:'Adelie'},
+    {bill_length_mm:40.5,bill_depth_mm:18.9,flipper_length_mm:180,body_mass_g:3950,species:'Adelie'},
+    {bill_length_mm:36.4,bill_depth_mm:17.0,flipper_length_mm:195,body_mass_g:3325,species:'Adelie'},
+    {bill_length_mm:39.0,bill_depth_mm:17.5,flipper_length_mm:186,body_mass_g:3550,species:'Adelie'},
+    {bill_length_mm:35.7,bill_depth_mm:16.9,flipper_length_mm:185,body_mass_g:3150,species:'Adelie'},
+    {bill_length_mm:41.3,bill_depth_mm:21.1,flipper_length_mm:195,body_mass_g:4400,species:'Adelie'},
+    {bill_length_mm:37.6,bill_depth_mm:19.3,flipper_length_mm:181,body_mass_g:3300,species:'Adelie'},
+    {bill_length_mm:41.1,bill_depth_mm:18.2,flipper_length_mm:192,body_mass_g:4050,species:'Adelie'},
+    {bill_length_mm:36.4,bill_depth_mm:17.0,flipper_length_mm:195,body_mass_g:3325,species:'Adelie'},
+    {bill_length_mm:41.6,bill_depth_mm:18.0,flipper_length_mm:192,body_mass_g:3950,species:'Adelie'},
+    {bill_length_mm:35.5,bill_depth_mm:17.5,flipper_length_mm:190,body_mass_g:3700,species:'Adelie'},
+    {bill_length_mm:41.1,bill_depth_mm:19.1,flipper_length_mm:188,body_mass_g:4100,species:'Adelie'},
+    {bill_length_mm:35.9,bill_depth_mm:16.6,flipper_length_mm:190,body_mass_g:3050,species:'Adelie'},
+    {bill_length_mm:41.8,bill_depth_mm:19.4,flipper_length_mm:198,body_mass_g:4450,species:'Adelie'},
+    {bill_length_mm:33.5,bill_depth_mm:19.0,flipper_length_mm:190,body_mass_g:3600,species:'Adelie'},
+    {bill_length_mm:39.7,bill_depth_mm:18.4,flipper_length_mm:190,body_mass_g:3900,species:'Adelie'},
+    {bill_length_mm:39.6,bill_depth_mm:17.7,flipper_length_mm:186,body_mass_g:3500,species:'Adelie'},
+    {bill_length_mm:45.8,bill_depth_mm:18.9,flipper_length_mm:197,body_mass_g:4150,species:'Adelie'},
+    {bill_length_mm:35.5,bill_depth_mm:17.5,flipper_length_mm:190,body_mass_g:3700,species:'Adelie'},
+    {bill_length_mm:38.1,bill_depth_mm:16.5,flipper_length_mm:198,body_mass_g:3825,species:'Adelie'},
+    {bill_length_mm:36.3,bill_depth_mm:19.5,flipper_length_mm:190,body_mass_g:3800,species:'Adelie'},
+    {bill_length_mm:37.3,bill_depth_mm:17.8,flipper_length_mm:191,body_mass_g:3350,species:'Adelie'},
+    {bill_length_mm:39.3,bill_depth_mm:18.0,flipper_length_mm:190,body_mass_g:3750,species:'Adelie'},
+    {bill_length_mm:46.5,bill_depth_mm:17.9,flipper_length_mm:192,body_mass_g:3500,species:'Chinstrap'},
+    {bill_length_mm:50.0,bill_depth_mm:19.5,flipper_length_mm:196,body_mass_g:3900,species:'Chinstrap'},
+    {bill_length_mm:51.3,bill_depth_mm:19.2,flipper_length_mm:193,body_mass_g:3650,species:'Chinstrap'},
+    {bill_length_mm:45.4,bill_depth_mm:18.7,flipper_length_mm:188,body_mass_g:3525,species:'Chinstrap'},
+    {bill_length_mm:52.7,bill_depth_mm:19.8,flipper_length_mm:197,body_mass_g:3725,species:'Chinstrap'},
+    {bill_length_mm:45.2,bill_depth_mm:17.8,flipper_length_mm:198,body_mass_g:3950,species:'Chinstrap'},
+    {bill_length_mm:46.1,bill_depth_mm:18.2,flipper_length_mm:178,body_mass_g:3250,species:'Chinstrap'},
+    {bill_length_mm:51.3,bill_depth_mm:18.2,flipper_length_mm:197,body_mass_g:3750,species:'Chinstrap'},
+    {bill_length_mm:46.0,bill_depth_mm:18.9,flipper_length_mm:195,body_mass_g:4150,species:'Chinstrap'},
+    {bill_length_mm:51.3,bill_depth_mm:19.9,flipper_length_mm:198,body_mass_g:3950,species:'Chinstrap'},
+    {bill_length_mm:46.6,bill_depth_mm:17.8,flipper_length_mm:193,body_mass_g:3800,species:'Chinstrap'},
+    {bill_length_mm:51.7,bill_depth_mm:20.3,flipper_length_mm:194,body_mass_g:3775,species:'Chinstrap'},
+    {bill_length_mm:47.0,bill_depth_mm:17.3,flipper_length_mm:185,body_mass_g:3700,species:'Chinstrap'},
+    {bill_length_mm:52.0,bill_depth_mm:18.1,flipper_length_mm:201,body_mass_g:4050,species:'Chinstrap'},
+    {bill_length_mm:45.9,bill_depth_mm:17.1,flipper_length_mm:190,body_mass_g:3575,species:'Chinstrap'},
+    {bill_length_mm:50.5,bill_depth_mm:19.6,flipper_length_mm:201,body_mass_g:4050,species:'Chinstrap'},
+    {bill_length_mm:49.0,bill_depth_mm:19.6,flipper_length_mm:212,body_mass_g:4300,species:'Chinstrap'},
+    {bill_length_mm:46.4,bill_depth_mm:18.6,flipper_length_mm:190,body_mass_g:3450,species:'Chinstrap'},
+    {bill_length_mm:50.2,bill_depth_mm:18.7,flipper_length_mm:198,body_mass_g:3775,species:'Chinstrap'},
+    {bill_length_mm:45.2,bill_depth_mm:16.6,flipper_length_mm:191,body_mass_g:3250,species:'Chinstrap'},
+    {bill_length_mm:49.3,bill_depth_mm:19.9,flipper_length_mm:203,body_mass_g:4050,species:'Chinstrap'},
+    {bill_length_mm:50.2,bill_depth_mm:18.8,flipper_length_mm:202,body_mass_g:3800,species:'Chinstrap'},
+    {bill_length_mm:46.8,bill_depth_mm:16.1,flipper_length_mm:199,body_mass_g:3775,species:'Chinstrap'},
+    {bill_length_mm:51.4,bill_depth_mm:19.0,flipper_length_mm:201,body_mass_g:3950,species:'Chinstrap'},
+    {bill_length_mm:48.5,bill_depth_mm:17.5,flipper_length_mm:191,body_mass_g:3400,species:'Chinstrap'},
+    {bill_length_mm:51.4,bill_depth_mm:18.5,flipper_length_mm:202,body_mass_g:3950,species:'Chinstrap'},
+    {bill_length_mm:46.7,bill_depth_mm:17.9,flipper_length_mm:195,body_mass_g:3300,species:'Chinstrap'},
+    {bill_length_mm:52.8,bill_depth_mm:20.0,flipper_length_mm:205,body_mass_g:4550,species:'Chinstrap'},
+    {bill_length_mm:49.5,bill_depth_mm:18.4,flipper_length_mm:195,body_mass_g:3600,species:'Chinstrap'},
+    {bill_length_mm:49.2,bill_depth_mm:18.2,flipper_length_mm:195,body_mass_g:4400,species:'Chinstrap'},
+    {bill_length_mm:46.9,bill_depth_mm:16.6,flipper_length_mm:192,body_mass_g:2700,species:'Chinstrap'},
+    {bill_length_mm:48.4,bill_depth_mm:17.3,flipper_length_mm:189,body_mass_g:3500,species:'Chinstrap'},
+    {bill_length_mm:50.7,bill_depth_mm:19.7,flipper_length_mm:195,body_mass_g:3300,species:'Chinstrap'},
+    {bill_length_mm:49.3,bill_depth_mm:19.9,flipper_length_mm:203,body_mass_g:4050,species:'Chinstrap'},
+    {bill_length_mm:46.1,bill_depth_mm:13.2,flipper_length_mm:211,body_mass_g:4500,species:'Gentoo'},
+    {bill_length_mm:50.0,bill_depth_mm:16.3,flipper_length_mm:230,body_mass_g:5700,species:'Gentoo'},
+    {bill_length_mm:48.7,bill_depth_mm:14.1,flipper_length_mm:210,body_mass_g:4450,species:'Gentoo'},
+    {bill_length_mm:50.0,bill_depth_mm:15.2,flipper_length_mm:218,body_mass_g:5700,species:'Gentoo'},
+    {bill_length_mm:47.6,bill_depth_mm:14.5,flipper_length_mm:215,body_mass_g:5400,species:'Gentoo'},
+    {bill_length_mm:46.5,bill_depth_mm:13.5,flipper_length_mm:210,body_mass_g:4550,species:'Gentoo'},
+    {bill_length_mm:45.4,bill_depth_mm:14.6,flipper_length_mm:211,body_mass_g:4800,species:'Gentoo'},
+    {bill_length_mm:46.7,bill_depth_mm:15.3,flipper_length_mm:219,body_mass_g:5200,species:'Gentoo'},
+    {bill_length_mm:43.3,bill_depth_mm:13.4,flipper_length_mm:209,body_mass_g:4400,species:'Gentoo'},
+    {bill_length_mm:46.8,bill_depth_mm:15.4,flipper_length_mm:215,body_mass_g:5150,species:'Gentoo'},
+    {bill_length_mm:40.9,bill_depth_mm:13.7,flipper_length_mm:214,body_mass_g:4650,species:'Gentoo'},
+    {bill_length_mm:49.0,bill_depth_mm:16.1,flipper_length_mm:216,body_mass_g:5550,species:'Gentoo'},
+    {bill_length_mm:45.5,bill_depth_mm:13.7,flipper_length_mm:214,body_mass_g:4650,species:'Gentoo'},
+    {bill_length_mm:48.4,bill_depth_mm:14.6,flipper_length_mm:213,body_mass_g:5850,species:'Gentoo'},
+    {bill_length_mm:45.8,bill_depth_mm:14.6,flipper_length_mm:210,body_mass_g:4200,species:'Gentoo'},
+    {bill_length_mm:49.3,bill_depth_mm:15.7,flipper_length_mm:217,body_mass_g:5850,species:'Gentoo'},
+    {bill_length_mm:42.0,bill_depth_mm:13.5,flipper_length_mm:210,body_mass_g:4150,species:'Gentoo'},
+    {bill_length_mm:49.2,bill_depth_mm:15.2,flipper_length_mm:221,body_mass_g:6300,species:'Gentoo'},
+    {bill_length_mm:46.2,bill_depth_mm:14.1,flipper_length_mm:217,body_mass_g:4375,species:'Gentoo'},
+    {bill_length_mm:48.7,bill_depth_mm:15.1,flipper_length_mm:222,body_mass_g:5350,species:'Gentoo'},
+    {bill_length_mm:50.2,bill_depth_mm:14.3,flipper_length_mm:218,body_mass_g:5700,species:'Gentoo'},
+    {bill_length_mm:45.1,bill_depth_mm:14.5,flipper_length_mm:215,body_mass_g:5000,species:'Gentoo'},
+    {bill_length_mm:46.5,bill_depth_mm:14.4,flipper_length_mm:217,body_mass_g:4900,species:'Gentoo'},
+    {bill_length_mm:46.3,bill_depth_mm:15.8,flipper_length_mm:215,body_mass_g:5050,species:'Gentoo'},
+    {bill_length_mm:42.9,bill_depth_mm:13.1,flipper_length_mm:215,body_mass_g:5140,species:'Gentoo'},
+    {bill_length_mm:46.1,bill_depth_mm:15.1,flipper_length_mm:215,body_mass_g:5100,species:'Gentoo'},
+    {bill_length_mm:44.5,bill_depth_mm:14.3,flipper_length_mm:216,body_mass_g:4100,species:'Gentoo'},
+    {bill_length_mm:47.8,bill_depth_mm:15.0,flipper_length_mm:215,body_mass_g:5650,species:'Gentoo'},
+    {bill_length_mm:48.2,bill_depth_mm:14.3,flipper_length_mm:210,body_mass_g:4600,species:'Gentoo'},
+    {bill_length_mm:50.0,bill_depth_mm:15.3,flipper_length_mm:220,body_mass_g:5550,species:'Gentoo'},
+    {bill_length_mm:47.3,bill_depth_mm:15.3,flipper_length_mm:222,body_mass_g:5250,species:'Gentoo'},
+    {bill_length_mm:42.8,bill_depth_mm:14.2,flipper_length_mm:209,body_mass_g:4700,species:'Gentoo'},
+    {bill_length_mm:45.1,bill_depth_mm:14.5,flipper_length_mm:207,body_mass_g:5050,species:'Gentoo'},
+    {bill_length_mm:59.6,bill_depth_mm:17.0,flipper_length_mm:230,body_mass_g:6050,species:'Gentoo'},
+    {bill_length_mm:49.1,bill_depth_mm:14.8,flipper_length_mm:220,body_mass_g:5150,species:'Gentoo'},
+    {bill_length_mm:48.4,bill_depth_mm:16.3,flipper_length_mm:220,body_mass_g:5400,species:'Gentoo'},
+    {bill_length_mm:42.6,bill_depth_mm:13.7,flipper_length_mm:213,body_mass_g:4950,species:'Gentoo'},
+    {bill_length_mm:44.4,bill_depth_mm:17.3,flipper_length_mm:219,body_mass_g:5250,species:'Gentoo'},
+    {bill_length_mm:44.0,bill_depth_mm:13.6,flipper_length_mm:208,body_mass_g:4350,species:'Gentoo'},
+    {bill_length_mm:48.7,bill_depth_mm:15.7,flipper_length_mm:208,body_mass_g:5350,species:'Gentoo'},
+    {bill_length_mm:42.7,bill_depth_mm:13.7,flipper_length_mm:208,body_mass_g:3950,species:'Gentoo'},
+    {bill_length_mm:49.6,bill_depth_mm:16.0,flipper_length_mm:225,body_mass_g:5700,species:'Gentoo'},
+    {bill_length_mm:45.3,bill_depth_mm:13.7,flipper_length_mm:210,body_mass_g:4300,species:'Gentoo'},
+    {bill_length_mm:49.9,bill_depth_mm:16.1,flipper_length_mm:213,body_mass_g:5400,species:'Gentoo'},
+    {bill_length_mm:45.2,bill_depth_mm:15.8,flipper_length_mm:215,body_mass_g:5300,species:'Gentoo'},
+    {bill_length_mm:52.5,bill_depth_mm:15.6,flipper_length_mm:221,body_mass_g:5450,species:'Gentoo'},
+    {bill_length_mm:50.0,bill_depth_mm:15.9,flipper_length_mm:224,body_mass_g:5350,species:'Gentoo'},
+    {bill_length_mm:44.9,bill_depth_mm:13.3,flipper_length_mm:213,body_mass_g:5100,species:'Gentoo'},
+    {bill_length_mm:46.2,bill_depth_mm:14.4,flipper_length_mm:214,body_mass_g:4650,species:'Gentoo'},
+    {bill_length_mm:49.5,bill_depth_mm:16.2,flipper_length_mm:229,body_mass_g:5800,species:'Gentoo'},
+];
+
+// --- 붓꽃(Iris) 데이터 ---
+const IRIS_RAW = [
+    {sepal_length:5.1,sepal_width:3.5,petal_length:1.4,petal_width:0.2,species:'Setosa'},
+    {sepal_length:4.9,sepal_width:3.0,petal_length:1.4,petal_width:0.2,species:'Setosa'},
+    {sepal_length:4.7,sepal_width:3.2,petal_length:1.3,petal_width:0.2,species:'Setosa'},
+    {sepal_length:4.6,sepal_width:3.1,petal_length:1.5,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.0,sepal_width:3.6,petal_length:1.4,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.4,sepal_width:3.9,petal_length:1.7,petal_width:0.4,species:'Setosa'},
+    {sepal_length:4.6,sepal_width:3.4,petal_length:1.4,petal_width:0.3,species:'Setosa'},
+    {sepal_length:5.0,sepal_width:3.4,petal_length:1.5,petal_width:0.2,species:'Setosa'},
+    {sepal_length:4.4,sepal_width:2.9,petal_length:1.4,petal_width:0.2,species:'Setosa'},
+    {sepal_length:4.9,sepal_width:3.1,petal_length:1.5,petal_width:0.1,species:'Setosa'},
+    {sepal_length:5.4,sepal_width:3.7,petal_length:1.5,petal_width:0.2,species:'Setosa'},
+    {sepal_length:4.8,sepal_width:3.4,petal_length:1.6,petal_width:0.2,species:'Setosa'},
+    {sepal_length:4.8,sepal_width:3.0,petal_length:1.4,petal_width:0.1,species:'Setosa'},
+    {sepal_length:4.3,sepal_width:3.0,petal_length:1.1,petal_width:0.1,species:'Setosa'},
+    {sepal_length:5.8,sepal_width:4.0,petal_length:1.2,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.7,sepal_width:4.4,petal_length:1.5,petal_width:0.4,species:'Setosa'},
+    {sepal_length:5.4,sepal_width:3.9,petal_length:1.3,petal_width:0.4,species:'Setosa'},
+    {sepal_length:5.1,sepal_width:3.5,petal_length:1.4,petal_width:0.3,species:'Setosa'},
+    {sepal_length:5.7,sepal_width:3.8,petal_length:1.7,petal_width:0.3,species:'Setosa'},
+    {sepal_length:5.1,sepal_width:3.8,petal_length:1.5,petal_width:0.3,species:'Setosa'},
+    {sepal_length:5.4,sepal_width:3.4,petal_length:1.7,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.1,sepal_width:3.7,petal_length:1.5,petal_width:0.4,species:'Setosa'},
+    {sepal_length:4.6,sepal_width:3.6,petal_length:1.0,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.1,sepal_width:3.3,petal_length:1.7,petal_width:0.5,species:'Setosa'},
+    {sepal_length:4.8,sepal_width:3.4,petal_length:1.9,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.0,sepal_width:3.0,petal_length:1.6,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.0,sepal_width:3.4,petal_length:1.6,petal_width:0.4,species:'Setosa'},
+    {sepal_length:5.2,sepal_width:3.5,petal_length:1.5,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.2,sepal_width:3.4,petal_length:1.4,petal_width:0.2,species:'Setosa'},
+    {sepal_length:4.7,sepal_width:3.2,petal_length:1.6,petal_width:0.2,species:'Setosa'},
+    {sepal_length:4.8,sepal_width:3.1,petal_length:1.6,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.4,sepal_width:3.4,petal_length:1.5,petal_width:0.4,species:'Setosa'},
+    {sepal_length:5.2,sepal_width:4.1,petal_length:1.5,petal_width:0.1,species:'Setosa'},
+    {sepal_length:5.5,sepal_width:4.2,petal_length:1.4,petal_width:0.2,species:'Setosa'},
+    {sepal_length:4.9,sepal_width:3.1,petal_length:1.5,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.0,sepal_width:3.2,petal_length:1.2,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.5,sepal_width:3.5,petal_length:1.3,petal_width:0.2,species:'Setosa'},
+    {sepal_length:4.9,sepal_width:3.6,petal_length:1.4,petal_width:0.1,species:'Setosa'},
+    {sepal_length:4.4,sepal_width:3.0,petal_length:1.3,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.1,sepal_width:3.4,petal_length:1.5,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.0,sepal_width:3.5,petal_length:1.3,petal_width:0.3,species:'Setosa'},
+    {sepal_length:4.5,sepal_width:2.3,petal_length:1.3,petal_width:0.3,species:'Setosa'},
+    {sepal_length:4.4,sepal_width:3.2,petal_length:1.3,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.0,sepal_width:3.5,petal_length:1.6,petal_width:0.6,species:'Setosa'},
+    {sepal_length:5.1,sepal_width:3.8,petal_length:1.9,petal_width:0.4,species:'Setosa'},
+    {sepal_length:4.8,sepal_width:3.0,petal_length:1.4,petal_width:0.3,species:'Setosa'},
+    {sepal_length:5.1,sepal_width:3.8,petal_length:1.6,petal_width:0.2,species:'Setosa'},
+    {sepal_length:4.6,sepal_width:3.2,petal_length:1.4,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.3,sepal_width:3.7,petal_length:1.5,petal_width:0.2,species:'Setosa'},
+    {sepal_length:5.0,sepal_width:3.3,petal_length:1.4,petal_width:0.2,species:'Setosa'},
+    {sepal_length:7.0,sepal_width:3.2,petal_length:4.7,petal_width:1.4,species:'Versicolor'},
+    {sepal_length:6.4,sepal_width:3.2,petal_length:4.5,petal_width:1.5,species:'Versicolor'},
+    {sepal_length:6.9,sepal_width:3.1,petal_length:4.9,petal_width:1.5,species:'Versicolor'},
+    {sepal_length:5.5,sepal_width:2.3,petal_length:4.0,petal_width:1.3,species:'Versicolor'},
+    {sepal_length:6.5,sepal_width:2.8,petal_length:4.6,petal_width:1.5,species:'Versicolor'},
+    {sepal_length:5.7,sepal_width:2.8,petal_length:4.5,petal_width:1.3,species:'Versicolor'},
+    {sepal_length:6.3,sepal_width:3.3,petal_length:4.7,petal_width:1.6,species:'Versicolor'},
+    {sepal_length:4.9,sepal_width:2.4,petal_length:3.3,petal_width:1.0,species:'Versicolor'},
+    {sepal_length:6.6,sepal_width:2.9,petal_length:4.6,petal_width:1.3,species:'Versicolor'},
+    {sepal_length:5.2,sepal_width:2.7,petal_length:3.9,petal_width:1.4,species:'Versicolor'},
+    {sepal_length:5.0,sepal_width:2.0,petal_length:3.5,petal_width:1.0,species:'Versicolor'},
+    {sepal_length:5.9,sepal_width:3.0,petal_length:4.2,petal_width:1.5,species:'Versicolor'},
+    {sepal_length:6.0,sepal_width:2.2,petal_length:4.0,petal_width:1.0,species:'Versicolor'},
+    {sepal_length:6.1,sepal_width:2.9,petal_length:4.7,petal_width:1.4,species:'Versicolor'},
+    {sepal_length:5.6,sepal_width:2.9,petal_length:3.6,petal_width:1.3,species:'Versicolor'},
+    {sepal_length:6.7,sepal_width:3.1,petal_length:4.4,petal_width:1.4,species:'Versicolor'},
+    {sepal_length:5.6,sepal_width:3.0,petal_length:4.5,petal_width:1.5,species:'Versicolor'},
+    {sepal_length:5.8,sepal_width:2.7,petal_length:4.1,petal_width:1.0,species:'Versicolor'},
+    {sepal_length:6.2,sepal_width:2.2,petal_length:4.5,petal_width:1.5,species:'Versicolor'},
+    {sepal_length:5.6,sepal_width:2.5,petal_length:3.9,petal_width:1.1,species:'Versicolor'},
+    {sepal_length:5.9,sepal_width:3.2,petal_length:4.8,petal_width:1.8,species:'Versicolor'},
+    {sepal_length:6.1,sepal_width:2.8,petal_length:4.0,petal_width:1.3,species:'Versicolor'},
+    {sepal_length:6.3,sepal_width:2.5,petal_length:4.9,petal_width:1.5,species:'Versicolor'},
+    {sepal_length:6.1,sepal_width:2.8,petal_length:4.7,petal_width:1.2,species:'Versicolor'},
+    {sepal_length:6.4,sepal_width:2.9,petal_length:4.3,petal_width:1.3,species:'Versicolor'},
+    {sepal_length:6.6,sepal_width:3.0,petal_length:4.4,petal_width:1.4,species:'Versicolor'},
+    {sepal_length:6.8,sepal_width:2.8,petal_length:4.8,petal_width:1.4,species:'Versicolor'},
+    {sepal_length:6.7,sepal_width:3.0,petal_length:5.0,petal_width:1.7,species:'Versicolor'},
+    {sepal_length:6.0,sepal_width:2.9,petal_length:4.5,petal_width:1.5,species:'Versicolor'},
+    {sepal_length:5.7,sepal_width:2.6,petal_length:3.5,petal_width:1.0,species:'Versicolor'},
+    {sepal_length:5.5,sepal_width:2.4,petal_length:3.8,petal_width:1.1,species:'Versicolor'},
+    {sepal_length:5.5,sepal_width:2.4,petal_length:3.7,petal_width:1.0,species:'Versicolor'},
+    {sepal_length:5.8,sepal_width:2.7,petal_length:3.9,petal_width:1.2,species:'Versicolor'},
+    {sepal_length:6.0,sepal_width:2.7,petal_length:5.1,petal_width:1.6,species:'Versicolor'},
+    {sepal_length:5.4,sepal_width:3.0,petal_length:4.5,petal_width:1.5,species:'Versicolor'},
+    {sepal_length:6.0,sepal_width:3.4,petal_length:4.5,petal_width:1.6,species:'Versicolor'},
+    {sepal_length:6.7,sepal_width:3.1,petal_length:4.7,petal_width:1.5,species:'Versicolor'},
+    {sepal_length:6.3,sepal_width:2.3,petal_length:4.4,petal_width:1.3,species:'Versicolor'},
+    {sepal_length:5.6,sepal_width:3.0,petal_length:4.1,petal_width:1.3,species:'Versicolor'},
+    {sepal_length:5.5,sepal_width:2.5,petal_length:4.0,petal_width:1.3,species:'Versicolor'},
+    {sepal_length:5.5,sepal_width:2.6,petal_length:4.4,petal_width:1.2,species:'Versicolor'},
+    {sepal_length:6.1,sepal_width:3.0,petal_length:4.6,petal_width:1.4,species:'Versicolor'},
+    {sepal_length:5.8,sepal_width:2.6,petal_length:4.0,petal_width:1.2,species:'Versicolor'},
+    {sepal_length:5.0,sepal_width:2.3,petal_length:3.3,petal_width:1.0,species:'Versicolor'},
+    {sepal_length:5.6,sepal_width:2.7,petal_length:4.2,petal_width:1.3,species:'Versicolor'},
+    {sepal_length:5.7,sepal_width:3.0,petal_length:4.2,petal_width:1.2,species:'Versicolor'},
+    {sepal_length:5.7,sepal_width:2.9,petal_length:4.2,petal_width:1.3,species:'Versicolor'},
+    {sepal_length:6.2,sepal_width:2.9,petal_length:4.3,petal_width:1.3,species:'Versicolor'},
+    {sepal_length:5.1,sepal_width:2.5,petal_length:3.0,petal_width:1.1,species:'Versicolor'},
+    {sepal_length:5.7,sepal_width:2.8,petal_length:4.1,petal_width:1.3,species:'Versicolor'},
+    {sepal_length:6.3,sepal_width:3.3,petal_length:6.0,petal_width:2.5,species:'Virginica'},
+    {sepal_length:5.8,sepal_width:2.7,petal_length:5.1,petal_width:1.9,species:'Virginica'},
+    {sepal_length:7.1,sepal_width:3.0,petal_length:5.9,petal_width:2.1,species:'Virginica'},
+    {sepal_length:6.3,sepal_width:2.9,petal_length:5.6,petal_width:1.8,species:'Virginica'},
+    {sepal_length:6.5,sepal_width:3.0,petal_length:5.8,petal_width:2.2,species:'Virginica'},
+    {sepal_length:7.6,sepal_width:3.0,petal_length:6.6,petal_width:2.1,species:'Virginica'},
+    {sepal_length:4.9,sepal_width:2.5,petal_length:4.5,petal_width:1.7,species:'Virginica'},
+    {sepal_length:7.3,sepal_width:2.9,petal_length:6.3,petal_width:1.8,species:'Virginica'},
+    {sepal_length:6.7,sepal_width:2.5,petal_length:5.8,petal_width:1.8,species:'Virginica'},
+    {sepal_length:7.2,sepal_width:3.6,petal_length:6.1,petal_width:2.5,species:'Virginica'},
+    {sepal_length:6.5,sepal_width:3.2,petal_length:5.1,petal_width:2.0,species:'Virginica'},
+    {sepal_length:6.4,sepal_width:2.7,petal_length:5.3,petal_width:1.9,species:'Virginica'},
+    {sepal_length:6.8,sepal_width:3.0,petal_length:5.5,petal_width:2.1,species:'Virginica'},
+    {sepal_length:5.7,sepal_width:2.5,petal_length:5.0,petal_width:2.0,species:'Virginica'},
+    {sepal_length:5.8,sepal_width:2.8,petal_length:5.1,petal_width:2.4,species:'Virginica'},
+    {sepal_length:6.4,sepal_width:3.2,petal_length:5.3,petal_width:2.3,species:'Virginica'},
+    {sepal_length:6.5,sepal_width:3.0,petal_length:5.5,petal_width:1.8,species:'Virginica'},
+    {sepal_length:7.7,sepal_width:3.8,petal_length:6.7,petal_width:2.2,species:'Virginica'},
+    {sepal_length:7.7,sepal_width:2.6,petal_length:6.9,petal_width:2.3,species:'Virginica'},
+    {sepal_length:6.0,sepal_width:2.2,petal_length:5.0,petal_width:1.5,species:'Virginica'},
+    {sepal_length:6.9,sepal_width:3.2,petal_length:5.7,petal_width:2.3,species:'Virginica'},
+    {sepal_length:5.6,sepal_width:2.8,petal_length:4.9,petal_width:2.0,species:'Virginica'},
+    {sepal_length:7.7,sepal_width:2.8,petal_length:6.7,petal_width:2.0,species:'Virginica'},
+    {sepal_length:6.3,sepal_width:2.7,petal_length:4.9,petal_width:1.8,species:'Virginica'},
+    {sepal_length:6.7,sepal_width:3.3,petal_length:5.7,petal_width:2.1,species:'Virginica'},
+    {sepal_length:7.2,sepal_width:3.2,petal_length:6.0,petal_width:1.8,species:'Virginica'},
+    {sepal_length:6.2,sepal_width:2.8,petal_length:4.8,petal_width:1.8,species:'Virginica'},
+    {sepal_length:6.1,sepal_width:3.0,petal_length:4.9,petal_width:1.8,species:'Virginica'},
+    {sepal_length:6.4,sepal_width:2.8,petal_length:5.6,petal_width:2.1,species:'Virginica'},
+    {sepal_length:7.2,sepal_width:3.0,petal_length:5.8,petal_width:1.6,species:'Virginica'},
+    {sepal_length:7.4,sepal_width:2.8,petal_length:6.1,petal_width:1.9,species:'Virginica'},
+    {sepal_length:7.9,sepal_width:3.8,petal_length:6.4,petal_width:2.0,species:'Virginica'},
+    {sepal_length:6.4,sepal_width:2.8,petal_length:5.6,petal_width:2.2,species:'Virginica'},
+    {sepal_length:6.3,sepal_width:2.8,petal_length:5.1,petal_width:1.5,species:'Virginica'},
+    {sepal_length:6.1,sepal_width:2.6,petal_length:5.6,petal_width:1.4,species:'Virginica'},
+    {sepal_length:7.7,sepal_width:3.0,petal_length:6.1,petal_width:2.3,species:'Virginica'},
+    {sepal_length:6.3,sepal_width:3.4,petal_length:5.6,petal_width:2.4,species:'Virginica'},
+    {sepal_length:6.4,sepal_width:3.1,petal_length:5.5,petal_width:1.8,species:'Virginica'},
+    {sepal_length:6.0,sepal_width:3.0,petal_length:4.8,petal_width:1.8,species:'Virginica'},
+    {sepal_length:6.9,sepal_width:3.1,petal_length:5.4,petal_width:2.1,species:'Virginica'},
+    {sepal_length:6.7,sepal_width:3.1,petal_length:5.6,petal_width:2.4,species:'Virginica'},
+    {sepal_length:6.9,sepal_width:3.1,petal_length:5.1,petal_width:2.3,species:'Virginica'},
+    {sepal_length:5.8,sepal_width:2.7,petal_length:5.1,petal_width:1.9,species:'Virginica'},
+    {sepal_length:6.8,sepal_width:3.2,petal_length:5.9,petal_width:2.3,species:'Virginica'},
+    {sepal_length:6.7,sepal_width:3.3,petal_length:5.7,petal_width:2.5,species:'Virginica'},
+    {sepal_length:6.7,sepal_width:3.0,petal_length:5.2,petal_width:2.3,species:'Virginica'},
+    {sepal_length:6.3,sepal_width:2.5,petal_length:5.0,petal_width:1.9,species:'Virginica'},
+    {sepal_length:6.5,sepal_width:3.0,petal_length:5.2,petal_width:2.0,species:'Virginica'},
+    {sepal_length:6.2,sepal_width:3.4,petal_length:5.4,petal_width:2.3,species:'Virginica'},
+    {sepal_length:5.9,sepal_width:3.0,petal_length:5.1,petal_width:1.8,species:'Virginica'},
+];
+
+// ============================================================
+// 데이터셋 레지스트리
+// ============================================================
+const DATASETS = {
+    penguins: {
+        id: 'penguins',
+        name: '🐧 펭귄 (Palmer Penguins)',
+        description: 'Palmer Penguins 데이터셋으로 펭귄 3종을 분류합니다',
+        source: 'Horst, Hill & Gorman(2020) | CC-0 Public Domain',
+        recommended: '날개길이 + 부리깊이가 3종 구분에 가장 효과적',
+        emoji: '🐧',
+        classKey: 'species',
+        features: {
+            bill_length_mm: { label: '부리 길이', unit: 'mm', short: '부리길이', emoji: '🦷', step: 0.1 },
+            bill_depth_mm: { label: '부리 깊이', unit: 'mm', short: '부리깊이', emoji: '📏', step: 0.1 },
+            flipper_length_mm: { label: '날개 길이', unit: 'mm', short: '날개길이', emoji: '🪶', step: 1 },
+            body_mass_g: { label: '체중', unit: 'g', short: '체중', emoji: '⚖️', step: 50 }
+        },
+        classes: {
+            Adelie:    { emoji: '🔴', label: 'Adelie',    ko: '아델리', color: '#FF6B6B' },
+            Chinstrap: { emoji: '🟢', label: 'Chinstrap', ko: '턱끈',   color: '#4ECDC4' },
+            Gentoo:    { emoji: '🔵', label: 'Gentoo',    ko: '젠투',   color: '#45B7D1' }
+        },
+        data: PENGUINS_RAW
+    },
+    iris: {
+        id: 'iris',
+        name: '🌺 붓꽃 (Iris)',
+        description: 'Iris 데이터셋으로 붓꽃 3종을 분류합니다',
+        source: 'Fisher(1936), UCI ML Repository | CC BY 4.0',
+        recommended: '꽃잎길이 + 꽃잎너비가 3종 구분에 가장 효과적',
+        emoji: '🌺',
+        classKey: 'species',
+        features: {
+            sepal_length: { label: '꽃받침 길이', unit: 'cm', short: '꽃받침길이', emoji: '🌿', step: 0.1 },
+            sepal_width:  { label: '꽃받침 너비', unit: 'cm', short: '꽃받침너비', emoji: '🌱', step: 0.1 },
+            petal_length: { label: '꽃잎 길이',   unit: 'cm', short: '꽃잎길이',   emoji: '🌸', step: 0.1 },
+            petal_width:  { label: '꽃잎 너비',   unit: 'cm', short: '꽃잎너비',   emoji: '🌷', step: 0.1 }
+        },
+        classes: {
+            Setosa:     { emoji: '🔴', label: 'Setosa',     ko: '세토사',     color: '#FF6B6B' },
+            Versicolor: { emoji: '🟢', label: 'Versicolor', ko: '버시컬러',   color: '#4ECDC4' },
+            Virginica:  { emoji: '🔵', label: 'Virginica',  ko: '버지니카',   color: '#45B7D1' }
+        },
+        data: IRIS_RAW
+    },
+    // ============================================================
+    // 추가 분류 데이터셋 6종 (v2.0)
+    // ============================================================
+    seeds: {
+        id: 'seeds', name: '🌾 밀씨 (Wheat Seeds)',
+        description: '밀 3품종을 형태 특징으로 분류합니다',
+        source: 'Charytanowicz et al.(2010), UCI ML Repository | CC BY 4.0',
+        recommended: '면적 + 조밀도가 품종 구분에 가장 효과적',
+        emoji: '🌾', classKey: 'variety',
+        features: {
+            area: { label: '면적', unit: '', short: '면적', emoji: '📐', step: 0.01 },
+            perimeter: { label: '둘레', unit: '', short: '둘레', emoji: '📏', step: 0.01 },
+            compactness: { label: '조밀도', unit: '', short: '조밀도', emoji: '🔵', step: 0.001 },
+            kernel_length: { label: '낱알길이', unit: '', short: '낱알길이', emoji: '🌱', step: 0.01 }
+        },
+        classes: {
+            Kama: { emoji: '🟡', label: 'Kama', ko: '카마', color: '#FFA726' },
+            Rosa: { emoji: '🔴', label: 'Rosa', ko: '로사', color: '#FF6B6B' },
+            Canadian: { emoji: '🟢', label: 'Canadian', ko: '캐나디안', color: '#4ECDC4' }
+        },
+        data: [
+            {area:15.26,perimeter:14.84,compactness:0.871,kernel_length:5.763,variety:'Kama'},{area:14.88,perimeter:14.57,compactness:0.881,kernel_length:5.554,variety:'Kama'},
+            {area:14.29,perimeter:14.09,compactness:0.905,kernel_length:5.291,variety:'Kama'},{area:13.84,perimeter:13.94,compactness:0.896,kernel_length:5.324,variety:'Kama'},
+            {area:16.14,perimeter:14.99,compactness:0.903,kernel_length:5.658,variety:'Kama'},{area:14.38,perimeter:14.21,compactness:0.895,kernel_length:5.386,variety:'Kama'},
+            {area:14.69,perimeter:14.49,compactness:0.879,kernel_length:5.563,variety:'Kama'},{area:14.11,perimeter:14.1,compactness:0.892,kernel_length:5.324,variety:'Kama'},
+            {area:16.63,perimeter:15.46,compactness:0.876,kernel_length:5.884,variety:'Kama'},{area:16.44,perimeter:15.25,compactness:0.888,kernel_length:5.884,variety:'Kama'},
+            {area:15.26,perimeter:14.85,compactness:0.869,kernel_length:5.738,variety:'Kama'},{area:14.03,perimeter:14.16,compactness:0.879,kernel_length:5.397,variety:'Kama'},
+            {area:13.89,perimeter:14.02,compactness:0.888,kernel_length:5.307,variety:'Kama'},{area:13.78,perimeter:14.06,compactness:0.876,kernel_length:5.366,variety:'Kama'},
+            {area:14.59,perimeter:14.28,compactness:0.899,kernel_length:5.351,variety:'Kama'},{area:13.99,perimeter:13.83,compactness:0.921,kernel_length:5.171,variety:'Kama'},
+            {area:15.69,perimeter:14.75,compactness:0.906,kernel_length:5.651,variety:'Kama'},{area:14.7,perimeter:14.21,compactness:0.915,kernel_length:5.291,variety:'Kama'},
+            {area:12.72,perimeter:13.57,compactness:0.868,kernel_length:5.225,variety:'Kama'},{area:14.16,perimeter:14.4,compactness:0.859,kernel_length:5.449,variety:'Kama'},
+            {area:15.88,perimeter:14.9,compactness:0.899,kernel_length:5.618,variety:'Kama'},{area:12.08,perimeter:13.23,compactness:0.867,kernel_length:5.047,variety:'Kama'},
+            {area:18.72,perimeter:16.19,compactness:0.897,kernel_length:6.009,variety:'Rosa'},{area:20.2,perimeter:16.89,compactness:0.89,kernel_length:6.185,variety:'Rosa'},
+            {area:19.57,perimeter:16.74,compactness:0.877,kernel_length:6.149,variety:'Rosa'},{area:17.32,perimeter:15.91,compactness:0.859,kernel_length:5.934,variety:'Rosa'},
+            {area:20.71,perimeter:17.23,compactness:0.877,kernel_length:6.187,variety:'Rosa'},{area:18.94,perimeter:16.49,compactness:0.875,kernel_length:6.037,variety:'Rosa'},
+            {area:17.12,perimeter:15.55,compactness:0.889,kernel_length:5.729,variety:'Rosa'},{area:16.53,perimeter:15.34,compactness:0.883,kernel_length:5.642,variety:'Rosa'},
+            {area:18.72,perimeter:16.34,compactness:0.881,kernel_length:6.219,variety:'Rosa'},{area:20.2,perimeter:16.77,compactness:0.903,kernel_length:6.004,variety:'Rosa'},
+            {area:19.28,perimeter:16.68,compactness:0.871,kernel_length:6.106,variety:'Rosa'},{area:17.98,perimeter:15.85,compactness:0.899,kernel_length:5.816,variety:'Rosa'},
+            {area:18.85,perimeter:16.17,compactness:0.906,kernel_length:5.884,variety:'Rosa'},{area:18.96,perimeter:16.2,compactness:0.907,kernel_length:5.884,variety:'Rosa'},
+            {area:18.14,perimeter:16.12,compactness:0.878,kernel_length:5.871,variety:'Rosa'},{area:17.36,perimeter:15.76,compactness:0.879,kernel_length:5.838,variety:'Rosa'},
+            {area:19.11,perimeter:16.26,compactness:0.908,kernel_length:5.943,variety:'Rosa'},{area:18.81,perimeter:16.29,compactness:0.889,kernel_length:5.962,variety:'Rosa'},
+            {area:19.51,perimeter:16.71,compactness:0.878,kernel_length:6.185,variety:'Rosa'},{area:18.89,perimeter:16.32,compactness:0.89,kernel_length:6.009,variety:'Rosa'},
+            {area:19.38,perimeter:16.72,compactness:0.871,kernel_length:6.136,variety:'Rosa'},{area:18.33,perimeter:15.87,compactness:0.914,kernel_length:5.832,variety:'Rosa'},
+            {area:11.42,perimeter:12.86,compactness:0.867,kernel_length:5.091,variety:'Canadian'},{area:11.23,perimeter:12.63,compactness:0.884,kernel_length:4.902,variety:'Canadian'},
+            {area:12.36,perimeter:13.19,compactness:0.892,kernel_length:5.075,variety:'Canadian'},{area:13.22,perimeter:13.84,compactness:0.868,kernel_length:5.395,variety:'Canadian'},
+            {area:12.78,perimeter:13.57,compactness:0.872,kernel_length:5.228,variety:'Canadian'},{area:12.88,perimeter:13.5,compactness:0.888,kernel_length:5.139,variety:'Canadian'},
+            {area:12.16,perimeter:13.29,compactness:0.864,kernel_length:5.179,variety:'Canadian'},{area:11.56,perimeter:13.05,compactness:0.853,kernel_length:5.118,variety:'Canadian'},
+            {area:11.79,perimeter:13.07,compactness:0.867,kernel_length:5.107,variety:'Canadian'},{area:12.19,perimeter:13.2,compactness:0.878,kernel_length:5.134,variety:'Canadian'},
+            {area:11.23,perimeter:12.88,compactness:0.851,kernel_length:5.14,variety:'Canadian'},{area:10.59,perimeter:12.41,compactness:0.864,kernel_length:4.961,variety:'Canadian'},
+            {area:10.93,perimeter:12.8,compactness:0.839,kernel_length:5.143,variety:'Canadian'},{area:11.27,perimeter:12.86,compactness:0.857,kernel_length:5.091,variety:'Canadian'},
+            {area:11.87,perimeter:13.02,compactness:0.881,kernel_length:4.951,variety:'Canadian'},{area:10.82,perimeter:12.83,compactness:0.826,kernel_length:5.18,variety:'Canadian'},
+            {area:12.11,perimeter:13.47,compactness:0.838,kernel_length:5.338,variety:'Canadian'},{area:12.8,perimeter:13.47,compactness:0.886,kernel_length:5.16,variety:'Canadian'},
+            {area:11.48,perimeter:13.05,compactness:0.847,kernel_length:5.163,variety:'Canadian'},{area:12.21,perimeter:13.47,compactness:0.845,kernel_length:5.304,variety:'Canadian'},
+            {area:11.41,perimeter:12.95,compactness:0.856,kernel_length:5.09,variety:'Canadian'}
+        ]
+    },
+    wine: {
+        id: 'wine', name: '🍷 와인 (Wine)',
+        description: '이탈리아 와인 3품종을 화학 성분으로 분류합니다',
+        source: 'Forina et al.(1988), UCI ML Repository | CC BY 4.0',
+        recommended: '플라보노이드 + 색강도가 품종 구분에 가장 효과적',
+        emoji: '🍷', classKey: 'cultivar',
+        features: {
+            alcohol: { label: '알코올', unit: '%', short: '알코올', emoji: '🍷', step: 0.01 },
+            flavanoids: { label: '플라보노이드', unit: '', short: '플라보노이드', emoji: '🧪', step: 0.01 },
+            color_intensity: { label: '색 강도', unit: '', short: '색강도', emoji: '🎨', step: 0.01 },
+            proline: { label: '프롤린', unit: '', short: '프롤린', emoji: '💧', step: 1 }
+        },
+        classes: {
+            C1: { emoji: '🔴', label: 'Class 1', ko: '1번 품종', color: '#FF6B6B' },
+            C2: { emoji: '🟢', label: 'Class 2', ko: '2번 품종', color: '#4ECDC4' },
+            C3: { emoji: '🔵', label: 'Class 3', ko: '3번 품종', color: '#45B7D1' }
+        },
+        data: [
+            {alcohol:14.23,flavanoids:3.06,color_intensity:5.64,proline:1065,cultivar:'C1'},{alcohol:13.2,flavanoids:2.76,color_intensity:4.38,proline:1050,cultivar:'C1'},
+            {alcohol:13.16,flavanoids:3.24,color_intensity:5.68,proline:1185,cultivar:'C1'},{alcohol:14.37,flavanoids:3.49,color_intensity:7.8,proline:1480,cultivar:'C1'},
+            {alcohol:13.24,flavanoids:2.69,color_intensity:4.32,proline:735,cultivar:'C1'},{alcohol:14.2,flavanoids:2.65,color_intensity:5.03,proline:1450,cultivar:'C1'},
+            {alcohol:14.39,flavanoids:3.4,color_intensity:5.75,proline:1290,cultivar:'C1'},{alcohol:14.06,flavanoids:2.85,color_intensity:5.4,proline:1130,cultivar:'C1'},
+            {alcohol:14.83,flavanoids:2.98,color_intensity:5.2,proline:1280,cultivar:'C1'},{alcohol:13.86,flavanoids:3.03,color_intensity:5.04,proline:1235,cultivar:'C1'},
+            {alcohol:14.1,flavanoids:3.17,color_intensity:5.08,proline:1290,cultivar:'C1'},{alcohol:14.12,flavanoids:3.03,color_intensity:4.58,proline:1035,cultivar:'C1'},
+            {alcohol:13.75,flavanoids:3.2,color_intensity:6.25,proline:1300,cultivar:'C1'},{alcohol:14.75,flavanoids:3.15,color_intensity:4.14,proline:780,cultivar:'C1'},
+            {alcohol:14.38,flavanoids:3.19,color_intensity:5.24,proline:1200,cultivar:'C1'},{alcohol:13.63,flavanoids:2.68,color_intensity:4.46,proline:750,cultivar:'C1'},
+            {alcohol:14.3,flavanoids:2.81,color_intensity:5.46,proline:1265,cultivar:'C1'},{alcohol:13.83,flavanoids:2.7,color_intensity:3.87,proline:1030,cultivar:'C1'},
+            {alcohol:14.19,flavanoids:3.11,color_intensity:4.87,proline:1355,cultivar:'C1'},{alcohol:13.77,flavanoids:2.41,color_intensity:4.45,proline:1075,cultivar:'C1'},
+            {alcohol:12.37,flavanoids:2.06,color_intensity:2.95,proline:520,cultivar:'C2'},{alcohol:12.33,flavanoids:1.67,color_intensity:2.23,proline:600,cultivar:'C2'},
+            {alcohol:12.64,flavanoids:1.87,color_intensity:2.36,proline:615,cultivar:'C2'},{alcohol:13.67,flavanoids:1.46,color_intensity:3.1,proline:680,cultivar:'C2'},
+            {alcohol:12.37,flavanoids:1.63,color_intensity:2.88,proline:434,cultivar:'C2'},{alcohol:12.17,flavanoids:1.45,color_intensity:2.53,proline:495,cultivar:'C2'},
+            {alcohol:12.37,flavanoids:1.35,color_intensity:2.82,proline:500,cultivar:'C2'},{alcohol:13.11,flavanoids:2.12,color_intensity:2.87,proline:720,cultivar:'C2'},
+            {alcohol:12.37,flavanoids:1.76,color_intensity:2.45,proline:550,cultivar:'C2'},{alcohol:13.34,flavanoids:2.36,color_intensity:3.12,proline:615,cultivar:'C2'},
+            {alcohol:12.21,flavanoids:1.36,color_intensity:2.02,proline:406,cultivar:'C2'},{alcohol:12.29,flavanoids:1.59,color_intensity:3.3,proline:630,cultivar:'C2'},
+            {alcohol:13.05,flavanoids:2.05,color_intensity:3.47,proline:840,cultivar:'C2'},{alcohol:11.64,flavanoids:1.35,color_intensity:3.52,proline:480,cultivar:'C2'},
+            {alcohol:12.08,flavanoids:1.63,color_intensity:2.56,proline:640,cultivar:'C2'},{alcohol:11.65,flavanoids:1.67,color_intensity:2.03,proline:580,cultivar:'C2'},
+            {alcohol:12.08,flavanoids:2.17,color_intensity:2.89,proline:515,cultivar:'C2'},{alcohol:12.6,flavanoids:2.05,color_intensity:2.65,proline:450,cultivar:'C2'},
+            {alcohol:12.34,flavanoids:1.91,color_intensity:2.42,proline:585,cultivar:'C2'},{alcohol:11.82,flavanoids:1.72,color_intensity:3.5,proline:510,cultivar:'C2'},
+            {alcohol:12.51,flavanoids:0.6,color_intensity:7.7,proline:880,cultivar:'C3'},{alcohol:12.42,flavanoids:0.92,color_intensity:3.82,proline:518,cultivar:'C3'},
+            {alcohol:12.25,flavanoids:0.49,color_intensity:7.22,proline:540,cultivar:'C3'},{alcohol:13.05,flavanoids:0.56,color_intensity:7.81,proline:625,cultivar:'C3'},
+            {alcohol:11.87,flavanoids:0.48,color_intensity:5.75,proline:520,cultivar:'C3'},{alcohol:12.37,flavanoids:0.43,color_intensity:10.52,proline:770,cultivar:'C3'},
+            {alcohol:13.29,flavanoids:0.57,color_intensity:9.15,proline:855,cultivar:'C3'},{alcohol:13.72,flavanoids:0.66,color_intensity:5.19,proline:630,cultivar:'C3'},
+            {alcohol:12.17,flavanoids:0.59,color_intensity:4.35,proline:510,cultivar:'C3'},{alcohol:14.13,flavanoids:0.76,color_intensity:7.59,proline:1285,cultivar:'C3'},
+            {alcohol:13.45,flavanoids:0.41,color_intensity:7.3,proline:860,cultivar:'C3'},{alcohol:12.82,flavanoids:0.59,color_intensity:6.73,proline:840,cultivar:'C3'},
+            {alcohol:13.58,flavanoids:0.7,color_intensity:7.65,proline:1080,cultivar:'C3'},{alcohol:13.4,flavanoids:0.67,color_intensity:9.19,proline:650,cultivar:'C3'},
+            {alcohol:12.2,flavanoids:0.69,color_intensity:5.3,proline:630,cultivar:'C3'},{alcohol:12.77,flavanoids:0.75,color_intensity:5.51,proline:610,cultivar:'C3'},
+            {alcohol:14.16,flavanoids:0.62,color_intensity:5.45,proline:780,cultivar:'C3'},{alcohol:13.71,flavanoids:0.64,color_intensity:4.74,proline:740,cultivar:'C3'}
+        ]
+    },
+    heart: {
+        id: 'heart', name: '❤️ 심장병 (Heart Disease)',
+        description: '심장병 유무를 임상 지표로 분류합니다',
+        source: 'Janosi et al.(1988), UCI ML Repository | CC BY 4.0',
+        recommended: '최대심박수 + ST기울기가 분류에 가장 효과적',
+        emoji: '❤️', classKey: 'target',
+        features: {
+            age: { label: '나이', unit: '세', short: '나이', emoji: '👤', step: 1 },
+            max_hr: { label: '최대심박수', unit: 'bpm', short: '최대심박', emoji: '💓', step: 1 },
+            oldpeak: { label: 'ST기울기', unit: '', short: 'ST기울기', emoji: '📉', step: 0.1 },
+            cholesterol: { label: '콜레스테롤', unit: 'mg/dL', short: '콜레스테롤', emoji: '🩸', step: 1 }
+        },
+        classes: {
+            정상: { emoji: '💚', label: '정상', ko: '정상', color: '#4ECDC4' },
+            질환: { emoji: '❤️', label: '질환', ko: '심장질환', color: '#FF6B6B' }
+        },
+        data: [
+            {age:63,max_hr:150,oldpeak:2.3,cholesterol:233,target:'질환'},{age:37,max_hr:187,oldpeak:3.5,cholesterol:250,target:'질환'},
+            {age:41,max_hr:172,oldpeak:1.4,cholesterol:204,target:'정상'},{age:56,max_hr:178,oldpeak:0.8,cholesterol:236,target:'정상'},
+            {age:57,max_hr:163,oldpeak:0.6,cholesterol:354,target:'정상'},{age:57,max_hr:148,oldpeak:1.6,cholesterol:192,target:'질환'},
+            {age:56,max_hr:153,oldpeak:1.3,cholesterol:294,target:'질환'},{age:44,max_hr:173,oldpeak:0,cholesterol:263,target:'정상'},
+            {age:52,max_hr:162,oldpeak:0.5,cholesterol:199,target:'정상'},{age:57,max_hr:174,oldpeak:0,cholesterol:168,target:'정상'},
+            {age:54,max_hr:160,oldpeak:1.6,cholesterol:239,target:'정상'},{age:48,max_hr:131,oldpeak:0.2,cholesterol:275,target:'질환'},
+            {age:49,max_hr:139,oldpeak:2,cholesterol:266,target:'질환'},{age:64,max_hr:144,oldpeak:1.8,cholesterol:263,target:'정상'},
+            {age:58,max_hr:128,oldpeak:2.2,cholesterol:211,target:'질환'},{age:50,max_hr:152,oldpeak:1.2,cholesterol:219,target:'정상'},
+            {age:58,max_hr:150,oldpeak:2.8,cholesterol:283,target:'질환'},{age:66,max_hr:160,oldpeak:3.6,cholesterol:228,target:'정상'},
+            {age:43,max_hr:171,oldpeak:0,cholesterol:177,target:'정상'},{age:69,max_hr:140,oldpeak:3.4,cholesterol:239,target:'정상'},
+            {age:59,max_hr:170,oldpeak:0,cholesterol:234,target:'정상'},{age:44,max_hr:145,oldpeak:2.8,cholesterol:220,target:'질환'},
+            {age:42,max_hr:178,oldpeak:0,cholesterol:226,target:'정상'},{age:61,max_hr:148,oldpeak:4,cholesterol:203,target:'질환'},
+            {age:40,max_hr:178,oldpeak:1.4,cholesterol:199,target:'정상'},{age:71,max_hr:125,oldpeak:1.6,cholesterol:305,target:'정상'},
+            {age:59,max_hr:140,oldpeak:0,cholesterol:204,target:'정상'},{age:51,max_hr:125,oldpeak:1.4,cholesterol:261,target:'정상'},
+            {age:65,max_hr:127,oldpeak:2.2,cholesterol:417,target:'질환'},{age:53,max_hr:155,oldpeak:3.1,cholesterol:226,target:'질환'},
+            {age:41,max_hr:168,oldpeak:0,cholesterol:203,target:'정상'},{age:65,max_hr:135,oldpeak:2.2,cholesterol:254,target:'질환'},
+            {age:44,max_hr:175,oldpeak:0,cholesterol:233,target:'정상'},{age:54,max_hr:168,oldpeak:0,cholesterol:309,target:'정상'},
+            {age:51,max_hr:143,oldpeak:0.2,cholesterol:186,target:'정상'},{age:46,max_hr:144,oldpeak:0,cholesterol:231,target:'정상'},
+            {age:54,max_hr:153,oldpeak:0,cholesterol:239,target:'질환'},{age:56,max_hr:152,oldpeak:0.1,cholesterol:256,target:'질환'},
+            {age:46,max_hr:171,oldpeak:0,cholesterol:197,target:'정상'},{age:67,max_hr:160,oldpeak:1.5,cholesterol:229,target:'질환'},
+            {age:55,max_hr:132,oldpeak:1.2,cholesterol:260,target:'질환'},{age:44,max_hr:169,oldpeak:0,cholesterol:207,target:'정상'},
+            {age:63,max_hr:143,oldpeak:1.8,cholesterol:248,target:'질환'},{age:62,max_hr:103,oldpeak:1.4,cholesterol:267,target:'질환'},
+            {age:57,max_hr:156,oldpeak:0,cholesterol:197,target:'정상'},{age:35,max_hr:156,oldpeak:1,cholesterol:198,target:'정상'},
+            {age:52,max_hr:168,oldpeak:0,cholesterol:222,target:'정상'},{age:43,max_hr:165,oldpeak:0.2,cholesterol:213,target:'정상'},
+            {age:59,max_hr:161,oldpeak:0,cholesterol:273,target:'정상'},{age:60,max_hr:157,oldpeak:2.6,cholesterol:186,target:'질환'},
+            {age:47,max_hr:185,oldpeak:0,cholesterol:234,target:'정상'},{age:55,max_hr:170,oldpeak:0,cholesterol:181,target:'정상'},
+            {age:62,max_hr:130,oldpeak:1.8,cholesterol:194,target:'질환'},{age:54,max_hr:170,oldpeak:0,cholesterol:201,target:'정상'},
+            {age:67,max_hr:108,oldpeak:1.5,cholesterol:564,target:'질환'},{age:45,max_hr:132,oldpeak:0.2,cholesterol:232,target:'질환'},
+            {age:68,max_hr:141,oldpeak:3.4,cholesterol:277,target:'질환'},{age:57,max_hr:130,oldpeak:2,cholesterol:241,target:'질환'},
+            {age:38,max_hr:166,oldpeak:0,cholesterol:175,target:'정상'},{age:49,max_hr:171,oldpeak:0.6,cholesterol:271,target:'정상'}
+        ]
+    },
+    breast_cancer: {
+        id: 'breast_cancer', name: '🔬 유방암 (Breast Cancer Wisconsin)',
+        description: '세포핵 측정값으로 양성/악성을 분류합니다',
+        source: 'Wolberg(1992), UCI ML Repository | CC BY 4.0',
+        recommended: '평균반경 + 평균오목도가 양성/악성 구분에 핵심',
+        emoji: '🔬', classKey: 'diagnosis',
+        features: {
+            radius_mean: { label: '평균반경', unit: '', short: '반경', emoji: '⭕', step: 0.01 },
+            texture_mean: { label: '평균질감', unit: '', short: '질감', emoji: '🧱', step: 0.01 },
+            concavity_mean: { label: '평균오목도', unit: '', short: '오목도', emoji: '🔻', step: 0.001 },
+            symmetry_mean: { label: '평균대칭도', unit: '', short: '대칭도', emoji: '↔️', step: 0.001 }
+        },
+        classes: {
+            양성: { emoji: '💚', label: '양성', ko: '양성', color: '#4ECDC4' },
+            악성: { emoji: '🔴', label: '악성', ko: '악성', color: '#FF6B6B' }
+        },
+        data: [
+            {radius_mean:17.99,texture_mean:10.38,concavity_mean:0.3,symmetry_mean:0.242,diagnosis:'악성'},{radius_mean:20.57,texture_mean:17.77,concavity_mean:0.19,symmetry_mean:0.181,diagnosis:'악성'},
+            {radius_mean:19.69,texture_mean:21.25,concavity_mean:0.24,symmetry_mean:0.207,diagnosis:'악성'},{radius_mean:11.42,texture_mean:20.38,concavity_mean:0.11,symmetry_mean:0.26,diagnosis:'악성'},
+            {radius_mean:20.29,texture_mean:14.34,concavity_mean:0.16,symmetry_mean:0.179,diagnosis:'악성'},{radius_mean:12.45,texture_mean:15.7,concavity_mean:0.07,symmetry_mean:0.208,diagnosis:'악성'},
+            {radius_mean:18.25,texture_mean:19.98,concavity_mean:0.22,symmetry_mean:0.235,diagnosis:'악성'},{radius_mean:13.71,texture_mean:20.83,concavity_mean:0.19,symmetry_mean:0.236,diagnosis:'악성'},
+            {radius_mean:13.0,texture_mean:21.82,concavity_mean:0.13,symmetry_mean:0.222,diagnosis:'악성'},{radius_mean:12.46,texture_mean:24.04,concavity_mean:0.19,symmetry_mean:0.214,diagnosis:'악성'},
+            {radius_mean:16.02,texture_mean:23.24,concavity_mean:0.19,symmetry_mean:0.205,diagnosis:'악성'},{radius_mean:15.78,texture_mean:17.89,concavity_mean:0.13,symmetry_mean:0.207,diagnosis:'악성'},
+            {radius_mean:19.17,texture_mean:24.8,concavity_mean:0.21,symmetry_mean:0.177,diagnosis:'악성'},{radius_mean:15.85,texture_mean:23.95,concavity_mean:0.12,symmetry_mean:0.198,diagnosis:'악성'},
+            {radius_mean:13.73,texture_mean:22.61,concavity_mean:0.12,symmetry_mean:0.213,diagnosis:'악성'},{radius_mean:14.54,texture_mean:27.54,concavity_mean:0.14,symmetry_mean:0.195,diagnosis:'악성'},
+            {radius_mean:16.13,texture_mean:20.68,concavity_mean:0.14,symmetry_mean:0.169,diagnosis:'악성'},{radius_mean:19.81,texture_mean:22.15,concavity_mean:0.22,symmetry_mean:0.211,diagnosis:'악성'},
+            {radius_mean:13.54,texture_mean:14.36,concavity_mean:0.09,symmetry_mean:0.201,diagnosis:'악성'},{radius_mean:13.08,texture_mean:15.71,concavity_mean:0.11,symmetry_mean:0.187,diagnosis:'악성'},
+            {radius_mean:15.34,texture_mean:14.26,concavity_mean:0.15,symmetry_mean:0.194,diagnosis:'악성'},{radius_mean:21.16,texture_mean:23.04,concavity_mean:0.27,symmetry_mean:0.21,diagnosis:'악성'},
+            {radius_mean:16.65,texture_mean:21.38,concavity_mean:0.13,symmetry_mean:0.204,diagnosis:'악성'},{radius_mean:9.504,texture_mean:12.44,concavity_mean:0,symmetry_mean:0.163,diagnosis:'악성'},
+            {radius_mean:12.3,texture_mean:15.9,concavity_mean:0.01,symmetry_mean:0.182,diagnosis:'양성'},{radius_mean:12.77,texture_mean:22.47,concavity_mean:0.02,symmetry_mean:0.191,diagnosis:'양성'},
+            {radius_mean:9.029,texture_mean:17.33,concavity_mean:0,symmetry_mean:0.193,diagnosis:'양성'},{radius_mean:10.26,texture_mean:16.58,concavity_mean:0,symmetry_mean:0.178,diagnosis:'양성'},
+            {radius_mean:9.683,texture_mean:19.34,concavity_mean:0.01,symmetry_mean:0.165,diagnosis:'양성'},{radius_mean:10.89,texture_mean:12.87,concavity_mean:0.06,symmetry_mean:0.178,diagnosis:'양성'},
+            {radius_mean:11.13,texture_mean:22.44,concavity_mean:0.03,symmetry_mean:0.217,diagnosis:'양성'},{radius_mean:12.77,texture_mean:29.43,concavity_mean:0.02,symmetry_mean:0.201,diagnosis:'양성'},
+            {radius_mean:9.742,texture_mean:15.67,concavity_mean:0.01,symmetry_mean:0.147,diagnosis:'양성'},{radius_mean:11.43,texture_mean:15.39,concavity_mean:0.04,symmetry_mean:0.166,diagnosis:'양성'},
+            {radius_mean:14.9,texture_mean:22.53,concavity_mean:0.06,symmetry_mean:0.204,diagnosis:'양성'},{radius_mean:12.4,texture_mean:17.68,concavity_mean:0.02,symmetry_mean:0.156,diagnosis:'양성'},
+            {radius_mean:11.54,texture_mean:14.44,concavity_mean:0.02,symmetry_mean:0.143,diagnosis:'양성'},{radius_mean:8.597,texture_mean:18.6,concavity_mean:0.02,symmetry_mean:0.189,diagnosis:'양성'},
+            {radius_mean:12.49,texture_mean:24.04,concavity_mean:0,symmetry_mean:0.168,diagnosis:'양성'},{radius_mean:12.18,texture_mean:14.08,concavity_mean:0.05,symmetry_mean:0.152,diagnosis:'양성'},
+            {radius_mean:9.042,texture_mean:18.9,concavity_mean:0,symmetry_mean:0.149,diagnosis:'양성'},{radius_mean:12.43,texture_mean:17.0,concavity_mean:0.05,symmetry_mean:0.185,diagnosis:'양성'},
+            {radius_mean:10.08,texture_mean:15.11,concavity_mean:0.03,symmetry_mean:0.162,diagnosis:'양성'},{radius_mean:11.26,texture_mean:19.83,concavity_mean:0.02,symmetry_mean:0.166,diagnosis:'양성'},
+            {radius_mean:10.51,texture_mean:20.19,concavity_mean:0.03,symmetry_mean:0.17,diagnosis:'양성'},{radius_mean:13.05,texture_mean:19.31,concavity_mean:0.11,symmetry_mean:0.179,diagnosis:'양성'},
+            {radius_mean:14.26,texture_mean:19.65,concavity_mean:0.05,symmetry_mean:0.178,diagnosis:'양성'},{radius_mean:10.51,texture_mean:23.09,concavity_mean:0.03,symmetry_mean:0.195,diagnosis:'양성'}
+        ]
+    },
+    banknote: {
+        id: 'banknote', name: '💵 위조지폐 (Banknote Auth.)',
+        description: '지폐 이미지의 통계적 특징으로 위조/진품을 판별합니다',
+        source: 'Lohweg(2012), UCI ML Repository | CC BY 4.0',
+        recommended: '분산 + 왜도가 위조 판별에 가장 효과적',
+        emoji: '💵', classKey: 'auth',
+        features: {
+            variance: { label: '분산', unit: '', short: '분산', emoji: '📊', step: 0.01 },
+            skewness: { label: '왜도', unit: '', short: '왜도', emoji: '📈', step: 0.01 },
+            curtosis: { label: '첨도', unit: '', short: '첨도', emoji: '📉', step: 0.01 },
+            entropy: { label: '엔트로피', unit: '', short: '엔트로피', emoji: '🌀', step: 0.01 }
+        },
+        classes: {
+            진품: { emoji: '✅', label: '진품', ko: '진품', color: '#4ECDC4' },
+            위조: { emoji: '❌', label: '위조', ko: '위조', color: '#FF6B6B' }
+        },
+        data: [
+            {variance:3.62,skewness:8.67,curtosis:-2.81,entropy:-0.44,auth:'진품'},{variance:4.55,skewness:8.17,curtosis:-2.46,entropy:-1.46,auth:'진품'},
+            {variance:3.87,skewness:-2.67,curtosis:1.97,entropy:0.41,auth:'진품'},{variance:3.59,skewness:3.01,curtosis:0.73,entropy:-1.09,auth:'진품'},
+            {variance:2.09,skewness:-6.81,curtosis:8.46,entropy:-0.49,auth:'진품'},{variance:3.2,skewness:5.41,curtosis:-0.15,entropy:-0.63,auth:'진품'},
+            {variance:1.54,skewness:1.83,curtosis:-0.13,entropy:0.32,auth:'진품'},{variance:0.34,skewness:-4.18,curtosis:5.12,entropy:0.14,auth:'진품'},
+            {variance:2.28,skewness:-1.16,curtosis:0.95,entropy:0.09,auth:'진품'},{variance:4.37,skewness:5.66,curtosis:-0.57,entropy:-1.73,auth:'진품'},
+            {variance:5.04,skewness:-1.72,curtosis:1.29,entropy:-0.39,auth:'진품'},{variance:4.96,skewness:6.73,curtosis:0.26,entropy:-1.85,auth:'진품'},
+            {variance:2.15,skewness:0.2,curtosis:0.55,entropy:-0.14,auth:'진품'},{variance:3.19,skewness:7.34,curtosis:1.64,entropy:-1.8,auth:'진품'},
+            {variance:3.38,skewness:6.78,curtosis:1.38,entropy:-2.29,auth:'진품'},{variance:4.36,skewness:9.67,curtosis:-3.96,entropy:-0.65,auth:'진품'},
+            {variance:0.76,skewness:3.1,curtosis:-0.82,entropy:0.22,auth:'진품'},{variance:2.34,skewness:4.04,curtosis:0.08,entropy:-0.18,auth:'진품'},
+            {variance:1.39,skewness:2.09,curtosis:1.4,entropy:-0.62,auth:'진품'},{variance:3.93,skewness:-6.07,curtosis:6.51,entropy:-0.69,auth:'진품'},
+            {variance:5.29,skewness:7.21,curtosis:-4.93,entropy:0.66,auth:'진품'},{variance:4.74,skewness:-4.56,curtosis:4.69,entropy:-0.62,auth:'진품'},
+            {variance:2.26,skewness:-4.14,curtosis:5.13,entropy:-0.04,auth:'진품'},{variance:3.82,skewness:6.87,curtosis:-2.57,entropy:-0.14,auth:'진품'},
+            {variance:5.01,skewness:-0.81,curtosis:1.84,entropy:-0.87,auth:'진품'},{variance:1.31,skewness:-3.98,curtosis:5.68,entropy:-0.17,auth:'진품'},
+            {variance:-1.38,skewness:-4.88,curtosis:10.22,entropy:-0.54,auth:'위조'},{variance:-2.44,skewness:-3.5,curtosis:11.21,entropy:-0.22,auth:'위조'},
+            {variance:-4.06,skewness:-0.75,curtosis:8.91,entropy:-0.14,auth:'위조'},{variance:-3.59,skewness:-8.38,curtosis:12.39,entropy:-1.23,auth:'위조'},
+            {variance:-0.29,skewness:-0.37,curtosis:3.49,entropy:0.31,auth:'위조'},{variance:-3.89,skewness:-11.8,curtosis:15.23,entropy:0.22,auth:'위조'},
+            {variance:-2.04,skewness:-0.52,curtosis:5.73,entropy:0.09,auth:'위조'},{variance:-5.41,skewness:-4.8,curtosis:8.15,entropy:-0.15,auth:'위조'},
+            {variance:-0.49,skewness:-3.25,curtosis:6.56,entropy:0.62,auth:'위조'},{variance:-1.87,skewness:-8.56,curtosis:10.33,entropy:0.53,auth:'위조'},
+            {variance:-3.66,skewness:-3.41,curtosis:8.01,entropy:-0.23,auth:'위조'},{variance:-1.59,skewness:1.39,curtosis:2.76,entropy:-0.47,auth:'위조'},
+            {variance:-2.57,skewness:1.46,curtosis:3.38,entropy:-0.14,auth:'위조'},{variance:-4.27,skewness:-4.56,curtosis:8.99,entropy:0.11,auth:'위조'},
+            {variance:-3.16,skewness:-5.16,curtosis:9.49,entropy:0.09,auth:'위조'},{variance:-0.92,skewness:1.51,curtosis:2.58,entropy:-0.2,auth:'위조'},
+            {variance:-2.87,skewness:-5.56,curtosis:10.89,entropy:-0.36,auth:'위조'},{variance:-3.93,skewness:-6.38,curtosis:10.71,entropy:0.89,auth:'위조'},
+            {variance:-4.51,skewness:-5.27,curtosis:9.65,entropy:-0.47,auth:'위조'},{variance:-1.12,skewness:-2.98,curtosis:7.66,entropy:0.23,auth:'위조'}
+        ]
+    },
+    glass: {
+        id: 'glass', name: '🔍 유리 (Glass Identification)',
+        description: '유리 종류를 화학 성분으로 분류합니다',
+        source: 'German(1987), UCI ML Repository | CC BY 4.0',
+        recommended: 'Mg + Al 조합이 유리 종류 구분에 효과적',
+        emoji: '🔍', classKey: 'type',
+        features: {
+            RI: { label: '굴절률', unit: '', short: '굴절률', emoji: '💎', step: 0.0001 },
+            Na: { label: '나트륨', unit: '%', short: 'Na', emoji: '🧂', step: 0.01 },
+            Mg: { label: '마그네슘', unit: '%', short: 'Mg', emoji: '⚗️', step: 0.01 },
+            Al: { label: '알루미늄', unit: '%', short: 'Al', emoji: '🔩', step: 0.01 }
+        },
+        classes: {
+            창유리: { emoji: '🪟', label: '창유리', ko: '건물 창유리', color: '#45B7D1' },
+            용기유리: { emoji: '🫙', label: '용기유리', ko: '용기', color: '#4ECDC4' },
+            식기유리: { emoji: '🍽️', label: '식기유리', ko: '식기', color: '#FFA726' }
+        },
+        data: [
+            {RI:1.5159,Na:13.24,Mg:3.49,Al:1.47,type:'창유리'},{RI:1.5176,Na:13.27,Mg:3.62,Al:1.14,type:'창유리'},
+            {RI:1.5175,Na:12.85,Mg:3.48,Al:1.23,type:'창유리'},{RI:1.5177,Na:13.02,Mg:3.58,Al:1.37,type:'창유리'},
+            {RI:1.5168,Na:13.21,Mg:3.58,Al:1.67,type:'창유리'},{RI:1.5162,Na:12.58,Mg:3.43,Al:1.31,type:'창유리'},
+            {RI:1.5173,Na:13.53,Mg:3.55,Al:1.54,type:'창유리'},{RI:1.516,Na:13.47,Mg:3.5,Al:1.52,type:'창유리'},
+            {RI:1.5147,Na:12.2,Mg:3.17,Al:1.72,type:'창유리'},{RI:1.5181,Na:13.72,Mg:3.68,Al:1.81,type:'창유리'},
+            {RI:1.5183,Na:14.22,Mg:3.58,Al:0.82,type:'창유리'},{RI:1.518,Na:12.87,Mg:3.38,Al:1.36,type:'창유리'},
+            {RI:1.5171,Na:12.57,Mg:3.47,Al:1.38,type:'창유리'},{RI:1.5164,Na:12.68,Mg:3.67,Al:1.16,type:'창유리'},
+            {RI:1.5167,Na:13.13,Mg:3.53,Al:1.35,type:'창유리'},{RI:1.5171,Na:14.56,Mg:3.57,Al:1.47,type:'창유리'},
+            {RI:1.5163,Na:12.73,Mg:3.43,Al:1.19,type:'창유리'},{RI:1.5186,Na:14.15,Mg:3.67,Al:1.07,type:'창유리'},
+            {RI:1.5181,Na:13.78,Mg:3.56,Al:1.32,type:'창유리'},{RI:1.5164,Na:12.97,Mg:3.54,Al:1.27,type:'창유리'},
+            {RI:1.5172,Na:11.43,Mg:0,Al:1.17,type:'용기유리'},{RI:1.5139,Na:14.13,Mg:0,Al:3.04,type:'용기유리'},
+            {RI:1.5127,Na:13.79,Mg:0,Al:2.12,type:'용기유리'},{RI:1.5149,Na:14.36,Mg:0,Al:1.58,type:'용기유리'},
+            {RI:1.5161,Na:12.16,Mg:0,Al:1.61,type:'용기유리'},{RI:1.5162,Na:11.6,Mg:0,Al:2.57,type:'용기유리'},
+            {RI:1.5176,Na:11.83,Mg:0,Al:3.41,type:'용기유리'},{RI:1.5191,Na:15.08,Mg:0,Al:0.79,type:'용기유리'},
+            {RI:1.5168,Na:13.33,Mg:0,Al:1.12,type:'용기유리'},{RI:1.5152,Na:14.02,Mg:0,Al:1.94,type:'용기유리'},
+            {RI:1.5215,Na:12.99,Mg:3.47,Al:1.12,type:'식기유리'},{RI:1.5216,Na:14.09,Mg:3.73,Al:0.88,type:'식기유리'},
+            {RI:1.522,Na:13.12,Mg:3.58,Al:0.9,type:'식기유리'},{RI:1.5227,Na:14.11,Mg:2.68,Al:0.91,type:'식기유리'},
+            {RI:1.5221,Na:13.93,Mg:3.54,Al:0.75,type:'식기유리'},{RI:1.5218,Na:13.62,Mg:2.41,Al:0.9,type:'식기유리'},
+            {RI:1.5222,Na:13.21,Mg:3.39,Al:0.59,type:'식기유리'},{RI:1.5215,Na:12.99,Mg:3.47,Al:1.12,type:'식기유리'},
+            {RI:1.5223,Na:13.81,Mg:3.34,Al:0.94,type:'식기유리'}
+        ]
+    }
+};
+
+// ============================================================
+// 전역 변수
+// ============================================================
+let currentDatasetId = 'penguins';
+let allData = [];
+let trainData = [];
+let testData = [];
+let decisionTree = null;
+let selectedFeatures = [];
+let currentMode = 'train';
+let currentTestIndex = -1;
+let highlightPath = [];
+let allTestResults = [];
+let currentInferenceTab = 'testData';
+let animBuildOrder = [];
+let animStep_idx = 0;
+let animTimer = null;
+let animVisibleNodes = new Set();
+let csvTempData = null; // CSV 업로드 임시 저장
+
+// ============================================================
+// 초기화
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    initSliders();
+    initDatasetSelector();
+    applyDataset('penguins');
+});
+
+function initSliders() {
+    document.getElementById('maxDepth').addEventListener('input', e => {
+        document.getElementById('maxDepthValue').textContent = e.target.value;
+    });
+    document.getElementById('minSamples').addEventListener('input', e => {
+        document.getElementById('minSamplesValue').textContent = e.target.value;
+    });
+}
+
+function initDatasetSelector() {
+    // v2.0: optgroup은 HTML에 정적 작성, CSV만 동적 관리
+    // 데이터셋 정보 박스 초기화
+    const ds = DATASETS[currentDatasetId];
+    if (ds && ds.source) {
+        document.getElementById('diSource').textContent = '📚 ' + ds.source;
+        document.getElementById('diDesc').textContent = ds.description;
+        document.getElementById('diRec').textContent = '💡 ' + (ds.recommended || '');
+    }
+}
+
+// ============================================================
+// 데이터셋 전환 시스템
+// ============================================================
+function switchDataset(datasetId) {
+    if (!DATASETS[datasetId]) return;
+    resetAll();
+    applyDataset(datasetId);
+    showToast(`📦 ${DATASETS[datasetId].name} 로드 완료`, 'info');
+}
+
+function applyDataset(datasetId) {
+    const ds = DATASETS[datasetId];
+    if (!ds) return;
+    currentDatasetId = datasetId;
+
+    // CONFIG 동적 갱신
+    CONFIG.CLASS_KEY = ds.classKey;
+    CONFIG.FEATURES = {};
+    CONFIG.CLASSES = {};
+    
+    // 특성 min/max/default 계산 (데이터 기반)
+    const featureKeys = Object.keys(ds.features);
+    featureKeys.forEach(key => {
+        const values = ds.data.map(d => d[key]).filter(v => v != null && !isNaN(v));
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        const median = values.sort((a,b) => a-b)[Math.floor(values.length/2)];
+        CONFIG.FEATURES[key] = {
+            ...ds.features[key],
+            min: min,
+            max: max,
+            default: parseFloat(median.toFixed(2))
+        };
+    });
+
+    // 클래스 설정 + 색상 갱신
+    const classNames = Object.keys(ds.classes);
+    classNames.forEach((cls, idx) => {
+        CONFIG.CLASSES[cls] = { ...ds.classes[cls] };
+        const color = ds.classes[cls].color || CLASS_COLOR_PALETTE[idx % CLASS_COLOR_PALETTE.length];
+        CONFIG.CLASSES[cls].color = color;
+        CONFIG.VIS.COLORS[cls] = color;
+        document.documentElement.style.setProperty(`--class-color-${idx}`, color);
+    });
+
+    // 헤더 갱신
+    document.getElementById('headerTitle').innerHTML = 
+        `${ds.emoji} ${ds.name.replace(/^[^\s]+\s/, '')} 의사결정트리 시뮬레이터 <span class="version-badge">v2.0.0.0</span>`;
+    document.getElementById('headerDesc').innerHTML = 
+        `${ds.description} — <strong>의사결정트리(Decision Tree)</strong>의 분류 원리를 학습합니다`;
+    document.getElementById('datasetSelect').value = datasetId;
+
+    // 데이터셋 정보 박스 갱신 (v2.0)
+    const infoBox = document.getElementById('datasetInfoBox');
+    if (infoBox && ds.source) {
+        infoBox.classList.remove('hidden');
+        document.getElementById('diSource').textContent = '📚 ' + (ds.source || '');
+        document.getElementById('diDesc').textContent = ds.description || '';
+        document.getElementById('diRec').textContent = '💡 ' + (ds.recommended || '');
+    }
+
+    // 동적 UI 생성
+    generateFeatureCheckboxes();
+    generateClassDistribution();
+    generateTrainDataHeaders();
+
+    // 데이터 로드
+    loadData();
+}
+
+// ============================================================
+// 동적 UI 생성
+// ============================================================
+function generateFeatureCheckboxes() {
+    const container = document.getElementById('featureCheckboxes');
+    container.innerHTML = '';
+    Object.entries(CONFIG.FEATURES).forEach(([key, feat]) => {
+        container.innerHTML += `<label class="feature-checkbox">
+            <input type="checkbox" id="feat_${key}" checked> ${feat.emoji} ${feat.label} (${feat.unit})
+        </label>`;
+    });
+}
+
+function generateClassDistribution() {
+    const container = document.getElementById('classDistribution');
+    const classNames = Object.keys(CONFIG.CLASSES);
+    container.innerHTML = classNames.map((cls, idx) =>
+        `<div class="class-row">
+            <span class="class-badge class-badge-${idx}">${cls}</span>
+            <span id="classCount_${cls}">--</span>
+        </div>`
+    ).join('');
+}
+
+function generateTrainDataHeaders() {
+    const thead = document.getElementById('trainDataHead');
+    const featureKeys = Object.keys(CONFIG.FEATURES);
+    let html = '<tr><th>#</th>';
+    featureKeys.forEach(key => {
+        html += `<th>${CONFIG.FEATURES[key].short}</th>`;
+    });
+    html += '<th>클래스</th></tr>';
+    thead.innerHTML = html;
+}
+
+function getClassBadgeHtml(className) {
+    const classNames = Object.keys(CONFIG.CLASSES);
+    const idx = classNames.indexOf(className);
+    const badgeIdx = idx >= 0 ? idx : 0;
+    return `<span class="class-badge class-badge-${badgeIdx}">${className}</span>`;
+}
+
+// ============================================================
+// 특성 선택 (동적)
+// ============================================================
+function getSelectedFeatures() {
+    const feats = [];
+    Object.keys(CONFIG.FEATURES).forEach(key => {
+        const cb = document.getElementById(`feat_${key}`);
+        if (cb && cb.checked) feats.push(key);
+    });
+    return feats;
+}
+
+// ============================================================
+// 데이터 로딩 및 분할
+// ============================================================
+function loadData() {
+    const ds = DATASETS[currentDatasetId];
+    allData = ds.data.map((d, i) => ({...d, _idx: i}));
+    splitData();
+    updateDataInfo();
+    drawEmptyTree('treeCanvas');
+}
+
+function seededRandom(seed) {
+    let s = seed;
+    return function() {
+        s = (s * 16807) % 2147483647;
+        return (s - 1) / 2147483646;
+    };
+}
+
+function splitData() {
+    const rng = seededRandom(CONFIG.SPLIT.RANDOM_SEED);
+    const shuffled = [...allData].sort(() => rng() - 0.5);
+    const splitIdx = Math.floor(shuffled.length * CONFIG.SPLIT.TRAIN_RATIO);
+    trainData = shuffled.slice(0, splitIdx);
+    testData = shuffled.slice(splitIdx);
+}
+
+function updateDataInfo() {
+    document.getElementById('totalCount').textContent = allData.length;
+    document.getElementById('splitCount').textContent = `${trainData.length} / ${testData.length}`;
+    
+    // 동적 클래스별 카운트
+    const counts = {};
+    Object.keys(CONFIG.CLASSES).forEach(cls => { counts[cls] = 0; });
+    allData.forEach(d => {
+        const cls = d[CONFIG.CLASS_KEY];
+        if (counts[cls] !== undefined) counts[cls]++;
+    });
+    Object.entries(counts).forEach(([cls, count]) => {
+        const el = document.getElementById(`classCount_${cls}`);
+        if (el) el.textContent = `${count}개`;
+    });
+
+    // 학습 데이터 테이블
+    const featureKeys = Object.keys(CONFIG.FEATURES);
+    const tbody = document.getElementById('trainDataBody');
+    tbody.innerHTML = trainData.map((d, i) => {
+        return `<tr>
+            <td>${i+1}</td>
+            ${featureKeys.map(k => `<td>${d[k]}</td>`).join('')}
+            <td>${getClassBadgeHtml(d[CONFIG.CLASS_KEY])}</td>
+        </tr>`;
+    }).join('');
+
+    // 테스트 데이터 select 갱신
+    const select = document.getElementById('testDataSelect');
+    select.innerHTML = '<option value="-1">테스트 데이터를 선택하세요</option>';
+    const firstTwoFeatures = featureKeys.slice(0, 2);
+    testData.forEach((d, i) => {
+        const summary = firstTwoFeatures.map(k => `${CONFIG.FEATURES[k].short}${d[k]}`).join(', ');
+        select.innerHTML += `<option value="${i}">#${i+1} ${d[CONFIG.CLASS_KEY]} (${summary})</option>`;
+    });
+}
+
+function toggleTrainData() {
+    const wrapper = document.getElementById('trainDataTable');
+    const btn = document.getElementById('btnToggleData');
+    if (wrapper.style.display === 'none') {
+        wrapper.style.display = 'block';
+        btn.textContent = '📋 데이터 닫기';
+    } else {
+        wrapper.style.display = 'none';
+        btn.textContent = '📋 데이터 보기';
+    }
+}
+
+// ============================================================
+// 의사결정트리 알고리즘
+// ============================================================
+function giniImpurity(data) {
+    const counts = {};
+    data.forEach(d => { counts[d[CONFIG.CLASS_KEY]] = (counts[d[CONFIG.CLASS_KEY]] || 0) + 1; });
+    const n = data.length;
+    let gini = 1;
+    Object.values(counts).forEach(c => { gini -= (c / n) ** 2; });
+    return gini;
+}
+
+function bestSplit(data, features) {
+    let bestGini = Infinity, bestFeature = null, bestThreshold = null;
+    
+    features.forEach(feature => {
+        const values = [...new Set(data.map(d => d[feature]))].sort((a, b) => a - b);
+        for (let i = 0; i < values.length - 1; i++) {
+            const threshold = (values[i] + values[i + 1]) / 2;
+            const left = data.filter(d => d[feature] <= threshold);
+            const right = data.filter(d => d[feature] > threshold);
+            if (left.length === 0 || right.length === 0) continue;
+            const gini = (left.length * giniImpurity(left) + right.length * giniImpurity(right)) / data.length;
+            if (gini < bestGini) {
+                bestGini = gini;
+                bestFeature = feature;
+                bestThreshold = threshold;
+            }
+        }
+    });
+    
+    return { feature: bestFeature, threshold: bestThreshold, gini: bestGini };
+}
+
+function buildDecisionTree(data, features, depth, maxDepth, minSamples) {
+    const counts = {};
+    data.forEach(d => { counts[d[CONFIG.CLASS_KEY]] = (counts[d[CONFIG.CLASS_KEY]] || 0) + 1; });
+    const prediction = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+    const gini = giniImpurity(data);
+    
+    if (depth >= maxDepth || data.length < minSamples || gini < CONFIG.TREE.GINI_THRESHOLD) {
+        return { isLeaf: true, prediction, counts, total: data.length, depth, gini };
+    }
+    
+    const split = bestSplit(data, features);
+    if (!split.feature) {
+        return { isLeaf: true, prediction, counts, total: data.length, depth, gini };
+    }
+    
+    const left = data.filter(d => d[split.feature] <= split.threshold);
+    const right = data.filter(d => d[split.feature] > split.threshold);
+    
+    if (left.length === 0 || right.length === 0) {
+        return { isLeaf: true, prediction, counts, total: data.length, depth, gini };
+    }
+    
+    return {
+        isLeaf: false,
+        feature: split.feature,
+        threshold: split.threshold,
+        left: buildDecisionTree(left, features, depth + 1, maxDepth, minSamples),
+        right: buildDecisionTree(right, features, depth + 1, maxDepth, minSamples),
+        prediction, counts, total: data.length, depth, gini
+    };
+}
+
+function predict(tree, sample) {
+    const path = [];
+    let node = tree;
+    while (!node.isLeaf) {
+        const value = sample[node.feature];
+        const goLeft = value <= node.threshold;
+        path.push({
+            feature: node.feature,
+            threshold: node.threshold,
+            value: value,
+            direction: goLeft ? 'left' : 'right',
+            label: `${CONFIG.FEATURES[node.feature].short} = ${value} ${goLeft ? '≤' : '>'} ${node.threshold.toFixed(1)}`
+        });
+        node = goLeft ? node.left : node.right;
+    }
+    return { prediction: node.prediction, path, leafCounts: node.counts };
+}
+
+// ============================================================
+// 트리 생성 & 성능 평가
+// ============================================================
+function buildTree() {
+    const btn = document.getElementById('btnBuild');
+    btn.disabled = true;
+    btn.textContent = UI_TEXT.BUILDING;
+    
+    setTimeout(() => {
+        selectedFeatures = getSelectedFeatures();
+        if (selectedFeatures.length === 0) {
+            alert(UI_TEXT.NO_FEATURES);
+            btn.disabled = false;
+            btn.textContent = UI_TEXT.BUILD_DONE;
+            return;
+        }
+        
+        const maxDepth = parseInt(document.getElementById('maxDepth').value);
+        const minSamples = parseInt(document.getElementById('minSamples').value);
+        
+        decisionTree = buildDecisionTree(trainData, selectedFeatures, 0, maxDepth, minSamples);
+        
+        const trainAcc = calcAccuracy(trainData);
+        const testAcc = calcAccuracy(testData);
+        const treeDepth = getTreeDepth(decisionTree);
+        
+        document.getElementById('trainAccuracy').textContent = (trainAcc * 100).toFixed(1) + '%';
+        document.getElementById('trainAccuracy').className = 'stat-value ' + getAccClass(trainAcc);
+        document.getElementById('testAccuracy').textContent = (testAcc * 100).toFixed(1) + '%';
+        document.getElementById('testAccuracy').className = 'stat-value ' + getAccClass(testAcc);
+        document.getElementById('treeDepthStat').textContent = treeDepth;
+        
+        document.getElementById('perfPanel').style.display = 'block';
+        document.getElementById('importancePanel').style.display = 'block';
+        document.getElementById('bottomPanel').style.display = 'block';
+        
+        buildConfusionMatrix();
+        displayFeatureImportance();
+        displayRules();
+        displayTestResults();
+        
+        // 새 트리 → 뷰 리셋 (v2.0)
+        delete treeView['treeCanvas'];
+
+        animSetup();
+        animPlay();
+
+        // 토스트 피드백 (v2.0)
+        const toastType = testAcc >= CONFIG.TREE.GOOD_ACCURACY ? 'success' : (testAcc >= CONFIG.TREE.OK_ACCURACY ? 'info' : 'warning');
+        const toastMsg = testAcc >= CONFIG.TREE.GOOD_ACCURACY ?
+            `🎉 훌륭해요! 테스트 정확도 ${(testAcc*100).toFixed(1)}%` :
+            testAcc >= CONFIG.TREE.OK_ACCURACY ?
+            `👍 괜찮아요! 정확도 ${(testAcc*100).toFixed(1)}% — 깊이나 특성을 조절해보세요` :
+            `⚠️ 정확도 ${(testAcc*100).toFixed(1)}% — 파라미터를 변경해보세요`;
+        showToast(toastMsg, toastType);
+
+        if (selectedFeatures.length >= 2) {
+            document.getElementById('scatterSection').classList.remove('hidden');
+            initScatterSelectors();
+            updateScatterPlot();
+        } else {
+            document.getElementById('scatterSection').classList.add('hidden');
+        }
+        
+        btn.disabled = false;
+        btn.textContent = UI_TEXT.BUILD_DONE;
+    }, 50);
+}
+
+function calcAccuracy(data) {
+    if (!decisionTree || data.length === 0) return 0;
+    let correct = 0;
+    data.forEach(d => {
+        const result = predict(decisionTree, d);
+        if (result.prediction === d[CONFIG.CLASS_KEY]) correct++;
+    });
+    return correct / data.length;
+}
+
+function getTreeDepth(node) {
+    if (!node || node.isLeaf) return node ? node.depth : 0;
+    return Math.max(getTreeDepth(node.left), getTreeDepth(node.right));
+}
+
+function getAccClass(acc) {
+    if (acc >= CONFIG.TREE.GOOD_ACCURACY) return 'good';
+    if (acc >= CONFIG.TREE.OK_ACCURACY) return 'ok';
+    return 'bad';
+}
+
+// ============================================================
+// 혼동 행렬 (동적)
+// ============================================================
+function buildConfusionMatrix() {
+    const classNames = Object.keys(CONFIG.CLASSES);
+    const matrix = {};
+    classNames.forEach(a => { matrix[a] = {}; classNames.forEach(p => { matrix[a][p] = 0; }); });
+    
+    testData.forEach(d => {
+        const result = predict(decisionTree, d);
+        const actual = d[CONFIG.CLASS_KEY];
+        if (matrix[actual]) matrix[actual][result.prediction] = (matrix[actual][result.prediction] || 0) + 1;
+    });
+    
+    let html = '<table class="cm-table"><thead><tr><th></th>';
+    classNames.forEach(s => { html += `<th>예측: ${s}</th>`; });
+    html += '</tr></thead><tbody>';
+    
+    classNames.forEach(actual => {
+        html += `<tr><th>실제: ${actual}</th>`;
+        classNames.forEach(pred => {
+            const val = matrix[actual][pred] || 0;
+            let cls = 'cm-cell-zero';
+            if (val > 0) cls = actual === pred ? 'cm-cell-correct' : 'cm-cell-wrong';
+            html += `<td class="${cls}">${val}</td>`;
+        });
+        html += '</tr>';
+    });
+    html += '</tbody></table>';
+    
+    document.getElementById('confusionMatrix').innerHTML = html;
+}
+
+// ============================================================
+// 특성 중요도
+// ============================================================
+function calcFeatureImportance(tree, totalSamples) {
+    const importance = {};
+    Object.keys(CONFIG.FEATURES).forEach(k => { importance[k] = 0; });
+
+    function traverse(node) {
+        if (!node || node.isLeaf) return;
+        const leftN = node.left ? node.left.total : 0;
+        const rightN = node.right ? node.right.total : 0;
+        const leftG = node.left ? node.left.gini : 0;
+        const rightG = node.right ? node.right.gini : 0;
+        const weightedChildGini = (leftN * leftG + rightN * rightG) / node.total;
+        const giniDecrease = (node.total / totalSamples) * (node.gini - weightedChildGini);
+        if (giniDecrease > 0 && importance.hasOwnProperty(node.feature)) {
+            importance[node.feature] += giniDecrease;
+        }
+        traverse(node.left);
+        traverse(node.right);
+    }
+
+    traverse(tree);
+    const total = Object.values(importance).reduce((s, v) => s + v, 0);
+    if (total > 0) Object.keys(importance).forEach(k => { importance[k] /= total; });
+    return importance;
+}
+
+function displayFeatureImportance() {
+    const importance = calcFeatureImportance(decisionTree, trainData.length);
+    const sorted = Object.entries(importance)
+        .filter(([k]) => selectedFeatures.includes(k))
+        .sort((a, b) => b[1] - a[1]);
+    const container = document.getElementById('importanceChart');
+
+    if (sorted.length === 0 || sorted.every(([, v]) => v === 0)) {
+        container.innerHTML = '<div class="importance-empty">사용된 특성이 없습니다</div>';
+        return;
+    }
+
+    const maxVal = sorted[0][1];
+    container.innerHTML = sorted.map(([key, value], idx) => {
+        const feat = CONFIG.FEATURES[key];
+        const pct = maxVal > 0 ? (value / maxVal * 100) : 0;
+        const rankClass = `rank-${Math.min(idx + 1, 4)}`;
+        return `<div class="importance-bar-group">
+            <div class="importance-bar-label">
+                <span class="feat-name">${feat.emoji} ${feat.label}</span>
+                <span class="feat-score">${(value * 100).toFixed(1)}%</span>
+            </div>
+            <div class="importance-bar-track">
+                <div class="importance-bar-fill ${rankClass}" style="width:${pct.toFixed(1)}%"></div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ============================================================
+// 규칙 표시
+// ============================================================
+function displayRules() {
+    const rules = [];
+    extractRules(decisionTree, [], rules);
+    const container = document.getElementById('rulesContainer');
+    container.innerHTML = rules.map((rule) => {
+        const color = CONFIG.VIS.COLORS[rule.prediction] || '#333';
+        const cls = CONFIG.CLASSES[rule.prediction];
+        const emoji = cls ? cls.emoji : '';
+        return `<div class="rule-item">
+            <div class="rule-path">${rule.conditions.join(' AND ')}</div>
+            <div class="rule-result" style="color:${color}">→ ${emoji} ${rule.prediction} (${rule.count}/${rule.total}개, ${(rule.count/rule.total*100).toFixed(0)}%)</div>
+        </div>`;
+    }).join('');
+}
+
+function extractRules(node, conditions, rules) {
+    if (node.isLeaf) {
+        rules.push({
+            conditions: conditions.length > 0 ? conditions : ['(루트 노드)'],
+            prediction: node.prediction,
+            count: node.counts[node.prediction] || 0,
+            total: node.total
+        });
+        return;
+    }
+    const feat = CONFIG.FEATURES[node.feature].short;
+    const thresh = node.threshold.toFixed(1);
+    extractRules(node.left, [...conditions, `${feat} ≤ ${thresh}`], rules);
+    extractRules(node.right, [...conditions, `${feat} > ${thresh}`], rules);
+}
+
+// ============================================================
+// 테스트 결과 표시 (동적)
+// ============================================================
+function displayTestResults() {
+    allTestResults = testData.map(d => {
+        const result = predict(decisionTree, d);
+        return { ...d, predicted: result.prediction, correct: result.prediction === d[CONFIG.CLASS_KEY], path: result.path };
+    });
+    
+    const featureKeys = Object.keys(CONFIG.FEATURES);
+    const container = document.getElementById('testResultsContainer');
+    let html = '<table class="test-table"><thead><tr><th>#</th>';
+    featureKeys.forEach(k => { html += `<th>${CONFIG.FEATURES[k].short}</th>`; });
+    html += '<th>실제</th><th>예측</th><th>결과</th></tr></thead><tbody>';
+    
+    allTestResults.forEach((r, i) => {
+        const rowCls = r.correct ? 'row-correct' : 'row-wrong';
+        html += `<tr class="${rowCls}">
+            <td>${i+1}</td>
+            ${featureKeys.map(k => `<td>${r[k]}</td>`).join('')}
+            <td>${getClassBadgeHtml(r[CONFIG.CLASS_KEY])}</td>
+            <td>${getClassBadgeHtml(r.predicted)}</td>
+            <td>${r.correct ? '✅' : '❌'}</td>
+        </tr>`;
+    });
+    
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+// ============================================================
+// 트리 시각화 (Canvas)
+// ============================================================
+function drawEmptyTree(canvasId) {
+    delete treeView[canvasId];
+    delete lastDrawArgs[canvasId];
+    const canvas = document.getElementById(canvasId);
+    const container = canvas.parentElement;
+    const w = container.clientWidth - 32 || 600;
+    const h = Math.max(360, (container.clientHeight > 60 ? container.clientHeight : 460) - 36);
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-light').trim() || '#9E9E9E';
+    ctx.font = '14px Noto Sans KR';
+    ctx.textAlign = 'center';
+    ctx.fillText(UI_TEXT.NO_TREE, w / 2, h / 2);
+}
+
+function layoutTree(node, depth, left, right) {
+    if (!node) return;
+    node._y = 20 + depth * CONFIG.VIS.LEVEL_GAP;
+    if (node.isLeaf) { node._x = (left + right) / 2; return; }
+    const gap = CONFIG.VIS.SIBLING_GAP;
+    const leftWidth = getTreeWidth(node.left);
+    const rightWidth = getTreeWidth(node.right);
+    const totalChildWidth = leftWidth + rightWidth + gap;
+    const availableWidth = right - left;
+    const scale = totalChildWidth > availableWidth ? availableWidth / totalChildWidth : 1;
+    const mid = (left + right) / 2;
+    const leftHalf = leftWidth * scale;
+    const rightHalf = rightWidth * scale;
+    layoutTree(node.left, depth + 1, mid - leftHalf - gap * scale / 2, mid - gap * scale / 2);
+    layoutTree(node.right, depth + 1, mid + gap * scale / 2, mid + rightHalf + gap * scale / 2);
+    node._x = mid;
+}
+
+function getTreeWidth(node) {
+    if (!node || node.isLeaf) return CONFIG.VIS.NODE_WIDTH + CONFIG.VIS.LEAF_PADDING;
+    return getTreeWidth(node.left) + getTreeWidth(node.right) + CONFIG.VIS.SIBLING_GAP;
+}
+
+// ============================================================
+// 트리 Pan/Zoom 뷰 시스템 (v2.0)
+// ============================================================
+const treeView = {};         // { canvasId: { px, py, z, nw, nh, cw, ch } }
+const lastDrawArgs = {};     // redraw용 마지막 인자 저장
+const ZOOM_MIN = 0.2, ZOOM_MAX = 3.0, ZOOM_STEP = 0.15;
+
+function getView(id) {
+    if (!treeView[id]) treeView[id] = { px: 0, py: 0, z: 0, nw: 0, nh: 0, cw: 0, ch: 0 };
+    return treeView[id];
+}
+
+function fitView(id, natW, natH) {
+    const v = getView(id);
+    const cvs = document.getElementById(id);
+    if (!cvs) return;
+    const container = cvs.parentElement;
+    const cw = container.clientWidth - 32;
+    const ch = Math.max(360, (container.clientHeight || 460) - 36);
+    v.nw = natW; v.nh = natH; v.cw = cw; v.ch = ch;
+    const zx = cw / natW, zy = ch / natH;
+    v.z = Math.min(zx, zy, 1.5) * 0.9;
+    v.px = (cw - natW * v.z) / 2;
+    v.py = Math.max(4, (ch - natH * v.z) / 2);
+}
+
+function homeTree(canvasId) {
+    const v = getView(canvasId);
+    if (v.nw > 0) fitView(canvasId, v.nw, v.nh);
+    redrawTree(canvasId);
+}
+
+function zoomTreeBtn(canvasId, dir) {
+    const v = getView(canvasId);
+    const cvs = document.getElementById(canvasId);
+    if (!cvs || !v.nw) return;
+    const cx = v.cw / 2, cy = v.ch / 2;
+    applyZoom(v, cx, cy, dir > 0 ? (1 + ZOOM_STEP) : (1 / (1 + ZOOM_STEP)));
+    redrawTree(canvasId);
+}
+
+function applyZoom(v, cx, cy, factor) {
+    const nz = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, v.z * factor));
+    if (nz === v.z) return;
+    // 커서 위치를 기준으로 확대/축소
+    v.px = cx - (cx - v.px) * (nz / v.z);
+    v.py = cy - (cy - v.py) * (nz / v.z);
+    v.z = nz;
+}
+
+function redrawTree(canvasId) {
+    const args = lastDrawArgs[canvasId];
+    if (args) drawTree(...args);
+}
+
+// ============================================================
+// 미니맵 (v2.0)
+// ============================================================
+function drawMinimap(ctx, canvasId, tree, v, cw, ch) {
+    if (!tree || v.z === 0) return;
+    const MW = 130, MH = 80, MP = 8;
+    const mx = cw - MW - MP, my = ch - MH - MP;
+
+    // 배경
+    ctx.save();
+    ctx.globalAlpha = 0.88;
+    ctx.fillStyle = '#FAFAFA';
+    ctx.strokeStyle = '#CFD8DC';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(mx, my, MW, MH, 6);
+    ctx.fill(); ctx.stroke();
+    ctx.globalAlpha = 1.0;
+
+    // 트리를 미니맵에 축소 렌더링
+    const pad = 6;
+    const sx = (MW - pad * 2) / v.nw;
+    const sy = (MH - pad * 2) / v.nh;
+    const ms = Math.min(sx, sy);
+    const ox = mx + (MW - v.nw * ms) / 2;
+    const oy = my + (MH - v.nh * ms) / 2;
+
+    drawMinimapNodes(ctx, tree, ms, ox, oy);
+
+    // 뷰포트 영역 표시
+    const vpL = (-v.px / v.z) * ms + ox;
+    const vpT = (-v.py / v.z) * ms + oy;
+    const vpW = (cw / v.z) * ms;
+    const vpH = (ch / v.z) * ms;
+
+    ctx.strokeStyle = 'rgba(21,101,192,0.6)';
+    ctx.fillStyle = 'rgba(21,101,192,0.08)';
+    ctx.lineWidth = 1.5;
+    // 클리핑: 미니맵 안에서만 뷰포트 표시
+    ctx.beginPath();
+    ctx.roundRect(mx + 1, my + 1, MW - 2, MH - 2, 5);
+    ctx.clip();
+    ctx.fillRect(vpL, vpT, vpW, vpH);
+    ctx.strokeRect(vpL, vpT, vpW, vpH);
+
+    ctx.restore();
+
+    // 줌 배지
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(Math.round(v.z * 100) + '%', cw - MP - 2, my - 4);
+    ctx.restore();
+}
+
+function drawMinimapNodes(ctx, node, s, ox, oy) {
+    if (!node) return;
+    const nx = ox + node._x * s;
+    const ny = oy + node._y * s;
+
+    if (!node.isLeaf && node.left) {
+        const lx = ox + node.left._x * s, ly = oy + node.left._y * s;
+        const rx = ox + node.right._x * s, ry = oy + node.right._y * s;
+        ctx.strokeStyle = '#B0BEC5';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath(); ctx.moveTo(nx, ny); ctx.lineTo(lx, ly); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(nx, ny); ctx.lineTo(rx, ry); ctx.stroke();
+    }
+
+    if (node.isLeaf) {
+        const cls = CONFIG.CLASSES[node.prediction];
+        ctx.fillStyle = cls ? cls.color : '#78909C';
+    } else {
+        ctx.fillStyle = '#90CAF9';
+    }
+    ctx.fillRect(nx - 2.5, ny - 1.5, 5, 3);
+
+    if (!node.isLeaf) {
+        drawMinimapNodes(ctx, node.left, s, ox, oy);
+        drawMinimapNodes(ctx, node.right, s, ox, oy);
+    }
+}
+
+function drawTree(canvasId, tree, highlightNodes, visibleNodes) {
+    if (!tree) return;
+    lastDrawArgs[canvasId] = [canvasId, tree, highlightNodes, visibleNodes];
+
+    const natW = getTreeWidth(tree) + 40;
+    const natH = 40 + (getTreeDepth(tree) + 1) * CONFIG.VIS.LEVEL_GAP + 30;
+
+    const canvas = document.getElementById(canvasId);
+    const container = canvas.parentElement;
+    const cw = container.clientWidth - 32;
+    const ch = Math.max(360, (container.clientHeight > 60 ? container.clientHeight : 460) - 36);
+
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = cw * dpr;
+    canvas.height = ch * dpr;
+    canvas.style.width = cw + 'px';
+    canvas.style.height = ch + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, cw, ch);
+
+    // 월드 좌표로 레이아웃 (offsetTreeX 사용 안 함)
+    layoutTree(tree, 0, 0, natW);
+
+    // 뷰 상태 — 초기화 안 된 경우 자동 맞춤
+    const v = getView(canvasId);
+    v.nw = natW; v.nh = natH; v.cw = cw; v.ch = ch;
+    if (v.z === 0) fitView(canvasId, natW, natH);
+
+    // Pan/Zoom 변환 적용 후 트리 렌더링
+    ctx.save();
+    ctx.translate(v.px, v.py);
+    ctx.scale(v.z, v.z);
+    drawTreeNodes(ctx, tree, highlightNodes || [], visibleNodes);
+    ctx.restore();
+
+    // 미니맵 + 줌 배지
+    drawMinimap(ctx, canvasId, tree, v, cw, ch);
+}
+
+function offsetTreeX(node, dx) {
+    if (!node) return;
+    node._x += dx;
+    if (!node.isLeaf) {
+        offsetTreeX(node.left, dx);
+        offsetTreeX(node.right, dx);
+    }
+}
+
+function drawTreeEdge(ctx, parent, child, idx, isHighlighted) {
+    if (!parent || !child) return;
+    const nw = CONFIG.VIS.NODE_WIDTH;
+    const nh = CONFIG.VIS.NODE_HEIGHT;
+
+    ctx.beginPath();
+    ctx.moveTo(parent._x, parent._y + nh / 2);
+    ctx.lineTo(child._x, child._y - nh / 2);
+    ctx.strokeStyle = isHighlighted ? CONFIG.VIS.COLORS.HIGHLIGHT : CONFIG.VIS.COLORS.LINE;
+    ctx.lineWidth = isHighlighted ? CONFIG.VIS.HIGHLIGHT_WIDTH : CONFIG.VIS.LINE_WIDTH;
+    ctx.stroke();
+
+    const mx = (parent._x + child._x) / 2;
+    const my = (parent._y + nh / 2 + child._y - nh / 2) / 2;
+    ctx.fillStyle = isHighlighted ? CONFIG.VIS.COLORS.HIGHLIGHT : CONFIG.VIS.COLORS.EDGE_LABEL;
+    ctx.font = CONFIG.VIS.FONT_SMALL;
+    ctx.textAlign = 'center';
+    ctx.fillText(idx === 0 ? '≤' : '>', mx + (idx === 0 ? -CONFIG.VIS.EDGE_LABEL_OFFSET : CONFIG.VIS.EDGE_LABEL_OFFSET), my);
+}
+
+function drawTreeNodes(ctx, node, highlightNodes, visibleNodes) {
+    if (!node) return;
+    if (visibleNodes && !visibleNodes.has(node)) return;
+
+    const isHighlighted = highlightNodes.includes(node);
+    const nw = CONFIG.VIS.NODE_WIDTH;
+    const nh = CONFIG.VIS.NODE_HEIGHT;
+    const nr = CONFIG.VIS.NODE_RADIUS;
+
+    if (!node.isLeaf) {
+        if (!visibleNodes || visibleNodes.has(node.left)) {
+            drawTreeEdge(ctx, node, node.left, 0, isHighlighted && highlightNodes.includes(node.left));
+        }
+        if (!visibleNodes || visibleNodes.has(node.right)) {
+            drawTreeEdge(ctx, node, node.right, 1, isHighlighted && highlightNodes.includes(node.right));
+        }
+    }
+
+    if (node.isLeaf) {
+        const color = CONFIG.VIS.COLORS[node.prediction] || '#999';
+        ctx.fillStyle = isHighlighted ? CONFIG.VIS.COLORS.HIGHLIGHT_BG : color + '20';
+        ctx.strokeStyle = isHighlighted ? CONFIG.VIS.COLORS.HIGHLIGHT : color;
+        ctx.lineWidth = isHighlighted ? CONFIG.VIS.HIGHLIGHT_WIDTH : 2;
+        ctx.beginPath();
+        ctx.roundRect(node._x - nw / 2, node._y - nh / 2, nw, nh, nr);
+        ctx.fill(); ctx.stroke();
+
+        const cls = CONFIG.CLASSES[node.prediction];
+        const emoji = cls ? cls.emoji : '';
+        ctx.fillStyle = color;
+        ctx.font = CONFIG.VIS.FONT_LABEL;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`${emoji} ${node.prediction}`, node._x, node._y);
+    } else {
+        ctx.fillStyle = isHighlighted ? CONFIG.VIS.COLORS.HIGHLIGHT_BG : CONFIG.VIS.COLORS.NODE_BG;
+        ctx.strokeStyle = isHighlighted ? CONFIG.VIS.COLORS.HIGHLIGHT : CONFIG.VIS.COLORS.NODE_BORDER;
+        ctx.lineWidth = isHighlighted ? CONFIG.VIS.HIGHLIGHT_WIDTH : 1.5;
+        ctx.beginPath();
+        ctx.roundRect(node._x - nw / 2, node._y - nh / 2, nw, nh, nr);
+        ctx.fill(); ctx.stroke();
+
+        ctx.fillStyle = CONFIG.VIS.COLORS.NODE_TEXT;
+        ctx.font = CONFIG.VIS.FONT_CONDITION;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`≤${node.threshold.toFixed(1)}`, node._x, node._y);
+    }
+
+    if (!node.isLeaf) {
+        drawTreeNodes(ctx, node.left, highlightNodes, visibleNodes);
+        drawTreeNodes(ctx, node.right, highlightNodes, visibleNodes);
+    }
+}
+
+// ============================================================
+// 모드 전환
+// ============================================================
+function switchMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-tab').forEach(tab =>
+        tab.classList.toggle('active', tab.dataset.mode === mode)
+    );
+
+    if (mode === 'train') {
+        document.getElementById('settingsPanel').classList.remove('hidden');
+        document.getElementById('trainCenter').classList.remove('hidden');
+        document.getElementById('dataInfoPanel').classList.remove('hidden');
+        document.getElementById('inferenceInputPanel').classList.add('hidden');
+        document.getElementById('inferenceCenter').classList.add('hidden');
+        document.getElementById('inferenceResultPanel').classList.add('hidden');
+        if (decisionTree) {
+            document.getElementById('perfPanel').style.display = 'block';
+            document.getElementById('importancePanel').style.display = 'block';
+            document.getElementById('bottomPanel').style.display = 'block';
+        }
+    } else {
+        document.getElementById('settingsPanel').classList.add('hidden');
+        document.getElementById('trainCenter').classList.add('hidden');
+        document.getElementById('dataInfoPanel').classList.add('hidden');
+        document.getElementById('perfPanel').style.display = 'none';
+        document.getElementById('importancePanel').style.display = 'none';
+        document.getElementById('bottomPanel').style.display = 'none';
+        document.getElementById('inferenceInputPanel').classList.remove('hidden');
+        document.getElementById('inferenceCenter').classList.remove('hidden');
+        document.getElementById('inferenceResultPanel').classList.remove('hidden');
+
+        if (decisionTree) {
+            delete treeView['inferenceTreeCanvas'];
+            drawTree('inferenceTreeCanvas', decisionTree, []);
+            buildDirectInputSliders();
+        } else {
+            drawEmptyTree('inferenceTreeCanvas');
+        }
+    }
+}
+
+// ============================================================
+// 추론 모드
+// ============================================================
+function selectTestSample() {
+    const idx = parseInt(document.getElementById('testDataSelect').value);
+    if (idx < 0 || !decisionTree) {
+        document.getElementById('inferenceResult').innerHTML = '';
+        document.getElementById('inferenceSteps').innerHTML = '';
+        if (decisionTree) drawTree('inferenceTreeCanvas', decisionTree, []);
+        return;
+    }
+    
+    currentTestIndex = idx;
+    const sample = testData[idx];
+    const featureKeys = Object.keys(CONFIG.FEATURES);
+    
+    // 샘플 정보 표시
+    let infoHtml = `<div class="sample-info-box">
+        <div class="fw-600 mb-xs">📋 테스트 샘플 #${idx+1}</div>`;
+    featureKeys.forEach(key => {
+        const f = CONFIG.FEATURES[key];
+        infoHtml += `<div>${f.emoji} ${f.label}: <b>${sample[key]}${f.unit}</b></div>`;
+    });
+    infoHtml += `<div class="mt-xs">실제 클래스: ${getClassBadgeHtml(sample[CONFIG.CLASS_KEY])}</div></div>`;
+    document.getElementById('sampleInfo').innerHTML = infoHtml;
+    
+    // 추론 실행
+    const result = predict(decisionTree, sample);
+    const isCorrect = result.prediction === sample[CONFIG.CLASS_KEY];
+    
+    // 추론 단계 표시
+    let stepsHtml = '<div class="section-heading">📋 추론 과정 (단계별)</div>';
+    result.path.forEach((step, i) => {
+        const feat = CONFIG.FEATURES[step.feature];
+        stepsHtml += `<div class="inference-step done">
+            <div class="step-num-label">단계 ${i+1}</div>
+            <div class="step-condition">${feat.label} = ${step.value}${feat.unit}</div>
+            <div class="step-direction">${step.value} ${step.direction === 'left' ? '≤' : '>'} ${step.threshold.toFixed(1)} → ${step.direction === 'left' ? '왼쪽' : '오른쪽'}으로</div>
+        </div>`;
+    });
+    stepsHtml += `<div class="inference-step ${isCorrect ? 'inference-final-correct' : 'inference-final-wrong'}">
+        <div class="fw-600">🎯 최종 분류</div>
+        <div>예측: ${getClassBadgeHtml(result.prediction)} ${isCorrect ? '✅ 정답!' : '❌ 오답'}</div>
+    </div>`;
+    document.getElementById('inferenceSteps').innerHTML = stepsHtml;
+    
+    // 결과 패널
+    const cls = CONFIG.CLASSES[result.prediction] || {};
+    document.getElementById('inferenceResult').innerHTML = `
+        <div class="prediction-result ${isCorrect ? 'correct' : 'wrong'}">
+            <div class="pred-label">예측 결과</div>
+            <div class="pred-value">${cls.emoji || ''} ${result.prediction}</div>
+            <div class="pred-label mt-2">${isCorrect ? '✅ 정확한 분류!' : `❌ 실제: ${sample[CONFIG.CLASS_KEY]}`}</div>
+        </div>
+    `;
+    
+    // 트리에 경로 하이라이트
+    const pathNodes = getPathNodes(decisionTree, sample);
+    drawTree('inferenceTreeCanvas', decisionTree, pathNodes);
+}
+
+function getPathNodes(tree, sample) {
+    const nodes = [];
+    let node = tree;
+    while (node) {
+        nodes.push(node);
+        if (node.isLeaf) break;
+        node = sample[node.feature] <= node.threshold ? node.left : node.right;
+    }
+    return nodes;
+}
+
+function prevTestSample() {
+    if (testData.length === 0) return;
+    currentTestIndex = currentTestIndex > 0 ? currentTestIndex - 1 : testData.length - 1;
+    document.getElementById('testDataSelect').value = currentTestIndex;
+    selectTestSample();
+}
+
+function nextTestSample() {
+    if (testData.length === 0) return;
+    currentTestIndex = currentTestIndex < testData.length - 1 ? currentTestIndex + 1 : 0;
+    document.getElementById('testDataSelect').value = currentTestIndex;
+    selectTestSample();
+}
+
+function randomTestSample() {
+    if (testData.length === 0) return;
+    currentTestIndex = Math.floor(Math.random() * testData.length);
+    document.getElementById('testDataSelect').value = currentTestIndex;
+    selectTestSample();
+}
+
+function runAllInference() {
+    if (!decisionTree) return;
+    
+    let correct = 0;
+    const total = testData.length;
+    
+    const results = testData.map((d, i) => {
+        const result = predict(decisionTree, d);
+        const isCorrect = result.prediction === d[CONFIG.CLASS_KEY];
+        if (isCorrect) correct++;
+        return { ...d, index: i, predicted: result.prediction, correct: isCorrect };
+    });
+    
+    const acc = (correct / total * 100).toFixed(1);
+    let html = `<div class="fw-600 mb-sm">📊 전체 결과: ${correct}/${total} (${acc}%)</div>`;
+    
+    results.forEach((r) => {
+        const ok = r.correct;
+        html += `<div class="inference-step ${ok ? 'inference-step-correct' : 'inference-step-wrong'}" style="cursor:pointer; margin-bottom:2px; padding:4px 8px;" onclick="document.getElementById('testDataSelect').value=${r.index}; selectTestSample();">
+            <span class="fw-600">#${r.index+1}</span> 실제: ${r[CONFIG.CLASS_KEY]} → 예측: ${r.predicted} ${ok ? '✅' : '❌'}
+        </div>`;
+    });
+    
+    document.getElementById('inferenceSteps').innerHTML = html;
+}
+
+// ============================================================
+// 산점도 + 결정 경계 (F6)
+// ============================================================
+function initScatterSelectors() {
+    const xSel = document.getElementById('scatterXFeature');
+    const ySel = document.getElementById('scatterYFeature');
+    xSel.innerHTML = '';
+    ySel.innerHTML = '';
+
+    selectedFeatures.forEach(key => {
+        const f = CONFIG.FEATURES[key];
+        xSel.innerHTML += `<option value="${key}">${f.emoji} ${f.label}</option>`;
+        ySel.innerHTML += `<option value="${key}">${f.emoji} ${f.label}</option>`;
+    });
+
+    if (selectedFeatures.length >= 2) {
+        xSel.value = selectedFeatures[0];
+        ySel.value = selectedFeatures[1];
+    }
+
+    // 범례
+    const legendEl = document.getElementById('scatterLegend');
+    legendEl.innerHTML = Object.entries(CONFIG.CLASSES).map(([key, cls]) =>
+        `<div class="scatter-legend-item"><div class="scatter-legend-dot" style="background:${cls.color};"></div>${cls.emoji} ${cls.ko}(${key})</div>`
+    ).join('');
+}
+
+function updateScatterPlot() {
+    if (!decisionTree || selectedFeatures.length < 2) return;
+    const xKey = document.getElementById('scatterXFeature').value;
+    const yKey = document.getElementById('scatterYFeature').value;
+    if (xKey === yKey) return;
+
+    const S = CONFIG.VIS.SCATTER;
+    const canvas = document.getElementById('scatterCanvas');
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = S.WIDTH * dpr;
+    canvas.height = S.HEIGHT * dpr;
+    canvas.style.width = S.WIDTH + 'px';
+    canvas.style.height = S.HEIGHT + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, S.WIDTH, S.HEIGHT);
+
+    const plotW = S.WIDTH - S.MARGIN.left - S.MARGIN.right;
+    const plotH = S.HEIGHT - S.MARGIN.top - S.MARGIN.bottom;
+
+    // 전체 데이터에서 min/max
+    const allXVals = allData.map(d => d[xKey]);
+    const allYVals = allData.map(d => d[yKey]);
+    const xMin = Math.min(...allXVals), xMax = Math.max(...allXVals);
+    const yMin = Math.min(...allYVals), yMax = Math.max(...allYVals);
+    const xPad = (xMax - xMin) * 0.05 || 0.5;
+    const yPad = (yMax - yMin) * 0.05 || 0.5;
+    const xRange = [xMin - xPad, xMax + xPad];
+    const yRange = [yMin - yPad, yMax + yPad];
+
+    const toCanvasX = v => S.MARGIN.left + (v - xRange[0]) / (xRange[1] - xRange[0]) * plotW;
+    const toCanvasY = v => S.MARGIN.top + plotH - (v - yRange[0]) / (yRange[1] - yRange[0]) * plotH;
+
+    // 비시각화 특성은 학습 데이터 중앙값
+    const otherFeatureKeys = Object.keys(CONFIG.FEATURES).filter(k => k !== xKey && k !== yKey);
+    const medians = {};
+    otherFeatureKeys.forEach(k => {
+        const vals = trainData.map(d => d[k]).sort((a,b) => a-b);
+        medians[k] = vals[Math.floor(vals.length / 2)];
+    });
+
+    // 결정 경계 그리드
+    const gridRes = S.GRID_RES;
+    const cellW = plotW / gridRes;
+    const cellH = plotH / gridRes;
+
+    for (let gx = 0; gx < gridRes; gx++) {
+        for (let gy = 0; gy < gridRes; gy++) {
+            const xVal = xRange[0] + (gx + 0.5) / gridRes * (xRange[1] - xRange[0]);
+            const yVal = yRange[0] + (gridRes - gy - 0.5) / gridRes * (yRange[1] - yRange[0]);
+            const sample = { ...medians, [xKey]: xVal, [yKey]: yVal };
+            const result = predict(decisionTree, sample);
+            const color = CONFIG.VIS.COLORS[result.prediction] || '#999';
+            ctx.fillStyle = color;
+            ctx.globalAlpha = S.BOUNDARY_ALPHA;
+            ctx.fillRect(S.MARGIN.left + gx * cellW, S.MARGIN.top + gy * cellH, cellW + 0.5, cellH + 0.5);
+        }
+    }
+    ctx.globalAlpha = 1;
+
+    // 축 그리기
+    ctx.strokeStyle = S.AXIS_COLOR;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(S.MARGIN.left, S.MARGIN.top);
+    ctx.lineTo(S.MARGIN.left, S.MARGIN.top + plotH);
+    ctx.lineTo(S.MARGIN.left + plotW, S.MARGIN.top + plotH);
+    ctx.stroke();
+
+    // 눈금
+    ctx.fillStyle = S.AXIS_COLOR;
+    ctx.font = '10px JetBrains Mono';
+    for (let i = 0; i <= S.TICK_COUNT; i++) {
+        const xVal = xRange[0] + i / S.TICK_COUNT * (xRange[1] - xRange[0]);
+        const cx = toCanvasX(xVal);
+        ctx.textAlign = 'center';
+        ctx.fillText(xVal.toFixed(1), cx, S.MARGIN.top + plotH + 15);
+
+        const yVal = yRange[0] + i / S.TICK_COUNT * (yRange[1] - yRange[0]);
+        const cy = toCanvasY(yVal);
+        ctx.textAlign = 'right';
+        ctx.fillText(yVal.toFixed(1), S.MARGIN.left - 5, cy + 3);
+    }
+
+    // 축 라벨
+    const xFeat = CONFIG.FEATURES[xKey];
+    const yFeat = CONFIG.FEATURES[yKey];
+    ctx.fillStyle = '#455A64';
+    ctx.font = 'bold 12px Noto Sans KR';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${xFeat.emoji} ${xFeat.label} (${xFeat.unit})`, S.MARGIN.left + plotW / 2, S.HEIGHT - 5);
+    ctx.save();
+    ctx.translate(14, S.MARGIN.top + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(`${yFeat.emoji} ${yFeat.label} (${yFeat.unit})`, 0, 0);
+    ctx.restore();
+
+    // 데이터 포인트
+    function drawPoints(data, shape) {
+        data.forEach(d => {
+            const color = CONFIG.VIS.COLORS[d[CONFIG.CLASS_KEY]] || '#999';
+            const cx = toCanvasX(d[xKey]);
+            const cy = toCanvasY(d[yKey]);
+            ctx.fillStyle = color;
+            ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+            ctx.lineWidth = S.POINT_STROKE;
+            if (shape === 'circle') {
+                ctx.beginPath();
+                ctx.arc(cx, cy, S.POINT_RADIUS, 0, Math.PI * 2);
+                ctx.fill(); ctx.stroke();
+            } else {
+                const r = S.POINT_RADIUS * 1.2;
+                ctx.beginPath();
+                ctx.moveTo(cx - r, cy - r);
+                ctx.lineTo(cx + r, cy - r);
+                ctx.lineTo(cx + r, cy + r);
+                ctx.lineTo(cx - r, cy + r);
+                ctx.closePath();
+                ctx.fill(); ctx.stroke();
+            }
+        });
+    }
+
+    drawPoints(trainData, 'circle');
+    drawPoints(testData, 'diamond');
+}
+
+// ============================================================
+// 트리 성장 애니메이션 (F1)
+// ============================================================
+function collectPreorder(node, list) {
+    if (!node) return;
+    list.push(node);
+    if (!node.isLeaf) {
+        collectPreorder(node.left, list);
+        collectPreorder(node.right, list);
+    }
+}
+
+function animSetup() {
+    animBuildOrder = [];
+    collectPreorder(decisionTree, animBuildOrder);
+    animStep_idx = 0;
+    animVisibleNodes = new Set();
+    document.getElementById('animControls').classList.remove('hidden');
+    animUpdateUI();
+}
+
+function animUpdateUI() {
+    const total = animBuildOrder.length;
+    const progressEl = document.getElementById('animProgress');
+    const playBtn = document.getElementById('btnAnimPlay');
+
+    if (animStep_idx >= total) {
+        progressEl.textContent = UI_TEXT.ANIM_COMPLETE;
+        playBtn.textContent = UI_TEXT.ANIM_PLAY;
+        playBtn.classList.remove('active');
+    } else {
+        progressEl.textContent = UI_TEXT.ANIM_PROGRESS(animStep_idx, total);
+        playBtn.textContent = animTimer !== null ? UI_TEXT.ANIM_PAUSE : UI_TEXT.ANIM_PLAY;
+        playBtn.classList.toggle('active', animTimer !== null);
+    }
+}
+
+function animAddNext() {
+    if (animStep_idx >= animBuildOrder.length) {
+        animStop();
+        return;
+    }
+    animVisibleNodes.add(animBuildOrder[animStep_idx]);
+    animStep_idx++;
+    drawTree('treeCanvas', decisionTree, [], animVisibleNodes);
+    animUpdateUI();
+}
+
+function animPlay() {
+    if (animTimer !== null) { animStop(); return; }
+    if (animStep_idx >= animBuildOrder.length) { animReset(); }
+    const speed = parseInt(document.getElementById('animSpeed').value) || CONFIG.ANIMATION.DEFAULT_SPEED;
+    animTimer = setInterval(() => {
+        if (animStep_idx >= animBuildOrder.length) { animStop(); return; }
+        animAddNext();
+    }, speed);
+    animUpdateUI();
+}
+
+function animStop() {
+    if (animTimer !== null) { clearInterval(animTimer); animTimer = null; }
+    animUpdateUI();
+}
+
+function animStep() { animStop(); animAddNext(); }
+
+function animReset() {
+    animStop();
+    animStep_idx = 0;
+    animVisibleNodes = new Set();
+    drawTree('treeCanvas', decisionTree, [], animVisibleNodes);
+    animUpdateUI();
+}
+
+function animShowAll() {
+    animStop();
+    animBuildOrder.forEach(n => animVisibleNodes.add(n));
+    animStep_idx = animBuildOrder.length;
+    drawTree('treeCanvas', decisionTree, []);
+    animUpdateUI();
+}
+
+// ============================================================
+// 추론 탭 전환 (테스트 데이터 / 직접 입력)
+// ============================================================
+function switchInferenceTab(tab) {
+    currentInferenceTab = tab;
+    document.querySelectorAll('.inference-tab-btn').forEach(btn =>
+        btn.classList.toggle('active', btn.dataset.tab === tab)
+    );
+    document.getElementById('tabTestData').classList.toggle('active', tab === 'testData');
+    document.getElementById('tabDirectInput').classList.toggle('active', tab === 'directInput');
+
+    if (decisionTree) {
+        if (tab === 'directInput') {
+            handleDirectInput();
+        } else {
+            drawTree('inferenceTreeCanvas', decisionTree, []);
+            document.getElementById('inferenceSteps').innerHTML = '';
+            document.getElementById('inferenceResult').innerHTML = '';
+        }
+    }
+}
+
+function buildDirectInputSliders() {
+    const container = document.getElementById('directInputSliders');
+    const featureKeys = Object.keys(CONFIG.FEATURES);
+    let html = `<div class="font-sm hint-text">💡 ${UI_TEXT.DIRECT_INPUT_HINT}</div>`;
+    featureKeys.forEach(key => {
+        const f = CONFIG.FEATURES[key];
+        const isInt = f.step >= 1;
+        const defaultVal = f.default;
+        html += `<div class="direct-input-group">
+            <label>${f.emoji} ${f.label} (${f.unit})</label>
+            <div class="range-row">
+                <input type="range" id="direct_${key}" min="${f.min}" max="${f.max}" step="${f.step}" value="${defaultVal}" oninput="handleDirectInput()">
+                <span class="range-value" id="directVal_${key}">${isInt ? defaultVal : defaultVal.toFixed(1)}</span>
+            </div>
+            <div class="range-bounds"><span>${f.min}</span><span>${f.max}</span></div>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+function handleDirectInput() {
+    if (!decisionTree) {
+        document.getElementById('inferenceResult').innerHTML = `<div class="font-sm text-muted">${UI_TEXT.NO_TREE}</div>`;
+        return;
+    }
+    const sample = {};
+    Object.keys(CONFIG.FEATURES).forEach(key => {
+        const slider = document.getElementById(`direct_${key}`);
+        if (slider) {
+            const val = parseFloat(slider.value);
+            sample[key] = val;
+            const f = CONFIG.FEATURES[key];
+            const isInt = f.step >= 1;
+            document.getElementById(`directVal_${key}`).textContent = isInt ? val : val.toFixed(1);
+        }
+    });
+
+    const result = predict(decisionTree, sample);
+    let infoHtml = `<div class="sample-info-box"><div class="fw-600 mb-sm">🎯 ${UI_TEXT.DIRECT_RESULT_LABEL}</div>`;
+    Object.keys(CONFIG.FEATURES).forEach(key => {
+        const f = CONFIG.FEATURES[key];
+        const isInt = f.step >= 1;
+        infoHtml += `<div>${f.emoji} ${f.label}: <b>${isInt ? sample[key] : sample[key].toFixed(1)}${f.unit}</b></div>`;
+    });
+    infoHtml += '</div>';
+    document.getElementById('directSampleInfo').innerHTML = infoHtml;
+
+    let stepsHtml = '<div class="section-heading">📋 추론 과정 (단계별)</div>';
+    result.path.forEach((step, i) => {
+        const feat = CONFIG.FEATURES[step.feature];
+        stepsHtml += `<div class="inference-step done">
+            <div class="step-num-label">단계 ${i + 1}</div>
+            <div class="step-condition">${feat.label} = ${step.value}${feat.unit}</div>
+            <div class="step-direction">${step.value} ${step.direction === 'left' ? '≤' : '>'} ${step.threshold.toFixed(1)} → ${step.direction === 'left' ? '왼쪽' : '오른쪽'}으로</div>
+        </div>`;
+    });
+    stepsHtml += `<div class="inference-step inference-step-correct">
+        <div class="fw-600">🎯 최종 분류</div>
+        <div>예측: ${getClassBadgeHtml(result.prediction)}</div>
+        <div class="font-sm text-sub">리프 데이터: ${Object.entries(result.leafCounts).map(([k,v]) => `${k}:${v}`).join(', ')}</div>
+    </div>`;
+    document.getElementById('inferenceSteps').innerHTML = stepsHtml;
+
+    const cls = CONFIG.CLASSES[result.prediction] || {};
+    document.getElementById('inferenceResult').innerHTML = `
+        <div class="prediction-result correct">
+            <div class="pred-label">${UI_TEXT.DIRECT_RESULT_LABEL}</div>
+            <div class="pred-value">${cls.emoji || ''} ${result.prediction}</div>
+            <div class="pred-label mt-2">${cls.ko || result.prediction}(으)로 분류</div>
+        </div>
+    `;
+
+    const pathNodes = getPathNodes(decisionTree, sample);
+    drawTree('inferenceTreeCanvas', decisionTree, pathNodes);
+}
+
+// ============================================================
+// CSV 업로드 (F3)
+// ============================================================
+function handleCSVFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        const parsed = parseCSV(text);
+        if (!parsed || parsed.rows.length < 5) {
+            alert('CSV 파일을 읽을 수 없거나 데이터가 5행 미만입니다.');
+            return;
+        }
+        csvTempData = { parsed, fileName: file.name };
+        showCSVModal(parsed);
+    };
+    reader.readAsText(file, 'UTF-8');
+    event.target.value = ''; // 같은 파일 재선택 가능
+}
+
+function parseCSV(text) {
+    const lines = text.trim().split(/\r?\n/);
+    if (lines.length < 2) return null;
+    
+    const headers = lines[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
+    const rows = [];
+    
+    for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',').map(v => v.trim().replace(/^["']|["']$/g, ''));
+        if (values.length !== headers.length) continue;
+        const row = {};
+        headers.forEach((h, idx) => { row[h] = values[idx]; });
+        rows.push(row);
+    }
+    
+    return { headers, rows };
+}
+
+function showCSVModal(parsed) {
+    const modal = document.getElementById('csvModal');
+    modal.classList.add('active');
+    
+    // 미리보기 테이블 (최대 5행)
+    const previewRows = parsed.rows.slice(0, 5);
+    let previewHtml = '<table><thead><tr>';
+    parsed.headers.forEach(h => { previewHtml += `<th>${h}</th>`; });
+    previewHtml += '</tr></thead><tbody>';
+    previewRows.forEach(row => {
+        previewHtml += '<tr>';
+        parsed.headers.forEach(h => { previewHtml += `<td>${row[h]}</td>`; });
+        previewHtml += '</tr>';
+    });
+    previewHtml += '</tbody></table>';
+    document.getElementById('csvPreview').innerHTML = previewHtml;
+    
+    // 클래스 열 선택 (숫자가 아닌 열 우선 제안)
+    const classSelect = document.getElementById('csvClassColumn');
+    classSelect.innerHTML = '';
+    parsed.headers.forEach(h => {
+        const isNumeric = parsed.rows.every(r => !isNaN(parseFloat(r[h])) && r[h].trim() !== '');
+        classSelect.innerHTML += `<option value="${h}" ${!isNumeric ? 'selected' : ''}>${h}${isNumeric ? ' (숫자)' : ' (텍스트)'}</option>`;
+    });
+}
+
+function closeCSVModal() {
+    document.getElementById('csvModal').classList.remove('active');
+    csvTempData = null;
+}
+
+function confirmCSVUpload() {
+    if (!csvTempData) return;
+    const classColumn = document.getElementById('csvClassColumn').value;
+    const { parsed, fileName } = csvTempData;
+    
+    // 특성 열 = 숫자인 열 (클래스 열 제외)
+    const featureColumns = parsed.headers.filter(h => {
+        if (h === classColumn) return false;
+        return parsed.rows.some(r => !isNaN(parseFloat(r[h])) && r[h].trim() !== '');
+    });
+    
+    if (featureColumns.length === 0) {
+        alert('숫자 특성 열이 없습니다. 다른 클래스 열을 선택해주세요.');
+        return;
+    }
+    
+    // 데이터 변환
+    const data = [];
+    parsed.rows.forEach(row => {
+        const d = {};
+        let valid = true;
+        featureColumns.forEach(fc => {
+            const val = parseFloat(row[fc]);
+            if (isNaN(val)) { valid = false; return; }
+            d[fc] = val;
+        });
+        d[classColumn] = row[classColumn];
+        if (valid && d[classColumn]) data.push(d);
+    });
+    
+    if (data.length < 5) {
+        alert('유효한 데이터가 5행 미만입니다.');
+        return;
+    }
+    
+    // 클래스 목록 및 색상 할당
+    const classNames = [...new Set(data.map(d => d[classColumn]))];
+    const classes = {};
+    const emojis = ['🔴', '🟢', '🔵', '🟡', '🟣', '🟠', '⚪', '🟤', '⚫', '🔶'];
+    classNames.forEach((cls, idx) => {
+        classes[cls] = {
+            emoji: emojis[idx % emojis.length],
+            label: cls,
+            ko: cls,
+            color: CLASS_COLOR_PALETTE[idx % CLASS_COLOR_PALETTE.length]
+        };
+    });
+    
+    // 특성 정보 생성
+    const features = {};
+    featureColumns.forEach(fc => {
+        features[fc] = {
+            label: fc,
+            unit: '',
+            short: fc.length > 6 ? fc.substring(0, 6) : fc,
+            emoji: '📊',
+            step: 0.1
+        };
+    });
+    
+    // CSV 데이터셋 등록
+    const datasetId = 'csv_custom';
+    DATASETS[datasetId] = {
+        id: datasetId,
+        name: `📂 ${fileName}`,
+        description: `CSV 업로드 데이터 (${data.length}행, ${featureColumns.length}특성, ${classNames.length}클래스)`,
+        emoji: '📂',
+        classKey: classColumn,
+        features: features,
+        classes: classes,
+        data: data
+    };
+    
+    // 데이터셋 선택기에 추가
+    const select = document.getElementById('datasetSelect');
+    // 기존 csv_custom 옵션 제거
+    const existing = select.querySelector('option[value="csv_custom"]');
+    if (existing) existing.remove();
+    select.innerHTML += `<option value="csv_custom">${DATASETS[datasetId].name}</option>`;
+    
+    // CSV 정보 표시
+    document.getElementById('csvInfo').classList.remove('hidden');
+    document.getElementById('csvFileName').textContent = fileName;
+    
+    // 모달 닫고 전환
+    closeCSVModal();
+    select.value = datasetId;
+    switchDataset(datasetId);
+}
+
+function removeCSVDataset() {
+    // CSV 데이터셋 제거
+    delete DATASETS['csv_custom'];
+    const select = document.getElementById('datasetSelect');
+    const option = select.querySelector('option[value="csv_custom"]');
+    if (option) option.remove();
+    
+    document.getElementById('csvInfo').classList.add('hidden');
+    document.getElementById('csvFileName').textContent = '';
+    
+    // 펭귄으로 복귀
+    select.value = 'penguins';
+    switchDataset('penguins');
+}
+
+// ============================================================
+// 초기화
+// ============================================================
+function resetAll() {
+    animStop();
+    decisionTree = null;
+    highlightPath = [];
+    allTestResults = [];
+    currentTestIndex = -1;
+    currentInferenceTab = 'testData';
+    animBuildOrder = [];
+    animStep_idx = 0;
+    animVisibleNodes = new Set();
+    
+    document.getElementById('animControls').classList.add('hidden');
+    document.getElementById('scatterSection').classList.add('hidden');
+    document.getElementById('perfPanel').style.display = 'none';
+    document.getElementById('importancePanel').style.display = 'none';
+    document.getElementById('bottomPanel').style.display = 'none';
+    document.getElementById('trainAccuracy').textContent = '--';
+    document.getElementById('testAccuracy').textContent = '--';
+    document.getElementById('treeDepthStat').textContent = '--';
+    document.getElementById('confusionMatrix').innerHTML = '';
+    document.getElementById('rulesContainer').innerHTML = '';
+    document.getElementById('testResultsContainer').innerHTML = '';
+    document.getElementById('sampleInfo').innerHTML = '';
+    document.getElementById('inferenceSteps').innerHTML = '';
+    document.getElementById('inferenceResult').innerHTML = '';
+    
+    drawEmptyTree('treeCanvas');
+    if (currentMode === 'inference') drawEmptyTree('inferenceTreeCanvas');
+    
+    splitData();
+    updateDataInfo();
+}
+
+// ============================================================
+// 리사이즈
+// ============================================================
+window.addEventListener('resize', () => {
+    if (decisionTree) {
+        drawTree('treeCanvas', decisionTree, []);
+        if (currentMode === 'inference') {
+            if (currentTestIndex >= 0) {
+                const pathNodes = getPathNodes(decisionTree, testData[currentTestIndex]);
+                drawTree('inferenceTreeCanvas', decisionTree, pathNodes);
+            } else {
+                drawTree('inferenceTreeCanvas', decisionTree, []);
+            }
+        }
+    } else {
+        drawEmptyTree('treeCanvas');
+        if (currentMode === 'inference') drawEmptyTree('inferenceTreeCanvas');
+    }
+});
+// ============================================================
+// 트리 노드 호버 툴팁
+// ============================================================
+function findNodeAtPoint(node, px, py) {
+    if (!node) return null;
+    const nw = CONFIG.VIS.NODE_WIDTH;
+    const nh = CONFIG.VIS.NODE_HEIGHT;
+    if (px >= node._x - nw / 2 && px <= node._x + nw / 2 &&
+        py >= node._y - nh / 2 && py <= node._y + nh / 2) {
+        return node;
+    }
+    if (!node.isLeaf) {
+        const leftHit = findNodeAtPoint(node.left, px, py);
+        if (leftHit) return leftHit;
+        return findNodeAtPoint(node.right, px, py);
+    }
+    return null;
+}
+
+function getTooltipHTML(node) {
+    if (node.isLeaf) {
+        const cls = CONFIG.CLASSES[node.prediction];
+        const emoji = cls ? cls.emoji : '';
+        const countsStr = Object.entries(node.counts)
+            .map(([k, v]) => `<div class="tt-row"><span class="tt-label">${CONFIG.CLASSES[k]?.emoji || ''} ${k}</span><span class="tt-value">${v}개</span></div>`).join('');
+        const confidence = node.total > 0 ? ((node.counts[node.prediction] / node.total) * 100).toFixed(1) : 0;
+        return `<div class="tt-title">🍃 리프노드 — ${emoji} ${node.prediction}</div>
+            <div class="tt-row"><span class="tt-label">샘플 수</span><span class="tt-value">${node.total}개</span></div>
+            <div class="tt-row"><span class="tt-label">신뢰도</span><span class="tt-value">${confidence}%</span></div>
+            <div style="border-top:1px solid #455A64;margin:4px 0;"></div>
+            ${countsStr}`;
+    } else {
+        const feat = CONFIG.FEATURES[node.feature];
+        const featName = feat ? feat.label : node.feature;
+        const countsStr = Object.entries(node.counts)
+            .map(([k, v]) => `<div class="tt-row"><span class="tt-label">${CONFIG.CLASSES[k]?.emoji || ''} ${k}</span><span class="tt-value">${v}개</span></div>`).join('');
+        return `<div class="tt-title">🔀 분기노드</div>
+            <div class="tt-row"><span class="tt-label">조건</span><span class="tt-value">${featName} ≤ ${node.threshold.toFixed(2)}</span></div>
+            <div class="tt-row"><span class="tt-label">샘플 수</span><span class="tt-value">${node.total}개</span></div>
+            <div class="tt-row"><span class="tt-label">지니 불순도</span><span class="tt-value">${node.gini.toFixed(4)}</span></div>
+            <div style="border-top:1px solid #455A64;margin:4px 0;"></div>
+            ${countsStr}`;
+    }
+}
+
+function setupTreeTooltip(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    const tooltip = document.getElementById('treeTooltip');
+
+    canvas.addEventListener('mousemove', function(e) {
+        if (!decisionTree || panState.active) { tooltip.classList.remove('show'); return; }
+        const rect = canvas.getBoundingClientRect();
+        const screenX = e.clientX - rect.left;
+        const screenY = e.clientY - rect.top;
+        // 화면 좌표 → 월드 좌표 변환 (Pan/Zoom v2.0)
+        const v = getView(canvasId);
+        const worldX = v.z > 0 ? (screenX - v.px) / v.z : screenX;
+        const worldY = v.z > 0 ? (screenY - v.py) / v.z : screenY;
+
+        const hit = findNodeAtPoint(decisionTree, worldX, worldY);
+        if (hit) {
+            tooltip.innerHTML = getTooltipHTML(hit);
+            tooltip.classList.add('show');
+            let tx = e.clientX + 12;
+            let ty = e.clientY - 10;
+            tooltip.style.left = tx + 'px';
+            tooltip.style.top = ty + 'px';
+            // 화면 밖 방지
+            requestAnimationFrame(() => {
+                const tr = tooltip.getBoundingClientRect();
+                if (tr.right > window.innerWidth - 8) tx = e.clientX - tr.width - 12;
+                if (tr.bottom > window.innerHeight - 8) ty = e.clientY - tr.height - 10;
+                tooltip.style.left = tx + 'px';
+                tooltip.style.top = ty + 'px';
+            });
+            canvas.style.cursor = 'pointer';
+        } else {
+            tooltip.classList.remove('show');
+            canvas.style.cursor = '';
+        }
+    });
+
+    canvas.addEventListener('mouseleave', function() {
+        tooltip.classList.remove('show');
+        canvas.style.cursor = '';
+    });
+}
+
+// ============================================================
+// 트리 Pan/Zoom 인터랙션 (v2.0)
+// ============================================================
+const panState = { active: null, canvasId: null, startX: 0, startY: 0, origPx: 0, origPy: 0 };
+
+function setupTreePanZoom(container) {
+    const canvas = container.querySelector('canvas');
+    if (!canvas) return;
+    const canvasId = canvas.id;
+
+    // --- 드래그 패닝 ---
+    canvas.addEventListener('mousedown', function(e) {
+        if (e.button !== 0) return;
+        panState.active = container;
+        panState.canvasId = canvasId;
+        panState.startX = e.clientX;
+        panState.startY = e.clientY;
+        const v = getView(canvasId);
+        panState.origPx = v.px;
+        panState.origPy = v.py;
+        container.classList.add('panning');
+        e.preventDefault();
+    });
+
+    // --- 휠 줌 ---
+    canvas.addEventListener('wheel', function(e) {
+        e.preventDefault();
+        const v = getView(canvasId);
+        if (!v.nw) return;
+        const rect = canvas.getBoundingClientRect();
+        const cx = e.clientX - rect.left;
+        const cy = e.clientY - rect.top;
+        const factor = e.deltaY < 0 ? (1 + ZOOM_STEP) : (1 / (1 + ZOOM_STEP));
+        applyZoom(v, cx, cy, factor);
+        redrawTree(canvasId);
+    }, { passive: false });
+}
+
+// 전역 mousemove/mouseup (패닝)
+window.addEventListener('mousemove', function(e) {
+    if (!panState.active) return;
+    const v = getView(panState.canvasId);
+    v.px = panState.origPx + (e.clientX - panState.startX);
+    v.py = panState.origPy + (e.clientY - panState.startY);
+    redrawTree(panState.canvasId);
+});
+window.addEventListener('mouseup', function() {
+    if (!panState.active) return;
+    panState.active.classList.remove('panning');
+    panState.active = null;
+});
+
+// 캔버스 초기화 후 툴팁 설정
+document.addEventListener('DOMContentLoaded', function() {
+    setupTreeTooltip('treeCanvas');
+    setupTreeTooltip('inferenceTreeCanvas');
+    // Pan/Zoom 설정 (v2.0)
+    document.querySelectorAll('.tree-container').forEach(setupTreePanZoom);
+});
+
+</script>
+<div class="tree-tooltip" id="treeTooltip"></div>
+    <div class="toast-container" id="toastContainer"></div>
+</body>
+</html>

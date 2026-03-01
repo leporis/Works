@@ -1,0 +1,57 @@
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{emoji}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+
+\geometry{left=25mm, right=25mm, top=30mm, bottom=30mm}
+
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setmonofont{Noto Sans CJK KR}
+\setemojifont{Noto Color Emoji}
+
+\definecolor{primary}{HTML}{1976D2}
+\definecolor{darkbrown}{HTML}{3E2723}
+\definecolor{mediumbrown}{HTML}{5D4037}
+\definecolor{lightbrown}{HTML}{8D6E63}
+\definecolor{cream}{HTML}{FFF3E0}
+\definecolor{lightgray}{HTML}{F5F5F5}
+\definecolor{tableheader}{HTML}{E8E8E8}
+
+\titleformat{\section}
+  {\Large\bfseries\color{primary}}
+  {\thesection.}{0.5em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{darkbrown}}
+  {\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{mediumbrown}}
+  {\thesubsubsection}{0.5em}{}
+
+\renewcommand{\contentsname}{목차}
+\renewcommand{\figurename}{그림}
+\renewcommand{\tablename}{표}
+
+\tcbset{
+  tipbox/.style={colback=cream,colframe=primary,boxrule=1.5pt,arc=3mm,
+    left=5mm,right=5mm,top=3mm,bottom=3mm,fonttitle=\bfseries\color{primary}},
+  formulabox/.style={colback=lightgray,colframe=lightgray,boxrule=0pt,arc=2mm,
+    left=5mm,right=5mm,top=3mm,bottom=3mm},
+  summarybox/.style={colback=white,colframe=primary,boxrule=2pt,arc=4mm,
+    left=5mm,right=5mm,top=5mm,bottom=5mm}
+}
+
+\hypersetup{colorlinks=true,linkcolor=primary,urlcolor=primary,bookmarks=true,unicode=true}

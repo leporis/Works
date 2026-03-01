@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ 전기 회로 시뮬레이터</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --color-yellow-400: #fbbf24;
+    --color-amber-500:  #f59e0b;
+    --color-green-500:  #10b981;
+    --color-blue-500:   #3b82f6;
+    --color-red-500:    #ef4444;
+    --color-slate-800:  #1e293b;
+    --color-slate-100:  #f8fafc;
+    --color-white:      #ffffff;
+    --color-grad-a:     #f59e0b;
+    --color-grad-b:     #10b981;
+
+    --primary:   var(--color-blue-500);
+    --success:   var(--color-green-500);
+    --warning:   var(--color-amber-500);
+    --danger:    var(--color-red-500);
+    --bg-body:   var(--color-slate-100);
+    --bg-panel:  var(--color-white);
+    --text-dark: var(--color-slate-800);
+
+    --btn-min-height: 48px;
+    --btn-min-width:  100px;
+    --btn-radius: 12px;
+    --font-primary: 'Nanum Gothic','Malgun Gothic',sans-serif;
+    --font-size-sm:   14px;
+    --font-size-base: 16px;
+    --font-size-lg:   20px;
+    --font-size-xl:   24px;
+    --sp-sm:8px;--sp-md:16px;--sp-lg:24px;
+}
+*{box-sizing:border-box;}
+body{font-family:var(--font-primary);background:linear-gradient(135deg,var(--color-grad-a),var(--color-grad-b));margin:0;padding:20px;min-height:100vh;font-size:var(--font-size-base);}
+header{text-align:center;color:var(--color-white);margin-bottom:20px;}
+h1{margin:0;font-size:var(--font-size-xl);text-shadow:2px 2px 4px rgba(0,0,0,.3);}
+.subtitle{font-size:var(--font-size-base);margin-top:8px;opacity:.9;}
+
+.layout{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:260px 1fr 280px;gap:16px;}
+.panel{background:var(--bg-panel);border-radius:18px;padding:var(--sp-lg);box-shadow:0 8px 24px rgba(0,0,0,.15);}
+h3{margin:0 0 14px 0;font-size:var(--font-size-lg);color:var(--text-dark);}
+
+/* 버튼 */
+.btn-edu{min-width:var(--btn-min-width);min-height:var(--btn-min-height);padding:10px 18px;border:none;border-radius:var(--btn-radius);font-size:var(--font-size-base);font-weight:700;font-family:var(--font-primary);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s,box-shadow .15s;width:100%;margin:6px 0;}
+.btn-edu:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.2);}
+.btn-edu:active{transform:scale(.96);}
+.btn-primary{background:var(--primary);color:var(--color-white);}
+.btn-success{background:var(--success);color:var(--color-white);}
+.btn-warning{background:var(--warning);color:var(--color-white);}
+.btn-danger{background:var(--danger);color:var(--color-white);}
+
+/* 예제 카드 */
+.example-card{border:2px solid #e2e8f0;border-radius:12px;padding:14px;cursor:pointer;margin:8px 0;transition:all .2s;font-size:var(--font-size-base);}
+.example-card:hover{border-color:var(--primary);background:#eff6ff;transform:translateY(-1px);}
+.example-card.active{background:var(--primary);color:var(--color-white);border-color:var(--primary);}
+.example-card-title{font-weight:800;font-size:var(--font-size-base);}
+.example-card-desc{font-size:var(--font-size-sm);margin-top:4px;opacity:.8;}
+
+/* 캔버스 */
+#circuitCanvas{width:100%;height:540px;border-radius:14px;border:3px solid #e2e8f0;display:block;cursor:pointer;background:#0f172a;}
+
+/* 상태 표시 */
+.status-bar{display:flex;align-items:center;gap:12px;padding:14px var(--sp-md);border-radius:12px;margin:12px 0;font-weight:700;font-size:var(--font-size-base);}
+.status-on{background:#f0fdf4;border:2px solid #86efac;color:#15803d;}
+.status-off{background:#fef2f2;border:2px solid #fca5a5;color:#dc2626;}
+.status-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0;}
+.dot-on{background:var(--success);box-shadow:0 0 8px var(--success);}
+.dot-off{background:var(--danger);}
+
+/* 부품 카운터 */
+.parts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0;}
+.parts-item{background:var(--bg-body);border-radius:10px;padding:12px;text-align:center;}
+.parts-icon{font-size:1.5rem;}
+.parts-name{font-size:var(--font-size-sm);color:#64748b;margin-top:4px;}
+.parts-count{font-size:var(--font-size-lg);font-weight:800;color:var(--text-dark);}
+
+/* 점수/배지 */
+.score-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.score-item{text-align:center;}
+.score-label{font-size:var(--font-size-sm);color:#64748b;}
+.score-value{font-size:var(--font-size-lg);font-weight:800;color:var(--primary);}
+.badge-row{display:flex;gap:8px;}
+.badge{font-size:1.5rem;opacity:.2;transition:opacity .4s;}
+.badge.earned{opacity:1;}
+
+/* 퀴즈 */
+.quiz-box{background:#fef3c7;border-radius:12px;padding:var(--sp-md);border-left:4px solid var(--warning);margin-top:var(--sp-md);}
+.quiz-q{font-weight:700;font-size:var(--font-size-base);margin-bottom:10px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{min-height:var(--btn-min-height);padding:10px 16px;border:2px solid #fcd34d;border-radius:8px;background:var(--color-white);font-size:var(--font-size-base);font-weight:700;font-family:var(--font-primary);cursor:pointer;text-align:left;transition:all .2s;}
+.quiz-opt:hover{background:#fef9c3;}
+.quiz-opt.correct{background:#dcfce7;border-color:var(--success);color:#15803d;}
+.quiz-opt.wrong{background:#fee2e2;border-color:var(--danger);color:#dc2626;}
+.feedback-box{padding:10px;border-radius:8px;font-weight:700;font-size:var(--font-size-base);margin-top:8px;}
+.feedback-correct{background:#dcfce7;color:#15803d;}
+.feedback-wrong{background:#fee2e2;color:#dc2626;}
+
+/* 정보박스 */
+.info-box{padding:var(--sp-md);border-radius:10px;font-size:var(--font-size-base);line-height:1.8;margin:12px 0;}
+.info-blue{background:#eff6ff;border-left:4px solid var(--primary);}
+.info-amber{background:#fffbeb;border-left:4px solid var(--warning);}
+.hidden{display:none!important;}
+
+@media(max-width:1000px){.layout{grid-template-columns:1fr;}#circuitCanvas{height:360px;}}
+</style>
+</head>
+<body>
+<header>
+    <h1>⚡ 전기 회로 시뮬레이터</h1>
+    <p class="subtitle">전지, 전구, 스위치를 연결하여 회로를 만들어보세요!</p>
+</header>
+
+<div class="layout">
+<!-- 왼쪽 -->
+<aside class="panel">
+    <h3>🔌 예제 회로</h3>
+    <div class="score-row">
+        <div class="score-item"><div class="score-label">퀴즈 정답</div><div class="score-value" id="scoreC">0</div></div>
+        <div class="score-item"><div class="score-label">시도</div><div class="score-value" id="scoreT">0</div></div>
+        <div class="badge-row">
+            <span class="badge" id="b_first" title="첫 회로">⚡</span>
+            <span class="badge" id="b_switch" title="스위치 ON">🔘</span>
+            <span class="badge" id="b_quiz"   title="퀴즈 정답">🏆</span>
+        </div>
+    </div>
+
+    <div id="exampleCards"></div>
+
+    <div class="info-box info-amber" style="margin-top:14px;">
+        <strong>📌 조작 방법</strong><br>
+        • 스위치가 있는 회로 → 스위치 클릭으로 ON/OFF<br>
+        • 예제 선택 → 즉시 회로 표시<br>
+        • ▶ 전체 실행으로 상태 확인
+    </div>
+</aside>
+
+<!-- 중앙: 캔버스 -->
+<main class="panel" style="padding:16px;">
+    <h3 id="circuitTitle">🔋 회로 시뮬레이터</h3>
+    <canvas id="circuitCanvas"></canvas>
+    <div class="status-bar status-off" id="statusBar">
+        <div class="status-dot dot-off" id="statusDot"></div>
+        <span id="statusText">예제 회로를 선택해주세요</span>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+        <button class="btn-edu btn-success" onclick="App.testCircuit()" style="flex:1;">▶ 회로 테스트</button>
+        <button class="btn-edu btn-warning" onclick="App.toggleSwitch()" id="switchBtn" style="flex:1;display:none;">🔘 스위치 ON/OFF</button>
+    </div>
+</main>
+
+<!-- 오른쪽 -->
+<aside class="panel">
+    <h3>📊 회로 정보</h3>
+    <div class="parts-grid" id="partsGrid">
+        <div class="parts-item"><div class="parts-icon">🔋</div><div class="parts-name">전지</div><div class="parts-count" id="cntBat">0</div></div>
+        <div class="parts-item"><div class="parts-icon">💡</div><div class="parts-name">전구</div><div class="parts-count" id="cntBulb">0</div></div>
+        <div class="parts-item"><div class="parts-icon">🔘</div><div class="parts-name">스위치</div><div class="parts-count" id="cntSw">0</div></div>
+        <div class="parts-item"><div class="parts-icon">〰️</div><div class="parts-name">도선</div><div class="parts-count" id="cntWire">0</div></div>
+    </div>
+
+    <div class="info-box info-blue">
+        <strong id="conceptTitle">💡 회로 개념</strong><br>
+        <span id="conceptDesc">예제를 선택하면 핵심 개념이 나타납니다.</span>
+    </div>
+
+    <h3>🧩 전기 퀴즈</h3>
+    <div class="quiz-box">
+        <div class="quiz-q" id="quizQ"></div>
+        <div class="quiz-opts" id="quizOpts"></div>
+        <div class="feedback-box hidden" id="quizFb"></div>
+        <button class="btn-edu btn-success" style="margin-top:10px;" onclick="App.nextQuiz()">→ 다음 문제</button>
+    </div>
+
+    <div class="info-box info-amber" style="margin-top:12px;">
+        <strong>📚 직렬 vs 병렬</strong><br>
+        <strong>직렬:</strong> 부품을 한 줄로 연결<br>
+        &nbsp;→ 전구가 어두워짐, 하나 끊기면 전체 꺼짐<br>
+        <strong>병렬:</strong> 부품을 나란히 연결<br>
+        &nbsp;→ 전구가 밝음, 하나 끊겨도 나머지 유지
+    </div>
+</aside>
+</div>
+
+<script>
+/* ===== CONFIG ===== */
+const CONFIG = {
+    CURRICULUM:{ subject:'실과', grade:5, semester:1, unit:'5. 전기·전자와 생활', achievement:'[6실04-07] 전기 회로를 구성하고 직렬·병렬 연결의 차이를 이해한다.' },
+    ANIMATION:{ FEEDBACK_DURATION:3000, TOAST_DURATION:2500 },
+    COLOR:{ WIRE:'#fbbf24', WIRE_GLOW:'#fde68a', BG:'#0f172a', GRID:'rgba(148,163,184,0.1)' }
+};
+
+const UI_TEXT = {
+    FEEDBACK_CORRECT:['정답이에요! 👏','잘했어요! ⭐','맞았어요! 🎉','훌륭해요! 💯'],
+    FEEDBACK_WRONG:  ['다시 생각해봐요 🤔','거의 다 왔어요! 💪','힌트를 확인해봐요 💡']
+};
+
+/* ===== 예제 데이터 ===== */
+const EXAMPLES = [
+    {
+        id:0, name:'간단한 회로', desc:'전지 → 전구 (기본 연결)',
+        concept:'전류가 흐르는 <strong>닫힌 회로</strong>를 만들면 전구에 불이 들어와요!<br>전지 +극에서 출발해 -극으로 돌아와야 해요.',
+        hasBat:1, hasBulb:1, hasSw:0, wireCount:2,
+        circuit: { type:'simple' }
+    },
+    {
+        id:1, name:'스위치 회로', desc:'전지 → 스위치 → 전구',
+        concept:'<strong>스위치</strong>는 전류의 길을 열고 닫아요.<br>스위치 OFF → 열린 회로 → 전구 꺼짐<br>스위치 ON  → 닫힌 회로 → 전구 켜짐',
+        hasBat:1, hasBulb:1, hasSw:1, wireCount:3,
+        circuit:{ type:'switch' }
+    },
+    {
+        id:2, name:'직렬 연결', desc:'전지 → 전구1 → 전구2',
+        concept:'<strong>직렬 연결</strong>: 전구를 한 줄로 이어요.<br>전구가 늘수록 <em>어두워져요</em>.<br>하나가 끊기면 <em>전체가 꺼져요</em>.',
+        hasBat:1, hasBulb:2, hasSw:0, wireCount:3,
+        circuit:{ type:'series' }
+    },
+    {
+        id:3, name:'병렬 연결', desc:'전구1과 전구2를 나란히',
+        concept:'<strong>병렬 연결</strong>: 전구를 나란히 이어요.<br>각 전구에 같은 전압이 걸려 <em>밝아요</em>.<br>하나가 끊겨도 <em>나머지는 켜져요</em>.',
+        hasBat:1, hasBulb:2, hasSw:0, wireCount:4,
+        circuit:{ type:'parallel' }
+    }
+];
+
+const QUIZZES = [
+    {q:'전구에 불이 들어오려면 어떤 조건이 필요한가요?',opts:['열린 회로','닫힌 회로','스위치 OFF','전구만 있으면'],ans:1},
+    {q:'직렬 연결에서 전구 하나가 끊어지면?',opts:['나머지만 켜짐','전부 꺼짐','더 밝아짐','변화 없음'],ans:1},
+    {q:'병렬 연결의 장점은 무엇인가요?',opts:['전구가 어두워짐','하나 꺼져도 나머지 유지','전지가 오래 감','도선이 짧아짐'],ans:1},
+    {q:'스위치의 역할은 무엇인가요?',opts:['전기를 만든다','전구를 밝게 한다','전류의 길을 열고 닫는다','전지를 충전한다'],ans:2},
+    {q:'직렬 연결에서 전구 수가 늘수록?',opts:['밝아진다','어두워진다','색이 바뀐다','변화 없다'],ans:1}
+];
+
+let currentEx = null, switchOn = false, quizIdx = 0, scoreC = 0, scoreT = 0;
+const earnedBadges = new Set();
+
+function showToast(msg){ let c=document.getElementById('_tc');if(!c){c=document.createElement('div');c.id='_tc';c.style.cssText='position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;';document.body.appendChild(c);}const t=document.createElement('div');t.textContent=msg;t.style.cssText='background:#1e293b;color:#fff;padding:12px 20px;border-radius:10px;font-size:15px;font-weight:700;';c.appendChild(t);setTimeout(()=>t.remove(),CONFIG.ANIMATION.TOAST_DURATION); }
+function earnBadge(id,icon,name){ if(earnedBadges.has(id))return;earnedBadges.add(id);const el=document.getElementById('b_'+id);if(el)el.classList.add('earned');showToast(icon+' 배지 획득: '+name); }
+function showFeedback(type){ const pool=UI_TEXT['FEEDBACK_'+type.toUpperCase()];const msg=pool[Math.floor(Math.random()*pool.length)];const el=document.getElementById('quizFb');el.textContent=msg;el.className='feedback-box feedback-'+type;el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),CONFIG.ANIMATION.FEEDBACK_DURATION); }
+
+const App = {
+    init(){
+        this.buildExamples();
+        this.renderQuiz();
+        this.initCanvas();
+    },
+
+    buildExamples(){
+        const c = document.getElementById('exampleCards');
+        c.innerHTML = EXAMPLES.map(ex =>
+            `<div class="example-card" id="ex_${ex.id}" onclick="App.loadExample(${ex.id})">
+                <div class="example-card-title">${ex.name}</div>
+                <div class="example-card-desc">${ex.desc}</div>
+            </div>`
+        ).join('');
+    },
+
+    loadExample(id){
+        currentEx  = EXAMPLES[id];
+        switchOn   = false;
+        document.querySelectorAll('.example-card').forEach((c,i) => c.classList.toggle('active', i===id));
+        document.getElementById('circuitTitle').textContent = '⚡ ' + currentEx.name;
+        document.getElementById('cntBat').textContent  = currentEx.hasBat;
+        document.getElementById('cntBulb').textContent = currentEx.hasBulb;
+        document.getElementById('cntSw').textContent   = currentEx.hasSw;
+        document.getElementById('cntWire').textContent = currentEx.wireCount;
+        document.getElementById('conceptDesc').innerHTML = currentEx.concept;
+        const swBtn = document.getElementById('switchBtn');
+        swBtn.style.display = currentEx.hasSw ? '' : 'none';
+        this.updateSwitchBtn();
+        this.updateStatus(null, '▶ 회로 테스트 버튼을 눌러보세요!');
+        this.drawCircuit(false);
+        earnBadge('first','⚡','첫 회로 탐구!');
+    },
+
+    testCircuit(){
+        if(!currentEx){ alert('먼저 예제 회로를 선택해주세요!'); return; }
+        const on = this.isCircuitOn();
+        this.drawCircuit(on);
+        if(on){
+            this.updateStatus(true, `✅ 전류가 흘러요! ${currentEx.name} 작동 중`);
+        } else {
+            const reason = currentEx.hasSw && !switchOn ? '스위치가 열려 있어요 (스위치를 ON 해보세요!)' : '회로가 연결되지 않았어요';
+            this.updateStatus(false, '❌ ' + reason);
+        }
+    },
+
+    isCircuitOn(){
+        if(!currentEx) return false;
+        if(currentEx.hasSw && !switchOn) return false;
+        return true;
+    },
+
+    toggleSwitch(){
+        if(!currentEx || !currentEx.hasSw) return;
+        switchOn = !switchOn;
+        this.updateSwitchBtn();
+        this.testCircuit();
+        if(switchOn) earnBadge('switch','🔘','스위치 ON!');
+    },
+
+    updateSwitchBtn(){
+        const btn = document.getElementById('switchBtn');
+        btn.textContent = `🔘 스위치: ${switchOn ? 'ON ✅' : 'OFF ❌'}`;
+        btn.style.background = switchOn ? '#10b981' : '#ef4444';
+    },
+
+    updateStatus(on, msg){
+        const bar = document.getElementById('statusBar');
+        const dot = document.getElementById('statusDot');
+        const txt = document.getElementById('statusText');
+        if(on === true){
+            bar.className = 'status-bar status-on';
+            dot.className = 'status-dot dot-on';
+        } else if(on === false){
+            bar.className = 'status-bar status-off';
+            dot.className = 'status-dot dot-off';
+        }
+        txt.textContent = msg;
+    },
+
+    /* ── 캔버스 ── */
+    initCanvas(){
+        const canvas = document.getElementById('circuitCanvas');
+        canvas.addEventListener('click', e => {
+            if(currentEx?.hasSw){
+                const rect = canvas.getBoundingClientRect();
+                const sx   = canvas.width / rect.width;
+                const x    = (e.clientX - rect.left) * sx;
+                const y    = (e.clientY - rect.top)  * (canvas.height / rect.height);
+                // 스위치 영역 클릭 감지 (대략 중앙 상단)
+                const W = canvas.width, H = canvas.height;
+                if(Math.abs(x - W*0.38) < 50 && Math.abs(y - H*0.28) < 30){
+                    this.toggleSwitch(); return;
+                }
+            }
+        });
+        canvas.addEventListener('touchstart', e => {
+            e.preventDefault();
+            if(currentEx?.hasSw){
+                const t = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                const x = (t.clientX - rect.left) * (canvas.width/rect.width);
+                const y = (t.clientY - rect.top)  * (canvas.height/rect.height);
+                const W = canvas.width, H = canvas.height;
+                if(Math.abs(x - W*0.38) < 60 && Math.abs(y - H*0.28) < 40){ this.toggleSwitch(); }
+            }
+        },{ passive:false });
+        const resize = () => {
+            canvas.width  = canvas.parentElement.clientWidth - 32;
+            canvas.height = 540;
+            if(currentEx) this.drawCircuit(this.isCircuitOn());
+            else this.drawEmpty();
+        };
+        resize();
+        window.addEventListener('resize', resize);
+    },
+
+    drawEmpty(){
+        const canvas = document.getElementById('circuitCanvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+        ctx.fillStyle = CONFIG.COLOR.BG; ctx.fillRect(0,0,W,H);
+        ctx.fillStyle = 'rgba(148,163,184,0.5)';
+        ctx.font = 'bold 18px Nanum Gothic'; ctx.textAlign = 'center';
+        ctx.fillText('⬅️ 왼쪽에서 예제 회로를 선택하세요', W/2, H/2);
+    },
+
+    drawCircuit(on){
+        if(!currentEx){ this.drawEmpty(); return; }
+        const canvas = document.getElementById('circuitCanvas');
+        const ctx    = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+
+        ctx.fillStyle = CONFIG.COLOR.BG; ctx.fillRect(0,0,W,H);
+        // 그리드
+        ctx.strokeStyle = CONFIG.COLOR.GRID; ctx.lineWidth = 1;
+        for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+        for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+        const type = currentEx.circuit.type;
+        if(type==='simple')   this.drawSimple(ctx,W,H,on);
+        else if(type==='switch') this.drawSwitch(ctx,W,H,on);
+        else if(type==='series') this.drawSeries(ctx,W,H,on);
+        else if(type==='parallel') this.drawParallel(ctx,W,H,on);
+
+        this.drawLegend(ctx,W,H);
+    },
+
+    wire(ctx,x1,y1,x2,y2,on){
+        ctx.strokeStyle = on ? CONFIG.COLOR.WIRE_GLOW : '#475569';
+        ctx.lineWidth   = on ? 5 : 3;
+        if(on){ ctx.shadowColor=CONFIG.COLOR.WIRE; ctx.shadowBlur=10; }
+        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+        ctx.shadowBlur = 0;
+    },
+
+    battery(ctx,x,y){
+        ctx.fillStyle='#3b82f6'; ctx.beginPath(); ctx.roundRect(x-20,y-35,40,70,6); ctx.fill();
+        ctx.fillStyle='#fff'; ctx.font='bold 22px serif'; ctx.textAlign='center'; ctx.fillText('🔋',x,y+8);
+        ctx.fillStyle='#ef4444'; ctx.font='bold 16px monospace'; ctx.fillText('+',x,y-38);
+        ctx.fillStyle='#94a3b8'; ctx.fillText('-',x,y+48);
+    },
+
+    bulb(ctx,x,y,on){
+        if(on){ ctx.shadowColor='#fbbf24'; ctx.shadowBlur=30; }
+        ctx.fillStyle=on?'#fbbf24':'#475569';
+        ctx.beginPath(); ctx.arc(x,y,22,0,Math.PI*2); ctx.fill();
+        ctx.shadowBlur=0;
+        ctx.fillStyle='#fff'; ctx.font='24px serif'; ctx.textAlign='center'; ctx.fillText('💡',x,y+8);
+        if(on){
+            ctx.fillStyle='rgba(251,191,36,0.25)';
+            ctx.beginPath(); ctx.arc(x,y,40,0,Math.PI*2); ctx.fill();
+        }
+    },
+
+    switch_(ctx,x,y,on){
+        ctx.fillStyle=on?'#10b981':'#ef4444';
+        ctx.beginPath(); ctx.roundRect(x-24,y-16,48,32,8); ctx.fill();
+        ctx.fillStyle='#fff'; ctx.font='16px sans-serif'; ctx.textAlign='center'; ctx.fillText(on?'ON':'OFF',x,y+6);
+        if(currentEx?.hasSw){
+            ctx.fillStyle='rgba(255,255,255,.25)'; ctx.font='11px Nanum Gothic'; ctx.fillText('클릭!',x,y+26);
+        }
+    },
+
+    drawSimple(ctx,W,H,on){
+        const bx=W*0.2,by=H*0.45, lx=W*0.75,ly=H*0.45;
+        this.wire(ctx,bx,by-35,lx,ly-35,on);
+        this.wire(ctx,bx,by+35,lx,ly+35,on);
+        this.wire(ctx,lx-22,ly,lx+22,ly,on);
+        this.battery(ctx,bx,by);
+        this.bulb(ctx,lx,ly,on);
+        this.label(ctx,bx,by+65,'전지'); this.label(ctx,lx,ly+65,'전구');
+    },
+
+    drawSwitch(ctx,W,H,on){
+        const bx=W*0.15,by=H*0.45, sx=W*0.45,sy=H*0.28, lx=W*0.75,ly=H*0.45;
+        this.wire(ctx,bx,by-35,sx,sy,on&&switchOn);
+        this.wire(ctx,sx,sy,lx,ly-35,on&&switchOn);
+        this.wire(ctx,bx,by+35,lx,ly+35,on&&switchOn);
+        this.battery(ctx,bx,by); this.switch_(ctx,sx,sy,switchOn); this.bulb(ctx,lx,ly,on);
+        this.label(ctx,bx,by+65,'전지'); this.label(ctx,sx,sy+50,'스위치 (클릭!)'); this.label(ctx,lx,ly+65,'전구');
+    },
+
+    drawSeries(ctx,W,H,on){
+        const bx=W*0.12,by=H*0.45, l1x=W*0.43,l1y=H*0.45, l2x=W*0.72,l2y=H*0.45;
+        this.wire(ctx,bx,by-35,l1x-22,l1y,on); this.wire(ctx,l1x+22,l1y,l2x-22,l2y,on);
+        this.wire(ctx,l2x+22,l2y,W*0.88,l2y,on); this.wire(ctx,W*0.88,by-35,W*0.88,l2y,on);
+        this.wire(ctx,bx,by+35,W*0.88,by+35,on); this.wire(ctx,W*0.88,by+35,W*0.88,l2y,on);
+        this.battery(ctx,bx,by); this.bulb(ctx,l1x,l1y,on); this.bulb(ctx,l2x,l2y,on);
+        this.label(ctx,bx,by+65,'전지'); this.label(ctx,l1x,l1y+55,'전구 1'); this.label(ctx,l2x,l2y+55,'전구 2');
+        if(on){ this.label(ctx,W*0.5,H*0.18,'⚠️ 직렬: 전구가 어두워요'); }
+    },
+
+    drawParallel(ctx,W,H,on){
+        const bx=W*0.1,by=H*0.5, l1x=W*0.62,l1y=H*0.3, l2x=W*0.62,l2y=H*0.7;
+        // 가로 버스
+        this.wire(ctx,bx,by-35,W*0.62,by-35,on);
+        this.wire(ctx,bx,by+35,W*0.62,by+35,on);
+        // 전구 1
+        this.wire(ctx,W*0.62,by-35,l1x,l1y,on); this.wire(ctx,l1x,l1y,W*0.62,by+35,on);
+        // 전구 2
+        this.wire(ctx,W*0.62,by-35,l2x,l2y,on); this.wire(ctx,l2x,l2y,W*0.62,by+35,on);
+        this.battery(ctx,bx,by); this.bulb(ctx,l1x,l1y,on); this.bulb(ctx,l2x,l2y,on);
+        this.label(ctx,bx,by+65,'전지'); this.label(ctx,l1x+50,l1y,'전구 1'); this.label(ctx,l2x+50,l2y,'전구 2');
+        if(on){ this.label(ctx,W*0.4,H*0.12,'✅ 병렬: 전구가 밝아요!'); }
+    },
+
+    label(ctx,x,y,text){
+        ctx.shadowBlur=0; ctx.fillStyle='rgba(255,255,255,.85)'; ctx.font='bold 13px Nanum Gothic'; ctx.textAlign='center';
+        ctx.fillText(text,x,y);
+    },
+
+    drawLegend(ctx,W,H){
+        const items=[['🔋','전지'],['💡','전구'],['🔘','스위치'],['—','도선(on)']];
+        ctx.fillStyle='rgba(15,23,42,.7)'; ctx.beginPath(); ctx.roundRect(10,H-50,W-20,40,8); ctx.fill();
+        items.forEach((item,i)=>{
+            const x=50+i*(W-100)/items.length;
+            ctx.fillStyle='#e2e8f0'; ctx.font='13px Nanum Gothic'; ctx.textAlign='center';
+            ctx.fillText(item[0]+' '+item[1],x,H-24);
+        });
+    },
+
+    /* ── 퀴즈 ── */
+    renderQuiz(){
+        const q = QUIZZES[quizIdx];
+        document.getElementById('quizQ').textContent = q.q;
+        document.getElementById('quizFb').classList.add('hidden');
+        document.getElementById('quizOpts').innerHTML = q.opts.map((o,i) =>
+            `<button class="quiz-opt" onclick="App.answerQuiz(${i})">${o}</button>`
+        ).join('');
+    },
+
+    answerQuiz(chosen){
+        const q  = QUIZZES[quizIdx];
+        const ok = chosen === q.ans;
+        scoreT++; if(ok) scoreC++;
+        document.getElementById('scoreC').textContent = scoreC;
+        document.getElementById('scoreT').textContent = scoreT;
+        document.querySelectorAll('.quiz-opt').forEach((el,i) => {
+            el.disabled = true;
+            if(i===q.ans)           el.classList.add('correct');
+            if(i===chosen && !ok)   el.classList.add('wrong');
+        });
+        if(ok) earnBadge('quiz','🏆','퀴즈 정답!');
+        showFeedback(ok ? 'correct' : 'wrong');
+    },
+
+    nextQuiz(){ quizIdx = (quizIdx+1) % QUIZZES.length; this.renderQuiz(); }
+};
+
+window.onload = () => App.init();
+</script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}수업 집중도 분석 프로그램 사용설명서 v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{bar-chart} 수업 집중도 분석 프로그램}\\[0.5cm]
+{\Huge\bfseries\color{primary} 사용설명서}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v2.4.0.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 사용설명서는 수업 집중도 분석 프로그램의 전체 기능을 상세히 설명합니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{1. 개요}
+
+\subsection*{1.1 목적}
+
+이 문서는 \textbf{수업집중도 분석 프로그램}의 전체 기능을 상세히 설명하는 사용설명서입니다. 시뮬레이터를 처음 사용하기 전에 읽거나, 특정 기능을 자세히 알고 싶을 때 참조합니다.
+
+
+\subsection*{1.2 관련 문서}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{5.5cm}|p{7.3cm}|p{2.3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{문서} & \textbf{용도} & \textbf{깊이} \\
+\hline
+퀵가이드 & 소프트웨어 사용 \textbf{중} 빠른 참조 & \emoji{star} \\
+\hline
+\textbf{사용설명서 (본 문서)} & \textbf{사용 전/후 전체 기능 이해} & \textbf{\emoji{star}\emoji{star}\emoji{star}} \\
+\hline
+이론해설서 & 배경 개념·원리 학습 & \emoji{star}\emoji{star}\emoji{star}\emoji{star} \\
+\hline
+활용가이드 & 수업 적용 방법 & \emoji{star}\emoji{star}\emoji{star} \\
+\hline
+개발참조문서 & 코드 구조·기술 사양 & \emoji{star}\emoji{star}\emoji{star}\emoji{star}\emoji{star} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{1.3 시스템 요구사항}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.6cm}|p{12.4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{요구사항} \\
+\hline
+브라우저 & Chrome, Edge, Firefox (최신 버전) \\
+\hline
+화면 & 1024px 이상 권장 (반응형 지원) \\
+\hline
+인터넷 & Chart.js CDN 로딩을 위해 최초 1회 필요 \\
+\hline
+설치 & 불필요 (HTML 파일 더블클릭으로 실행) \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{2. 화면 구성}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{images/S6_Concentration_screen.png}
+\end{center}
+
+
+\section*{3. 기능 상세}
+
+\subsection*{3.1 데이터 수집}
+
+샘플 로드, 랜덤 생성, CSV 업로드, 직접 입력 4가지 방식
+
+
+\subsection*{3.2 데이터 분석}
+
+통계 카드 4개 + 산점도·히스토그램·상관관계 차트
+
+
+\subsection*{3.3 학생 모델}
+
+슬라이더로 온도·소음 기준 설정 \textrightarrow{} if-else 규칙 기반 예측
+
+
+\subsection*{3.4 교수 모델}
+
+최소자승법 다중 회귀 \textrightarrow{} 수식·계수·R² 자동 계산
+
+
+\subsection*{3.5 모델 비교}
+
+학생/교수 모델 예측 곡선 비교 + 정확도 대조
+
+
+\subsection*{3.6 예측 테스트}
+
+온도·소음 입력 \textrightarrow{} 두 모델의 예측 결과 비교
+
+
+\subsection*{3.7 CSV 내보내기}
+
+생성된 데이터를 CSV 파일로 다운로드
+
+
+\subsection*{3.8 차트 시각화}
+
+Chart.js 기반 실시간 차트 (4종)
+
+
+
+\section*{4. 조작 방법}
+
+\subsection*{4.1 기본 워크플로우}
+
+1. \textbf{데이터 준비}: \emoji{inbox-tray} 수집 탭에서 샘플/랜덤/CSV/직접 입력 중 선택
+
+2. \textbf{데이터 분석}: \emoji{bar-chart} 분석 탭에서 통계·차트 관찰
+
+3. \textbf{학생 모델}: \emoji{man-student} 탭에서 슬라이더로 규칙 설정 \textrightarrow{} 예측 테스트
+
+4. \textbf{교수 모델}: \emoji{man-teacher} 탭에서 학습 시작 \textrightarrow{} 수식·R² 확인
+
+5. \textbf{비교}: \emoji{balance-scale} 탭에서 두 모델 정확도 대조
+
+
+
+\section*{5. 자주 묻는 질문 (FAQ)}
+
+\textbf{Q: 데이터를 얼마나 넣어야 하나요?}
+
+
+A: 의미 있는 분석을 위해 최소 10건 이상을 권장합니다. 샘플 데이터(12건)로 시작해보세요.
+
+
+\textbf{Q: R²가 낮으면 모델이 나쁜 건가요?}
+
+
+A: 반드시 그렇지 않습니다. 실세계 데이터는 다양한 요인이 작용하므로 R²가 낮을 수 있습니다. 중요한 것은 모델의 한계를 이해하는 것입니다.
+
+
+\textbf{Q: 학생 모델이 교수 모델보다 정확할 수도 있나요?}
+
+
+A: 네, 데이터 패턴에 따라 가능합니다. 이것이 "정답은 하나가 아니다"라는 핵심 학습 포인트입니다.
+
+
+
+\section*{6. 참고자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{10.5cm}|p{3.0cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{비고} \\
+\hline
+1 & 수업집중도분석프로그램\_퀵가이드 & 빠른 참조 \\
+\hline
+2 & 수업집중도분석프로그램\_개발참조 & 기술 사양 \\
+\hline
+3 & 수업집중도분석프로그램\_활용가이드 & 수업 적용 \\
+\hline
+4 & 수업집중도분석프로그램\_이론해설서 & 배경 이론 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{수업 집중도 분석 프로그램 사용설명서}
+\end{center}
+\end{document}

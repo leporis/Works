@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#8D6E63"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="480" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- 타이틀 -->
+  <text x="400" y="26" text-anchor="middle" font-family="Noto Sans KR" font-size="15" font-weight="700" fill="#3E2723">시스템 레이아웃 구조 — 학습 모드</text>
+  <text x="400" y="42" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#8D6E63">grid-template-columns: 280px 1fr 280px | max-width: 1460px</text>
+
+  <!-- ===== 헤더 ===== -->
+  <rect x="40" y="54" width="720" height="28" rx="6" fill="white" filter="url(#shadow)"/>
+  <text x="400" y="72" text-anchor="middle" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#E53935">header.header — 🍎 CNN 사과 분류 시뮬레이터 v1.1.1</text>
+
+  <!-- ===== 모드 탭 ===== -->
+  <rect x="280" y="88" width="240" height="22" rx="6" fill="white" filter="url(#shadow)"/>
+  <rect x="290" y="91" width="106" height="16" rx="4" fill="#E53935"/>
+  <text x="343" y="103" text-anchor="middle" font-family="Noto Sans KR" font-size="7.5" font-weight="600" fill="white">🧠 학습 모드 (active)</text>
+  <rect x="402" y="91" width="106" height="16" rx="4" fill="white" stroke="#FFCCBC" stroke-width="0.8"/>
+  <text x="455" y="103" text-anchor="middle" font-family="Noto Sans KR" font-size="7.5" fill="#5D4037">🔮 분류 모드</text>
+  <text x="400" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#8D6E63">div.mode-tabs</text>
+
+  <!-- ===== 3열 그리드 ===== -->
+  <!-- 열 구분 표시 -->
+  <text x="128" y="124" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="600" fill="#1565C0">left-col (280px)</text>
+  <text x="400" y="124" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="600" fill="#1565C0">center-col (1fr)</text>
+  <text x="672" y="124" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="600" fill="#1565C0">right-col (280px)</text>
+
+  <!-- 왼쪽 열 배경 -->
+  <rect x="40" y="130" width="176" height="300" rx="8" fill="#E3F2FD" opacity="0.3" stroke="#1565C0" stroke-width="0.5" stroke-dasharray="3,2"/>
+  <!-- 중앙 열 배경 -->
+  <rect x="224" y="130" width="352" height="300" rx="8" fill="#E8F5E9" opacity="0.3" stroke="#43A047" stroke-width="0.5" stroke-dasharray="3,2"/>
+  <!-- 오른쪽 열 배경 -->
+  <rect x="584" y="130" width="176" height="300" rx="8" fill="#FFF3E0" opacity="0.3" stroke="#F57C00" stroke-width="0.5" stroke-dasharray="3,2"/>
+
+  <!-- ===== 왼쪽: panelData ===== -->
+  <rect x="48" y="138" width="160" height="110" rx="6" fill="white" filter="url(#shadow)"/>
+  <rect x="48" y="138" width="160" height="20" rx="6" fill="#E53935"/>
+  <rect x="48" y="150" width="160" height="8" fill="#E53935"/>
+  <text x="128" y="152" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="white">📦 학습 데이터</text>
+  <text x="128" y="137" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#1565C0">#panelData</text>
+  <!-- 내부 요소 -->
+  <text x="58" y="174" font-family="Noto Sans KR" font-size="6.5" fill="#5D4037">• dataSizeSlider (20~300)</text>
+  <text x="58" y="186" font-family="Noto Sans KR" font-size="6.5" fill="#5D4037">• dataNoiseSlider (0~50%)</text>
+  <text x="58" y="198" font-family="Noto Sans KR" font-size="6.5" fill="#5D4037">• dataBrightSlider (0~50%)</text>
+  <rect x="58" y="206" width="140" height="16" rx="4" fill="#E53935" opacity="0.8"/>
+  <text x="128" y="218" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="white">🎲 generateTrainData()</text>
+  <text x="128" y="236" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#8D6E63">#dataStatus</text>
+
+  <!-- ===== 왼쪽: panelLayerInfo ===== -->
+  <rect x="48" y="256" width="160" height="168" rx="6" fill="white" filter="url(#shadow)"/>
+  <rect x="48" y="256" width="160" height="20" rx="6" fill="#7B1FA2"/>
+  <rect x="48" y="268" width="160" height="8" fill="#7B1FA2"/>
+  <text x="128" y="270" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="white">📖 CNN 레이어 설명</text>
+  <text x="128" y="255" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#7B1FA2">#panelLayerInfo</text>
+  <!-- 레이어 목록 -->
+  <text x="58" y="290" font-family="Noto Sans KR" font-size="6.5" fill="#5D4037">layer-info × 8 (클릭 → 하이라이트)</text>
+  <rect x="58" y="296" width="140" height="12" rx="3" fill="#E3F2FD" stroke="#1565C0" stroke-width="0.5"/>
+  <text x="64" y="305" font-family="Noto Sans KR" font-size="6" fill="#1565C0">① Input  64×64×3</text>
+  <rect x="58" y="312" width="140" height="12" rx="3" fill="#F3E5F5"/>
+  <text x="64" y="321" font-family="Noto Sans KR" font-size="6" fill="#7B1FA2">② Conv1  62×62×8</text>
+  <rect x="58" y="328" width="140" height="12" rx="3" fill="#FFF3E0"/>
+  <text x="64" y="337" font-family="Noto Sans KR" font-size="6" fill="#E65100">③ Pool1  31×31×8</text>
+  <text x="128" y="352" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" fill="#8D6E63">... ④~⑧</text>
+  <!-- 수식 -->
+  <rect x="58" y="360" width="140" height="28" rx="4" fill="#FFF3E0"/>
+  <text x="128" y="373" text-anchor="middle" font-family="JetBrains Mono" font-size="6.5" fill="#3E2723">(W−F+2P)/S+1 = 62</text>
+  <text x="128" y="384" text-anchor="middle" font-family="JetBrains Mono" font-size="6.5" fill="#3E2723">P(y=k) = eᶻᵏ / Σeᶻʲ</text>
+  <text x="128" y="398" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#8D6E63">div.formula-box</text>
+
+  <!-- ===== 중앙: chartRow ===== -->
+  <rect x="232" y="138" width="168" height="80" rx="6" fill="white" filter="url(#shadow)"/>
+  <text x="316" y="152" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="#E53935">📉 Loss Chart</text>
+  <text x="316" y="136" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#8D6E63">#lossCanvas 400×220</text>
+  <polyline points="246,206 264,198 282,190 300,184 318,180 336,178 354,177" fill="none" stroke="#E53935" stroke-width="1.5" stroke-linecap="round"/>
+  <polygon points="246,206 264,198 282,190 300,184 318,180 336,178 354,177 354,210 246,210" fill="#E5393518"/>
+
+  <rect x="408" y="138" width="160" height="80" rx="6" fill="white" filter="url(#shadow)"/>
+  <text x="488" y="152" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="#43A047">📈 Accuracy Chart</text>
+  <text x="488" y="136" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#8D6E63">#accCanvas 400×220</text>
+  <polyline points="422,204 440,198 458,190 476,180 494,172 512,166 530,162" fill="none" stroke="#43A047" stroke-width="1.5" stroke-linecap="round"/>
+  <polygon points="422,204 440,198 458,190 476,180 494,172 512,166 530,162 530,210 422,210" fill="#43A04718"/>
+  <text x="400" y="136" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#43A047">#chartRow</text>
+
+  <!-- ===== 중앙: archCanvas ===== -->
+  <rect x="232" y="226" width="336" height="74" rx="6" fill="white" filter="url(#shadow)"/>
+  <text x="400" y="240" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="#3E2723">🏗️ CNN Architecture Visualization</text>
+  <text x="400" y="224" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#8D6E63">#archCanvas 820×175 — drawArchitecture()</text>
+  <!-- 미니 블록들 -->
+  <rect x="252" y="252" width="22" height="22" rx="2" fill="#E53935"/>
+  <rect x="286" y="254" width="18" height="18" rx="2" fill="#7B1FA2BB"/>
+  <rect x="316" y="256" width="14" height="14" rx="2" fill="#F57C00BB"/>
+  <rect x="342" y="257" width="12" height="12" rx="2" fill="#7B1FA2BB"/>
+  <rect x="366" y="258" width="10" height="10" rx="2" fill="#F57C00BB"/>
+  <rect x="392" y="252" width="4" height="22" rx="1" fill="#1976D2BB"/>
+  <rect x="412" y="254" width="4" height="18" rx="1" fill="#00897BBB"/>
+  <rect x="432" y="258" width="4" height="10" rx="1" fill="#43A047"/>
+  <!-- 연결 -->
+  <line x1="276" y1="263" x2="284" y2="263" stroke="#FFCCBC" stroke-width="0.8"/>
+  <line x1="306" y1="263" x2="314" y2="263" stroke="#FFCCBC" stroke-width="0.8"/>
+  <line x1="332" y1="263" x2="340" y2="263" stroke="#FFCCBC" stroke-width="0.8"/>
+  <line x1="356" y1="263" x2="364" y2="263" stroke="#FFCCBC" stroke-width="0.8"/>
+  <line x1="378" y1="263" x2="390" y2="263" stroke="#FFCCBC" stroke-width="0.8"/>
+  <line x1="398" y1="263" x2="410" y2="263" stroke="#FFCCBC" stroke-width="0.8"/>
+  <line x1="418" y1="263" x2="430" y2="263" stroke="#FFCCBC" stroke-width="0.8"/>
+  <!-- 레이블 -->
+  <text x="263" y="284" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#5D4037">Input</text>
+  <text x="295" y="284" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#5D4037">Conv1</text>
+  <text x="323" y="284" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#5D4037">Pool1</text>
+  <text x="348" y="284" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#5D4037">Conv2</text>
+  <text x="371" y="284" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#5D4037">Pool2</text>
+  <text x="394" y="284" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#5D4037">Flat</text>
+  <text x="414" y="284" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#5D4037">Dense</text>
+  <text x="434" y="284" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#5D4037">Out</text>
+  <!-- highlightLayer 동작 표시 -->
+  <text x="520" y="260" font-family="JetBrains Mono" font-size="6" fill="#7B1FA2">highlightLayer(id)</text>
+  <text x="520" y="270" font-family="JetBrains Mono" font-size="6" fill="#7B1FA2">→ glow + border</text>
+  <text x="520" y="280" font-family="JetBrains Mono" font-size="6" fill="#7B1FA2">→ sync layer-info</text>
+
+  <!-- ===== 중앙: trainResultPanel ===== -->
+  <rect x="232" y="308" width="336" height="62" rx="6" fill="white" filter="url(#shadow)" stroke="#FFCCBC" stroke-dasharray="4,2" stroke-width="1"/>
+  <text x="400" y="322" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="#8D6E63">📊 학습 결과 (hidden → 학습완료 시 표시)</text>
+  <text x="400" y="306" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#8D6E63">#trainResultPanel .result-grid (3열)</text>
+  <rect x="246" y="332" width="96" height="28" rx="4" fill="#FFF3E0"/>
+  <text x="294" y="349" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#5D4037">🎯 모델 성능</text>
+  <rect x="348" y="332" width="108" height="28" rx="4" fill="#FFF3E0"/>
+  <text x="402" y="349" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#5D4037">📐 가중치 (R/G/T/B)</text>
+  <rect x="462" y="332" width="96" height="28" rx="4" fill="#FFF3E0"/>
+  <text x="510" y="349" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#5D4037">⚙️ 학습 설정</text>
+
+  <!-- ===== 오른쪽: panelSettings ===== -->
+  <rect x="592" y="138" width="160" height="162" rx="6" fill="white" filter="url(#shadow)"/>
+  <rect x="592" y="138" width="160" height="20" rx="6" fill="#43A047"/>
+  <rect x="592" y="150" width="160" height="8" fill="#43A047"/>
+  <text x="672" y="152" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="white">⚙️ 학습 설정</text>
+  <text x="672" y="137" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#43A047">#panelSettings</text>
+  <text x="602" y="174" font-family="Noto Sans KR" font-size="6.5" fill="#5D4037">• lrSelect: 0.001~0.1</text>
+  <text x="602" y="186" font-family="Noto Sans KR" font-size="6.5" fill="#5D4037">• epochSelect: 10~100</text>
+  <text x="602" y="198" font-family="Noto Sans KR" font-size="6.5" fill="#5D4037">• vizInterval: 1~10</text>
+  <!-- 컨트롤 -->
+  <rect x="602" y="206" width="44" height="14" rx="3" fill="#43A047"/>
+  <text x="624" y="217" text-anchor="middle" font-family="Noto Sans KR" font-size="6" font-weight="600" fill="white">▶ start</text>
+  <rect x="650" y="206" width="44" height="14" rx="3" fill="#FFC107"/>
+  <text x="672" y="217" text-anchor="middle" font-family="Noto Sans KR" font-size="6" font-weight="600" fill="#3E2723">⏸ pause</text>
+  <rect x="698" y="206" width="44" height="14" rx="3" fill="#2196F3"/>
+  <text x="720" y="217" text-anchor="middle" font-family="Noto Sans KR" font-size="6" font-weight="600" fill="white">⏭ step</text>
+  <!-- 진행률 -->
+  <rect x="602" y="228" width="140" height="5" rx="2" fill="#FFF3E0"/>
+  <rect x="602" y="228" width="70" height="5" rx="2" fill="#43A047"/>
+  <text x="672" y="244" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#8D6E63">#progressFill + #trainStatusBadge</text>
+  <!-- 상태 -->
+  <rect x="612" y="250" width="120" height="14" rx="4" fill="#E8F5E9"/>
+  <text x="672" y="261" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#2E7D32">▶ 학습 중</text>
+  <!-- 초기화 -->
+  <rect x="602" y="272" width="140" height="14" rx="4" fill="white" stroke="#FFCCBC" stroke-width="0.8"/>
+  <text x="672" y="283" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#5D4037">🗑️ resetAll()</text>
+
+  <!-- ===== 오른쪽: panelStats ===== -->
+  <rect x="592" y="308" width="160" height="84" rx="6" fill="white" filter="url(#shadow)"/>
+  <rect x="592" y="308" width="160" height="20" rx="6" fill="#F57C00"/>
+  <rect x="592" y="320" width="160" height="8" fill="#F57C00"/>
+  <text x="672" y="322" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="white">📊 학습 현황</text>
+  <text x="672" y="307" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#F57C00">#panelStats</text>
+  <text x="602" y="344" font-family="JetBrains Mono" font-size="6.5" fill="#5D4037">statEpoch | statSamples</text>
+  <text x="602" y="356" font-family="JetBrains Mono" font-size="6.5" fill="#5D4037">statLoss  | statAcc</text>
+  <text x="602" y="370" font-family="JetBrains Mono" font-size="6.5" fill="#5D4037">#trainLog (max-h: 110px)</text>
+
+  <!-- ===== 오른쪽: panelPlayback ===== -->
+  <rect x="592" y="398" width="160" height="30" rx="6" fill="white" filter="url(#shadow)" stroke="#2196F3" stroke-dasharray="3,2" stroke-width="0.8"/>
+  <text x="672" y="397" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#2196F3">#panelPlayback (hidden)</text>
+  <text x="672" y="416" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#2196F3">📽️ replayTraining()</text>
+
+  <!-- ===== 하단 기술 요약 ===== -->
+  <rect x="40" y="438" width="720" height="34" rx="8" fill="white" filter="url(#shadow)" opacity="0.95"/>
+  <text x="400" y="454" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#5D4037">
+    STATE: { mode, epoch, weights, lossHistory[], accHistory[], epochSnapshots[] }
+  </text>
+  <text x="400" y="466" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#5D4037">
+    CONFIG: { CANVAS_SIZE:240, DOWNSAMPLE:64, NUM_FILTERS:8, TARGET_*_W, LAYER_STEPS[8] }
+  </text>
+</svg>

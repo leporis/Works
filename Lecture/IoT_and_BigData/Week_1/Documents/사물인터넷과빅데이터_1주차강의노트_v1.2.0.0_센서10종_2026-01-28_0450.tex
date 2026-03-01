@@ -1,0 +1,2107 @@
+% 사물인터넷과 빅데이터 - 1주차 강의노트 (그림 포함)
+% XeLaTeX로 컴파일: xelatex W01_강의노트_오리엔테이션_v2.tex
+
+\documentclass[11pt, a4paper]{article}
+
+% 한국어 지원
+\usepackage{fontspec}
+\usepackage{kotex}
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+
+% 페이지 설정
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% 색상 및 박스
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+
+% 표 및 그래픽
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{float}
+
+% TikZ 그래픽
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, fit, backgrounds}
+
+% 목록 및 링크
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=NavyBlue,
+    urlcolor=RoyalBlue
+}
+
+% 헤더/푸터
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{gray}{사물인터넷과 빅데이터}}
+\fancyhead[R]{\small\textcolor{gray}{1주차: 오리엔테이션}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% 섹션 스타일
+\usepackage{titlesec}
+\titleformat{\section}
+    {\Large\bfseries\color{NavyBlue}}
+    {\thesection}{1em}{}[\titlerule]
+\titleformat{\subsection}
+    {\large\bfseries\color{RoyalBlue}}
+    {\thesubsection}{1em}{}
+
+% 커스텀 박스 정의
+\newtcolorbox{keypoint}{
+    colback=blue!5,
+    colframe=NavyBlue,
+    fonttitle=\bfseries,
+    title=핵심 메시지,
+    breakable
+}
+
+\newtcolorbox{activity}{
+    colback=green!5,
+    colframe=ForestGreen,
+    fonttitle=\bfseries,
+    title=실습 활동,
+    breakable
+}
+
+\newtcolorbox{think}{
+    colback=orange!5,
+    colframe=BurntOrange,
+    fonttitle=\bfseries,
+    title=생각해보기,
+    breakable
+}
+
+\newtcolorbox{info}{
+    colback=gray!5,
+    colframe=gray,
+    breakable
+}
+
+% TikZ 스타일 정의
+\tikzset{
+    % 15주 흐름도 스타일
+    weekbox/.style={
+        rectangle, rounded corners=8pt, 
+        minimum width=2.2cm, minimum height=1.8cm,
+        text centered, font=\small\bfseries,
+        draw=#1, line width=1.5pt, fill=#1!10
+    },
+    weeklabel/.style={
+        font=\scriptsize, text=#1
+    },
+    % 바이브코딩 개념도 스타일
+    processbox/.style={
+        rectangle, rounded corners=5pt,
+        minimum width=2cm, minimum height=0.8cm,
+        text centered, font=\small,
+        draw=#1, fill=#1!15
+    },
+    personicon/.style={
+        circle, minimum size=0.8cm,
+        draw=NavyBlue, fill=NavyBlue!20,
+        font=\small
+    },
+    aiicon/.style={
+        circle, minimum size=0.8cm,
+        draw=ForestGreen, fill=ForestGreen!20,
+        font=\small
+    },
+    % 마이크로비트 스타일
+    mbboard/.style={
+        rectangle, rounded corners=10pt,
+        minimum width=6cm, minimum height=4cm,
+        draw=black, line width=2pt, fill=black!90
+    },
+    ledgrid/.style={
+        rectangle, minimum width=2cm, minimum height=2cm,
+        fill=black
+    },
+    button/.style={
+        rectangle, rounded corners=2pt,
+        minimum width=0.6cm, minimum height=0.6cm,
+        draw=gray!50, fill=gray!30
+    },
+    pinlabel/.style={
+        rectangle, rounded corners=3pt,
+        minimum width=0.5cm, minimum height=0.4cm,
+        draw=Goldenrod, fill=Goldenrod!80,
+        font=\tiny\bfseries
+    },
+    % MakeCode 스타일
+    mcarea/.style={
+        rectangle, rounded corners=5pt,
+        draw=#1, line width=1pt, fill=#1!5
+    },
+    mcblock/.style={
+        rectangle, rounded corners=3pt,
+        minimum height=0.6cm,
+        draw=#1, fill=#1!80,
+        font=\scriptsize\bfseries, text=white
+    },
+    % 프로젝트 단계 스타일
+    stagebox/.style={
+        rectangle, rounded corners=8pt,
+        minimum width=3cm, minimum height=1cm,
+        text centered, font=\small\bfseries,
+        draw=#1, line width=1.5pt, fill=#1!15
+    }
+}
+
+% 문서 시작
+\begin{document}
+
+% 표지
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\Huge\bfseries\color{NavyBlue} 사물인터넷과 빅데이터}
+
+\vspace{0.5cm}
+{\Large Internet of Things and Big Data}
+
+\vspace{2cm}
+
+{\LARGE\bfseries 1주차}
+
+\vspace{0.5cm}
+
+{\Huge 오리엔테이션}
+
+\vspace{1cm}
+
+{\large 강좌 소개 및 마이크로비트 첫 만남}
+
+\vspace{3cm}
+
+\begin{info}
+\centering
+\textbf{학습 목표}\\[0.5em]
+강좌의 목표와 진행 방식을 이해하고,\\
+바이브코딩의 가능성을 경험한다.
+\end{info}
+
+\vfill
+
+{\large 청주교육대학교 컴퓨터교육과}
+
+\vspace{0.5cm}
+
+{\large 2026학년도 1학기}
+
+\end{titlepage}
+
+% 목차
+\tableofcontents
+\newpage
+
+%========================================
+\section{강좌 소개}
+%========================================
+
+\subsection{강좌 개요}
+
+이 강좌는 \textbf{마이크로비트}와 \textbf{Grove 확장 센서}를 활용하여 데이터를 수집하고, 이를 분석·해석하는 과정을 통해 \textbf{컴퓨팅 사고력}, \textbf{인공지능 사고력}, \textbf{데이터 리터러시}를 함양하는 것을 목표로 합니다.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{항목} & \textbf{내용} \\
+\midrule
+강좌명 & 사물인터넷과 빅데이터 \\
+수업 시간 & 수요일 6-7교시 \\
+학점/시수 & 2학점 / 주 2시간 \\
+대상 & 컴퓨터교육과 4학년 \\
+담당 교수 & 양창모 \\
+이메일 & cmyang@cje.ac.kr \\
+\bottomrule
+\end{tabularx}
+\caption{강좌 기본 정보}
+\end{table}
+
+\subsection{왜 이 강좌를 배우는가?}
+
+2022 개정 교육과정에서는 초등학교 실과에 \textbf{피지컬 컴퓨팅}과 \textbf{데이터 수집·분석}이 포함되었습니다. 미래의 초등교사로서 이러한 내용을 직접 경험하고 이해하는 것은 필수적입니다.
+
+\begin{keypoint}
+\begin{enumerate}
+    \item \textbf{``데이터는 원인을 말하지 않는다. 우리가 원인을 '추정'할 뿐이다.''}
+    \item \textbf{``AI는 집중도를 판단하지 않는다. 우리가 만든 기준을 계산할 뿐이다.''}
+    \item \textbf{``이 수업은 코딩을 가르치지 않는다. 코딩을 의심하는 방법을 가르친다.''}
+\end{enumerate}
+\end{keypoint}
+
+\subsection{15주 전체 흐름}
+
+다음 그림은 이번 학기 15주 동안의 전체 진행 과정을 보여줍니다.
+
+%% ========== 그림 1: 15주 전체 흐름도 ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.3cm]
+    % 주차 박스들
+    \node[weekbox=NavyBlue] (w1) {
+        \begin{tabular}{c}
+        1\textasciitilde2주\\[6pt]
+        \Large\bfseries 탐색
+        \end{tabular}
+    };
+    
+    \node[weekbox=RoyalBlue, right=of w1] (w2) {
+        \begin{tabular}{c}
+        3\textasciitilde4주\\[6pt]
+        \Large\bfseries 기획
+        \end{tabular}
+    };
+    
+    \node[weekbox=ForestGreen, right=of w2] (w3) {
+        \begin{tabular}{c}
+        5\textasciitilde8주\\[6pt]
+        \Large\bfseries 수집
+        \end{tabular}
+    };
+    
+    \node[weekbox=BurntOrange, right=of w3] (w4) {
+        \begin{tabular}{c}
+        9\textasciitilde13주\\[6pt]
+        \Large\bfseries 분석
+        \end{tabular}
+    };
+    
+    \node[weekbox=RedOrange, right=of w4] (w5) {
+        \begin{tabular}{c}
+        14\textasciitilde15주\\[6pt]
+        \Large\bfseries 발표
+        \end{tabular}
+    };
+    
+    % 화살표
+    \draw[-{Stealth[length=3mm]}, line width=2pt, NavyBlue!70] (w1) -- (w2);
+    \draw[-{Stealth[length=3mm]}, line width=2pt, RoyalBlue!70] (w2) -- (w3);
+    \draw[-{Stealth[length=3mm]}, line width=2pt, ForestGreen!70] (w3) -- (w4);
+    \draw[-{Stealth[length=3mm]}, line width=2pt, BurntOrange!70] (w4) -- (w5);
+    
+    % 하단 레이블
+    \node[weeklabel=NavyBlue, below=0.3cm of w1] {대면};
+    \node[weeklabel=RoyalBlue, below=0.3cm of w2] {대면};
+    \node[weeklabel=ForestGreen, below=0.3cm of w3, align=center] {\textbf{실습기간}\\(온라인)};
+    \node[weeklabel=BurntOrange, below=0.3cm of w4] {대면};
+    \node[weeklabel=RedOrange, below=0.3cm of w5] {대면};
+    
+    % 상단 설명
+    \node[above=0.3cm of w1, font=\scriptsize, text=NavyBlue] {마이크로비트};
+    \node[above=0.3cm of w2, font=\scriptsize, text=RoyalBlue] {프로젝트 설계};
+    \node[above=0.3cm of w3, font=\scriptsize, text=ForestGreen] {현장 데이터};
+    \node[above=0.3cm of w4, font=\scriptsize, text=BurntOrange] {바이브코딩};
+    \node[above=0.3cm of w5, font=\scriptsize, text=RedOrange] {결과 공유};
+\end{tikzpicture}
+\caption{15주 전체 흐름도}
+\end{figure}
+
+%========================================
+\section{바이브코딩이란?}
+%========================================
+
+\begin{info}
+\textbf{오늘의 학습 (1주차)}
+
+\begin{center}
+\begin{tabular}{c l}
+\toprule
+\textbf{시간} & \textbf{활동 내용} \\
+\midrule
+20분 & 강좌 소개: 목표, 진행 방식, 평가 안내 \\
+30분 & \textbf{바이브코딩 프로그램 시연}: 교수자가 바이브코딩으로 제작한 데이터 분석 프로그램 \\
+10분 & 예시 프로젝트(``수업 집중도'') 전체 흐름 소개 \\
+30분 & 마이크로비트 첫 체험: LED에 자기 이름 표시하기 \\
+10분 & 다음 주 안내 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{info}
+
+\subsection{바이브코딩의 정의}
+
+\textbf{바이브코딩(Vibe Coding)}은 ``코드를 직접 작성하지 않고, AI와의 대화를 통해 프로그램을 만드는 방식''입니다. 
+
+전통적인 프로그래밍에서는 문법(syntax)을 정확히 알아야 했습니다. 하지만 바이브코딩에서는 \textbf{무엇을 만들고 싶은지}를 자연어로 설명하면 AI가 코드를 생성합니다.
+
+\subsection{전통적 프로그래밍 vs 바이브코딩}
+
+%% ========== 그림 2: 바이브코딩 개념도 ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.5cm and 0.8cm]
+    % === 전통적 프로그래밍 (상단) ===
+    \node[font=\bfseries\small, text=gray] (title1) {전통적 프로그래밍};
+    
+    \node[personicon, below=0.5cm of title1] (p1) {\small 사람};
+    \node[processbox=gray, right=of p1] (learn) {문법 학습};
+    \node[processbox=gray, right=of learn] (code) {코드 작성};
+    \node[processbox=gray, right=of code] (debug) {디버깅};
+    \node[processbox=NavyBlue, right=of debug] (prog1) {프로그램};
+    
+    \draw[-{Stealth}, thick, gray] (p1) -- (learn);
+    \draw[-{Stealth}, thick, gray] (learn) -- (code);
+    \draw[-{Stealth}, thick, gray] (code) -- (debug);
+    \draw[-{Stealth}, thick, gray] (debug) -- (prog1);
+    
+    % 피드백 루프
+    \draw[-{Stealth}, thick, red!70, dashed] (debug.south) -- ++(0,-0.4) -| node[pos=0.25, below, font=\tiny, text=red!70] {오류 발생 시 반복} (code.south);
+    
+    % === 바이브코딩 (하단) ===
+    \node[font=\bfseries\small, text=ForestGreen, below=2.5cm of title1] (title2) {바이브코딩};
+    
+    \node[personicon, below=0.5cm of title2] (p2) {\small 사람};
+    \node[processbox=ForestGreen, right=of p2] (req) {\begin{tabular}{c}요구사항\\설명\end{tabular}};
+    \node[aiicon, right=of req] (ai) {\small AI};
+    \node[processbox=ForestGreen, right=of ai] (gen) {코드 생성};
+    \node[processbox=BurntOrange, right=of gen] (review) {\begin{tabular}{c}비판적\\검토\end{tabular}};
+    \node[processbox=NavyBlue, right=of review] (prog2) {프로그램};
+    
+    \draw[-{Stealth}, thick, ForestGreen] (p2) -- node[above, font=\tiny] {자연어} (req);
+    \draw[-{Stealth}, thick, ForestGreen] (req) -- (ai);
+    \draw[-{Stealth}, thick, ForestGreen] (ai) -- (gen);
+    \draw[-{Stealth}, thick, BurntOrange] (gen) -- (review);
+    \draw[-{Stealth}, thick, NavyBlue] (review) -- (prog2);
+    
+    % 피드백 루프
+    \draw[-{Stealth}, thick, ForestGreen!70, dashed] (review.south) -- ++(0,-0.4) -| node[pos=0.25, below, font=\tiny, text=ForestGreen!70] {수정 요청} (req.south);
+    
+    % 강조 박스
+    \begin{scope}[on background layer]
+        \node[fit=(p2)(prog2)(review), fill=ForestGreen!5, rounded corners=10pt, inner sep=10pt] {};
+    \end{scope}
+\end{tikzpicture}
+\caption{전통적 프로그래밍 vs 바이브코딩}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{>{\bfseries}l X X}
+\toprule
+구분 & 전통적 프로그래밍 & 바이브코딩 \\
+\midrule
+필요 역량 & 문법, 알고리즘 지식 & 문제 정의, 요구사항 설명 \\
+작업 방식 & 코드 직접 작성 & AI에게 요청 후 검토 \\
+오류 대응 & 디버깅 기술 필요 & 자연어로 수정 요청 \\
+학습 곡선 & 가파름 & 완만함 \\
+\bottomrule
+\end{tabularx}
+\caption{전통적 프로그래밍 vs 바이브코딩 비교}
+\end{table}
+
+\subsection{바이브코딩의 핵심: 비판적 검토}
+
+바이브코딩에서 가장 중요한 것은 \textbf{AI가 생성한 코드를 무조건 믿지 않는 것}입니다.
+
+\begin{think}
+AI가 만든 코드가 항상 맞을까요?
+
+\begin{itemize}
+    \item AI는 ``그럴듯한'' 코드를 생성하지만, 논리적 오류가 있을 수 있습니다.
+    \item 데이터의 맥락을 AI가 완전히 이해하지 못할 수 있습니다.
+    \item 결국 \textbf{판단의 책임은 사람}에게 있습니다.
+\end{itemize}
+
+$\rightarrow$ 바이브코딩은 ``AI를 도구로 활용하되, 비판적으로 검토하는'' 역량을 기릅니다.
+\end{think}
+
+%========================================
+\section{마이크로비트 소개}
+%========================================
+
+\subsection{마이크로비트란?}
+
+\textbf{마이크로비트(micro:bit)}는 영국 BBC에서 교육용으로 개발한 소형 컴퓨터입니다. 손바닥 크기의 보드에 다양한 센서와 LED가 내장되어 있어, 프로그래밍을 처음 배우는 학습자에게 적합합니다.
+
+\subsection{마이크로비트 V2 구성}
+
+%% ========== 그림 3: 마이크로비트 구성요소 다이어그램 ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+    % 보드 본체
+    \fill[black!90, rounded corners=12pt] (-3.5,-2.5) rectangle (3.5,2.5);
+    \draw[white, rounded corners=12pt, line width=1pt] (-3.5,-2.5) rectangle (3.5,2.5);
+    
+    % 파란 삼각형 장식
+    \fill[RoyalBlue] (-3.5,2.5) -- (-3.5,1.5) -- (-2.5,2.5) -- cycle;
+    \fill[RoyalBlue] (-3.2,2.5) -- (-3.5,1.8) -- (-2.2,2.5) -- cycle;
+    
+    % USB 커넥터
+    \fill[gray!50] (-0.4,2.5) rectangle (0.4,2.8);
+    \draw[white, line width=0.5pt] (-0.4,2.5) rectangle (0.4,2.8);
+    
+    % 터치 로고
+    \fill[Goldenrod] (0,1.6) ellipse (0.5 and 0.25);
+    \fill[black!90] (0,1.6) ellipse (0.3 and 0.15);
+    \fill[Goldenrod] (-0.1,1.55) circle (0.05);
+    \fill[Goldenrod] (0.1,1.55) circle (0.05);
+    
+    % 마이크 (V2)
+    \fill[red!70] (1.2,1.5) circle (0.12);
+    \node[font=\tiny, text=red!70] at (1.5,1.5) {MIC};
+    
+    % 5x5 LED 매트릭스
+    \foreach \x in {-1,-0.5,0,0.5,1} {
+        \foreach \y in {-0.2,0.3,0.8} {
+            \fill[red!80] (\x,\y) circle (0.12);
+        }
+    }
+    \foreach \x in {-1,-0.5,0,0.5,1} {
+        \fill[red!60] (\x,-0.7) circle (0.12);
+        \fill[red!60] (\x,1.3) circle (0);
+    }
+    
+    % 버튼 A
+    \fill[gray!40] (-2.3,0.3) rectangle (-1.7,-0.3);
+    \fill[black] (-2.15,0.15) rectangle (-1.85,-0.15);
+    \node[font=\tiny\bfseries, text=RoyalBlue] at (-2,-0.6) {A};
+    
+    % 버튼 B  
+    \fill[gray!40] (1.7,0.3) rectangle (2.3,-0.3);
+    \fill[black] (1.85,0.15) rectangle (2.15,-0.15);
+    \node[font=\tiny\bfseries, text=RoyalBlue] at (2,-0.6) {B};
+    
+    % 엣지 커넥터
+    \fill[Goldenrod] (-3,-2.5) rectangle (-2.3,-2.8);
+    \fill[black!90] (-2.65,-2.5) -- (-2.65,-2.65) -- (-2.5,-2.65) -- (-2.5,-2.5);
+    \node[font=\tiny\bfseries] at (-2.65,-3.1) {0};
+    
+    \fill[Goldenrod] (-1.8,-2.5) rectangle (-1.1,-2.8);
+    \fill[black!90] (-1.45,-2.5) -- (-1.45,-2.65) -- (-1.3,-2.65) -- (-1.3,-2.5);
+    \node[font=\tiny\bfseries] at (-1.45,-3.1) {1};
+    
+    \fill[Goldenrod] (-0.6,-2.5) rectangle (0.1,-2.8);
+    \fill[black!90] (-0.25,-2.5) -- (-0.25,-2.65) -- (-0.1,-2.65) -- (-0.1,-2.5);
+    \node[font=\tiny\bfseries] at (-0.25,-3.1) {2};
+    
+    \fill[Goldenrod] (1.1,-2.5) rectangle (1.8,-2.8);
+    \node[font=\tiny\bfseries] at (1.45,-3.1) {3V};
+    
+    \fill[Goldenrod] (2.3,-2.5) rectangle (3,-2.8);
+    \node[font=\tiny\bfseries] at (2.65,-3.1) {GND};
+    
+    % 레이블 화살표
+    \draw[-{Stealth}, thick, NavyBlue] (-4.5,1.6) -- (-0.6,1.6);
+    \node[font=\small, text=NavyBlue, left] at (-4.5,1.6) {터치 로고 (V2)};
+    
+    \draw[-{Stealth}, thick, red!70] (4.5,1.5) -- (1.7,1.5);
+    \node[font=\small, text=red!70, right] at (4.5,1.5) {마이크 (V2)};
+    
+    \draw[-{Stealth}, thick, ForestGreen] (4.5,0.5) -- (1.2,0.5);
+    \node[font=\small, text=ForestGreen, right] at (4.5,0.5) {5×5 LED};
+    
+    \draw[-{Stealth}, thick, gray] (-4.5,0) -- (-2.4,0);
+    \node[font=\small, text=gray, left] at (-4.5,0) {버튼 A};
+    
+    \draw[-{Stealth}, thick, gray] (4.5,0) -- (2.4,0);
+    \node[font=\small, text=gray, right] at (4.5,0) {버튼 B};
+    
+    \draw[-{Stealth}, thick, Goldenrod] (0,-3.8) -- (0,-2.9);
+    \node[font=\small, text=Goldenrod, below] at (0,-3.8) {엣지 커넥터 (외부 연결용)};
+    
+    \draw[-{Stealth}, thick, gray] (0,3.5) -- (0,2.9);
+    \node[font=\small, text=gray, above] at (0,3.5) {USB 커넥터};
+\end{tikzpicture}
+\caption{마이크로비트 V2 전면 구성요소}
+\end{figure}
+
+%% ========== 그림 A, B: 마이크로비트 실제 사진 ==========
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=0.9\textwidth]{microbit_front.png}
+    \caption*{(a) 전면: LED, 버튼, 마이크}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=0.9\textwidth]{microbit_back.png}
+    \caption*{(b) 후면: 프로세서, 나침반, 배터리}
+\end{minipage}
+\caption{마이크로비트 V2 실제 모습 (출처: microbit.org)}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{구성요소} & \textbf{위치} & \textbf{설명} \\
+\midrule
+5×5 LED 매트릭스 & 전면 & 텍스트, 숫자, 아이콘 표시 가능 \\
+버튼 A, B & 전면 양쪽 & 사용자 입력 받기 \\
+터치 로고 & 전면 상단 & V2에서 추가된 터치 센서 \\
+마이크 & 전면 & 소리 크기 측정 (V2) \\
+스피커 & 후면 & 소리 출력 (V2) \\
+엣지 커넥터 & 하단 & 외부 장치 연결 (0, 1, 2, 3V, GND) \\
+\bottomrule
+\end{tabularx}
+\caption{마이크로비트 V2 주요 구성요소}
+\end{table}
+
+\subsection{내장 센서}
+
+마이크로비트 V2에는 다음과 같은 센서가 \textbf{내장}되어 있어, 별도 구매 없이 바로 사용할 수 있습니다.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{센서} & \textbf{측정 대상} & \textbf{활용 예시} \\
+\midrule
+가속도계 & X/Y/Z축 가속도, 기울기 & 움직임 감지, 만보기 \\
+나침반 & 방위각 (0°\textasciitilde360°) & 방향 탐지, 나침반 앱 \\
+온도 센서 & CPU 온도 (근사값) & 실내 온도 추정 \\
+조도 센서 & LED를 이용한 밝기 & 밝기에 따른 반응 \\
+마이크 & 소리 크기 (0\textasciitilde255) & 소음 측정, 박수 감지 \\
+터치 센서 & 로고 터치 여부 & 터치 입력 \\
+\bottomrule
+\end{tabularx}
+\caption{마이크로비트 V2 내장 센서}
+\end{table}
+
+\begin{info}
+\textbf{참고}: 마이크로비트의 온도 센서는 CPU 칩의 온도를 측정하므로, 실제 기온보다 5\textasciitilde10°C 높게 측정됩니다. 정밀한 온도 측정이 필요하면 외장 센서(예: SHT40)를 사용해야 합니다.
+\end{info}
+
+\subsection{Grove 확장 시스템}
+
+내장 센서만으로는 측정할 수 없는 데이터(정밀 온습도, CO$_2$, 기압 등)가 있습니다. 이때 \textbf{Grove 시스템}을 사용하면 다양한 외장 센서를 쉽게 연결할 수 있습니다.
+
+\subsubsection{Grove 시스템이란?}
+
+\textbf{Grove}는 Seeed Studio에서 개발한 \textbf{모듈식 전자부품 시스템}입니다. 납땜 없이 케이블만 연결하면 되므로 초보자도 쉽게 사용할 수 있습니다.
+
+%% ========== 그림: Grove 연결 구조 ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.9]
+    % === 마이크로비트 ===
+    \fill[black!85, rounded corners=8pt] (0,4) rectangle (4,7);
+    \draw[white, rounded corners=8pt, line width=0.5pt] (0,4) rectangle (4,7);
+    
+    % 파란 삼각형 장식
+    \fill[RoyalBlue] (0,7) -- (0,6.3) -- (0.7,7) -- cycle;
+    
+    % LED 매트릭스 (하트 모양)
+    \foreach \x/\y in {0.8/5.9, 1.2/6.1, 1.6/5.9, 2/6.1, 2.4/5.9, 2.8/6.1, 3.2/5.9,
+                       1/5.5, 1.8/5.5, 2.2/5.5, 3/5.5,
+                       1.2/5.1, 2/5.1, 2.8/5.1,
+                       1.6/4.7, 2.4/4.7,
+                       2/4.3} {
+        \fill[red!70] (\x,\y) circle (0.08);
+    }
+    
+    % 버튼
+    \fill[gray!50] (0.3,5.3) rectangle (0.7,5.7);
+    \fill[gray!50] (3.3,5.3) rectangle (3.7,5.7);
+    
+    % 엣지 커넥터 (하단)
+    \fill[Goldenrod] (0.3,3.8) rectangle (3.7,4);
+    \foreach \x in {0.5, 1.1, 1.7, 2.3, 2.9, 3.5} {
+        \fill[black!85] (\x,3.85) rectangle (\x+0.3,4);
+    }
+    
+    % 레이블
+    \node[font=\scriptsize\bfseries, text=white] at (2,7.3) {micro:bit V2};
+    
+    % === Grove Shield ===
+    \fill[ForestGreen!70, rounded corners=5pt] (-0.5,0.5) rectangle (4.5,3.5);
+    \draw[ForestGreen!90, rounded corners=5pt, line width=1pt] (-0.5,0.5) rectangle (4.5,3.5);
+    
+    % 엣지 커넥터 슬롯 (상단)
+    \fill[black!60] (0.3,3.2) rectangle (3.7,3.5);
+    \node[font=\tiny, text=white] at (2,3.35) {엣지 커넥터 슬롯};
+    
+    % Grove 포트들
+    \foreach \i/\label in {0/I2C, 1/P0, 2/P1, 3/P2} {
+        \fill[white, rounded corners=2pt] (-0.3+\i*1.3,1) rectangle (0.7+\i*1.3,1.8);
+        \draw[gray!50, rounded corners=2pt] (-0.3+\i*1.3,1) rectangle (0.7+\i*1.3,1.8);
+        % 4핀 표시
+        \foreach \p in {0,1,2,3} {
+            \fill[Goldenrod] (-0.15+\i*1.3+\p*0.2,1.15) rectangle (0.0+\i*1.3+\p*0.2,1.65);
+        }
+        \node[font=\tiny\bfseries] at (0.2+\i*1.3,0.75) {\label};
+    }
+    
+    % Shield 레이블
+    \node[font=\scriptsize\bfseries, text=white] at (2,2.5) {Grove Shield};
+    
+    % 연결 화살표 (마이크로비트 → 쉴드)
+    \draw[-{Stealth}, line width=2pt, Goldenrod] (2,3.8) -- (2,3.5);
+    
+    % === 외장 센서들 ===
+    % 센서 1: SHT40
+    \fill[RoyalBlue!20, rounded corners=5pt] (6,5.5) rectangle (9,7);
+    \draw[RoyalBlue, rounded corners=5pt, line width=1pt] (6,5.5) rectangle (9,7);
+    \fill[cyan!30] (6.8,5.8) rectangle (8.2,6.7);
+    \node[font=\tiny\bfseries, text=RoyalBlue] at (7.5,6.25) {SHT40};
+    \node[font=\tiny] at (7.5,5.65) {온도·습도};
+    % Grove 커넥터
+    \fill[white, rounded corners=2pt] (6.2,6.8) rectangle (6.8,7.2);
+    
+    % 센서 2: SGP30
+    \fill[purple!20, rounded corners=5pt] (6,3) rectangle (9,4.5);
+    \draw[purple!70, rounded corners=5pt, line width=1pt] (6,3) rectangle (9,4.5);
+    \fill[purple!30] (6.8,3.3) rectangle (8.2,4.2);
+    \node[font=\tiny\bfseries, text=purple!70] at (7.5,3.75) {SGP30};
+    \node[font=\tiny] at (7.5,3.15) {CO$_2$·TVOC};
+    % Grove 커넥터
+    \fill[white, rounded corners=2pt] (6.2,4.3) rectangle (6.8,4.7);
+    
+    % 센서 3: BMP280
+    \fill[BurntOrange!20, rounded corners=5pt] (6,0.5) rectangle (9,2);
+    \draw[BurntOrange, rounded corners=5pt, line width=1pt] (6,0.5) rectangle (9,2);
+    \fill[orange!30] (6.8,0.8) rectangle (8.2,1.7);
+    \node[font=\tiny\bfseries, text=BurntOrange] at (7.5,1.25) {BMP280};
+    \node[font=\tiny] at (7.5,0.65) {기압·고도};
+    % Grove 커넥터
+    \fill[white, rounded corners=2pt] (6.2,1.8) rectangle (6.8,2.2);
+    
+    % Grove 케이블 연결
+    \draw[yellow!70!black, line width=3pt, rounded corners=3pt] (0.2,1.4) -- (5,1.4) -- (5,6.25) -- (6.2,6.25);
+    \draw[yellow!70!black, line width=3pt, rounded corners=3pt] (0.2,1.4) -- (5.3,1.4) -- (5.3,3.75) -- (6.2,3.75);
+    \draw[yellow!70!black, line width=3pt, rounded corners=3pt] (0.2,1.4) -- (5.6,1.4) -- (5.6,1.25) -- (6.2,1.25);
+    
+    % I2C 버스 레이블
+    \node[font=\tiny, text=yellow!50!black, fill=white, rounded corners=2pt] at (5.3,2.5) {I2C 버스};
+    
+    % 오른쪽 설명
+    \node[font=\scriptsize, anchor=west, text width=4cm] at (9.5,6.25) {
+        \textbf{정밀 온습도}\\
+        ±0.2°C, ±1.8\%RH
+    };
+    \node[font=\scriptsize, anchor=west, text width=4cm] at (9.5,3.75) {
+        \textbf{공기질 측정}\\
+        CO$_2$, 휘발성유기화합물
+    };
+    \node[font=\scriptsize, anchor=west, text width=4cm] at (9.5,1.25) {
+        \textbf{기압/고도}\\
+        날씨 변화 감지
+    };
+    
+    % 하단 범례
+    \node[font=\tiny, text=gray] at (2,-0.2) {※ I2C 포트 하나에 여러 센서 연결 가능 (최대 6개)};
+\end{tikzpicture}
+\caption{마이크로비트 + Grove Shield + 외장 센서 연결 구조}
+\end{figure}
+
+\subsubsection{왜 Grove를 사용하는가?}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l X X}
+\toprule
+\textbf{비교 항목} & \textbf{납땜 방식} & \textbf{Grove 방식} \\
+\midrule
+연결 방법 & 납땜 필요 & 케이블 연결만 \\
+난이도 & 어려움 & 매우 쉬움 \\
+안전성 & 인두기 화상 위험 & 안전함 \\
+재사용 & 분리 어려움 & 쉽게 분리·재연결 \\
+교육 적합성 & 중·고등 이상 & 초등학생도 가능 \\
+\bottomrule
+\end{tabularx}
+\caption{납땜 방식 vs Grove 방식 비교}
+\end{table}
+
+\subsubsection{사용 가능한 외장 센서 (예시)}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{센서} & \textbf{측정 데이터} & \textbf{프로젝트 예시} \\
+\midrule
+SHT40 & 정밀 온도, 습도 & 교실 쾌적도 측정 \\
+BMP280 & 기압, 고도 & 날씨 변화 감지, 층수 측정 \\
+SGP30 & CO$_2$, TVOC & 환기 필요성 판단 \\
+TSL2561 & 조도 (럭스) & 학습 환경 밝기 측정 \\
+TCS34725 & RGB 색상 & 색 분류기, 과일 익음 판정 \\
+VL53L0X & 거리 (mm) & 사람 통과 감지, 자동문 \\
+\bottomrule
+\end{tabularx}
+\caption{Grove 외장 센서 예시}
+\end{table}
+
+%% ========== 그림: Grove 센서 이미지 갤러리 (10종) ==========
+\begin{figure}[H]
+\centering
+\textbf{환경 센서}\\[0.3cm]
+\begin{minipage}{0.24\textwidth}
+    \centering
+    \includegraphics[width=0.85\textwidth]{sensor_03_sht35.jpg}
+    \caption*{(a) SHT35 온습도\\{\scriptsize 정밀도 ±1.5\%RH}}
+\end{minipage}
+\hfill
+\begin{minipage}{0.24\textwidth}
+    \centering
+    \includegraphics[width=0.85\textwidth]{sensor_10_aht20.png}
+    \caption*{(b) AHT20 온습도\\{\scriptsize 저가형, ±2\%RH}}
+\end{minipage}
+\hfill
+\begin{minipage}{0.24\textwidth}
+    \centering
+    \includegraphics[width=0.85\textwidth]{sensor_09_mcp9808.jpg}
+    \caption*{(c) MCP9808 온도\\{\scriptsize 고정밀 ±0.25°C}}
+\end{minipage}
+\hfill
+\begin{minipage}{0.24\textwidth}
+    \centering
+    \includegraphics[width=0.85\textwidth]{sensor_06_bmp280.jpg}
+    \caption*{(d) BMP280 기압\\{\scriptsize 기압, 고도, 온도}}
+\end{minipage}
+
+\vspace{0.4cm}
+\textbf{광학/색상 센서}\\[0.3cm]
+\begin{minipage}{0.24\textwidth}
+    \centering
+    \includegraphics[width=0.85\textwidth]{sensor_01_light.jpg}
+    \caption*{(e) TSL2561 조도\\{\scriptsize 0.1\textasciitilde40,000 럭스}}
+\end{minipage}
+\hfill
+\begin{minipage}{0.24\textwidth}
+    \centering
+    \includegraphics[width=0.85\textwidth]{sensor_02_color.jpg}
+    \caption*{(f) TCS34725 색상\\{\scriptsize RGB 색상값 측정}}
+\end{minipage}
+\hfill
+\begin{minipage}{0.24\textwidth}
+    \centering
+    \includegraphics[width=0.85\textwidth]{sensor_05_tof.jpg}
+    \caption*{(g) VL53L0X 거리\\{\scriptsize ToF 방식, 최대 2m}}
+\end{minipage}
+\hfill
+\begin{minipage}{0.24\textwidth}
+    \centering
+    \includegraphics[width=0.85\textwidth]{sensor_07_bme680.jpg}
+    \caption*{(h) BME680 환경\\{\scriptsize 온습도+기압+가스}}
+\end{minipage}
+
+\vspace{0.4cm}
+\textbf{모션/출력 장치}\\[0.3cm]
+\begin{minipage}{0.24\textwidth}
+    \centering
+    \includegraphics[width=0.85\textwidth]{sensor_04_accel_gyro.jpg}
+    \caption*{(i) 6축 IMU\\{\scriptsize 가속도+자이로스코프}}
+\end{minipage}
+\hfill
+\begin{minipage}{0.24\textwidth}
+    \centering
+    \includegraphics[width=0.85\textwidth]{sensor_08_oled.jpg}
+    \caption*{(j) OLED 디스플레이\\{\scriptsize 128×64 픽셀 출력}}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \small
+    \begin{tabular}{ll}
+    \textbf{센서 선택 기준} & \\
+    교실 쾌적도 & SHT35, BME680 \\
+    학습 환경 밝기 & TSL2561 \\
+    사물 분류 & TCS34725 \\
+    동작 감지 & VL53L0X, 6축 IMU \\
+    \end{tabular}
+\end{minipage}
+\caption{Grove I2C 센서 및 출력장치 모음 --- 10종 (출처: Seeed Studio)}
+\end{figure}
+
+\begin{keypoint}
+\textbf{I2C 통신의 장점}
+
+Grove 센서들은 \textbf{I2C (아이-스퀘어-씨)} 통신을 사용합니다. I2C의 장점:
+\begin{itemize}
+    \item 2개의 선(SDA, SCL)만으로 여러 센서 연결 가능
+    \item 각 센서는 고유 주소로 구분 (예: SHT40=0x44, SGP30=0x58)
+    \item 하나의 포트에 최대 6개 센서 동시 연결 가능
+\end{itemize}
+\end{keypoint}
+
+%% ========== 그림 C, D: Grove 실제 사진 ==========
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{grove_shield.jpg}
+    \caption*{(a) Grove Shield: 마이크로비트 연결 슬롯과 I2C 포트}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=0.85\textwidth]{grove_sensor.png}
+    \caption*{(b) Grove 온습도 센서: 흰색 Grove 커넥터}
+\end{minipage}
+\caption{Grove 시스템 실제 모습 (출처: Seeed Studio)}
+\end{figure}
+
+%========================================
+\section{MakeCode 에디터}
+%========================================
+
+\subsection{MakeCode란?}
+
+\textbf{MakeCode}는 마이크로소프트에서 개발한 \textbf{블록 기반 프로그래밍 환경}입니다. 웹 브라우저에서 바로 사용할 수 있으며, 코드를 블록처럼 끌어다 놓아 프로그램을 만들 수 있습니다.
+
+\begin{itemize}
+    \item \textbf{접속 주소}: \url{https://makecode.microbit.org}
+    \item \textbf{장점}: 문법 오류 없음, 직관적인 인터페이스, 실시간 시뮬레이터
+\end{itemize}
+
+\subsection{MakeCode 화면 구성}
+
+%% ========== 그림 4: MakeCode 화면 구성도 ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+    % 전체 프레임
+    \draw[gray, line width=2pt, rounded corners=5pt] (0,0) rectangle (14,8);
+    
+    % 상단 바
+    \fill[gray!20] (0,7.5) rectangle (14,8);
+    \node[font=\small\bfseries] at (2,7.75) {MakeCode};
+    
+    % 다운로드 버튼
+    \fill[RoyalBlue, rounded corners=3pt] (11.5,7.55) rectangle (13.5,7.95);
+    \node[font=\tiny\bfseries, text=white] at (12.5,7.75) {다운로드};
+    
+    % 구분선
+    \draw[gray, line width=1pt] (3.5,0) -- (3.5,7.5);
+    \draw[gray, line width=1pt] (6.5,0) -- (6.5,7.5);
+    
+    % ① 시뮬레이터 영역
+    \fill[gray!10] (0,0) rectangle (3.5,7.5);
+    \node[font=\bfseries\small, text=NavyBlue] at (1.75,7) {시뮬레이터};
+    
+    % 미니 마이크로비트
+    \fill[black!85, rounded corners=5pt] (0.7,3) rectangle (2.8,5.5);
+    \foreach \x in {1.1,1.4,1.7,2.0,2.3} {
+        \foreach \y in {3.5,3.9,4.3,4.7,5.1} {
+            \fill[red!60] (\x,\y) circle (0.08);
+        }
+    }
+    \fill[gray!50] (0.85,4.2) rectangle (1.05,4.5);
+    \fill[gray!50] (2.45,4.2) rectangle (2.65,4.5);
+    
+    % 재생 버튼
+    \fill[ForestGreen, rounded corners=2pt] (1.3,2.3) rectangle (2.2,2.7);
+    \node[font=\tiny, text=white] at (1.75,2.5) {▶ 실행};
+    
+    % ② 블록 팔레트 영역
+    \fill[white] (3.5,0) rectangle (6.5,7.5);
+    \node[font=\bfseries\small, text=RoyalBlue] at (5,7) {블록 팔레트};
+    
+    % 카테고리 버튼들
+    \fill[RoyalBlue!80, rounded corners=2pt] (3.7,6.2) rectangle (6.3,6.6);
+    \node[font=\tiny\bfseries, text=white] at (5,6.4) {기본};
+    
+    \fill[Magenta!70, rounded corners=2pt] (3.7,5.6) rectangle (6.3,6);
+    \node[font=\tiny\bfseries, text=white] at (5,5.8) {입력};
+    
+    \fill[Orchid!80, rounded corners=2pt] (3.7,5) rectangle (6.3,5.4);
+    \node[font=\tiny\bfseries, text=white] at (5,5.2) {음악};
+    
+    \fill[red!70, rounded corners=2pt] (3.7,4.4) rectangle (6.3,4.8);
+    \node[font=\tiny\bfseries, text=white] at (5,4.6) {LED};
+    
+    \fill[Salmon!80, rounded corners=2pt] (3.7,3.8) rectangle (6.3,4.2);
+    \node[font=\tiny\bfseries, text=white] at (5,4) {라디오};
+    
+    \fill[ForestGreen!70, rounded corners=2pt] (3.7,3.2) rectangle (6.3,3.6);
+    \node[font=\tiny\bfseries, text=white] at (5,3.4) {반복};
+    
+    \fill[Cyan!70, rounded corners=2pt] (3.7,2.6) rectangle (6.3,3);
+    \node[font=\tiny\bfseries, text=white] at (5,2.8) {논리};
+    
+    \fill[BurntOrange!80, rounded corners=2pt] (3.7,2) rectangle (6.3,2.4);
+    \node[font=\tiny\bfseries, text=white] at (5,2.2) {변수};
+    
+    % ③ 코딩 영역
+    \fill[white] (6.5,0) rectangle (14,7.5);
+    \node[font=\bfseries\small, text=ForestGreen] at (10.25,7) {코딩 영역};
+    
+    % 시작하면 블록
+    \fill[RoyalBlue!80, rounded corners=5pt] (7.5,5) rectangle (10.5,6);
+    \draw[RoyalBlue!60, line width=1pt, rounded corners=5pt] (7.5,5) rectangle (10.5,6);
+    \node[font=\small\bfseries, text=white] at (9,5.7) {시작하면};
+    % 노치
+    \fill[RoyalBlue!80] (8,5) -- (8.3,4.7) -- (9.3,4.7) -- (9.6,5);
+    
+    % 무한반복 블록
+    \fill[ForestGreen!70, rounded corners=5pt] (7.5,2.5) rectangle (10.5,4.5);
+    \draw[ForestGreen!50, line width=1pt, rounded corners=5pt] (7.5,2.5) rectangle (10.5,4.5);
+    \node[font=\small\bfseries, text=white] at (9,4.2) {무한반복};
+    % 내부 공간
+    \fill[ForestGreen!30] (7.7,2.7) rectangle (10.3,3.9);
+    % 노치
+    \fill[ForestGreen!70] (8,4.5) -- (8.3,4.8) -- (9.3,4.8) -- (9.6,4.5);
+    \fill[ForestGreen!70] (8,2.5) -- (8.3,2.2) -- (9.3,2.2) -- (9.6,2.5);
+    
+    % 하단 번호 레이블
+    \node[font=\bfseries, text=NavyBlue] at (1.75,-0.5) {①};
+    \node[font=\small] at (1.75,-1) {시뮬레이터};
+    
+    \node[font=\bfseries, text=RoyalBlue] at (5,-0.5) {②};
+    \node[font=\small] at (5,-1) {블록 팔레트};
+    
+    \node[font=\bfseries, text=ForestGreen] at (10.25,-0.5) {③};
+    \node[font=\small] at (10.25,-1) {코딩 영역};
+\end{tikzpicture}
+\caption{MakeCode 에디터 화면 구성}
+\end{figure}
+
+\begin{enumerate}
+    \item \textbf{시뮬레이터} (왼쪽): 코드 실행 결과를 가상 마이크로비트에서 미리 확인
+    \item \textbf{블록 팔레트} (중앙): 카테고리별로 정리된 블록 모음
+    \item \textbf{코딩 영역} (오른쪽): 블록을 배치하여 프로그램 작성
+    \item \textbf{다운로드 버튼}: 완성된 코드를 .hex 파일로 다운로드
+\end{enumerate}
+
+\subsection{기본 블록}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{블록} & \textbf{카테고리} & \textbf{설명} \\
+\midrule
+시작하면 & 기본 & 프로그램 시작 시 한 번 실행 \\
+무한반복 & 기본 & 계속 반복 실행 \\
+LED에 표시 & 기본 & 5×5 LED에 패턴 표시 \\
+문자열 표시 & 기본 & LED에 텍스트 스크롤 \\
+아이콘 표시 & 기본 & 하트, 웃는 얼굴 등 아이콘 \\
+일시정지 & 기본 & 지정한 시간(ms) 대기 \\
+\bottomrule
+\end{tabularx}
+\caption{MakeCode 기본 블록}
+\end{table}
+
+%========================================
+\section{실습: LED에 이름 표시하기}
+%========================================
+
+\subsection{실습 목표}
+
+마이크로비트 LED에 자신의 이름(이니셜)을 표시하는 프로그램을 만들어봅니다.
+
+\begin{activity}
+\textbf{실습 단계}
+
+\begin{enumerate}
+    \item MakeCode 에디터 접속: \url{https://makecode.microbit.org}
+    \item ``새 프로젝트'' 클릭
+    \item ``기본'' 카테고리에서 ``문자열 표시'' 블록 선택
+    \item ``시작하면'' 블록 안에 ``문자열 표시'' 블록 넣기
+    \item 표시할 텍스트에 자신의 이름 입력 (예: ``KIM'')
+    \item 시뮬레이터에서 결과 확인
+    \item 실제 마이크로비트에 다운로드하여 확인
+\end{enumerate}
+\end{activity}
+
+%% ========== 그림 E: MakeCode 시뮬레이터 실행 화면 ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.85]
+    % === 전체 MakeCode 인터페이스 ===
+    \fill[gray!15, rounded corners=5pt] (0,0) rectangle (15,9);
+    
+    % 상단 헤더 바 (보라색)
+    \fill[Orchid!80, rounded corners=5pt] (0,8.3) rectangle (15,9);
+    \node[font=\small\bfseries, text=white] at (2.2,8.65) {MakeCode};
+    \node[font=\tiny, text=white!80] at (2.2,8.4) {micro:bit};
+    
+    % 다운로드 버튼
+    \fill[ForestGreen, rounded corners=3pt] (12.5,8.4) rectangle (14.5,8.9);
+    \node[font=\tiny\bfseries, text=white] at (13.5,8.65) {다운로드};
+    
+    % === 왼쪽: 시뮬레이터 영역 ===
+    \fill[gray!25] (0.2,0.2) rectangle (4.3,8.1);
+    \node[font=\scriptsize\bfseries, text=Orchid] at (2.25,7.8) {시뮬레이터};
+    
+    % 마이크로비트 본체
+    \fill[black!90, rounded corners=8pt] (0.6,2.5) rectangle (3.9,7);
+    
+    % LED 매트릭스 배경
+    \fill[black] (1.1,3.5) rectangle (3.4,6.3);
+    
+    % LED "H" 패턴 표시
+    \foreach \x/\y in {1.3/6.0, 1.3/5.5, 1.3/5.0, 1.3/4.5, 1.3/4.0,
+                       1.75/5.0,
+                       2.2/6.0, 2.2/5.5, 2.2/5.0, 2.2/4.5, 2.2/4.0} {
+        \fill[red!80] (\x,\y) circle (0.12);
+    }
+    % 꺼진 LED (어두운 빨강)
+    \foreach \x in {1.3, 1.75, 2.2, 2.65, 3.1} {
+        \foreach \y in {6.0, 5.5, 5.0, 4.5, 4.0} {
+            \fill[red!15] (\x,\y) circle (0.1);
+        }
+    }
+    % 켜진 LED 다시 덮어쓰기
+    \foreach \x/\y in {1.3/6.0, 1.3/5.5, 1.3/5.0, 1.3/4.5, 1.3/4.0,
+                       1.75/5.0,
+                       2.2/6.0, 2.2/5.5, 2.2/5.0, 2.2/4.5, 2.2/4.0} {
+        \fill[red!90] (\x,\y) circle (0.12);
+    }
+    
+    % 버튼 A, B
+    \fill[gray!50, rounded corners=2pt] (0.75,4.5) rectangle (1.05,4.9);
+    \fill[gray!50, rounded corners=2pt] (3.4,4.5) rectangle (3.7,4.9);
+    \node[font=\tiny, text=white] at (0.9,4.3) {A};
+    \node[font=\tiny, text=white] at (3.55,4.3) {B};
+    
+    % 엣지 커넥터
+    \fill[Goldenrod] (0.8,2.5) rectangle (3.65,2.9);
+    
+    % 실행 버튼
+    \fill[ForestGreen!80, rounded corners=3pt] (1.5,1.2) rectangle (3,1.7);
+    \node[font=\tiny\bfseries, text=white] at (2.25,1.45) {실행 중...};
+    
+    % 현재 표시 문자
+    \node[font=\scriptsize, text=gray] at (2.25,0.7) {표시 중: "H"};
+    
+    % === 중앙: 블록 팔레트 ===
+    \fill[white] (4.5,0.2) rectangle (7.5,8.1);
+    \node[font=\scriptsize\bfseries, text=RoyalBlue] at (6,7.8) {블록 팔레트};
+    
+    % 카테고리 버튼들
+    \fill[RoyalBlue!80, rounded corners=2pt] (4.7,7) rectangle (7.3,7.5);
+    \node[font=\tiny\bfseries, text=white] at (6,7.25) {기본};
+    
+    \fill[ForestGreen!70, rounded corners=2pt] (4.7,6.3) rectangle (7.3,6.8);
+    \node[font=\tiny\bfseries, text=white] at (6,6.55) {입력};
+    
+    \fill[Orchid!70, rounded corners=2pt] (4.7,5.6) rectangle (7.3,6.1);
+    \node[font=\tiny\bfseries, text=white] at (6,5.85) {음악};
+    
+    \fill[Cyan!70, rounded corners=2pt] (4.7,4.9) rectangle (7.3,5.4);
+    \node[font=\tiny\bfseries, text=white] at (6,5.15) {LED};
+    
+    \fill[BurntOrange!70, rounded corners=2pt] (4.7,4.2) rectangle (7.3,4.7);
+    \node[font=\tiny\bfseries, text=white] at (6,4.45) {무선};
+    
+    \fill[Magenta!70, rounded corners=2pt] (4.7,3.5) rectangle (7.3,4);
+    \node[font=\tiny\bfseries, text=white] at (6,3.75) {반복};
+    
+    % === 오른쪽: 코딩 영역 ===
+    \fill[white] (7.7,0.2) rectangle (14.8,8.1);
+    \node[font=\scriptsize\bfseries, text=ForestGreen] at (11.25,7.8) {코딩 영역};
+    
+    % 시작하면 블록
+    \fill[RoyalBlue!80, rounded corners=5pt] (8.2,5.5) rectangle (14.3,7.3);
+    \node[font=\small\bfseries, text=white, anchor=west] at (8.5,6.9) {시작하면};
+    
+    % 문자열 표시 블록 (안에 들어감)
+    \fill[RoyalBlue!60, rounded corners=4pt] (8.7,5.8) rectangle (13.8,6.5);
+    \node[font=\scriptsize, text=white, anchor=west] at (9,6.15) {문자열 표시};
+    \fill[white, rounded corners=2pt] (11.5,5.95) rectangle (13.5,6.35);
+    \node[font=\scriptsize\bfseries] at (12.5,6.15) {"HONG"};
+    
+    % 무한반복 블록
+    \fill[ForestGreen!70, rounded corners=5pt] (8.2,1.5) rectangle (14.3,5.2);
+    \node[font=\small\bfseries, text=white, anchor=west] at (8.5,4.8) {무한반복};
+    
+    % 아이콘 표시 블록
+    \fill[RoyalBlue!60, rounded corners=4pt] (8.7,3.8) rectangle (13.8,4.5);
+    \node[font=\scriptsize, text=white, anchor=west] at (9,4.15) {아이콘 표시};
+    \fill[white, rounded corners=2pt] (11.8,3.95) rectangle (13.5,4.35);
+    \node[font=\scriptsize] at (12.65,4.15) {하트};
+    
+    % 일시정지 블록
+    \fill[RoyalBlue!60, rounded corners=4pt] (8.7,2.9) rectangle (13.8,3.6);
+    \node[font=\scriptsize, text=white, anchor=west] at (9,3.25) {일시정지 (ms)};
+    \fill[white, rounded corners=2pt] (12,3.05) rectangle (13.5,3.45);
+    \node[font=\scriptsize] at (12.75,3.25) {1000};
+    
+    % 화면 지우기 블록
+    \fill[RoyalBlue!60, rounded corners=4pt] (8.7,2) rectangle (13.8,2.7);
+    \node[font=\scriptsize, text=white, anchor=west] at (9,2.35) {화면 지우기};
+\end{tikzpicture}
+\caption{MakeCode 시뮬레이터에서 ``HONG'' 표시 프로그램 실행 화면}
+\end{figure}
+
+\subsection{예제 코드}
+
+바이브코딩으로 만들 수 있는 프로그램의 예시로, 교수자가 시연하는 \textbf{``수업 집중도 분석 프로그램''}을 살펴봅니다. 이 프로그램은 온도와 소음 데이터를 입력하면 집중도를 예측하고, 학생 모델과 교수 모델을 비교할 수 있습니다.
+
+%% ========== 그림 6: 수업 집중도 분석 프로그램 화면 ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.78]
+    % 전체 프레임 (브라우저 창)
+    \fill[black!90, rounded corners=8pt] (0,0) rectangle (17,11.5);
+    
+    % 헤더
+    \node[font=\large\bfseries, text=cyan] at (8.5,10.8) {수업집중도 분석 프로그램};
+    \node[font=\tiny, text=gray] at (8.5,10.3) {사물인터넷과 빅데이터 | 바이브코딩 시연용 프로그램};
+    % 버전 배지
+    \fill[ForestGreen, rounded corners=10pt] (12.5,10.65) rectangle (13.8,11.05);
+    \node[font=\tiny\bfseries, text=white] at (13.15,10.85) {v2.1};
+    
+    % 탭 네비게이션
+    \fill[cyan, rounded corners=5pt] (0.5,9.2) rectangle (3.3,9.8);
+    \node[font=\scriptsize\bfseries, text=white] at (1.9,9.5) {1. 데이터 수집};
+    
+    \fill[black!70, rounded corners=5pt] (3.5,9.2) rectangle (6.3,9.8);
+    \node[font=\scriptsize, text=gray] at (4.9,9.5) {2. 데이터 분석};
+    
+    \fill[black!70, rounded corners=5pt] (6.5,9.2) rectangle (9.3,9.8);
+    \node[font=\scriptsize, text=gray] at (7.9,9.5) {3. 학생 모델};
+    
+    \fill[black!70, rounded corners=5pt] (9.5,9.2) rectangle (12.3,9.8);
+    \node[font=\scriptsize, text=gray] at (10.9,9.5) {4. 교수 모델};
+    
+    \fill[black!70, rounded corners=5pt] (12.5,9.2) rectangle (15.3,9.8);
+    \node[font=\scriptsize, text=gray] at (13.9,9.5) {5. 모델 비교};
+    
+    % === 데이터 수집 탭 내용 ===
+    
+    % 하드웨어 다이어그램 영역
+    \fill[black!80, rounded corners=5pt] (0.5,5.8) rectangle (16.5,8.9);
+    
+    % 마이크로비트
+    \fill[black!60, rounded corners=4pt] (1,6.4) rectangle (3.2,8.2);
+    \fill[black] (1.4,6.8) rectangle (2.8,7.8);
+    % LED 매트릭스 (하트 패턴)
+    \foreach \x/\y in {1.55/7.5, 1.85/7.6, 2.15/7.6, 2.45/7.5, 2.65/7.5,
+                       1.55/7.3, 2.65/7.3,
+                       1.7/7.1, 2.5/7.1,
+                       1.85/6.9, 2.35/6.9,
+                       2.1/6.7} {
+        \fill[red!70] (\x,\y) circle (0.06);
+    }
+    \node[font=\tiny\bfseries, text=cyan] at (2.1,8.5) {마이크로비트};
+    
+    % 화살표 1
+    \draw[-{Stealth}, ForestGreen, line width=1.5pt, dashed] (3.3,7.3) -- (4.2,7.3);
+    
+    % Grove Shield
+    \fill[ForestGreen!70, rounded corners=4pt] (4.3,6.2) rectangle (7.5,8.4);
+    \node[font=\tiny\bfseries, text=white] at (5.9,8.1) {Grove Shield};
+    % I2C 포트들
+    \fill[white, rounded corners=2pt] (4.6,7.2) rectangle (5.4,7.7);
+    \fill[white, rounded corners=2pt] (5.6,7.2) rectangle (6.4,7.7);
+    \fill[white, rounded corners=2pt] (6.6,7.2) rectangle (7.2,7.7);
+    \node[font=\tiny] at (5,7.45) {I2C};
+    \node[font=\tiny] at (6,7.45) {I2C};
+    \node[font=\tiny] at (6.9,7.45) {I2C};
+    % 센서 아이콘
+    \node[font=\scriptsize, text=white] at (5,6.7) {T};
+    \node[font=\scriptsize, text=white] at (6,6.7) {N};
+    \node[font=\scriptsize, text=white] at (6.9,6.7) {L};
+    \node[font=\tiny, text=white] at (5,6.35) {온도};
+    \node[font=\tiny, text=white] at (6,6.35) {소음};
+    \node[font=\tiny, text=white] at (6.9,6.35) {조도};
+    
+    % 화살표 2
+    \draw[-{Stealth}, BurntOrange, line width=1.5pt] (7.6,7.3) -- (8.5,7.3);
+    
+    % 데이터로거
+    \fill[BurntOrange!80, rounded corners=4pt] (8.6,6.2) rectangle (11.2,8.4);
+    \node[font=\tiny\bfseries, text=white] at (9.9,8.1) {데이터로거};
+    \fill[black!60, rounded corners=2pt] (8.9,7.1) rectangle (9.9,7.7);
+    \node[font=\tiny, text=gray] at (9.4,7.4) {RTC};
+    \fill[black!60, rounded corners=2pt] (10.1,7.1) rectangle (11,7.7);
+    \node[font=\tiny, text=gray] at (10.55,7.4) {SD};
+    \fill[RoyalBlue, rounded corners=2pt] (9.5,6.4) rectangle (10.5,6.9);
+    \node[font=\scriptsize\bfseries, text=white] at (10,6.65) {SD};
+    
+    % 화살표 3
+    \draw[-{Stealth}, cyan, line width=1.5pt] (11.3,7.3) -- (12.2,7.3);
+    
+    % CSV 파일
+    \fill[black!70, rounded corners=4pt] (12.3,6.2) rectangle (14.3,8.4);
+    \fill[cyan, rounded corners=4pt] (12.3,7.9) rectangle (14.3,8.4);
+    \node[font=\tiny\bfseries, text=white] at (13.3,8.15) {CSV 파일};
+    \node[font=\tiny, text=gray] at (13.3,7.55) {날짜,온도,소음};
+    \node[font=\tiny, text=white!70] at (13.3,7.25) {1/27,24.5,55};
+    \node[font=\tiny, text=white!70] at (13.3,6.95) {1/27,25.2,68};
+    \node[font=\tiny, text=white!70] at (13.3,6.65) {1/28,23.8,48};
+    \node[font=\tiny, text=gray] at (13.3,6.4) {...};
+    
+    % 화살표 4
+    \draw[-{Stealth}, ForestGreen, line width=1.5pt] (14.4,7.3) -- (15.1,7.3);
+    
+    % 분석
+    \fill[ForestGreen!30, rounded corners=4pt] (15.2,6.4) rectangle (16.3,8.2);
+    \draw[ForestGreen, rounded corners=4pt, line width=1.5pt] (15.2,6.4) rectangle (16.3,8.2);
+    \node[font=\normalsize\bfseries, text=ForestGreen] at (15.75,7.5) {AI};
+    \node[font=\tiny\bfseries, text=ForestGreen] at (15.75,6.9) {분석};
+    \node[font=\tiny, text=ForestGreen!70] at (15.75,6.55) {바이브코딩};
+    
+    % === 하단 입력 영역 ===
+    
+    % 정보 박스
+    \fill[cyan!10, rounded corners=5pt] (0.5,4.5) rectangle (8,5.5);
+    \draw[cyan!50, rounded corners=5pt] (0.5,4.5) rectangle (8,5.5);
+    \node[font=\scriptsize\bfseries, text=cyan, anchor=west] at (0.7,5.2) {[안내] 데이터 수집 방법};
+    \node[font=\tiny, text=white, anchor=west] at (0.7,4.85) {\textbf{1순위:} 마이크로비트 + Grove 센서 + 데이터로거 $\rightarrow$ SD카드에서 CSV 추출};
+    
+    % CSV 파일 불러오기 카드
+    \fill[black!70, rounded corners=8pt] (0.5,0.5) rectangle (8,4.2);
+    \draw[gray!50, rounded corners=8pt] (0.5,0.5) rectangle (8,4.2);
+    \node[font=\scriptsize\bfseries, text=cyan, anchor=west] at (0.8,3.9) {[CSV] 파일 불러오기};
+    \node[font=\tiny, text=gray, anchor=west] at (0.8,3.5) {데이터로거에서 추출한 CSV 파일을 선택하세요.};
+    
+    % 파일 선택 버튼
+    \fill[black!60, rounded corners=5pt] (0.8,2.6) rectangle (7.7,3.2);
+    \draw[gray!40, dashed, rounded corners=5pt] (0.8,2.6) rectangle (7.7,3.2);
+    \node[font=\tiny, text=gray] at (4.25,2.9) {파일 선택...};
+    
+    \node[font=\tiny, text=gray, anchor=west] at (0.8,2.3) {형식: 날짜,시간대,온도,소음,집중도};
+    
+    % 가상 데이터 생성 버튼
+    \fill[cyan, rounded corners=5pt] (0.8,0.8) rectangle (4,1.5);
+    \node[font=\scriptsize\bfseries, text=white] at (2.4,1.15) {[랜덤] 가상 데이터};
+    
+    \fill[gray!50, rounded corners=5pt] (4.3,0.8) rectangle (7.7,1.5);
+    \node[font=\scriptsize, text=white] at (6,1.15) {데이터 가져오기};
+    
+    % 오른쪽: 가상 데이터 생성기 카드
+    \fill[black!70, rounded corners=8pt] (8.3,0.5) rectangle (16.5,4.2);
+    \draw[gray!50, rounded corners=8pt] (8.3,0.5) rectangle (16.5,4.2);
+    \node[font=\scriptsize\bfseries, text=cyan, anchor=west] at (8.6,3.9) {[랜덤] 가상 데이터 생성기};
+    \node[font=\tiny, text=gray, anchor=west] at (8.6,3.5) {실제 데이터가 없을 때 프로그램 테스트용으로 가상 데이터를 생성합니다.};
+    
+    % 설정 필드들
+    \node[font=\tiny, text=gray, anchor=west] at (8.6,3.1) {[날짜] 수집 기간};
+    \fill[black!50, rounded corners=3pt] (8.6,2.6) rectangle (11,2.95);
+    \node[font=\tiny, text=white] at (9.8,2.78) {2026-01-27};
+    \node[font=\tiny, text=gray] at (11.3,2.78) {~};
+    \fill[black!50, rounded corners=3pt] (11.6,2.6) rectangle (14,2.95);
+    \node[font=\tiny, text=white] at (12.8,2.78) {2026-02-07};
+    
+    \node[font=\tiny, text=gray, anchor=west] at (8.6,2.35) {[시간] 수집 간격};
+    \fill[black!50, rounded corners=3pt] (8.6,1.95) rectangle (14,2.3);
+    \node[font=\tiny, text=white, anchor=west] at (8.8,2.12) {매 교시 (하루 6회)};
+    \node[font=\tiny, text=gray] at (15.2,2.12) {▼};
+    
+    % 범위 설정
+    \node[font=\tiny, text=gray, anchor=west] at (8.6,1.7) {[T] 온도 범위};
+    \fill[black!50, rounded corners=3pt] (8.6,1.3) rectangle (10,1.6);
+    \node[font=\tiny, text=white] at (9.3,1.45) {18};
+    \node[font=\tiny, text=gray] at (10.3,1.45) {~};
+    \fill[black!50, rounded corners=3pt] (10.5,1.3) rectangle (11.9,1.6);
+    \node[font=\tiny, text=white] at (11.2,1.45) {32};
+    \node[font=\tiny, text=gray] at (12.2,1.45) {℃};
+    
+    \node[font=\tiny, text=gray, anchor=west] at (12.8,1.7) {[N] 소음 범위};
+    \fill[black!50, rounded corners=3pt] (12.8,1.3) rectangle (14,1.6);
+    \node[font=\tiny, text=white] at (13.4,1.45) {30};
+    \node[font=\tiny, text=gray] at (14.3,1.45) {~};
+    \fill[black!50, rounded corners=3pt] (14.5,1.3) rectangle (15.7,1.6);
+    \node[font=\tiny, text=white] at (15.1,1.45) {85};
+    \node[font=\tiny, text=gray] at (16,1.45) {dB};
+    
+    % 생성 버튼
+    \fill[ForestGreen, rounded corners=5pt] (8.6,0.7) rectangle (12,1.15);
+    \node[font=\scriptsize\bfseries, text=white] at (10.3,0.92) {[생성] 가상 데이터};
+\end{tikzpicture}
+\caption{바이브코딩으로 제작한 ``수업 집중도 분석 프로그램'' 화면 (1주차 시연용)}
+\end{figure}
+
+이 프로그램은 5개의 탭으로 구성되어 있습니다:
+
+\begin{enumerate}
+    \item \textbf{데이터 수집}: CSV 파일 불러오기, 가상 데이터 생성
+    \item \textbf{데이터 분석}: 수집된 데이터 시각화 및 통계
+    \item \textbf{학생 모델}: 규칙 기반 AI 모델 (학생이 직접 기준 설정)
+    \item \textbf{교수 모델}: 머신러닝 모델 (데이터에서 패턴 학습)
+    \item \textbf{모델 비교}: 두 모델의 예측 결과 비교
+\end{enumerate}
+
+%% ========== 그림: 5개 탭 각각의 실행화면 ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.7]
+    % === 탭 2: 데이터 분석 ===
+    \fill[black!90, rounded corners=5pt] (0,6) rectangle (5.5,10);
+    \fill[cyan, rounded corners=3pt] (0.2,9.3) rectangle (2.2,9.7);
+    \node[font=\tiny\bfseries, text=white] at (1.2,9.5) {2. 데이터 분석};
+    \node[font=\tiny, text=cyan] at (2.75,9.8) {탭 활성화};
+    
+    % 그래프 영역
+    \fill[black!70, rounded corners=3pt] (0.3,6.3) rectangle (5.2,9);
+    \node[font=\tiny\bfseries, text=cyan] at (2.75,8.7) {온도-집중도 산점도};
+    % 산점도 점들
+    \foreach \x/\y in {0.8/7.8, 1.2/7.5, 1.5/7.9, 1.8/7.2, 2.2/7.6, 
+                       2.5/6.8, 2.8/7.0, 3.2/6.5, 3.5/6.9, 3.8/6.4,
+                       4.1/6.7, 4.5/6.3, 4.8/6.6} {
+        \fill[cyan!70] (\x,\y) circle (0.08);
+    }
+    % 추세선
+    \draw[red!70, line width=1pt] (0.6,8) -- (5,6.2);
+    \node[font=\tiny, text=gray] at (2.75,6.1) {온도 (°C)};
+    
+    % === 탭 3: 학생 모델 ===
+    \fill[black!90, rounded corners=5pt] (6,6) rectangle (11.5,10);
+    \fill[cyan, rounded corners=3pt] (6.2,9.3) rectangle (8.2,9.7);
+    \node[font=\tiny\bfseries, text=white] at (7.2,9.5) {3. 학생 모델};
+    \node[font=\tiny, text=cyan] at (8.75,9.8) {규칙 기반};
+    
+    % 규칙 설정 영역
+    \fill[black!70, rounded corners=3pt] (6.3,7.5) rectangle (11.2,9);
+    \node[font=\tiny\bfseries, text=BurntOrange] at (8.75,8.7) {나만의 규칙 설정};
+    \node[font=\tiny, text=white, anchor=west] at (6.5,8.3) {온도 기준:};
+    \fill[BurntOrange!50, rounded corners=2pt] (8.5,8.1) rectangle (10.5,8.5);
+    \node[font=\tiny, text=white] at (9.5,8.3) {26°C 이상=낮음};
+    \node[font=\tiny, text=white, anchor=west] at (6.5,7.8) {소음 기준:};
+    \fill[BurntOrange!50, rounded corners=2pt] (8.5,7.6) rectangle (10.5,8);
+    \node[font=\tiny, text=white] at (9.5,7.8) {70dB 이상=낮음};
+    
+    % 테스트 결과
+    \fill[BurntOrange!20, rounded corners=3pt] (6.3,6.3) rectangle (11.2,7.3);
+    \node[font=\tiny, text=BurntOrange] at (8.75,7) {테스트 결과};
+    \fill[BurntOrange, rounded corners=10pt] (8,6.4) rectangle (9.5,6.8);
+    \node[font=\tiny\bfseries, text=white] at (8.75,6.6) {보통};
+    
+    % === 탭 4: 교수 모델 ===
+    \fill[black!90, rounded corners=5pt] (12,6) rectangle (17.5,10);
+    \fill[cyan, rounded corners=3pt] (12.2,9.3) rectangle (14.2,9.7);
+    \node[font=\tiny\bfseries, text=white] at (13.2,9.5) {4. 교수 모델};
+    \node[font=\tiny, text=cyan] at (14.75,9.8) {머신러닝};
+    
+    % 학습된 수식
+    \fill[black!70, rounded corners=3pt] (12.3,7.5) rectangle (17.2,9);
+    \node[font=\tiny\bfseries, text=ForestGreen] at (14.75,8.7) {학습된 공식};
+    \node[font=\tiny, text=white] at (14.75,8.2) {Y = 12.5};
+    \node[font=\tiny, text=white] at (14.75,7.9) {+ 온도 $\times$ (-0.32)};
+    \node[font=\tiny, text=white] at (14.75,7.6) {+ 소음 $\times$ (-0.05)};
+    
+    % 예측 결과
+    \fill[ForestGreen!20, rounded corners=3pt] (12.3,6.3) rectangle (17.2,7.3);
+    \node[font=\tiny, text=ForestGreen] at (14.75,7) {예측 점수};
+    \node[font=\small\bfseries, text=ForestGreen] at (14.75,6.55) {3.2 / 5.0};
+    
+    % === 탭 5: 모델 비교 ===
+    \fill[black!90, rounded corners=5pt] (0,0) rectangle (8.5,5.5);
+    \fill[cyan, rounded corners=3pt] (0.2,4.8) rectangle (2.2,5.2);
+    \node[font=\tiny\bfseries, text=white] at (1.2,5) {5. 모델 비교};
+    \node[font=\tiny, text=cyan] at (2.75,5.3) {결과 비교};
+    
+    % 비교 테이블
+    \fill[black!70, rounded corners=3pt] (0.3,2.8) rectangle (8.2,4.5);
+    \node[font=\tiny\bfseries, text=white] at (4.25,4.2) {예측 정확도 비교};
+    
+    % 학생 모델 바
+    \fill[BurntOrange!30, rounded corners=2pt] (0.5,3.5) rectangle (7,3.9);
+    \fill[BurntOrange, rounded corners=2pt] (0.5,3.5) rectangle (4.9,3.9);
+    \node[font=\tiny, text=white, anchor=west] at (0.6,3.7) {학생 모델};
+    \node[font=\tiny\bfseries, text=white] at (5.5,3.7) {70\%};
+    
+    % 교수 모델 바
+    \fill[ForestGreen!30, rounded corners=2pt] (0.5,3) rectangle (7,3.4);
+    \fill[ForestGreen, rounded corners=2pt] (0.5,3) rectangle (5.95,3.4);
+    \node[font=\tiny, text=white, anchor=west] at (0.6,3.2) {교수 모델};
+    \node[font=\tiny\bfseries, text=white] at (6.3,3.2) {85\%};
+    
+    % 결론 박스
+    \fill[RoyalBlue!20, rounded corners=3pt] (0.3,0.3) rectangle (8.2,2.5);
+    \node[font=\tiny\bfseries, text=RoyalBlue] at (4.25,2.2) {분석 결론};
+    \node[font=\tiny, text=white, text width=7.5cm, align=left] at (4.25,1.3) {
+        • 머신러닝 모델이 15\% 더 정확함\\
+        • 온도가 집중도에 가장 큰 영향\\
+        • 소음은 예상보다 영향이 작음\\
+        • 두 모델 모두 ``계산''일 뿐!
+    };
+    
+    % 핵심 메시지 박스
+    \fill[NavyBlue, rounded corners=5pt] (9,0) rectangle (17.5,5.5);
+    \node[font=\small\bfseries, text=white] at (13.25,5) {핵심 메시지};
+    
+    \fill[white!10, rounded corners=3pt] (9.3,2.5) rectangle (17.2,4.5);
+    \node[font=\small, text=white, text width=7cm, align=center] at (13.25,3.5) {
+        ``AI는 집중도를 \textbf{판단}하지 않는다.\\[3pt]
+        우리가 만든 기준을 \textbf{계산}할 뿐이다.''
+    };
+    
+    \node[font=\tiny, text=white!80, text width=7cm, align=center] at (13.25,1.5) {
+        학생 모델: 내가 정한 규칙으로 계산\\
+        교수 모델: 데이터가 찾은 패턴으로 계산\\[5pt]
+        어떤 방식이든 ``기준''이 필요하고,\\
+        그 기준은 결국 사람이 정의합니다.
+    };
+\end{tikzpicture}
+\caption{수업 집중도 분석 프로그램의 각 탭별 실행 화면}
+\end{figure}
+
+\begin{keypoint}
+\textbf{1주차 핵심 메시지}
+
+이 프로그램을 통해 학기 전체에서 다룰 내용을 미리 체험합니다:
+\begin{itemize}
+    \item 센서로 데이터를 수집하고 → 분석하고 → AI 모델을 만드는 전체 과정
+    \item ``AI는 집중도를 \textbf{판단}하지 않는다. 우리가 만든 기준을 \textbf{계산}할 뿐이다.''
+\end{itemize}
+\end{keypoint}
+
+\subsection{1주차 실습: LED에 이름 표시하기}
+
+1주차에는 간단한 MakeCode 프로그램을 만들어봅니다.
+
+%% ========== 그림 11: LED 프로그램 (MakeCode 화면 + 실행 결과) ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.85]
+    % === 왼쪽: MakeCode 블록 코드 ===
+    \fill[gray!10, rounded corners=8pt] (0,0) rectangle (7,6.5);
+    \draw[gray!50, rounded corners=8pt, line width=1pt] (0,0) rectangle (7,6.5);
+    
+    % 헤더
+    \fill[Orchid!80, rounded corners=5pt] (0.2,5.8) rectangle (6.8,6.3);
+    \node[font=\small\bfseries, text=white] at (3.5,6.05) {MakeCode 블록 코드};
+    
+    % 시작하면 블록
+    \fill[RoyalBlue!80, rounded corners=6pt] (0.5,3.5) rectangle (6.5,5.5);
+    \node[font=\small\bfseries, text=white, anchor=west] at (0.8,5.1) {시작하면};
+    
+    % 문자열 표시 블록 (안에)
+    \fill[RoyalBlue!60, rounded corners=4pt] (1,3.8) rectangle (6,4.7);
+    \node[font=\scriptsize, text=white, anchor=west] at (1.3,4.25) {문자열 표시};
+    \fill[white, rounded corners=2pt] (3.8,3.95) rectangle (5.7,4.55);
+    \node[font=\scriptsize\bfseries] at (4.75,4.25) {"HONG"};
+    
+    % 무한반복 블록
+    \fill[ForestGreen!70, rounded corners=6pt] (0.5,0.3) rectangle (6.5,3.2);
+    \node[font=\small\bfseries, text=white, anchor=west] at (0.8,2.85) {무한반복};
+    
+    % 아이콘 표시
+    \fill[RoyalBlue!60, rounded corners=3pt] (1,2.2) rectangle (6,2.7);
+    \node[font=\tiny, text=white, anchor=west] at (1.2,2.45) {아이콘 표시};
+    \fill[white, rounded corners=2pt] (4,2.3) rectangle (5.7,2.6);
+    \node[font=\tiny] at (4.85,2.45) {하트};
+    
+    % 일시정지 1000
+    \fill[RoyalBlue!60, rounded corners=3pt] (1,1.6) rectangle (6,2.1);
+    \node[font=\tiny, text=white, anchor=west] at (1.2,1.85) {일시정지 (ms)};
+    \fill[white, rounded corners=2pt] (4.2,1.7) rectangle (5.7,2);
+    \node[font=\tiny] at (4.95,1.85) {1000};
+    
+    % 화면 지우기
+    \fill[RoyalBlue!60, rounded corners=3pt] (1,1) rectangle (6,1.5);
+    \node[font=\tiny, text=white, anchor=west] at (1.2,1.25) {화면 지우기};
+    
+    % 일시정지 500
+    \fill[RoyalBlue!60, rounded corners=3pt] (1,0.4) rectangle (6,0.9);
+    \node[font=\tiny, text=white, anchor=west] at (1.2,0.65) {일시정지 (ms)};
+    \fill[white, rounded corners=2pt] (4.2,0.5) rectangle (5.7,0.8);
+    \node[font=\tiny] at (4.95,0.65) {500};
+    
+    % === 오른쪽: 실행 결과 (마이크로비트 시뮬레이터) ===
+    \fill[gray!15, rounded corners=8pt] (7.5,0) rectangle (14.5,6.5);
+    \draw[gray!50, rounded corners=8pt, line width=1pt] (7.5,0) rectangle (14.5,6.5);
+    
+    % 헤더
+    \fill[ForestGreen!70, rounded corners=5pt] (7.7,5.8) rectangle (14.3,6.3);
+    \node[font=\small\bfseries, text=white] at (11,6.05) {실행 결과};
+    
+    % 마이크로비트 본체
+    \fill[black!90, rounded corners=10pt] (8.5,1.5) rectangle (13.5,5.5);
+    
+    % LED 매트릭스 배경
+    \fill[black] (9.3,2.3) rectangle (12.7,5);
+    
+    % LED "H" 패턴 표시 (5x5)
+    % 꺼진 LED
+    \foreach \col in {0,1,2,3,4} {
+        \foreach \row in {0,1,2,3,4} {
+            \fill[red!15] (9.55+\col*0.65, 2.55+\row*0.55) circle (0.18);
+        }
+    }
+    % 켜진 LED - "H" 패턴
+    \foreach \x/\y in {0/0, 0/1, 0/2, 0/3, 0/4,
+                       1/2,
+                       2/0, 2/1, 2/2, 2/3, 2/4} {
+        \fill[red!90] (9.55+\x*0.65, 2.55+\y*0.55) circle (0.2);
+    }
+    
+    % 버튼 A, B
+    \fill[gray!60, rounded corners=3pt] (8.7,3.3) rectangle (9.1,3.9);
+    \fill[gray!60, rounded corners=3pt] (12.9,3.3) rectangle (13.3,3.9);
+    \node[font=\tiny\bfseries, text=white] at (8.9,3.1) {A};
+    \node[font=\tiny\bfseries, text=white] at (13.1,3.1) {B};
+    
+    % 엣지 커넥터
+    \fill[Goldenrod] (8.8,1.5) rectangle (13.2,1.9);
+    \foreach \x in {9.2, 10.0, 10.8, 11.6, 12.4} {
+        \fill[black] (\x,1.55) circle (0.12);
+    }
+    
+    % 상태 표시
+    \node[font=\scriptsize, text=gray] at (11,1.1) {표시 중: "H" (HONG의 첫 글자)};
+    \node[font=\tiny, text=ForestGreen] at (11,0.6) {문자열이 한 글자씩 스크롤됩니다};
+\end{tikzpicture}
+\caption{MakeCode 블록 코드와 마이크로비트 실행 결과}
+\end{figure}
+
+\subsection{도전 과제}
+
+\begin{enumerate}
+    \item 이름 대신 학번 뒷자리 표시해보기
+    \item 버튼 A를 누르면 이름, 버튼 B를 누르면 학번 표시하기
+    \item 이름 표시 후 하트 아이콘이 깜빡이게 만들기
+\end{enumerate}
+
+%========================================
+\section{예시 프로젝트: 수업 집중도 측정}
+%========================================
+
+\subsection{프로젝트 개요}
+
+이번 학기 동안 여러분은 각자의 프로젝트를 진행하게 됩니다. 교수자는 \textbf{``수업 집중도 측정''}을 예시 프로젝트로 시연하며, 전체 과정을 보여드립니다.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{항목} & \textbf{내용} \\
+\midrule
+프로젝트명 & 교실 환경과 수업 집중도의 관계 분석 \\
+연구 질문 & 온도, 소음, CO$_2$ 농도가 집중도에 영향을 미칠까? \\
+사용 센서 & 온도(SHT40), 소음(마이크), CO$_2$(SGP30) \\
+추가 데이터 & 학생 설문 (집중도 1\textasciitilde5점) \\
+분석 방법 & 상관관계 분석, 시각화, 규칙 기반 AI 모델 \\
+\bottomrule
+\end{tabularx}
+\caption{예시 프로젝트 개요}
+\end{table}
+
+%% ========== 그림 14: 수업집중도 분석 프로그램 - 분석 결과 화면 ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.85]
+    % 전체 프레임 (브라우저 창)
+    \fill[black!90, rounded corners=8pt] (0,0) rectangle (16,10);
+    
+    % 헤더
+    \node[font=\large\bfseries, text=cyan] at (8,9.5) {수업집중도 분석 프로그램};
+    \node[font=\tiny, text=gray] at (8,9.1) {사물인터넷과 빅데이터 | 분석 결과};
+    \fill[ForestGreen, rounded corners=10pt] (11.5,9.3) rectangle (12.8,9.7);
+    \node[font=\tiny\bfseries, text=white] at (12.15,9.5) {v2.1};
+    
+    % 탭 네비게이션 (5. 모델 비교 활성화)
+    \fill[black!70, rounded corners=4pt] (0.3,8.3) rectangle (2.8,8.8);
+    \node[font=\tiny, text=gray] at (1.55,8.55) {1. 데이터 수집};
+    \fill[black!70, rounded corners=4pt] (3,8.3) rectangle (5.5,8.8);
+    \node[font=\tiny, text=gray] at (4.25,8.55) {2. 데이터 분석};
+    \fill[black!70, rounded corners=4pt] (5.7,8.3) rectangle (8.2,8.8);
+    \node[font=\tiny, text=gray] at (6.95,8.55) {3. 학생 모델};
+    \fill[black!70, rounded corners=4pt] (8.4,8.3) rectangle (10.9,8.8);
+    \node[font=\tiny, text=gray] at (9.65,8.55) {4. 교수 모델};
+    \fill[cyan, rounded corners=4pt] (11.1,8.3) rectangle (13.6,8.8);
+    \node[font=\tiny\bfseries, text=white] at (12.35,8.55) {5. 모델 비교};
+    
+    % === 상단: 비교 차트 ===
+    \fill[black!80, rounded corners=5pt] (0.3,4.5) rectangle (10,8);
+    \node[font=\small\bfseries, text=cyan] at (5.15,7.7) {모델별 예측 정확도 비교};
+    
+    % 학생 모델 바
+    \node[font=\scriptsize, text=white, anchor=east] at (2.8,6.8) {학생 모델};
+    \fill[BurntOrange!30, rounded corners=3pt] (3,6.5) rectangle (9.5,7.1);
+    \fill[BurntOrange, rounded corners=3pt] (3,6.5) rectangle (7.55,7.1);
+    \node[font=\scriptsize\bfseries, text=white] at (8.2,6.8) {70\%};
+    
+    % 교수 모델 바
+    \node[font=\scriptsize, text=white, anchor=east] at (2.8,5.8) {교수 모델};
+    \fill[ForestGreen!30, rounded corners=3pt] (3,5.5) rectangle (9.5,6.1);
+    \fill[ForestGreen, rounded corners=3pt] (3,5.5) rectangle (8.525,6.1);
+    \node[font=\scriptsize\bfseries, text=white] at (9,5.8) {85\%};
+    
+    % 차이 표시
+    \draw[{Stealth}-{Stealth}, white, line width=1pt] (7.55,5.2) -- (8.525,5.2);
+    \node[font=\tiny, text=cyan] at (8.04,4.9) {+15\%};
+    
+    % === 상단 오른쪽: 통계 요약 ===
+    \fill[black!80, rounded corners=5pt] (10.3,4.5) rectangle (15.7,8);
+    \node[font=\small\bfseries, text=cyan] at (13,7.7) {분석 통계};
+    
+    % 통계 항목
+    \node[font=\scriptsize, text=gray, anchor=west] at (10.6,7.2) {총 데이터 수:};
+    \node[font=\scriptsize\bfseries, text=white, anchor=east] at (15.4,7.2) {150건};
+    
+    \node[font=\scriptsize, text=gray, anchor=west] at (10.6,6.7) {학습 데이터:};
+    \node[font=\scriptsize\bfseries, text=white, anchor=east] at (15.4,6.7) {120건 (80\%)};
+    
+    \node[font=\scriptsize, text=gray, anchor=west] at (10.6,6.2) {테스트 데이터:};
+    \node[font=\scriptsize\bfseries, text=white, anchor=east] at (15.4,6.2) {30건 (20\%)};
+    
+    \node[font=\scriptsize, text=gray, anchor=west] at (10.6,5.7) {R² (교수 모델):};
+    \node[font=\scriptsize\bfseries, text=ForestGreen, anchor=east] at (15.4,5.7) {0.72};
+    
+    \node[font=\scriptsize, text=gray, anchor=west] at (10.6,5.2) {주요 변수:};
+    \node[font=\scriptsize\bfseries, text=BurntOrange, anchor=east] at (15.4,5.2) {온도 > 소음};
+    
+    % === 하단 왼쪽: 변수 중요도 ===
+    \fill[black!80, rounded corners=5pt] (0.3,0.3) rectangle (7.8,4.2);
+    \node[font=\small\bfseries, text=cyan] at (4.05,3.9) {변수 중요도 (회귀 계수)};
+    
+    % 온도 바
+    \node[font=\scriptsize, text=white, anchor=east] at (2.3,3.2) {온도};
+    \fill[red!30, rounded corners=2pt] (2.5,3) rectangle (7.3,3.4);
+    \fill[red!70, rounded corners=2pt] (2.5,3) rectangle (6.74,3.4);
+    \node[font=\tiny\bfseries, text=white] at (6.2,3.2) {-0.32};
+    
+    % 소음 바
+    \node[font=\scriptsize, text=white, anchor=east] at (2.3,2.5) {소음};
+    \fill[orange!30, rounded corners=2pt] (2.5,2.3) rectangle (7.3,2.7);
+    \fill[orange!70, rounded corners=2pt] (2.5,2.3) rectangle (3.3,2.7);
+    \node[font=\tiny\bfseries, text=white] at (3.8,2.5) {-0.05};
+    
+    % CO2 바
+    \node[font=\scriptsize, text=white, anchor=east] at (2.3,1.8) {CO$_2$};
+    \fill[purple!30, rounded corners=2pt] (2.5,1.6) rectangle (7.3,2);
+    \fill[purple!70, rounded corners=2pt] (2.5,1.6) rectangle (3.1,2);
+    \node[font=\tiny\bfseries, text=white] at (3.6,1.8) {-0.02};
+    
+    % 설명
+    \node[font=\tiny, text=gray] at (4.05,0.9) {음수 = 값이 증가하면 집중도 감소};
+    \node[font=\tiny, text=red!70] at (4.05,0.5) {온도가 집중도에 가장 큰 영향!};
+    
+    % === 하단 오른쪽: 결론 박스 ===
+    \fill[RoyalBlue!20, rounded corners=5pt] (8.1,0.3) rectangle (15.7,4.2);
+    \draw[RoyalBlue, rounded corners=5pt, line width=2pt] (8.1,0.3) rectangle (15.7,4.2);
+    \node[font=\small\bfseries, text=RoyalBlue] at (11.9,3.85) {분석 결론};
+    
+    \node[font=\scriptsize, text=black, text width=7cm, align=left] at (11.9,2.8) {
+        1. 머신러닝 모델이 규칙 기반보다 15\% 더 정확\\[2pt]
+        2. \textbf{온도}가 집중도에 가장 큰 영향 (계수: -0.32)\\[2pt]
+        3. 소음과 CO$_2$는 예상보다 영향이 작음\\[2pt]
+        4. 26°C 이상에서 집중도가 급격히 감소
+    };
+    
+    \fill[NavyBlue, rounded corners=3pt] (8.4,0.5) rectangle (15.4,1.3);
+    \node[font=\scriptsize\bfseries, text=white, text width=6.5cm, align=center] at (11.9,0.9) {
+        ``AI는 집중도를 판단하지 않는다.\\
+        우리가 만든 기준을 계산할 뿐이다.''
+    };
+\end{tikzpicture}
+\caption{수업 집중도 분석 프로그램 --- 모델 비교 및 분석 결과 화면}
+\end{figure}
+
+\subsection{프로젝트 진행 단계}
+
+%% ========== 그림 5: 프로젝트 단계 흐름도 ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.2cm]
+    % 단계 박스들
+    \node[stagebox=NavyBlue] (s1) {1. 기획};
+    \node[stagebox=RoyalBlue, below=of s1] (s2) {2. 제작};
+    \node[stagebox=ForestGreen, below=of s2] (s3) {3. 수집};
+    \node[stagebox=BurntOrange, below=of s3] (s4) {4. 분석};
+    \node[stagebox=RedOrange, below=of s4] (s5) {5. 발표};
+    
+    % 화살표
+    \draw[-{Stealth[length=4mm]}, line width=2pt, NavyBlue] (s1) -- (s2);
+    \draw[-{Stealth[length=4mm]}, line width=2pt, RoyalBlue] (s2) -- (s3);
+    \draw[-{Stealth[length=4mm]}, line width=2pt, ForestGreen] (s3) -- (s4);
+    \draw[-{Stealth[length=4mm]}, line width=2pt, BurntOrange] (s4) -- (s5);
+    
+    % 오른쪽 설명
+    \node[right=1.5cm of s1, text width=7cm, font=\small] {
+        \textbf{3주차}: 주제 선정, 연구 질문, 센서 선택
+    };
+    \node[right=1.5cm of s2, text width=7cm, font=\small] {
+        \textbf{4주차}: 마이크로비트 + Grove 센서로 데이터수집기 제작
+    };
+    \node[right=1.5cm of s3, text width=7cm, font=\small] {
+        \textbf{5\textasciitilde8주차}: 실습학교에서 실제 환경 데이터 수집
+    };
+    \node[right=1.5cm of s4, text width=7cm, font=\small] {
+        \textbf{9\textasciitilde13주차}: 바이브코딩으로 시각화, 패턴 분석, AI 모델
+    };
+    \node[right=1.5cm of s5, text width=7cm, font=\small] {
+        \textbf{14\textasciitilde15주차}: 보고서 작성 및 발표
+    };
+    
+    % 왼쪽 주차 표시
+    \node[left=0.8cm of s1, font=\small\bfseries, text=NavyBlue] {3주};
+    \node[left=0.8cm of s2, font=\small\bfseries, text=RoyalBlue] {4주};
+    \node[left=0.8cm of s3, font=\small\bfseries, text=ForestGreen] {5-8주};
+    \node[left=0.8cm of s4, font=\small\bfseries, text=BurntOrange] {9-13주};
+    \node[left=0.8cm of s5, font=\small\bfseries, text=RedOrange] {14-15주};
+\end{tikzpicture}
+\caption{프로젝트 진행 5단계}
+\end{figure}
+
+\begin{think}
+\textbf{집중도를 어떻게 측정할 수 있을까요?}
+
+센서로 집중도를 \textbf{직접} 측정할 수 있을까요? 
+
+$\rightarrow$ 센서는 \textbf{환경}(온도, 소음 등)만 측정할 수 있습니다.
+
+$\rightarrow$ 집중도는 \textbf{설문}이나 \textbf{관찰}로 수집해야 합니다.
+
+$\rightarrow$ 우리가 하는 것은 ``환경 데이터''와 ``집중도 데이터''의 \textbf{상관관계}를 찾는 것입니다.
+
+\textbf{상관관계가 있다고 해서 인과관계가 있는 것은 아닙니다!}
+\end{think}
+
+%% ========== 그림 F: 데이터 흐름도 ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    flowbox/.style={rectangle, rounded corners=10pt, minimum width=2.2cm, minimum height=1.5cm, 
+                    text centered, font=\small\bfseries, draw=#1, line width=2pt, fill=#1!15},
+    flowlabel/.style={font=\tiny, text=gray}
+]
+    % 노드들
+    \node[flowbox=NavyBlue] (sensor) at (0,0) {센서\\측정};
+    \node[flowbox=RoyalBlue] (collect) at (3.5,0) {데이터\\수집};
+    \node[flowbox=ForestGreen] (organize) at (7,0) {엑셀\\정리};
+    \node[flowbox=BurntOrange] (analyze) at (10.5,0) {바이브코딩\\분석};
+    \node[flowbox=RedOrange] (model) at (14,0) {AI\\모델};
+    
+    % 화살표
+    \draw[-{Stealth[length=5mm]}, line width=2.5pt, NavyBlue!70] (sensor) -- (collect);
+    \draw[-{Stealth[length=5mm]}, line width=2.5pt, RoyalBlue!70] (collect) -- (organize);
+    \draw[-{Stealth[length=5mm]}, line width=2.5pt, ForestGreen!70] (organize) -- (analyze);
+    \draw[-{Stealth[length=5mm]}, line width=2.5pt, BurntOrange!70] (analyze) -- (model);
+    
+    % 상단 라벨
+    \node[flowlabel, above=0.3cm of sensor] {마이크로비트};
+    \node[flowlabel, above=0.3cm of collect] {데이터로거};
+    \node[flowlabel, above=0.3cm of organize] {CSV 정리};
+    \node[flowlabel, above=0.3cm of analyze] {Claude 대화};
+    \node[flowlabel, above=0.3cm of model] {예측 프로그램};
+    
+    % 하단 예시
+    \node[font=\tiny, text=NavyBlue, below=0.4cm of sensor] {온도, 소음};
+    \node[font=\tiny, text=RoyalBlue, below=0.4cm of collect] {날짜, 시간대};
+    \node[font=\tiny, text=ForestGreen, below=0.4cm of organize] {+ 집중도 설문};
+    \node[font=\tiny, text=BurntOrange, below=0.4cm of analyze] {그래프, 패턴};
+    \node[font=\tiny, text=RedOrange, below=0.4cm of model] {높음/보통/낮음};
+\end{tikzpicture}
+\caption{프로젝트 데이터 흐름: 센서 측정부터 AI 모델까지}
+\end{figure}
+
+%% ========== 그림 G: 상관관계 vs 인과관계 ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.95]
+    % === 왼쪽: 상관관계 ===
+    \fill[RoyalBlue!10, rounded corners=10pt] (0,0) rectangle (6.5,5.5);
+    \draw[RoyalBlue, rounded corners=10pt, line width=2pt] (0,0) rectangle (6.5,5.5);
+    \node[font=\large\bfseries, text=RoyalBlue] at (3.25,5) {상관관계};
+    \node[font=\small, text=RoyalBlue!70] at (3.25,4.5) {Correlation};
+    
+    % 두 원
+    \fill[BurntOrange!30] (1.8,2.5) circle (1);
+    \fill[ForestGreen!30] (4.7,2.5) circle (1);
+    \draw[BurntOrange, line width=2pt] (1.8,2.5) circle (1);
+    \draw[ForestGreen, line width=2pt] (4.7,2.5) circle (1);
+    \node[font=\small\bfseries, text=BurntOrange] at (1.8,2.5) {온도};
+    \node[font=\small\bfseries, text=ForestGreen] at (4.7,2.5) {집중도};
+    
+    % 양방향 화살표
+    \draw[{Stealth}-{Stealth}, line width=2pt, gray] (2.9,2.5) -- (3.6,2.5);
+    \node[font=\tiny, text=gray] at (3.25,2.9) {함께 변함};
+    
+    % 설명
+    \node[font=\scriptsize, text width=5.5cm, align=center] at (3.25,0.7) {
+        ``온도가 올라가면 집중도가 내려간다''\\
+        (두 변수가 \textbf{함께 변하는 패턴})
+    };
+    
+    % === 오른쪽: 인과관계 ===
+    \fill[RedOrange!10, rounded corners=10pt] (7.5,0) rectangle (14,5.5);
+    \draw[RedOrange, rounded corners=10pt, line width=2pt] (7.5,0) rectangle (14,5.5);
+    \node[font=\large\bfseries, text=RedOrange] at (10.75,5) {인과관계};
+    \node[font=\small, text=RedOrange!70] at (10.75,4.5) {Causation};
+    
+    % 두 원
+    \fill[BurntOrange!30] (9.3,2.5) circle (1);
+    \fill[ForestGreen!30] (12.2,2.5) circle (1);
+    \draw[BurntOrange, line width=2pt] (9.3,2.5) circle (1);
+    \draw[ForestGreen, line width=2pt] (12.2,2.5) circle (1);
+    \node[font=\small\bfseries, text=BurntOrange] at (9.3,2.5) {온도};
+    \node[font=\small\bfseries, text=ForestGreen] at (12.2,2.5) {집중도};
+    
+    % 단방향 화살표
+    \draw[-{Stealth}, line width=2.5pt, RedOrange] (10.4,2.5) -- (11.1,2.5);
+    \node[font=\tiny, text=RedOrange] at (10.75,2.9) {원인};
+    
+    % 설명
+    \node[font=\scriptsize, text width=5.5cm, align=center] at (10.75,0.7) {
+        ``온도 \textbf{때문에} 집중도가 내려간다''\\
+        (한 변수가 다른 변수의 \textbf{원인})
+    };
+    
+    % 하단 핵심 메시지
+    \node[font=\small\bfseries, text=NavyBlue] at (7,-.7) {데이터 분석으로 상관관계는 알 수 있지만, 인과관계는 추론만 가능합니다.};
+\end{tikzpicture}
+\caption{상관관계 vs 인과관계: 데이터 분석의 핵심 개념}
+\end{figure}
+
+%% ========== 그림 H: 규칙 기반 vs 머신러닝 비교 ==========
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.92]
+    % === 왼쪽: 학생 모델 (규칙 기반) ===
+    \fill[BurntOrange!10, rounded corners=10pt] (0,0) rectangle (6.8,6);
+    \draw[BurntOrange, rounded corners=10pt, line width=2pt] (0,0) rectangle (6.8,6);
+    
+    % 헤더
+    \fill[BurntOrange, rounded corners=5pt] (0.3,5.2) rectangle (6.5,5.8);
+    \node[font=\bfseries, text=white] at (3.4,5.5) {학생 모델 (규칙 기반)};
+    
+    % 사람 아이콘
+    \fill[BurntOrange!30] (1.2,3.8) circle (0.5);
+    \draw[BurntOrange, line width=2pt] (1.2,3.8) circle (0.5);
+    \node[font=\scriptsize\bfseries, text=BurntOrange] at (1.2,3.8) {학생};
+    
+    % 화살표
+    \draw[-{Stealth}, line width=2pt, BurntOrange] (1.8,3.8) -- (2.8,3.8);
+    \node[font=\tiny, text=BurntOrange] at (2.3,4.1) {규칙 작성};
+    
+    % 규칙 박스
+    \fill[white, rounded corners=5pt] (2.9,2.8) rectangle (6.4,4.8);
+    \draw[BurntOrange, rounded corners=5pt] (2.9,2.8) rectangle (6.4,4.8);
+    \node[font=\tiny\bfseries, text=BurntOrange] at (4.65,4.5) {규칙};
+    \node[font=\tiny, text width=3cm, align=left] at (4.65,3.7) {
+        온도 $\geq$ 26℃ → 낮음\\
+        온도 $\leq$ 24℃ → 높음\\
+        그 외 → 보통
+    };
+    
+    % 핵심 포인트
+    \node[font=\scriptsize, text=BurntOrange, text width=6cm, align=center] at (3.4,1.8) {
+        \textbf{사람이 규칙을 정한다}
+    };
+    \node[font=\tiny, text=gray, text width=5.5cm, align=center] at (3.4,1.1) {
+        ``26도 이상이면 집중도가 낮다''는\\
+        기준을 \textbf{내가 직접} 정함
+    };
+    
+    % === 오른쪽: 교수 모델 (머신러닝) ===
+    \fill[ForestGreen!10, rounded corners=10pt] (7.2,0) rectangle (14,6);
+    \draw[ForestGreen, rounded corners=10pt, line width=2pt] (7.2,0) rectangle (14,6);
+    
+    % 헤더
+    \fill[ForestGreen, rounded corners=5pt] (7.5,5.2) rectangle (13.7,5.8);
+    \node[font=\bfseries, text=white] at (10.6,5.5) {교수 모델 (머신러닝)};
+    
+    % 데이터 아이콘
+    \fill[ForestGreen!30, rounded corners=3pt] (8,3.4) rectangle (9.2,4.2);
+    \draw[ForestGreen, line width=2pt, rounded corners=3pt] (8,3.4) rectangle (9.2,4.2);
+    \node[font=\scriptsize\bfseries, text=ForestGreen] at (8.6,3.8) {데이터};
+    
+    % 화살표
+    \draw[-{Stealth}, line width=2pt, ForestGreen] (9.4,3.8) -- (10.4,3.8);
+    \node[font=\tiny, text=ForestGreen] at (9.9,4.1) {학습};
+    
+    % 모델 박스
+    \fill[white, rounded corners=5pt] (10.5,2.8) rectangle (13.6,4.8);
+    \draw[ForestGreen, rounded corners=5pt] (10.5,2.8) rectangle (13.6,4.8);
+    \node[font=\tiny\bfseries, text=ForestGreen] at (12.05,4.5) {학습된 모델};
+    \node[font=\tiny, text width=2.8cm, align=left] at (12.05,3.7) {
+        집중도 = 12.5\\
+        + 온도 $\times$ (-0.3)\\
+        + 소음 $\times$ (-0.05)
+    };
+    
+    % 핵심 포인트
+    \node[font=\scriptsize, text=ForestGreen, text width=6cm, align=center] at (10.6,1.8) {
+        \textbf{데이터가 규칙을 알려준다}
+    };
+    \node[font=\tiny, text=gray, text width=5.5cm, align=center] at (10.6,1.1) {
+        ``온도 1℃ 오르면 집중도 0.3 감소''는\\
+        \textbf{데이터에서 AI가 찾은} 패턴
+    };
+    
+    % 하단 비교
+    \node[font=\small\bfseries, text=NavyBlue] at (7,-.7) {두 모델 모두 ``집중도를 판단''하는 것이 아니라, 주어진 기준을 ``계산''합니다.};
+\end{tikzpicture}
+\caption{규칙 기반 모델 vs 머신러닝 모델: 기준을 누가 정하는가?}
+\end{figure}
+
+%========================================
+\section{평가 안내}
+%========================================
+
+\subsection{평가 개요}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l c X}
+\toprule
+\textbf{평가 항목} & \textbf{비율} & \textbf{세부 내용} \\
+\midrule
+주간 과제 & 80\% & 주당 10\% × 8주 (1\textasciitilde4주, 8\textasciitilde13주) \\
+최종 프로젝트 & 15\% & 보고서 (8\%) + 발표 (7\%) \\
+개인 성찰 보고서 & 5\% & 15주차 제출 \\
+\bottomrule
+\end{tabularx}
+\caption{평가 구성}
+\end{table}
+
+\begin{info}
+\textbf{참고}: 1주차 과제는 \textbf{평가 점검용}으로 모든 학생에게 10\% 만점이 부여됩니다. 5\textasciitilde7주차(실습기간)는 별도 과제 없이 8주차에 통합 제출합니다.
+\end{info}
+
+\subsection{주간 과제 (80\%)}
+
+\begin{itemize}
+    \item \textbf{제출처}: LMS
+    \item \textbf{기한}: 매주 일요일 자정
+    \item \textbf{지각 감점}: 1일당 10\% 감점
+    \item \textbf{출석 인정}: 과제 제출로 출석 대체
+\end{itemize}
+
+\subsection{바이브코딩 주차 제출물}
+
+바이브코딩을 활용하는 주차(1, 2, 9\textasciitilde13주차)에는 다음을 제출합니다:
+
+\begin{enumerate}
+    \item \textbf{프로그램 코드}: 바이브코딩으로 생성한 코드
+    \item \textbf{대화목록 전문} (PDF): 프롬프트 원문 + Claude 응답 전체
+    \item \textbf{대화목록 요약본} (PDF): 프롬프트 원문 + Claude 응답 3줄 요약
+\end{enumerate}
+
+\subsection{최종 프로젝트 (15\%)}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l c X}
+\toprule
+\textbf{항목} & \textbf{배점} & \textbf{평가 기준} \\
+\midrule
+프로젝트 보고서 & 8\% & 과정 명확성, 데이터 분석 적절성, 통찰 구체성 \\
+발표 & 7\% & 내용 전달력, 명확성 \\
+\bottomrule
+\end{tabularx}
+\caption{최종 프로젝트 평가 항목}
+\end{table}
+
+\subsection{개인 성찰 보고서 (5\%)}
+
+\begin{itemize}
+    \item 학습 목표 달성 여부
+    \item 데이터/AI에 대한 관점 변화
+    \item 학교 현장 적용 방안
+\end{itemize}
+
+%========================================
+\section{다음 주 안내}
+%========================================
+
+\subsection{2주차 예고: 바이브코딩 체험}
+
+\begin{itemize}
+    \item 바이브코딩 개념 설명: ``코드를 짜지 않고 코드를 만든다''
+    \item Claude 사용법 시연
+    \item 간단한 바이브코딩 체험: 자기소개 웹페이지 만들기
+    \item 센서 탐색: 마이크로비트 내장 센서 + Grove 확장 센서
+\end{itemize}
+
+\subsection{1주차 활동}
+
+\begin{activity}
+\textbf{활동: LED에 이름 표시하기 (바이브코딩 활용)}
+
+\begin{enumerate}
+    \item Claude에게 MakeCode 블록 코드 요청하기
+    \item MakeCode에서 LED에 자신의 이름을 표시하는 프로그램 만들기
+    \item 실제 마이크로비트에서 실행한 모습 \textbf{사진} 촬영
+    \item \textbf{대화목록} (전문 + 요약본) PDF 작성
+\end{enumerate}
+
+\textbf{제출물}: 사진 + 대화목록 전문(PDF) + 대화목록 요약본(PDF)
+
+\textbf{제출 기한}: 일요일 자정까지 LMS 제출
+
+\vspace{0.5em}
+\textit{※ 1주차 활동은 평가 점검용으로 모든 학생에게 10\% 만점이 부여됩니다.}
+\end{activity}
+
+%========================================
+\section*{참고자료}
+%========================================
+\addcontentsline{toc}{section}{참고자료}
+
+\begin{enumerate}
+    \item 마이크로비트 공식 사이트: \url{https://microbit.org}
+    \item MakeCode 에디터: \url{https://makecode.microbit.org}
+    \item Grove 센서 위키: \url{https://wiki.seeedstudio.com}
+    \item 2022 개정 교육과정 (실과, SW/AI 교육)
+\end{enumerate}
+
+\vfill
+
+\begin{center}
+\rule{0.5\textwidth}{0.4pt}
+
+\textit{청주교육대학교 컴퓨터교육과}
+
+\textit{사물인터넷과 빅데이터 --- 1주차 강의노트}
+
+\textit{v1.8.0.0 | 2026-01-26 11:30}
+\end{center}
+
+%========================================
+% 참고자료
+%========================================
+\newpage
+\section*{참고자료}
+\addcontentsline{toc}{section}{참고자료}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{c l l X}
+\toprule
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\midrule
+1 & 강의계획서\_사물인터넷과빅데이터\_v1.5.3.0 & 문서 & 평가 기준, 주차별 내용 \\
+2 & 수업집중도분석프로그램\_v2.1.0.0 & HTML & 시연용 프로그램 화면 참고 \\
+3 & MakeCode시뮬레이터-LED이름표시 & HTML & 실습 화면 참고 \\
+4 & microbit.org & 웹사이트 & 마이크로비트 공식 문서 \\
+5 & wiki.seeedstudio.com & 웹사이트 & Grove 센서 문서 \\
+6 & microbitdrawing2bluemicrophoneon.png & 이미지 & 마이크로비트 전면 사진 \\
+7 & microbitdrawingback13.png & 이미지 & 마이크로비트 후면 사진 \\
+8 & Grove Shield 제품 사진 & 이미지 & Seeed Studio 제공 \\
+9 & Grove 온습도 센서 사진 & 이미지 & Seeed Studio 제공 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+%========================================
+% 생성/수정 이력
+%========================================
+\section*{생성/수정 이력}
+\addcontentsline{toc}{section}{생성/수정 이력}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l l l l X l}
+\toprule
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경 수준} & \textbf{변경 내용} & \textbf{작성자} \\
+\midrule
+v1.0.0.0 & 2026-01-26 & 09:30 & 최초 & 초안 작성 (텍스트만) & Claude \\
+v1.1.0.0 & 2026-01-26 & 09:45 & 마이너 & 5개 TikZ 다이어그램 추가 & Claude \\
+v1.2.0.0 & 2026-01-26 & 10:00 & 마이너 & 시뮬레이터 화면, 평가 기준 수정 & Claude \\
+v1.3.0.0 & 2026-01-26 & 10:10 & 마이너 & 집중도 예측 프로그램 추가 & Claude \\
+v1.4.0.0 & 2026-01-26 & 10:20 & 마이너 & Grove 시스템 섹션 + 연결 구조 그림 추가 & Claude \\
+v1.5.0.0 & 2026-01-26 & 10:27 & 마이너 & v2.1.0.0 프로그램 화면으로 Fig 6 대체 & Claude \\
+\textbf{v1.6.0.0} & \textbf{2026-01-26} & \textbf{10:33} & \textbf{마이너} & \textbf{8개 그림 추가 (사진 4 + TikZ 4)} & \textbf{Claude} \\
+v1.6.0.1 & 2026-01-26 & 10:43 & 패치 & Grove 센서 이미지 형식 수정 (webp→png) & Claude \\
+\textbf{v1.7.0.0} & \textbf{2026-01-26} & \textbf{10:50} & \textbf{마이너} & \textbf{그림 대폭 개선: LED 실습→MakeCode+실행결과, 5탭 화면 추가, 분석결과 화면} & \textbf{Claude} \\
+v1.7.1.0 & 2026-01-26 & 10:58 & 리비전 & 강의계획서 교차검증: 시간배분 테이블 추가, 평가항목에서 중복 피어평가 삭제 & Claude \\
+\textbf{v1.8.0.0} & \textbf{2026-01-26} & \textbf{11:30} & \textbf{마이너} & \textbf{평가기준 통일: 주간과제80\%, 최종프로젝트15\%, 성찰5\%, 1주차 바이브코딩+점검용만점} & \textbf{Claude} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\end{document}

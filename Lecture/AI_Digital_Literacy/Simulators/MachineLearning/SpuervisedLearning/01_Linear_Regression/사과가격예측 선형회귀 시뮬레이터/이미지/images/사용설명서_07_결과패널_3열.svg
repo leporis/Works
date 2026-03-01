@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="800" height="420" fill="url(#bgGrad)"/>
+  
+  <!-- 제목 -->
+  <text x="400" y="35" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="22" font-weight="700" fill="#E53935">📊 학습 결과 패널 (차트 하단)</text>
+  <text x="400" y="55" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#8D6E63">학습 완료 후 차트 아래에 3열 구조로 표시됩니다</text>
+  
+  <!-- 전체 패널 프레임 -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="75" width="720" height="155" rx="12" fill="white" stroke="#FFCCBC" stroke-width="2"/>
+    
+    <!-- 1열: 학습 결과 -->
+    <rect x="50" y="85" width="220" height="135" rx="10" fill="#FFF3E0"/>
+    <text x="160" y="108" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#3E2723">📊 학습 결과</text>
+    
+    <!-- 결과 테이블 -->
+    <rect x="60" y="118" width="200" height="55" rx="6" fill="white" stroke="#E0E0E0" stroke-width="1"/>
+    <line x1="110" y1="118" x2="110" y2="173" stroke="#E0E0E0" stroke-width="1"/>
+    <line x1="160" y1="118" x2="160" y2="173" stroke="#E0E0E0" stroke-width="1"/>
+    <line x1="210" y1="118" x2="210" y2="173" stroke="#E0E0E0" stroke-width="1"/>
+    <line x1="60" y1="138" x2="260" y2="138" stroke="#E0E0E0" stroke-width="1"/>
+    
+    <text x="85" y="132" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#5D4037">에포크</text>
+    <text x="135" y="132" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#5D4037">손실</text>
+    <text x="185" y="132" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#5D4037">R²</text>
+    <text x="235" y="132" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#5D4037">상태</text>
+    
+    <text x="85" y="160" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#3E2723">500</text>
+    <text x="135" y="160" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#3E2723">0.012</text>
+    <text x="185" y="160" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#3E2723">0.92</text>
+    <text x="235" y="160" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#43A047">✅ 양호</text>
+    
+    <!-- 회귀식 -->
+    <rect x="60" y="180" width="200" height="25" rx="4" fill="#E8F5E9"/>
+    <text x="160" y="197" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#2E7D32">가격 = 30.5 × 품질 + 985</text>
+    
+    <!-- 2열: 오차 분석 -->
+    <rect x="280" y="85" width="220" height="135" rx="10" fill="#FFF3E0"/>
+    <text x="390" y="108" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#3E2723">📏 오차 분석</text>
+    
+    <!-- 체크박스 -->
+    <rect x="300" y="120" width="14" height="14" rx="2" fill="white" stroke="#E53935" stroke-width="2"/>
+    <path d="M 303 127 L 307 131 L 312 123" fill="none" stroke="#E53935" stroke-width="2"/>
+    <text x="320" y="132" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#3E2723">오차선 표시</text>
+    
+    <!-- 오차 통계 -->
+    <rect x="290" y="145" width="200" height="65" rx="6" fill="white" stroke="#E0E0E0" stroke-width="1"/>
+    <text x="305" y="165" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">평균 오차</text>
+    <text x="475" y="165" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#E53935">128원</text>
+    
+    <text x="305" y="183" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">최대 오차</text>
+    <text x="475" y="183" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#E53935">456원</text>
+    
+    <text x="305" y="201" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">MSE</text>
+    <text x="475" y="201" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#E53935">25,890</text>
+    
+    <!-- 3열: 재생 컨트롤 -->
+    <rect x="510" y="85" width="240" height="135" rx="10" fill="#FFF3E0"/>
+    <text x="630" y="108" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#3E2723">📽️ 학습 과정 재생</text>
+    
+    <!-- 재생 속도 -->
+    <text x="525" y="130" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">재생 속도</text>
+    <rect x="525" y="135" width="210" height="8" rx="4" fill="#E0E0E0"/>
+    <circle cx="630" cy="139" r="8" fill="#2196F3"/>
+    <text x="525" y="158" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#8D6E63">느림</text>
+    <text x="630" y="158" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" font-weight="500" fill="#2196F3">보통</text>
+    <text x="735" y="158" text-anchor="end" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#8D6E63">빠름</text>
+    
+    <!-- 버튼들 -->
+    <rect x="525" y="168" width="100" height="28" rx="6" fill="#2196F3"/>
+    <text x="575" y="187" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="white">▶️ 재생</text>
+    
+    <rect x="635" y="168" width="100" height="28" rx="6" fill="#757575"/>
+    <text x="685" y="187" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="white">⏹️ 정지</text>
+    
+    <!-- 진행바 -->
+    <rect x="525" y="203" width="210" height="8" rx="4" fill="#E0E0E0"/>
+    <rect x="525" y="203" width="126" height="8" rx="4" fill="linear-gradient(90deg, #2196F3, #1976D2)"/>
+    <rect x="525" y="203" width="126" height="8" rx="4" fill="#2196F3"/>
+    <text x="525" y="222" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#5D4037">에포크: 300</text>
+    <text x="735" y="222" text-anchor="end" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#5D4037">/ 500</text>
+  </g>
+  
+  <!-- 하단 상세 설명 박스들 -->
+  <!-- 학습 결과 설명 -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="250" width="230" height="150" rx="10" fill="white" stroke="#43A047" stroke-width="2"/>
+    <rect x="40" y="250" width="230" height="30" rx="10" fill="#43A047"/>
+    <rect x="40" y="270" width="230" height="10" fill="#43A047"/>
+    <text x="155" y="273" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="600" fill="white">📊 학습 결과 해석</text>
+    
+    <text x="55" y="305" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">• 손실(MSE): 작을수록 좋음</text>
+    <text x="55" y="325" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">• R²: 1에 가까울수록 좋음</text>
+    <text x="55" y="350" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#43A047">  ✅ > 0.8: 양호</text>
+    <text x="55" y="368" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#FFC107">  ⚠️ 0.5~0.8: 보통</text>
+    <text x="55" y="386" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#E53935">  ❌ &lt; 0.5: 부족</text>
+  </g>
+  
+  <!-- 오차 분석 설명 -->
+  <g filter="url(#shadow)">
+    <rect x="285" y="250" width="230" height="150" rx="10" fill="white" stroke="#E53935" stroke-width="2"/>
+    <rect x="285" y="250" width="230" height="30" rx="10" fill="#E53935"/>
+    <rect x="285" y="270" width="230" height="10" fill="#E53935"/>
+    <text x="400" y="273" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="600" fill="white">📏 오차선 활용</text>
+    
+    <text x="300" y="305" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">• 체크박스로 오차선 표시</text>
+    <text x="300" y="325" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">• 실제값 ↔ 예측값 거리</text>
+    <text x="300" y="350" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">• 색상으로 오차 크기 표현</text>
+    <text x="310" y="370" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#43A047">🟢 녹색: 작은 오차</text>
+    <text x="310" y="388" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#E53935">🔴 빨강: 큰 오차</text>
+  </g>
+  
+  <!-- 재생 컨트롤 설명 -->
+  <g filter="url(#shadow)">
+    <rect x="530" y="250" width="230" height="150" rx="10" fill="white" stroke="#2196F3" stroke-width="2"/>
+    <rect x="530" y="250" width="230" height="30" rx="10" fill="#2196F3"/>
+    <rect x="530" y="270" width="230" height="10" fill="#2196F3"/>
+    <text x="645" y="273" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="600" fill="white">📽️ 재생 기능</text>
+    
+    <text x="545" y="305" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">• 학습 과정 애니메이션</text>
+    <text x="545" y="325" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">• 회귀선이 데이터에</text>
+    <text x="555" y="343" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">점차 맞춰지는 과정</text>
+    <text x="545" y="368" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">• 속도 조절 가능</text>
+    <text x="545" y="388" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#2196F3">• 언제든 정지/재시작</text>
+  </g>
+</svg>

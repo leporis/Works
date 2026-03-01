@@ -1,0 +1,253 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}마이크로비트 데이터로거 시스템 퀵가이드 v1.1.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{memo} 마이크로비트 데이터로거 시스템}\\[0.5cm]
+{\Huge\bfseries\color{primary} 퀵가이드}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v1.0.3.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 퀵가이드는 마이크로비트 데이터로거 시스템와 함께 보는 내비게이션입니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{\emoji{open-book} 이 문서 사용법}
+
+\begin{tcolorbox}[tipbox]
+\textbf{이 퀵가이드는 데이터로거 다이어그램과 함께 보는 내비게이션입니다.}
+
+이 자료는 \textbf{정적 인포그래픽}입니다 — 클릭하거나 조작하는 기능은 없고, 보면서 이해하는 참고 자료입니다.
+
+\end{tcolorbox}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{8.4cm}|p{6.6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{상황} & \textbf{참조 섹션} \\
+\hline
+전체 흐름 파악 & \emoji{high-voltage} 초속성 실습 \\
+\hline
+화면 배치가 궁금함 & \emoji{desktop-computer} 화면 구성 \\
+\hline
+센서 종류 확인 & \emoji{magnifying-glass-tilted-left} 관찰 포인트 \\
+\hline
+글자가 깨져요 & \emoji{sos} 트러블슈팅 \\
+\hline
+용어 모름 & \emoji{key} 핵심 용어 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{high-voltage} 1분 초속성 실습}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{8.2cm}|p{5.3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{행동} & \textbf{확인} \\
+\hline
+1 & 화면 왼쪽의 \textbf{마이크로비트 보드} 다이어그램을 찾으세요 & \emoji{green-circle} 초록 테두리 센서 카드 6개 보이나요? \\
+\hline
+2 & 오른쪽의 \textbf{Grove 확장 센서} 영역을 찾으세요 & \emoji{blue-circle} 파랑 테두리 센서 카드 10개 보이나요? \\
+\hline
+3 & 가운데 \textbf{데이터 저장 경로}(SD카드 \textrightarrow{} CSV \textrightarrow{} 엑셀) 흐름을 따라가세요 & 화살표가 보이면 \emoji{party-popper} \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{rocket} 빠른 시작 — 이렇게 읽으세요}
+
+\subsection*{\emoji{keycap-1} 데이터 수집 흐름 (위\textrightarrow{}아래)}
+
+\begin{tcolorbox}[formulabox]
+\begin{verbatim}
+센서 → 마이크로비트 → 데이터로거(RTC+SD) → CSV 파일 → PC에서 분석
+\end{verbatim}
+\end{tcolorbox}
+
+이 다이어그램은 이 흐름의 \textbf{첫 단계(센서 종류)}를 보여줍니다.
+
+
+\subsection*{\emoji{keycap-2} 센서 2종류 구분하기}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.6cm}|p{2.4cm}|p{4.8cm}|p{5.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{구분} & \textbf{색상} & \textbf{위치} & \textbf{특징} \\
+\hline
+\emoji{green-circle} 내장 센서 & 초록 테두리 & 좌측 (마이크로비트 안) & 추가 장비 없이 바로 사용 \\
+\hline
+\emoji{blue-circle} 외장 센서 & 파랑 테두리 & 우측 (Grove Shield) & 더 정밀·다양한 측정 \\
+\hline
+\emoji{purple-circle} 고정 장치 & 보라 테두리 & — & OLED 디스플레이, RTC 등 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{\emoji{keycap-3} 데이터 항목 읽기}
+
+각 센서 카드 아래의 \textbf{태그}가 측정 가능한 데이터입니다:
+
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.4cm}|p{5.0cm}|p{6.6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{센서 예시} & \textbf{데이터 태그} & \textbf{의미} \\
+\hline
+SHT40 & \texttt{정밀 온도} \texttt{습도} & 이 센서로 온도와 습도를 측정 가능 \\
+\hline
+BMP280 & \texttt{기압} \texttt{고도} & 이 센서로 기압과 고도를 측정 가능 \\
+\hline
+마이크로비트 내장 & \texttt{온도} \texttt{조도} \texttt{가속도} 등 & 추가 장비 없이 측정 가능한 항목 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{desktop-computer} 화면 구성}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{images/S3_DataLogger_screen.png}
+\end{center}
+
+
+\section*{\emoji{magnifying-glass-tilted-left} 관찰 포인트}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.8cm}|p{4.9cm}|p{7.3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{관찰 대상} & \textbf{찾아볼 장면} & \textbf{의미} \\
+\hline
+내장 센서 6개 & 좌측 초록 카드 & "마이크로비트만으로 이것들을 측정할 수 있다" \\
+\hline
+외장 센서 10개 & 우측 파랑 카드 & "Grove로 확장하면 더 많은 것을 측정" \\
+\hline
+저장 경로 & SD카드 \textrightarrow{} CSV \textrightarrow{} 엑셀 & "데이터는 파일로 저장되어 나중에 분석" \\
+\hline
+데이터 요약 수치 & 16종 센서, 24+ 데이터, 848 조합 & "센서를 조합하면 엄청 다양한 데이터 수집 가능" \\
+\hline
+센서별 데이터 태그 & 카드 아래 배지들 & "같은 센서라도 여러 종류의 데이터를 측정" \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{sos} 도와주세요!}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{4.5cm}|p{3.9cm}|p{6.6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{증상} & \textbf{원인} & \textbf{해결책} \\
+\hline
+일부 한글이 깨져 보여요 & 브라우저 인코딩 설정 & Chrome에서 열기 + UTF-8 확인 \\
+\hline
+글자가 너무 작아요 & 화면 해상도 & \texttt{Ctrl + +}로 확대 (최대 150\% 추천) \\
+\hline
+오른쪽 센서가 잘려요 & 화면 너비 부족 & 브라우저를 전체 화면(F11)으로 전환 \\
+\hline
+인쇄가 잘 안 돼요 & 다크 테마 배경색 & 인쇄 설정에서 "배경 그래픽" 체크 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{key} 핵심 용어}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{3.4cm}|p{4.5cm}|p{5.6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{용어} & \textbf{학술 용어} & \textbf{의미} & \textbf{쉬운 설명} \\
+\hline
+데이터로거 & Data Logger & 데이터 기록 장치 & 센서 값을 시간표와 함께 파일로 저장 \\
+\hline
+RTC & Real-Time Clock & 실시간 시계 모듈 & "몇 시 몇 분에 측정했는지" 기록 \\
+\hline
+SD카드 & SD Card & 저장 매체 & 데이터를 파일로 보관하는 메모리 카드 \\
+\hline
+CSV & Comma-Separated Values & 쉼표 구분 파일 & 엑셀에서 열 수 있는 데이터 형식 \\
+\hline
+내장 센서 & Built-in Sensor & 마이크로비트 기본 탑재 센서 & 추가 장비 없이 바로 측정 가능 \\
+\hline
+Grove 센서 & Grove Sensor & I2C로 추가 연결하는 외장 센서 & 더 정밀·다양한 측정이 가능 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{thought-balloon} 생각해보기}
+
+\begin{tcolorbox}[summarybox]
+\textbf{센서가 측정한 데이터는 어디에 저장되나요?}
+
+\vspace{0.3em}
+마이크로비트 메모리? SD카드? 클라우드?
+
+데이터를 저장하지 않으면 어떤 문제가 생길까요?
+
+\vspace{0.3em}
+\textbf{프로젝트에 꼭 외장 센서가 필요할까요?}
+
+\vspace{0.3em}
+내장 센서 6종만으로도 온도·조도·가속도를 측정할 수 있습니다.
+
+"내장 센서로 충분한가?"를 먼저 판단하면 불필요한 비용을 줄일 수 있어요.
+
+\end{tcolorbox}
+
+
+\section*{참고자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{7.6cm}|p{2.7cm}|p{3.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & 마이크로비트데이터로거\_v1.0.3.0 & HTML 파일 & 다이어그램 \\
+\hline
+2 & 마이크로비트데이터로거\_개발참조\_v1.0.0.0 & 문서 & 기술 상세 \\
+\hline
+3 & 코딩관리지침\_v4.0.0.0 \S{}17 & 프로젝트 문서 & 퀵가이드 작성법 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{마이크로비트 데이터로거 시스템 퀵가이드}
+\end{center}
+\end{document}

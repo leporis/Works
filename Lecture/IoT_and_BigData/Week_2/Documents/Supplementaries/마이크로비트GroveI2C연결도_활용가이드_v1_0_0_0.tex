@@ -1,0 +1,195 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}마이크로비트 Grove I2C 연결도 활용가이드 v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{electric-plug} 마이크로비트 Grove I2C 연결도}\\[0.5cm]
+{\Huge\bfseries\color{primary} 활용가이드}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v1.0.3.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 활용가이드는 마이크로비트 Grove I2C 연결도의 수업 적용 방법을 안내합니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{1. 수업 개요}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.8cm}|p{12.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{내용} \\
+\hline
+강좌 & 사물인터넷과 빅데이터 \\
+\hline
+적용 주차 & 2\textasciitilde{}4주차 \\
+\hline
+자료 역할 & 참고자료 \\
+\hline
+대상 & 4학년 (프로그래밍 비전공, 초등 예비교사) \\
+\hline
+수업 시간 & 45분 (1차시) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{1.1 학습 목표}
+
+$\bullet$ I2C 버스의 2선 구조(SDA, SCL)를 설명할 수 있다
+
+$\bullet$ 센서별 I2C 주소의 역할을 이해할 수 있다
+
+$\bullet$ Grove Shield의 물리적 연결 구조를 다이어그램으로 읽을 수 있다
+
+
+
+\section*{2. 수업 시나리오 (45분)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{1.5cm}|p{9.1cm}|p{2.9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{시간} & \textbf{활동} & \textbf{시뮬레이터 활용} \\
+\hline
+도입 & 5분 & "USB 케이블 1개 vs 센서마다 별도 케이블?" I2C 장점 소개 & — \\
+\hline
+관찰 & 10분 & 다이어그램에서 SDA/SCL 배선을 눈으로 추적 & 배선 구조 \\
+\hline
+학습 & 10분 & 각 센서 카드의 I2C 주소·데이터 항목 읽기 & 센서 카드 \\
+\hline
+활동 & 15분 & "주소가 같은 센서 2개를 연결하면?" 주소 충돌 토론 & — \\
+\hline
+정리 & 5분 & I2C 버스의 핵심 원리 요약, 실습 센서 배분 예고 & — \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{3. 학습 질문}
+
+\subsection*{초급 (이해)}
+
+$\bullet$ Q: I2C 버스에서 SDA와 SCL의 역할은 각각 무엇인가요?
+
+$\bullet$ Q: I2C 주소는 왜 필요한가요?
+
+
+\subsection*{중급 (적용)}
+
+$\bullet$ Q: 6개 센서가 2개 선만으로 통신할 수 있는 이유를 설명해보세요.
+
+$\bullet$ Q: 센서 카드에서 I2C 주소와 측정 데이터를 읽어보세요.
+
+
+\subsection*{고급 (분석)}
+
+$\bullet$ Q: 같은 I2C 주소를 가진 센서 2개를 동시에 연결하면 어떤 일이 벌어질까요?
+
+$\bullet$ Q: I2C 방식과 개별 배선 방식의 장단점을 비교해보세요.
+
+
+\subsection*{확장 (창의)}
+
+$\bullet$ Q: I2C 이외에 센서를 연결하는 다른 통신 방식에는 무엇이 있을까요?
+
+$\bullet$ Q: 버스 방식의 통신을 일상생활에서 찾아볼 수 있나요?
+
+
+
+\section*{4. 학생 활동지}
+
+\subsection*{활동: 마이크로비트와 Grove Shield의 I2C 센서 물리적 연결 구조 탐색하기}
+
+\textbf{목표}: 마이크로비트와 Grove Shield의 I2C 센서 물리적 연결 구조를 보여주는 정적 다이어그램
+
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{5.6cm}|p{7.9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{활동} & \textbf{기록} \\
+\hline
+1 & 화면 전체 구조 파악 & 주요 영역: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ \\
+\hline
+2 & 핵심 기능 탐색 & 발견한 것: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ \\
+\hline
+3 & 프로젝트와 연결 & 활용 방안: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{5. 평가 관찰 체크리스트}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.0cm}|p{6.3cm}|p{3.4cm}|p{2.3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{평가 항목} & \textbf{상} & \textbf{중} & \textbf{하} \\
+\hline
+핵심 개념 이해 & 관련 원리를 정확히 설명 & 대략적으로 이해 & 이해 부족 \\
+\hline
+실습 참여도 & 적극적으로 탐색·기록 & 지시에 따라 수행 & 소극적 참여 \\
+\hline
+프로젝트 연결 & 자기 프로젝트에 적용 방안 제시 & 일부 연결 시도 & 연결 미시도 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{6. 수업 팁}
+
+$\bullet$ \emoji{light-bulb} 실제 Grove 케이블·Shield가 있다면 다이어그램과 대조하며 보여주세요
+
+$\bullet$ \emoji{light-bulb} SDA/SCL 배선을 손가락으로 따라가게 하면 이해가 빠릅니다
+
+$\bullet$ \emoji{light-bulb} "왜 선이 2개면 충분한가?"라는 질문으로 주소 개념을 자연스럽게 도입하세요
+
+
+
+\section*{7. 관련 자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{7.3cm}|p{6.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{비고} \\
+\hline
+1 & 마이크로비트GroveI2C연결도\_퀵가이드 & 소프트웨어 사용 중 빠른 참조 \\
+\hline
+2 & 마이크로비트GroveI2C연결도\_사용설명서 & 전체 기능 상세 \\
+\hline
+3 & 마이크로비트GroveI2C연결도\_이론해설서 & 배경 이론 \\
+\hline
+4 & 마이크로비트GroveI2C연결도\_개발참조 & 기술 사양 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{마이크로비트 Grove I2C 연결도 활용가이드}
+\end{center}
+\end{document}

@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🤖 RL 틱택토 - AI 강화학습 시뮬레이터</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; min-height: 100vh; transition: background 0.4s, color 0.4s; }
+    #root { min-height: 100vh; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(128,128,128,0.1); }
+    ::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.3); border-radius: 3px; }
+  </style>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+const { useState, useEffect, useCallback, useRef, useMemo, createContext, useContext } = React;
+
+// ============================================
+// [1] 테마 시스템
+// ============================================
+const THEMES = {
+  dark: {
+    name: 'dark',
+    bg: 'linear-gradient(135deg, #0d0d1a, #1a1a2e)',
+    text: '#e0e0e0',
+    textDim: 'rgba(255,255,255,0.5)',
+    textSub: 'rgba(255,255,255,0.7)',
+    panel: 'rgba(0,0,0,0.3)',
+    panelSolid: 'rgba(0,0,0,0.4)',
+    panelDeep: 'rgba(0,0,0,0.5)',
+    cell: 'rgba(30,30,50,0.8)',
+    cellHover: 'rgba(0,245,255,0.15)',
+    border: 'rgba(255,255,255,0.08)',
+    borderLight: 'rgba(255,255,255,0.1)',
+    borderMed: 'rgba(255,255,255,0.2)',
+    modalBg: 'rgba(0,0,0,0.85)',
+    modalPanel: 'linear-gradient(135deg, #1a1a2e, #0d0d1a)',
+    tooltipBg: 'rgba(0,0,0,0.9)',
+    barTrack: 'rgba(0,0,0,0.3)',
+    graphBg: 'rgba(0,0,0,0.3)',
+    cancelBtn: 'rgba(255,255,255,0.1)',
+    cancelBorder: 'rgba(255,255,255,0.3)',
+    radioSelected: 'rgba(0,245,255,0.15)',
+    radioBorder: 'rgba(0,245,255,0.3)',
+    syncOn: '#2ecc71',
+    syncOff: 'rgba(255,255,255,0.1)',
+    syncTextOff: '#888',
+    progressEmpty: 'transparent',
+    inputAccent: '#00f5ff',
+  },
+  light: {
+    name: 'light',
+    bg: 'linear-gradient(135deg, #f0f2f5, #e4e8ee)',
+    text: '#1a1a2e',
+    textDim: 'rgba(0,0,0,0.45)',
+    textSub: 'rgba(0,0,0,0.6)',
+    panel: 'rgba(0,0,0,0.04)',
+    panelSolid: 'rgba(0,0,0,0.06)',
+    panelDeep: 'rgba(255,255,255,0.9)',
+    cell: 'rgba(240,242,248,0.95)',
+    cellHover: 'rgba(52,152,219,0.12)',
+    border: 'rgba(0,0,0,0.08)',
+    borderLight: 'rgba(0,0,0,0.1)',
+    borderMed: 'rgba(0,0,0,0.15)',
+    modalBg: 'rgba(0,0,0,0.5)',
+    modalPanel: 'linear-gradient(135deg, #ffffff, #f8f9fb)',
+    tooltipBg: 'rgba(30,30,50,0.92)',
+    barTrack: 'rgba(0,0,0,0.08)',
+    graphBg: 'rgba(0,0,0,0.04)',
+    cancelBtn: 'rgba(0,0,0,0.06)',
+    cancelBorder: 'rgba(0,0,0,0.2)',
+    radioSelected: 'rgba(52,152,219,0.12)',
+    radioBorder: 'rgba(52,152,219,0.4)',
+    syncOn: '#27ae60',
+    syncOff: 'rgba(0,0,0,0.06)',
+    syncTextOff: '#999',
+    progressEmpty: 'transparent',
+    inputAccent: '#3498db',
+  }
+};
+
+const ThemeContext = createContext(THEMES.dark);
+const useTheme = () => useContext(ThemeContext);
+
+// 테마 전환 토글
+const ThemeToggle = ({ isDark, onToggle }) => {
+  const T = useTheme();
+  return (
+    <button onClick={onToggle} title={isDark ? '라이트 모드' : '다크 모드'}
+      style={{
+        padding: '5px 10px', background: T.panel, border: `1px solid ${T.borderLight}`,
+        borderRadius: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center',
+        gap: '5px', fontSize: '0.7rem', color: T.text, transition: 'all 0.3s',
+        fontWeight: 'bold'
+      }}
+      onMouseOver={e => e.currentTarget.style.background = T.panelSolid}
+      onMouseOut={e => e.currentTarget.style.background = T.panel}
+    >
+      <span style={{ fontSize: '0.85rem' }}>{isDark ? '☀️' : '🌙'}</span>
+      <span>{isDark ? '밝게' : '어둡게'}</span>
+    </button>
+  );
+};
+
+// ============================================
+// [2] 설정 & 상수
+// ============================================
+const WIN_LINES = [
+  [0,1,2],[3,4,5],[6,7,8],
+  [0,3,6],[1,4,7],[2,5,8],
+  [0,4,8],[2,4,6]
+];
+
+const STAGES = [
+  { name: '초기', min: 0, max: 500, color: '#e74c3c', icon: '🌱' },
+  { name: '탐색', min: 500, max: 5000, color: '#e67e22', icon: '🔍' },
+  { name: '학습', min: 5000, max: 20000, color: '#f1c40f', icon: '📚' },
+  { name: '응용', min: 20000, max: 50000, color: '#2ecc71', icon: '🎯' },
+  { name: '숙련', min: 50000, max: 100000, color: '#00c8ff', icon: '🏆' }
+];
+
+const REWARDS = { win: 1.0, lose: -1.0, draw: 0.3, step: -0.01 };
+const STORAGE_KEY = 'rl-tictactoe-save-v2';
+
+const MARK_COLORS = { X: '#2980b9', O: '#c0392b' };
+
+// ============================================
+// [3] 대칭성 변환
+// ============================================
+const SYMMETRIES = [
+  [0,1,2,3,4,5,6,7,8],[6,3,0,7,4,1,8,5,2],
+  [8,7,6,5,4,3,2,1,0],[2,5,8,1,4,7,0,3,6],
+  [2,1,0,5,4,3,8,7,6],[6,7,8,3,4,5,0,1,2],
+  [0,3,6,1,4,7,2,5,8],[8,5,2,7,4,1,6,3,0],
+];
+const SYMMETRIES_INV = SYMMETRIES.map(t => {
+  const inv = new Array(9);
+  for (let i = 0; i < 9; i++) inv[t[i]] = i;
+  return inv;
+});
+
+function canonicalize(board) {
+  let bestState = null, bestIdx = 0;
+  for (let t = 0; t < 8; t++) {
+    let s = '';
+    for (let j = 0; j < 9; j++) s += board[SYMMETRIES[t][j]] || '-';
+    if (bestState === null || s < bestState) { bestState = s; bestIdx = t; }
+  }
+  return { state: bestState, transformIdx: bestIdx };
+}
+
+// ============================================
+// [4] Q-Learning Agent
+// ============================================
+class QAgent {
+  constructor(config = {}) {
+    this.alpha = config.alpha ?? 0.3;
+    this.gamma = config.gamma ?? 0.9;
+    this.epsilon = config.epsilon ?? 1.0;
+    this.epsilonMin = config.epsilonMin ?? 0.01;
+    this.epsilonDecay = config.epsilonDecay ?? 0.9995;
+    this.qTable = {};
+  }
+
+  getQ(canonState) {
+    if (!this.qTable[canonState]) this.qTable[canonState] = new Array(9).fill(0);
+    return this.qTable[canonState];
+  }
+
+  chooseAction(board, available, training = true) {
+    if (available.length === 0) return null;
+    const { state, transformIdx } = canonicalize(board);
+    const inv = SYMMETRIES_INV[transformIdx];
+    const canonAvail = available.map(a => inv[a]);
+
+    let canonAction;
+    if (training && Math.random() < this.epsilon) {
+      canonAction = canonAvail[Math.floor(Math.random() * canonAvail.length)];
+    } else {
+      const q = this.getQ(state);
+      let bestIdx = 0, bestQ = -Infinity;
+      for (let i = 0; i < canonAvail.length; i++) {
+        if (q[canonAvail[i]] > bestQ) { bestQ = q[canonAvail[i]]; bestIdx = i; }
+      }
+      canonAction = canonAvail[bestIdx];
+    }
+    this._lastCanon = { state, action: canonAction };
+    return SYMMETRIES[transformIdx][canonAction];
+  }
+
+  getLastCanon() { return this._lastCanon; }
+
+  updateMoves(history, finalReward) {
+    let reward = finalReward;
+    for (let i = history.length - 1; i >= 0; i--) {
+      const { state, action } = history[i];
+      const q = this.getQ(state);
+      q[action] += this.alpha * (reward - q[action]);
+      reward = REWARDS.step + this.gamma * reward;
+    }
+  }
+
+  decayEpsilon() { this.epsilon = Math.max(this.epsilonMin, this.epsilon * this.epsilonDecay); }
+  stateCount() { return Object.keys(this.qTable).length; }
+
+  getQForBoard(board) {
+    const { state, transformIdx } = canonicalize(board);
+    const q = this.getQ(state);
+    const inv = SYMMETRIES_INV[transformIdx];
+    const result = new Array(9);
+    for (let i = 0; i < 9; i++) result[i] = q[inv[i]];
+    return result;
+  }
+
+  getOpeningPreference() {
+    const qVals = this.getQForBoard(Array(9).fill(null));
+    const labels = ['좌상','상','우상','좌','중앙','우','좌하','하','우하'];
+    return qVals.map((v, i) => ({ i, v, label: labels[i] })).sort((a, b) => b.v - a.v);
+  }
+
+  toJSON() { return { qTable: this.qTable, alpha: this.alpha, gamma: this.gamma, epsilon: this.epsilon, epsilonMin: this.epsilonMin, epsilonDecay: this.epsilonDecay }; }
+
+  loadFrom(data) {
+    this.qTable = data.qTable || {};
+    this.alpha = data.alpha ?? 0.3; this.gamma = data.gamma ?? 0.9;
+    this.epsilon = data.epsilon ?? 1.0; this.epsilonMin = data.epsilonMin ?? 0.01;
+    this.epsilonDecay = data.epsilonDecay ?? 0.9995;
+  }
+
+  reset() { this.qTable = {}; this.epsilon = 1.0; }
+}
+
+// ============================================
+// [5] 게임 로직
+// ============================================
+const getAvailable = (board) => board.map((v, i) => v === null ? i : -1).filter(i => i >= 0);
+
+function checkWinner(board) {
+  for (const [a, b, c] of WIN_LINES) {
+    if (board[a] && board[a] === board[b] && board[b] === board[c]) return board[a];
+  }
+  if (board.every(c => c !== null)) return 'Draw';
+  return null;
+}
+
+function getWinLine(board) {
+  for (const [a, b, c] of WIN_LINES) {
+    if (board[a] && board[a] === board[b] && board[b] === board[c]) return [a, b, c];
+  }
+  return null;
+}
+
+// ============================================
+// [6] 학습 함수
+// ============================================
+function trainEpisode(agentX, agentO, mode = 'selfplay') {
+  const board = Array(9).fill(null);
+  const histX = [], histO = [];
+  let turn = 'X';
+
+  while (true) {
+    const available = getAvailable(board);
+    if (available.length === 0) {
+      if (mode !== 'solo-o') agentX.updateMoves(histX, REWARDS.draw);
+      if (mode !== 'solo-x') agentO.updateMoves(histO, REWARDS.draw);
+      return 'Draw';
+    }
+
+    let action;
+    if (turn === 'X') {
+      if (mode === 'solo-o') { action = available[Math.floor(Math.random() * available.length)]; }
+      else { action = agentX.chooseAction(board, available, true); histX.push({ ...agentX.getLastCanon() }); }
+    } else {
+      if (mode === 'solo-x') { action = available[Math.floor(Math.random() * available.length)]; }
+      else { action = agentO.chooseAction(board, available, true); histO.push({ ...agentO.getLastCanon() }); }
+    }
+
+    board[action] = turn;
+    const winner = checkWinner(board);
+
+    if (winner === 'X') {
+      if (mode !== 'solo-o') agentX.updateMoves(histX, REWARDS.win);
+      if (mode !== 'solo-x') agentO.updateMoves(histO, REWARDS.lose);
+      return 'X';
+    }
+    if (winner === 'O') {
+      if (mode !== 'solo-o') agentX.updateMoves(histX, REWARDS.lose);
+      if (mode !== 'solo-x') agentO.updateMoves(histO, REWARDS.win);
+      return 'O';
+    }
+    if (winner === 'Draw') {
+      if (mode !== 'solo-o') agentX.updateMoves(histX, REWARDS.draw);
+      if (mode !== 'solo-x') agentO.updateMoves(histO, REWARDS.draw);
+      return 'Draw';
+    }
+    turn = turn === 'X' ? 'O' : 'X';
+  }
+}
+
+function trainBatch(agentX, agentO, mode, batchSize) {
+  let xWins = 0, oWins = 0, draws = 0;
+  for (let i = 0; i < batchSize; i++) {
+    const r = trainEpisode(agentX, agentO, mode);
+    if (r === 'X') xWins++; else if (r === 'O') oWins++; else draws++;
+  }
+  if (mode !== 'solo-o') agentX.decayEpsilon();
+  if (mode !== 'solo-x') agentO.decayEpsilon();
+  return { xWins, oWins, draws, total: batchSize };
+}
+
+function testAgentStrength(agent, mark, numGames = 200) {
+  let wins = 0, draws = 0;
+  for (let g = 0; g < numGames; g++) {
+    const board = Array(9).fill(null);
+    let turn = 'X';
+    while (true) {
+      const available = getAvailable(board);
+      if (available.length === 0) { draws++; break; }
+      let action;
+      if (turn === mark) { action = agent.chooseAction(board, available, false); }
+      else { action = available[Math.floor(Math.random() * available.length)]; }
+      board[action] = turn;
+      const w = checkWinner(board);
+      if (w === mark) { wins++; break; } if (w === 'Draw') { draws++; break; } if (w) break;
+      turn = turn === 'X' ? 'O' : 'X';
+    }
+  }
+  return Math.round((wins + draws * 0.5) / numGames * 100);
+}
+
+// ============================================
+// [7] 유틸리티
+// ============================================
+const getGrade = (score) => {
+  if (score >= 95) return { grade: 'S', color: '#f39c12', desc: '완벽!' };
+  if (score >= 85) return { grade: 'A', color: '#27ae60', desc: '훌륭함' };
+  if (score >= 75) return { grade: 'B', color: '#2980b9', desc: '좋음' };
+  if (score >= 60) return { grade: 'C', color: '#f1c40f', desc: '보통' };
+  if (score >= 40) return { grade: 'D', color: '#e67e22', desc: '부족' };
+  return { grade: 'F', color: '#e74c3c', desc: '학습 필요' };
+};
+
+const avg = (arr, n = 50) => arr.length ? arr.slice(-n).reduce((a, b) => a + b, 0) / Math.min(arr.length, n) : 0;
+
+const generateReport = (agentX, agentO, stats) => {
+  const { gen, winRates, trainMode } = stats;
+  const xS = testAgentStrength(agentX, 'X', 100), oS = testAgentStrength(agentO, 'O', 100);
+  const gX = getGrade(xS), gO = getGrade(oS);
+  const now = new Date();
+  const pX = agentX.getOpeningPreference(), pO = agentO.getOpeningPreference();
+  return `# 🤖 RL 틱택토 학습 결과 보고서\n\n**생성일시:** ${now.toLocaleDateString('ko-KR')} ${now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}\n\n---\n\n## 📊 학습 개요\n\n| 항목 | 값 |\n|------|-----|\n| 총 에피소드 | ${gen.toLocaleString()}판 |\n| 학습 방식 | ${trainMode === 'selfplay' ? '자기대국' : trainMode === 'solo-x' ? 'X 단독' : 'O 단독'} |\n| 대칭성 정규화 | ✅ (8가지 변환) |\n| X Q-상태 | ${agentX.stateCount().toLocaleString()}개 |\n| O Q-상태 | ${agentO.stateCount().toLocaleString()}개 |\n\n## 🏆 성과\n\n| 지표 | X (🔵) | O (🔴) |\n|------|:----:|:----:|\n| 강도 | ${xS}/100 | ${oS}/100 |\n| 등급 | ${gX.grade} | ${gO.grade} |\n| ε | ${(agentX.epsilon*100).toFixed(1)}% | ${(agentO.epsilon*100).toFixed(1)}% |\n| 선호 첫수 | ${pX?.[0]?.label||'?'} | ${pO?.[0]?.label||'?'} |\n\n## 📈 최근 승률 (50판)\n\n| 결과 | 비율 |\n|------|------|\n| X 승리 | ${avg(winRates.x).toFixed(1)}% |\n| O 승리 | ${avg(winRates.o).toFixed(1)}% |\n| 무승부 | ${avg(winRates.d).toFixed(1)}% |\n`;
+};
+
+// ============================================
+// [8] UI 컴포넌트
+// ============================================
+const TooltipButton = ({ onClick, icon, label, tooltip, color, disabled = false, size = 'medium' }) => {
+  const [show, setShow] = useState(false);
+  const T = useTheme();
+  const sizes = { small: { padding: '6px 10px', fontSize: '0.7rem' }, medium: { padding: '10px 14px', fontSize: '0.8rem' } };
+  const s = sizes[size] || sizes.medium;
+  return (
+    <div style={{ position: 'relative', width: '100%' }}>
+      <button onClick={onClick} disabled={disabled} onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}
+        style={{ width: '100%', padding: s.padding, fontSize: s.fontSize, background: color, border: 'none', borderRadius: '6px', color: 'white', fontWeight: 'bold', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.5 : 1, transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}
+        onMouseOver={e => { if (!disabled) { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)'; }}}
+        onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)'; }}
+      ><span>{icon}</span><span>{label}</span></button>
+      {show && tooltip && (
+        <div style={{ position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '8px', padding: '8px 12px', background: T.tooltipBg, border: `1px solid ${T.borderMed}`, borderRadius: '6px', fontSize: '0.7rem', color: '#fff', whiteSpace: 'nowrap', zIndex: 100, boxShadow: '0 4px 12px rgba(0,0,0,0.4)', pointerEvents: 'none' }}>
+          {tooltip}
+          <div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '6px solid transparent', borderRight: '6px solid transparent', borderTop: `6px solid ${T.tooltipBg}` }} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const IconButton = ({ onClick, icon, tooltip, color }) => {
+  const [show, setShow] = useState(false);
+  const T = useTheme();
+  return (
+    <div style={{ position: 'relative' }}>
+      <button onClick={onClick} onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}
+        style={{ width: '100%', padding: '8px', background: `${color}18`, border: `1px solid ${color}40`, borderRadius: '5px', color, cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s' }}
+        onMouseOver={e => { e.currentTarget.style.background = `${color}30`; }}
+        onMouseOut={e => { e.currentTarget.style.background = `${color}18`; }}
+      >{icon}</button>
+      {show && tooltip && (
+        <div style={{ position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '6px', padding: '6px 10px', background: T.tooltipBg, border: `1px solid ${T.borderMed}`, borderRadius: '4px', fontSize: '0.65rem', color: '#fff', whiteSpace: 'nowrap', zIndex: 100, pointerEvents: 'none' }}>{tooltip}</div>
+      )}
+    </div>
+  );
+};
+
+const Graph = ({ data, color, height = 60, title, goodDirection = 'up' }) => {
+  const T = useTheme();
+  if (data.length < 2) return <div style={{ height, opacity: 0.3, fontSize: '0.7rem', color: T.textDim }}>데이터 수집 중...</div>;
+  const max = Math.max(...data), min = Math.min(...data), range = max - min || 1;
+  const a = data.reduce((s, v) => s + v, 0) / data.length;
+  const n = data.length, xM = (n - 1) / 2;
+  let num = 0, den = 0;
+  for (let i = 0; i < n; i++) { num += (i - xM) * (data[i] - a); den += (i - xM) ** 2; }
+  const slope = den ? num / den : 0;
+  const isGood = (goodDirection === 'up' && slope > 0.1) || (goodDirection === 'down' && slope < -0.1);
+  const isBad = (goodDirection === 'up' && slope < -0.1) || (goodDirection === 'down' && slope > 0.1);
+  const status = data.length < 30 ? { t: '수집중', c: '#888', i: '⏳' } : isGood ? { t: '좋음!', c: '#27ae60', i: '✅' } : isBad ? { t: '주의', c: '#e74c3c', i: '⚠️' } : { t: '안정', c: '#f1c40f', i: '➡️' };
+
+  return (
+    <div style={{ marginBottom: '8px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', marginBottom: '2px', color: T.text }}>
+        <span style={{ fontWeight: 'bold' }}>{title}</span>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          <span style={{ color: status.c, background: `${status.c}18`, padding: '1px 4px', borderRadius: '3px', fontSize: '0.55rem' }}>{status.i} {status.t}</span>
+          <span style={{ color: T.textDim }}>avg:{a.toFixed(1)}</span>
+        </div>
+      </div>
+      <div style={{ height, background: T.graphBg, borderRadius: '4px', padding: '2px', display: 'flex', alignItems: 'flex-end', gap: '1px' }}>
+        {data.slice(-60).map((v, i) => (
+          <div key={i} style={{ flex: 1, height: `${Math.max(2, ((v - min) / range) * 100)}%`, background: color, borderRadius: '1px 1px 0 0', opacity: 0.5 + (i / 60) * 0.5 }} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ============================================
+// [9] 보드 컴포넌트
+// ============================================
+const BoardDisplay = ({ board, cellSize = 50, winLine = null, qValues = null, onCellClick = null, highlight = null }) => {
+  const T = useTheme();
+  const availableQ = qValues ? qValues.map((v, i) => board[i] === null ? v : null).filter(v => v !== null) : [];
+  const maxQ = availableQ.length > 0 ? Math.max(...availableQ) : 0;
+  const minQ = availableQ.length > 0 ? Math.min(...availableQ) : 0;
+
+  const getQColor = (val) => {
+    if (maxQ === minQ) return T.panel;
+    const norm = (val - minQ) / (maxQ - minQ);
+    return `rgba(${Math.round(220 * (1 - norm))}, ${Math.round(180 * norm)}, 70, ${0.15 + norm * 0.35})`;
+  };
+
+  return (
+    <div style={{ display: 'inline-block', background: T.panelDeep, padding: cellSize > 30 ? '10px' : '5px', borderRadius: '10px', border: `1px solid ${T.borderLight}`, transition: 'background 0.3s' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(3, ${cellSize}px)`, gap: cellSize > 30 ? '4px' : '2px' }}>
+        {board.map((cell, i) => {
+          const isWin = winLine && winLine.includes(i);
+          const isHL = highlight === i;
+          const canClick = onCellClick && cell === null;
+          const qVal = qValues && cell === null ? qValues[i] : null;
+          const qBg = qVal !== null ? getQColor(qVal) : 'transparent';
+
+          return (
+            <div key={i} onClick={() => canClick && onCellClick(i)}
+              style={{
+                width: cellSize, height: cellSize, display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center', borderRadius: cellSize > 30 ? '8px' : '4px',
+                background: isWin ? 'rgba(243,156,18,0.25)' : isHL ? `${T.inputAccent}25` : cell === 'X' ? `${MARK_COLORS.X}18` : cell === 'O' ? `${MARK_COLORS.O}18` : qBg || T.cell,
+                border: isWin ? '2px solid #f39c12' : isHL ? `2px solid ${T.inputAccent}` : `1px solid ${T.border}`,
+                cursor: canClick ? 'pointer' : 'default', transition: 'all 0.15s', position: 'relative',
+                boxShadow: isWin ? '0 0 10px rgba(243,156,18,0.35)' : 'none'
+              }}
+              onMouseOver={e => { if (canClick) e.currentTarget.style.background = T.cellHover; }}
+              onMouseOut={e => { if (canClick) e.currentTarget.style.background = qBg || T.cell; }}
+            >
+              {cell && <span style={{ fontSize: cellSize * 0.5, fontWeight: 900, color: MARK_COLORS[cell], textShadow: isWin ? `0 0 8px ${MARK_COLORS[cell]}` : 'none' }}>{cell}</span>}
+              {qVal !== null && cellSize > 35 && <span style={{ fontSize: '0.55rem', opacity: 0.75, color: qVal >= 0 ? '#27ae60' : '#c0392b', position: cell ? 'absolute' : 'relative', bottom: cell ? '2px' : 'auto' }}>{qVal.toFixed(2)}</span>}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+// ============================================
+// [10] Q-값 히트맵
+// ============================================
+const QHeatmap = ({ agent, board, title = '🧠 AI 판단 근거' }) => {
+  const T = useTheme();
+  const q = agent.getQForBoard(board);
+  const available = getAvailable(board);
+  const qAvail = available.map(i => q[i]);
+  const maxQ = qAvail.length ? Math.max(...qAvail) : 0;
+  const minQ = qAvail.length ? Math.min(...qAvail) : 0;
+  const bestAction = available.length > 0 ? available.reduce((b, i) => q[i] > q[b] ? i : b, available[0]) : -1;
+
+  return (
+    <div style={{ background: T.panel, borderRadius: '8px', padding: '10px' }}>
+      <div style={{ fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '8px', color: T.text }}>{title}</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '3px' }}>
+        {board.map((cell, i) => {
+          const isBest = i === bestAction;
+          const norm = (maxQ !== minQ && cell === null) ? (q[i] - minQ) / (maxQ - minQ) : 0.5;
+          const bg = cell !== null ? `${MARK_COLORS[cell]}22` :
+            `rgba(${Math.round(220 * (1 - norm))}, ${Math.round(180 * norm)}, 70, ${0.15 + norm * 0.35})`;
+
+          return (
+            <div key={i} style={{
+              padding: '6px', textAlign: 'center', borderRadius: '4px', background: bg,
+              border: isBest ? '2px solid #f39c12' : `1px solid ${T.border}`,
+              boxShadow: isBest ? '0 0 6px rgba(243,156,18,0.3)' : 'none'
+            }}>
+              {cell ? (
+                <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: MARK_COLORS[cell] }}>{cell}</div>
+              ) : (
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: q[i] >= 0 ? '#27ae60' : '#c0392b' }}>{q[i].toFixed(2)}</div>
+                  {isBest && <div style={{ fontSize: '0.5rem', color: '#f39c12' }}>⭐최선</div>}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ marginTop: '6px', fontSize: '0.6rem', color: T.textDim, display: 'flex', justifyContent: 'space-between' }}>
+        <span>🟢 높음 = 유리</span><span>🔴 낮음 = 불리</span>
+      </div>
+    </div>
+  );
+};
+
+// ============================================
+// [11] 모달
+// ============================================
+const Modal = ({ children, onClose }) => {
+  const T = useTheme();
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: T.modalBg, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px', overflow: 'auto' }} onClick={onClose}>
+      <div style={{ background: T.modalPanel, borderRadius: '16px', padding: '24px', maxWidth: '650px', width: '100%', maxHeight: '90vh', overflow: 'auto', border: `1px solid ${T.inputAccent}40`, boxShadow: `0 0 30px ${T.inputAccent}20`, color: T.text }} onClick={e => e.stopPropagation()}>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+const HelpModal = ({ onClose }) => {
+  const T = useTheme();
+  const sectionStyle = (c) => ({ background: `${c}10`, padding: '12px', borderRadius: '8px', fontSize: '0.85rem', border: `1px solid ${c}30`, lineHeight: 1.7, color: T.text });
+  return (
+    <Modal onClose={onClose}>
+      <h2 style={{ margin: '0 0 20px', background: 'linear-gradient(90deg, #2980b9, #c0392b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>📖 RL 틱택토 사용 가이드</h2>
+
+      <section style={{ marginBottom: '16px' }}>
+        <h3 style={{ color: T.inputAccent, fontSize: '0.95rem', marginBottom: '8px' }}>🧠 Q-Learning이란?</h3>
+        <div style={sectionStyle(T.inputAccent)}>
+          AI가 <strong>시행착오</strong>를 통해 스스로 게임을 배우는 방법입니다.
+          <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
+            <li>각 상황에서 각 수의 <strong>가치(Q값)</strong>를 기록합니다</li>
+            <li>이기면 <strong>+보상</strong>, 지면 <strong>-패널티</strong>로 Q값을 갱신합니다</li>
+            <li>점점 더 좋은 수를 선택하게 됩니다!</li>
+          </ul>
+        </div>
+      </section>
+
+      <section style={{ marginBottom: '16px' }}>
+        <h3 style={{ color: '#27ae60', fontSize: '0.95rem', marginBottom: '8px' }}>🔄 대칭성 정규화</h3>
+        <div style={sectionStyle('#27ae60')}>
+          이 시뮬레이터는 <strong>보드의 회전·반사 대칭</strong>을 활용합니다.
+          <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
+            <li>같은 모양의 보드를 <strong>하나의 상태로 통합</strong>합니다</li>
+            <li>8가지 변환으로 학습 효율 <strong>최대 8배 향상</strong></li>
+          </ul>
+        </div>
+      </section>
+
+      <section style={{ marginBottom: '16px' }}>
+        <h3 style={{ color: '#f1c40f', fontSize: '0.95rem', marginBottom: '8px' }}>🎮 4가지 모드</h3>
+        <div style={sectionStyle('#e67e22')}>
+          <ol style={{ paddingLeft: '20px', margin: 0 }}>
+            <li><strong>자기대국</strong>: X↔O 상호 학습</li>
+            <li><strong>단독 학습</strong>: 한쪽만 학습, 상대는 랜덤</li>
+            <li><strong>AI 대전</strong>: 두 AI의 대국 관전</li>
+            <li><strong>사람 대전</strong>: AI와 직접 대국</li>
+          </ol>
+        </div>
+      </section>
+
+      <section style={{ marginBottom: '20px' }}>
+        <h3 style={{ color: '#9b59b6', fontSize: '0.95rem', marginBottom: '8px' }}>💡 팁</h3>
+        <div style={sectionStyle('#9b59b6')}>
+          <ul style={{ paddingLeft: '20px', margin: 0 }}>
+            <li><strong>5,000판</strong> 이상이면 효과 시작</li>
+            <li><strong>20,000판</strong> 이상이면 최적 근접</li>
+            <li>속도 <strong>1ms</strong>로 빠르게 학습</li>
+            <li>최적 플레이 시 항상 <strong>무승부</strong>!</li>
+          </ul>
+        </div>
+      </section>
+
+      <button onClick={onClose} style={{ width: '100%', padding: '12px', background: 'linear-gradient(90deg, #2980b9, #c0392b)', border: 'none', borderRadius: '8px', color: '#fff', fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem' }}>확인</button>
+    </Modal>
+  );
+};
+
+const ResetConfirmModal = ({ gen, onConfirm, onCancel }) => {
+  const T = useTheme();
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: T.modalBg, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+      <div style={{ background: T.modalPanel, borderRadius: '16px', padding: '28px', border: '2px solid #e74c3c', boxShadow: '0 0 40px rgba(231,76,60,0.3)', textAlign: 'center', minWidth: '300px', maxWidth: '400px', color: T.text }}>
+        <div style={{ fontSize: '3rem', marginBottom: '10px' }}>⚠️</div>
+        <h2 style={{ margin: '0 0 10px', color: '#e74c3c', fontSize: '1.2rem' }}>학습 초기화</h2>
+        <p style={{ margin: '0 0 20px', color: T.textSub, fontSize: '0.9rem', lineHeight: 1.5 }}>
+          정말로 초기화하시겠습니까?<br/><strong style={{ color: '#e74c3c' }}>{gen.toLocaleString()}판</strong>의 학습 데이터가 삭제됩니다.
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <button onClick={onConfirm} style={{ padding: '12px', background: '#e74c3c', border: 'none', borderRadius: '8px', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>🗑️ 초기화 실행</button>
+          <button onClick={onCancel} style={{ padding: '12px', background: T.cancelBtn, border: `1px solid ${T.cancelBorder}`, borderRadius: '8px', color: T.text, fontWeight: 'bold', cursor: 'pointer' }}>← 취소</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ============================================
+// [12] 학습 인사이트
+// ============================================
+const LearningInsights = ({ agentX, agentO, gen }) => {
+  const T = useTheme();
+  const insights = useMemo(() => {
+    if (gen < 100) return null;
+    const prefX = agentX.getOpeningPreference();
+    const categories = [
+      { label: '중앙', indices: [4], icon: '🎯' },
+      { label: '모서리', indices: [0, 2, 6, 8], icon: '📐' },
+      { label: '변', indices: [1, 3, 5, 7], icon: '➖' },
+    ];
+    const xPref = categories.map(c => ({ ...c, val: c.indices.reduce((s, i) => s + (prefX.find(p => p.i === i)?.v || 0), 0) / c.indices.length })).sort((a, b) => b.val - a.val);
+    return { xPref, xStates: agentX.stateCount(), oStates: agentO.stateCount() };
+  }, [agentX, agentO, gen]);
+
+  if (!insights) return null;
+
+  return (
+    <div style={{ background: T.panelSolid, borderRadius: '6px', padding: '8px', marginTop: '8px' }}>
+      <div style={{ fontSize: '0.65rem', fontWeight: 'bold', marginBottom: '6px', color: T.text }}>🧠 X의 첫수 선호도</div>
+      {insights.xPref.map((item, i) => (
+        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+          <span style={{ fontSize: '0.6rem', width: '40px', color: T.textSub }}>{item.icon} {item.label}</span>
+          <div style={{ flex: 1, height: '5px', background: T.barTrack, borderRadius: '3px' }}>
+            <div style={{ width: `${Math.max(0, Math.min(100, (item.val + 1) * 50))}%`, height: '100%', background: MARK_COLORS.X, borderRadius: '3px', transition: 'width 0.3s' }} />
+          </div>
+          <span style={{ fontSize: '0.5rem', color: T.textDim, width: '30px', textAlign: 'right' }}>{item.val.toFixed(2)}</span>
+        </div>
+      ))}
+      <div style={{ fontSize: '0.5rem', color: T.textDim, marginTop: '4px' }}>Q-상태: X={insights.xStates} | O={insights.oStates}</div>
+    </div>
+  );
+};
+
+// ============================================
+// [13] 메인 컴포넌트
+// ============================================
+function TicTacToeRL() {
+  const [isDark, setIsDark] = useState(() => {
+    try { return localStorage.getItem('rl-ttt-theme') !== 'light'; } catch { return true; }
+  });
+  const T = isDark ? THEMES.dark : THEMES.light;
+
+  useEffect(() => {
+    document.body.style.background = isDark ? '#0d0d1a' : '#f0f2f5';
+    document.body.style.color = T.text;
+    try { localStorage.setItem('rl-ttt-theme', isDark ? 'dark' : 'light'); } catch {}
+  }, [isDark, T]);
+
+  const [agentX] = useState(() => new QAgent());
+  const [agentO] = useState(() => new QAgent());
+
+  const [gen, setGen] = useState(0);
+  const [mode, setMode] = useState('idle');
+  const [speed, setSpeed] = useState(1);
+  const [winRatesX, setWinRatesX] = useState([]);
+  const [winRatesO, setWinRatesO] = useState([]);
+  const [winRatesD, setWinRatesD] = useState([]);
+  const [epsilonHistory, setEpsilonHistory] = useState([]);
+  const [strengthHistory, setStrengthHistory] = useState([]);
+  const [stateCountHistory, setStateCountHistory] = useState([]);
+
+  const [gameBoard, setGameBoard] = useState(Array(9).fill(null));
+  const [gameTurn, setGameTurn] = useState('X');
+  const [gameResult, setGameResult] = useState(null);
+  const [gameWinLine, setGameWinLine] = useState(null);
+  const [lastAiMove, setLastAiMove] = useState(null);
+  const [humanMark, setHumanMark] = useState('X');
+  const [humanRecord, setHumanRecord] = useState({ w: 0, l: 0, d: 0 });
+  const [aiThinking, setAiThinking] = useState(false);
+
+  const [showHelp, setShowHelp] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [saveStatus, setSaveStatus] = useState('');
+  const [syncParams, setSyncParams] = useState(true);
+  const [trainMode, setTrainMode] = useState('selfplay');
+  const [paramTick, setParamTick] = useState(0);
+
+  const loopRef = useRef(null);
+  const startTime = useRef(Date.now());
+  const batchAccum = useRef(0);
+  const fileInputRef = useRef(null);
+
+  const forceUpdate = () => setParamTick(t => t + 1);
+
+  // 학습 루프
+  useEffect(() => {
+    if (!['selfplay', 'solo-x', 'solo-o'].includes(mode)) return;
+    loopRef.current = setInterval(() => {
+      const batchSize = speed <= 1 ? 500 : speed <= 5 ? 200 : speed <= 20 ? 50 : 10;
+      const result = trainBatch(agentX, agentO, mode, batchSize);
+      setGen(g => g + result.total);
+      setWinRatesX(p => [...p.slice(-500), (result.xWins / result.total) * 100]);
+      setWinRatesO(p => [...p.slice(-500), (result.oWins / result.total) * 100]);
+      setWinRatesD(p => [...p.slice(-500), (result.draws / result.total) * 100]);
+      setEpsilonHistory(p => [...p.slice(-500), agentX.epsilon * 100]);
+      setStateCountHistory(p => [...p.slice(-500), agentX.stateCount()]);
+      batchAccum.current += result.total;
+      if (batchAccum.current >= 2000) {
+        batchAccum.current = 0;
+        setStrengthHistory(p => [...p.slice(-200), testAgentStrength(agentX, 'X', 100)]);
+      }
+    }, Math.max(1, speed));
+    return () => { if (loopRef.current) clearInterval(loopRef.current); };
+  }, [mode, speed, agentX, agentO]);
+
+  // AI 대전 루프
+  useEffect(() => {
+    if (mode !== 'ai-battle') return;
+    const playStep = () => {
+      setGameBoard(prev => {
+        const board = [...prev];
+        if (checkWinner(board)) return prev;
+        const available = getAvailable(board);
+        if (available.length === 0) return prev;
+        const turn = board.filter(c => c !== null).length % 2 === 0 ? 'X' : 'O';
+        const action = (turn === 'X' ? agentX : agentO).chooseAction(board, available, false);
+        board[action] = turn;
+        setLastAiMove(action); setGameTurn(turn === 'X' ? 'O' : 'X');
+        const result = checkWinner(board);
+        if (result) {
+          setGameResult(result); setGameWinLine(getWinLine(board));
+          setTimeout(() => { setGameBoard(Array(9).fill(null)); setGameResult(null); setGameWinLine(null); setGameTurn('X'); setLastAiMove(null); }, 2000);
+        }
+        return board;
+      });
+    };
+    const interval = setInterval(playStep, Math.max(300, speed * 100));
+    return () => clearInterval(interval);
+  }, [mode, speed, agentX, agentO]);
+
+  // 사람 대전
+  const humanMove = useCallback((idx) => {
+    if (mode !== 'human-play' || gameResult || gameBoard[idx] !== null || gameTurn !== humanMark) return;
+    const newBoard = [...gameBoard]; newBoard[idx] = humanMark;
+    setGameBoard(newBoard); setLastAiMove(null);
+    const result = checkWinner(newBoard);
+    if (result) {
+      setGameResult(result); setGameWinLine(getWinLine(newBoard));
+      setHumanRecord(r => result === humanMark ? { ...r, w: r.w + 1 } : result === 'Draw' ? { ...r, d: r.d + 1 } : { ...r, l: r.l + 1 });
+      return;
+    }
+    const aiMark = humanMark === 'X' ? 'O' : 'X';
+    setGameTurn(aiMark); setAiThinking(true);
+    setTimeout(() => {
+      const available = getAvailable(newBoard);
+      if (available.length === 0) return;
+      const action = (aiMark === 'X' ? agentX : agentO).chooseAction(newBoard, available, false);
+      const afterAi = [...newBoard]; afterAi[action] = aiMark;
+      setGameBoard(afterAi); setLastAiMove(action); setGameTurn(humanMark); setAiThinking(false);
+      const r2 = checkWinner(afterAi);
+      if (r2) {
+        setGameResult(r2); setGameWinLine(getWinLine(afterAi));
+        setHumanRecord(rec => r2 === humanMark ? { ...rec, w: rec.w + 1 } : r2 === 'Draw' ? { ...rec, d: rec.d + 1 } : { ...rec, l: rec.l + 1 });
+      }
+    }, 400);
+  }, [mode, gameBoard, gameTurn, gameResult, humanMark, agentX, agentO]);
+
+  // AI 선공
+  useEffect(() => {
+    if (mode === 'human-play' && humanMark === 'O' && gameTurn === 'X' && !gameResult && gameBoard.every(c => c === null)) {
+      setAiThinking(true);
+      setTimeout(() => {
+        const action = agentX.chooseAction(gameBoard, getAvailable(gameBoard), false);
+        const nb = [...gameBoard]; nb[action] = 'X';
+        setGameBoard(nb); setLastAiMove(action); setGameTurn('O'); setAiThinking(false);
+      }, 500);
+    }
+  }, [mode, humanMark, gameTurn, gameResult, gameBoard, agentX]);
+
+  // 저장/불러오기
+  const getSaveData = useCallback(() => ({
+    version: 2, timestamp: Date.now(), agentX: agentX.toJSON(), agentO: agentO.toJSON(),
+    stats: { gen, winRatesX: winRatesX.slice(-200), winRatesO: winRatesO.slice(-200), winRatesD: winRatesD.slice(-200), epsilonHistory: epsilonHistory.slice(-200), strengthHistory: strengthHistory.slice(-100), stateCountHistory: stateCountHistory.slice(-200) }
+  }), [agentX, agentO, gen, winRatesX, winRatesO, winRatesD, epsilonHistory, strengthHistory, stateCountHistory]);
+
+  const loadSaveData = useCallback((data) => {
+    if (!data || ![1, 2].includes(data.version)) return false;
+    agentX.loadFrom(data.agentX); agentO.loadFrom(data.agentO);
+    setGen(data.stats.gen); setWinRatesX(data.stats.winRatesX || []); setWinRatesO(data.stats.winRatesO || []);
+    setWinRatesD(data.stats.winRatesD || []); setEpsilonHistory(data.stats.epsilonHistory || []);
+    setStrengthHistory(data.stats.strengthHistory || []); setStateCountHistory(data.stats.stateCountHistory || []);
+    return true;
+  }, [agentX, agentO]);
+
+  const flash = (icon) => { setSaveStatus(icon); setTimeout(() => setSaveStatus(''), 2000); };
+  const autoSave = useCallback(() => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(getSaveData())); flash('✅'); } catch {} }, [getSaveData]);
+  const autoLoad = useCallback(() => { try { const d = localStorage.getItem(STORAGE_KEY); if (d && loadSaveData(JSON.parse(d))) { flash('📂'); return true; } } catch {} return false; }, [loadSaveData]);
+  const exportFile = useCallback(() => { const b = new Blob([JSON.stringify(getSaveData())], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `rl-tictactoe-${gen}games.json`; a.click(); flash('📤'); }, [getSaveData, gen]);
+  const importFile = useCallback((e) => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ev => { try { if (loadSaveData(JSON.parse(ev.target.result))) flash('📥'); } catch {} }; r.readAsText(f); e.target.value = ''; }, [loadSaveData]);
+  const downloadReport = useCallback(() => { const r = generateReport(agentX, agentO, { gen, winRates: { x: winRatesX, o: winRatesO, d: winRatesD }, trainMode }); const b = new Blob([r], { type: 'text/markdown;charset=utf-8' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `RL틱택토_보고서_${gen}games.md`; a.click(); flash('📄'); }, [agentX, agentO, gen, winRatesX, winRatesO, winRatesD, trainMode]);
+
+  const resetAll = useCallback(() => {
+    setMode('idle'); agentX.reset(); agentO.reset();
+    setGen(0); setWinRatesX([]); setWinRatesO([]); setWinRatesD([]);
+    setEpsilonHistory([]); setStrengthHistory([]); setStateCountHistory([]);
+    setGameBoard(Array(9).fill(null)); setGameResult(null); setGameWinLine(null);
+    setLastAiMove(null); setGameTurn('X'); startTime.current = Date.now();
+    try { localStorage.removeItem(STORAGE_KEY); } catch {} setShowResetConfirm(false); flash('🗑️');
+  }, [agentX, agentO]);
+
+  useEffect(() => { if (!autoLoad()) setShowHelp(true); }, []);
+  useEffect(() => { if (gen > 0 && gen % 5000 === 0) autoSave(); }, [gen, autoSave]);
+
+  const updateParam = useCallback((agent, param, value) => {
+    agent[param] = value;
+    if (syncParams) { (agent === agentX ? agentO : agentX)[param] = value; }
+  }, [syncParams, agentX, agentO]);
+
+  // 파생 값
+  const stage = STAGES.find(s => gen >= s.min && gen < s.max) || STAGES[STAGES.length - 1];
+  const gps = gen / ((Date.now() - startTime.current) / 1000 || 1);
+  const isTraining = ['selfplay', 'solo-x', 'solo-o'].includes(mode);
+  const avgStrength = strengthHistory.length > 0 ? avg(strengthHistory, 10) : 0;
+  const grade = getGrade(avgStrength);
+
+  const startNewGame = useCallback(() => { setGameBoard(Array(9).fill(null)); setGameResult(null); setGameWinLine(null); setLastAiMove(null); setGameTurn('X'); setAiThinking(false); }, []);
+  const enterMode = useCallback((m) => { if (loopRef.current) clearInterval(loopRef.current); startNewGame(); setMode(m); if (['selfplay','solo-x','solo-o'].includes(m)) { setTrainMode(m); startTime.current = Date.now(); } }, [startNewGame]);
+
+  // ============================================
+  // 헤더 (공통)
+  // ============================================
+  const Header = ({ title, children }) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
+      <h1 style={{ fontSize: '1.2rem', background: 'linear-gradient(90deg, #2980b9, #c0392b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>{title}</h1>
+      <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+        <ThemeToggle isDark={isDark} onToggle={() => setIsDark(!isDark)} />
+        {children}
+      </div>
+    </div>
+  );
+
+  // 지표 카드
+  const MetricCard = ({ label, value, color, icon }) => (
+    <div style={{ background: `${color}12`, border: `1px solid ${color}30`, borderRadius: '5px', padding: '6px', textAlign: 'center' }}>
+      <div style={{ fontSize: '0.5rem', color: T.textDim }}>{icon} {label}</div>
+      <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color }}>{value}</div>
+    </div>
+  );
+
+  // ============================================
+  // 사람 대전 모드
+  // ============================================
+  if (mode === 'human-play') {
+    const aiMark = humanMark === 'X' ? 'O' : 'X';
+    const aiAgent = aiMark === 'X' ? agentX : agentO;
+    const qVals = aiAgent.getQForBoard(gameBoard);
+
+    return (
+      <ThemeContext.Provider value={T}>
+      <div style={{ minHeight: '100vh', background: T.bg, fontFamily: "'Segoe UI', sans-serif", color: T.text, padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', transition: 'all 0.4s' }}>
+        <input type="file" ref={fileInputRef} onChange={importFile} accept=".json" style={{ display: 'none' }} />
+        {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
+
+        <Header title="👤 사람 vs AI">
+          <TooltipButton onClick={() => enterMode('idle')} icon="📊" label="대시보드" tooltip="메인 화면" color="rgba(128,128,128,0.4)" size="small" />
+          <TooltipButton onClick={downloadReport} icon="📄" label="보고서" tooltip="학습 결과" color={`${T.inputAccent}90`} size="small" />
+        </Header>
+
+        <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <BoardDisplay board={gameBoard} cellSize={75} winLine={gameWinLine} onCellClick={humanMove} highlight={lastAiMove} qValues={!gameResult ? qVals : null} />
+            <div style={{ marginTop: '12px', textAlign: 'center' }}>
+              {gameResult ? (
+                <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: gameResult === humanMark ? '#27ae60' : gameResult === 'Draw' ? '#f1c40f' : '#e74c3c', marginBottom: '8px' }}>
+                  {gameResult === humanMark ? '🎉 승리!' : gameResult === 'Draw' ? '🤝 무승부!' : '😔 패배...'}
+                </div>
+              ) : (
+                <div style={{ fontSize: '0.85rem', marginBottom: '8px', color: aiThinking ? '#f1c40f' : gameTurn === humanMark ? '#27ae60' : T.textDim }}>
+                  {aiThinking ? '🤔 AI 생각 중...' : `${gameTurn === humanMark ? '🟢 당신' : '🔴 AI'}의 차례`}
+                </div>
+              )}
+              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                <TooltipButton onClick={startNewGame} icon="🔄" label="새 게임" tooltip="새 게임" color="rgba(39,174,96,0.6)" size="small" />
+                <TooltipButton onClick={() => { setHumanMark(humanMark === 'X' ? 'O' : 'X'); startNewGame(); }} icon="🔀" label={`${humanMark === 'X' ? 'O로' : 'X로'} 변경`} tooltip="선후공 변경" color="rgba(142,68,173,0.6)" size="small" />
+              </div>
+            </div>
+            <div style={{ marginTop: '12px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', width: '100%' }}>
+              {[{ l: '승리', v: humanRecord.w, c: '#27ae60' }, { l: '무승부', v: humanRecord.d, c: '#f1c40f' }, { l: '패배', v: humanRecord.l, c: '#e74c3c' }].map((m, i) => (
+                <MetricCard key={i} label={m.l} value={m.v} color={m.c} icon="" />
+              ))}
+            </div>
+          </div>
+
+          <div style={{ width: '240px' }}>
+            <div style={{ background: T.panelSolid, borderRadius: '8px', padding: '12px', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <span style={{ fontSize: '1.3rem' }}>{stage.icon}</span>
+                <div><div style={{ fontWeight: 'bold', color: stage.color, fontSize: '0.9rem' }}>{stage.name}</div>
+                <div style={{ fontSize: '0.65rem', color: T.textDim }}>#{gen.toLocaleString()}판</div></div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                <MetricCard label="강도" value={avgStrength.toFixed(0)} color={grade.color} icon="⭐" />
+                <MetricCard label="등급" value={grade.grade} color={grade.color} icon="🎖️" />
+                <MetricCard label={`ε(${aiMark})`} value={`${(aiAgent.epsilon * 100).toFixed(0)}%`} color="#f1c40f" icon="🎲" />
+                <MetricCard label="Q-상태" value={aiAgent.stateCount()} color="#8e44ad" icon="📚" />
+              </div>
+            </div>
+            <QHeatmap agent={aiAgent} board={gameBoard} title={`🧠 AI(${aiMark}) 판단 근거`} />
+          </div>
+        </div>
+      </div>
+      </ThemeContext.Provider>
+    );
+  }
+
+  // ============================================
+  // AI 대전 모드
+  // ============================================
+  if (mode === 'ai-battle') {
+    return (
+      <ThemeContext.Provider value={T}>
+      <div style={{ minHeight: '100vh', background: T.bg, fontFamily: "'Segoe UI', sans-serif", color: T.text, padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', transition: 'all 0.4s' }}>
+        {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
+        <Header title="⚔️ AI vs AI">
+          <TooltipButton onClick={() => enterMode('idle')} icon="📊" label="대시보드" tooltip="메인 화면" color="rgba(128,128,128,0.4)" size="small" />
+          <TooltipButton onClick={() => enterMode('human-play')} icon="👤" label="사람 대전" tooltip="AI와 대국" color="rgba(142,68,173,0.5)" size="small" />
+        </Header>
+        <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <BoardDisplay board={gameBoard} cellSize={70} winLine={gameWinLine} highlight={lastAiMove} />
+            <div style={{ marginTop: '10px', textAlign: 'center' }}>
+              {gameResult ? (
+                <div style={{ fontSize: '1rem', fontWeight: 'bold', color: gameResult === 'X' ? MARK_COLORS.X : gameResult === 'O' ? MARK_COLORS.O : '#f1c40f' }}>
+                  {gameResult === 'Draw' ? '🤝 무승부!' : `${gameResult === 'X' ? '🔵' : '🔴'} ${gameResult} 승리!`}
+                </div>
+              ) : (
+                <div style={{ fontSize: '0.85rem', color: MARK_COLORS[gameTurn] }}>{gameTurn === 'X' ? '🔵' : '🔴'} {gameTurn}의 차례</div>
+              )}
+            </div>
+            <div style={{ marginTop: '10px' }}>
+              <div style={{ fontSize: '0.65rem', color: T.textDim, marginBottom: '4px' }}>대국 속도</div>
+              <input type="range" min="1" max="20" value={speed} onChange={e => setSpeed(Number(e.target.value))} style={{ width: '200px', accentColor: T.inputAccent }} />
+            </div>
+          </div>
+          <div style={{ width: '240px' }}>
+            <div style={{ background: T.panelSolid, borderRadius: '8px', padding: '12px', marginBottom: '12px' }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '8px' }}>📊 에이전트 정보</div>
+              {[{ mark: 'X', agent: agentX, icon: '🔵' }, { mark: 'O', agent: agentO, icon: '🔴' }].map((a, idx) => (
+                <div key={idx} style={{ background: `${MARK_COLORS[a.mark]}12`, border: `1px solid ${MARK_COLORS[a.mark]}25`, borderRadius: '6px', padding: '8px', marginBottom: idx === 0 ? '6px' : 0 }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: MARK_COLORS[a.mark], marginBottom: '4px' }}>{a.icon} Agent {a.mark}</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', fontSize: '0.6rem' }}>
+                    <span style={{ color: T.textDim }}>Q-상태:</span><span>{a.agent.stateCount()}</span>
+                    <span style={{ color: T.textDim }}>ε:</span><span>{(a.agent.epsilon * 100).toFixed(1)}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <QHeatmap agent={gameTurn === 'X' ? agentX : agentO} board={gameBoard} title={`🧠 ${gameTurn}의 판단`} />
+          </div>
+        </div>
+      </div>
+      </ThemeContext.Provider>
+    );
+  }
+
+  // ============================================
+  // 대시보드 모드
+  // ============================================
+  return (
+    <ThemeContext.Provider value={T}>
+    <div style={{ minHeight: '100vh', background: T.bg, fontFamily: "'Segoe UI', sans-serif", color: T.text, padding: '12px', transition: 'all 0.4s' }}>
+      <input type="file" ref={fileInputRef} onChange={importFile} accept=".json" style={{ display: 'none' }} />
+      {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
+      {showResetConfirm && <ResetConfirmModal gen={gen} onConfirm={resetAll} onCancel={() => setShowResetConfirm(false)} />}
+
+      <Header title="🤖 RL 틱택토">
+        <TooltipButton onClick={() => setShowHelp(true)} icon="❓" label="도움말" tooltip="사용법" color="rgba(230,126,34,0.6)" size="small" />
+        <TooltipButton onClick={downloadReport} icon="📋" label="보고서" tooltip="학습 보고서" color="rgba(241,196,15,0.6)" size="small" disabled={gen < 100} />
+      </Header>
+
+      <div style={{ display: 'flex', gap: '12px', maxWidth: '1050px', margin: '0 auto' }}>
+        {/* 좌측 컨트롤 */}
+        <div style={{ width: '160px', flexShrink: 0 }}>
+          <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'center' }}>
+            <BoardDisplay board={gameBoard} cellSize={14} />
+          </div>
+
+          <div style={{ marginBottom: '8px' }}>
+            <div style={{ fontSize: '0.55rem', color: T.textDim, marginBottom: '2px' }}>속도: {speed}ms</div>
+            <input type="range" min="1" max="100" value={speed} onChange={e => setSpeed(Number(e.target.value))} style={{ width: '100%', accentColor: T.inputAccent }} />
+          </div>
+
+          <div style={{ background: T.panel, borderRadius: '6px', padding: '8px', marginBottom: '8px' }}>
+            <div style={{ fontSize: '0.6rem', fontWeight: 'bold', marginBottom: '6px', color: T.textSub }}>📋 학습 방식</div>
+            {[
+              { mode: 'selfplay', label: '자기대국', desc: 'X↔O 상호 학습', icon: '🔄' },
+              { mode: 'solo-x', label: 'X 단독', desc: 'X만 학습 (O=랜덤)', icon: '🔵' },
+              { mode: 'solo-o', label: 'O 단독', desc: 'O만 학습 (X=랜덤)', icon: '🔴' },
+            ].map(opt => (
+              <label key={opt.mode} style={{
+                display: 'flex', alignItems: 'center', gap: '5px', padding: '4px 6px', borderRadius: '4px',
+                cursor: 'pointer', marginBottom: '3px', fontSize: '0.6rem',
+                background: trainMode === opt.mode ? T.radioSelected : 'transparent',
+                border: trainMode === opt.mode ? `1px solid ${T.radioBorder}` : '1px solid transparent'
+              }}>
+                <input type="radio" name="trainMode" checked={trainMode === opt.mode}
+                  onChange={() => setTrainMode(opt.mode)} style={{ accentColor: T.inputAccent, width: '12px', height: '12px' }} />
+                <div>
+                  <div style={{ fontWeight: 'bold', color: T.text }}>{opt.icon} {opt.label}</div>
+                  <div style={{ fontSize: '0.5rem', color: T.textDim }}>{opt.desc}</div>
+                </div>
+              </label>
+            ))}
+          </div>
+
+          <div style={{ background: T.panel, borderRadius: '6px', padding: '8px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+              <span style={{ fontSize: '0.6rem', fontWeight: 'bold', color: T.textSub }}>⚙️ 파라미터</span>
+              <button onClick={() => setSyncParams(!syncParams)} style={{
+                padding: '1px 6px', background: syncParams ? T.syncOn : T.syncOff,
+                border: 'none', borderRadius: '8px', color: syncParams ? '#fff' : T.syncTextOff,
+                fontSize: '0.5rem', fontWeight: 'bold', cursor: 'pointer'
+              }}>{syncParams ? '🔗동기' : '🔓별도'}</button>
+            </div>
+            {[
+              { label: '학습률 α', param: 'alpha', min: 0.01, max: 1, step: 0.01 },
+              { label: '할인율 γ', param: 'gamma', min: 0.1, max: 1, step: 0.01 },
+              { label: 'ε 감소율', param: 'epsilonDecay', min: 0.99, max: 1, step: 0.0001 }
+            ].map(p => (
+              <div key={p.param} style={{ marginBottom: '4px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.5rem', color: T.textDim }}>
+                  <span>{p.label}</span><span>{agentX[p.param].toFixed(p.step < 0.01 ? 4 : 2)}</span>
+                </div>
+                <input type="range" min={p.min} max={p.max} step={p.step} value={agentX[p.param]}
+                  onChange={e => { updateParam(agentX, p.param, Number(e.target.value)); forceUpdate(); }}
+                  style={{ width: '100%', accentColor: MARK_COLORS.X, height: '4px' }} />
+                {!syncParams && (
+                  <input type="range" min={p.min} max={p.max} step={p.step} value={agentO[p.param]}
+                    onChange={e => { agentO[p.param] = Number(e.target.value); forceUpdate(); }}
+                    style={{ width: '100%', accentColor: MARK_COLORS.O, height: '4px', marginTop: '2px' }} />
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '8px' }}>
+            <TooltipButton onClick={() => { if (isTraining) setMode('idle'); else enterMode(trainMode); }} icon={isTraining ? '⏹' : '▶️'} label={isTraining ? '정지' : '학습 시작'} tooltip={isTraining ? '학습 정지' : 'Q-테이블 학습'} color={isTraining ? '#c0392b' : '#27ae60'} />
+            <TooltipButton onClick={() => enterMode('ai-battle')} icon="⚔️" label="AI 대전" tooltip="두 AI 관전" color="linear-gradient(135deg, #d35400, #e67e22)" />
+            <TooltipButton onClick={() => enterMode('human-play')} icon="👤" label="사람 대전" tooltip="AI와 직접 대국" color="linear-gradient(135deg, #8e44ad, #9b59b6)" />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px', marginBottom: '6px' }}>
+            <IconButton onClick={autoSave} icon="💾" tooltip="브라우저 저장" color="#27ae60" />
+            <IconButton onClick={exportFile} icon="📤" tooltip="파일 내보내기" color="#8e44ad" />
+            <IconButton onClick={autoLoad} icon="📂" tooltip="저장 불러오기" color="#2980b9" />
+            <IconButton onClick={() => fileInputRef.current?.click()} icon="📥" tooltip="파일 가져오기" color="#d35400" />
+          </div>
+
+          <div style={{ marginTop: '4px' }}><TooltipButton onClick={() => setShowResetConfirm(true)} icon="🗑️" label="초기화" tooltip="학습 데이터 삭제" color="rgba(192,57,43,0.6)" disabled={gen < 1} /></div>
+          {saveStatus && <div style={{ fontSize: '0.6rem', color: '#27ae60', textAlign: 'center', marginTop: '4px' }}>{saveStatus}</div>}
+        </div>
+
+        {/* 우측 대시보드 */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ background: T.panelSolid, padding: '8px', borderRadius: '6px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <span>{stage.icon}</span>
+                <span style={{ fontWeight: 'bold', color: stage.color, fontSize: '0.85rem' }}>{stage.name}</span>
+                {isTraining && <span style={{ fontSize: '0.55rem', color: '#27ae60' }}>● 학습 중</span>}
+              </div>
+              <div style={{ fontSize: '0.65rem', color: T.textDim }}>
+                #{gen.toLocaleString()} | {gps.toFixed(0)}/sec
+                {trainMode !== 'selfplay' && <span style={{ color: '#f1c40f', marginLeft: '6px' }}>({trainMode === 'solo-x' ? 'X단독' : 'O단독'})</span>}
+              </div>
+            </div>
+            <div style={{ position: 'relative', height: '12px', background: T.barTrack, borderRadius: '6px', overflow: 'hidden' }}>
+              {STAGES.map((s, i) => (
+                <div key={i} style={{
+                  position: 'absolute', left: `${(s.min / 100000) * 100}%`, width: `${((s.max - s.min) / 100000) * 100}%`,
+                  height: '100%', background: gen >= s.max ? s.color : gen >= s.min ? `${s.color}55` : T.progressEmpty,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.5rem',
+                  borderRight: `1px solid ${T.barTrack}`
+                }}>{s.icon}</div>
+              ))}
+              <div style={{ position: 'absolute', left: `${Math.min(100, gen / 1000)}%`, top: 0, bottom: 0, width: '2px', background: T.text, boxShadow: `0 0 5px ${T.text}`, opacity: 0.7 }} />
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '6px', marginBottom: '8px' }}>
+            <MetricCard label="X 승률" value={`${avg(winRatesX).toFixed(0)}%`} color={MARK_COLORS.X} icon="🔵" />
+            <MetricCard label="O 승률" value={`${avg(winRatesO).toFixed(0)}%`} color={MARK_COLORS.O} icon="🔴" />
+            <MetricCard label="무승부" value={`${avg(winRatesD).toFixed(0)}%`} color="#f1c40f" icon="🤝" />
+            <MetricCard label="ε" value={`${(agentX.epsilon * 100).toFixed(0)}%`} color="#f1c40f" icon="🎲" />
+            <MetricCard label="강도" value={avgStrength.toFixed(0)} color={grade.color} icon="⭐" />
+            <MetricCard label="등급" value={grade.grade} color={grade.color} icon="🎖️" />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
+            <div style={{ background: T.panel, padding: '8px', borderRadius: '6px' }}>
+              <Graph data={winRatesX} color={MARK_COLORS.X} title="🔵 X 승률 (%)" height={50} goodDirection="up" />
+              <Graph data={winRatesO} color={MARK_COLORS.O} title="🔴 O 승률 (%)" height={50} goodDirection="up" />
+            </div>
+            <div style={{ background: T.panel, padding: '8px', borderRadius: '6px' }}>
+              <Graph data={winRatesD} color="#f1c40f" title="🤝 무승부율 (%)" height={50} goodDirection="up" />
+              <Graph data={epsilonHistory} color="#8e44ad" title="🎲 탐험률 ε (%)" height={50} goodDirection="down" />
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            <div style={{ background: T.panel, padding: '8px', borderRadius: '6px' }}>
+              <Graph data={strengthHistory} color="#27ae60" title="⭐ X 강도 (vs 랜덤)" height={55} goodDirection="up" />
+              <Graph data={stateCountHistory} color={T.inputAccent} title="📚 Q-상태 수 (대칭 압축)" height={45} goodDirection="up" />
+            </div>
+            <div>
+              <LearningInsights agentX={agentX} agentO={agentO} gen={gen} />
+              {gen >= 100 && (
+                <div style={{ background: T.panelSolid, borderRadius: '6px', padding: '8px', marginTop: '8px' }}>
+                  <div style={{ fontSize: '0.65rem', fontWeight: 'bold', marginBottom: '6px' }}>📊 학습 통계</div>
+                  {[
+                    { l: 'X Q-상태', v: agentX.stateCount().toLocaleString(), c: MARK_COLORS.X },
+                    { l: 'O Q-상태', v: agentO.stateCount().toLocaleString(), c: MARK_COLORS.O },
+                    { l: 'X ε', v: `${(agentX.epsilon * 100).toFixed(2)}%`, c: MARK_COLORS.X },
+                    { l: 'O ε', v: `${(agentO.epsilon * 100).toFixed(2)}%`, c: MARK_COLORS.O },
+                    { l: '학습 속도', v: `${gps.toFixed(0)}/sec`, c: T.inputAccent },
+                    { l: 'Step 패널티', v: `${REWARDS.step}`, c: '#d35400' },
+                  ].map((s, i) => (
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', padding: '2px 0', borderBottom: `1px solid ${T.border}` }}>
+                      <span style={{ color: T.textDim }}>{s.l}</span>
+                      <span style={{ color: s.c, fontWeight: 'bold' }}>{s.v}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </ThemeContext.Provider>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<TicTacToeRL />);
+  </script>
+</body>
+</html>

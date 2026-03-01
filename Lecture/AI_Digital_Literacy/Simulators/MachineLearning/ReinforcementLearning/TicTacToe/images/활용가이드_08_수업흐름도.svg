@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadowSm">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.5" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrowR" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="260" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="26" text-anchor="middle" font-family="Noto Sans KR" font-size="17" font-weight="700" fill="#1a1a2e">RL 틱택토 수업 흐름도 (45분)</text>
+  <text x="400" y="42" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#888">5단계 수업 시나리오</text>
+
+  <!-- Time bar -->
+  <rect x="40" y="55" width="720" height="6" rx="3" fill="#eee"/>
+  <rect x="40" y="55" width="80" height="6" rx="3" fill="#e74c3c"/>
+  <rect x="120" y="55" width="128" height="6" fill="#e67e22"/>
+  <rect x="248" y="55" width="160" height="6" fill="#f1c40f"/>
+  <rect x="408" y="55" width="224" height="6" fill="#27ae60"/>
+  <rect x="632" y="55" width="128" height="6" rx="0 3 3 0" fill="#2980b9"/>
+
+  <!-- Time labels -->
+  <text x="40" y="74" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">0'</text>
+  <text x="120" y="74" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">5'</text>
+  <text x="248" y="74" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">13'</text>
+  <text x="408" y="74" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">23'</text>
+  <text x="632" y="74" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">37'</text>
+  <text x="760" y="74" text-anchor="end" font-family="JetBrains Mono" font-size="8" fill="#888">45'</text>
+
+  <!-- ===== Stage Cards ===== -->
+
+  <!-- Stage 1: 도입 (5분) -->
+  <g transform="translate(15, 82)">
+    <rect width="140" height="145" rx="10" fill="white" stroke="#e74c3c" stroke-width="1.5" filter="url(#shadow)"/>
+    <rect width="140" height="28" rx="10" fill="#e74c3c"/>
+    <rect x="0" y="16" width="140" height="12" fill="#e74c3c"/>
+    <text x="70" y="20" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="white">🎬 도입 (5분)</text>
+    <text x="12" y="46" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#e74c3c">동기 유발</text>
+    <text x="12" y="62" font-family="Noto Sans KR" font-size="9" fill="#555">• 틱택토 2판 해보기</text>
+    <text x="12" y="78" font-family="Noto Sans KR" font-size="9" fill="#555">• "AI도 배울 수 있을까?"</text>
+    <text x="12" y="94" font-family="Noto Sans KR" font-size="9" fill="#555">• 시뮬레이터 시연</text>
+    <line x1="12" y1="104" x2="128" y2="104" stroke="#eee" stroke-width="0.8"/>
+    <text x="12" y="118" font-family="Noto Sans KR" font-size="8" fill="#888">교사: 시연</text>
+    <text x="12" y="132" font-family="Noto Sans KR" font-size="8" fill="#888">학생: 관찰 + 호기심</text>
+  </g>
+
+  <!-- Arrow -->
+  <line x1="157" y1="155" x2="165" y2="155" stroke="#888" stroke-width="1.5" marker-end="url(#arrowR)"/>
+
+  <!-- Stage 2: 개념 (8분) -->
+  <g transform="translate(170, 82)">
+    <rect width="140" height="145" rx="10" fill="white" stroke="#e67e22" stroke-width="1.5" filter="url(#shadow)"/>
+    <rect width="140" height="28" rx="10" fill="#e67e22"/>
+    <rect x="0" y="16" width="140" height="12" fill="#e67e22"/>
+    <text x="70" y="20" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="white">📖 개념 (8분)</text>
+    <text x="12" y="46" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#e67e22">핵심 원리 설명</text>
+    <text x="12" y="62" font-family="Noto Sans KR" font-size="9" fill="#555">• 강화학습 3요소</text>
+    <text x="12" y="78" font-family="Noto Sans KR" font-size="9" fill="#555">• 보상/벌칙 개념</text>
+    <text x="12" y="94" font-family="Noto Sans KR" font-size="9" fill="#555">• Q-값 = "얼마나 좋은 수?"</text>
+    <line x1="12" y1="104" x2="128" y2="104" stroke="#eee" stroke-width="0.8"/>
+    <text x="12" y="118" font-family="Noto Sans KR" font-size="8" fill="#888">교사: 설명 + 비유</text>
+    <text x="12" y="132" font-family="Noto Sans KR" font-size="8" fill="#888">학생: 듣기 + 질문</text>
+  </g>
+
+  <line x1="312" y1="155" x2="320" y2="155" stroke="#888" stroke-width="1.5" marker-end="url(#arrowR)"/>
+
+  <!-- Stage 3: 탐색 (10분) -->
+  <g transform="translate(325, 82)">
+    <rect width="140" height="145" rx="10" fill="white" stroke="#f1c40f" stroke-width="1.5" filter="url(#shadow)"/>
+    <rect width="140" height="28" rx="10" fill="#f1c40f"/>
+    <rect x="0" y="16" width="140" height="12" fill="#f1c40f"/>
+    <text x="70" y="20" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="white">🔍 탐색 (10분)</text>
+    <text x="12" y="46" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#b7950b">교사 주도 관찰</text>
+    <text x="12" y="62" font-family="Noto Sans KR" font-size="9" fill="#555">• 학습 시작 → 관찰</text>
+    <text x="12" y="78" font-family="Noto Sans KR" font-size="9" fill="#555">• 그래프 변화 읽기</text>
+    <text x="12" y="94" font-family="Noto Sans KR" font-size="9" fill="#555">• 첫수 선호도 변화</text>
+    <line x1="12" y1="104" x2="128" y2="104" stroke="#eee" stroke-width="0.8"/>
+    <text x="12" y="118" font-family="Noto Sans KR" font-size="8" fill="#888">교사: 안내 + 질문</text>
+    <text x="12" y="132" font-family="Noto Sans KR" font-size="8" fill="#888">학생: 관찰 + 기록</text>
+  </g>
+
+  <line x1="467" y1="155" x2="475" y2="155" stroke="#888" stroke-width="1.5" marker-end="url(#arrowR)"/>
+
+  <!-- Stage 4: 실습 (14분) -->
+  <g transform="translate(480, 82)">
+    <rect width="140" height="145" rx="10" fill="white" stroke="#27ae60" stroke-width="1.5" filter="url(#shadow)"/>
+    <rect width="140" height="28" rx="10" fill="#27ae60"/>
+    <rect x="0" y="16" width="140" height="12" fill="#27ae60"/>
+    <text x="70" y="20" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="white">🧪 실습 (14분)</text>
+    <text x="12" y="46" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#27ae60">학생 주도 실험</text>
+    <text x="12" y="62" font-family="Noto Sans KR" font-size="9" fill="#555">• AI와 직접 대전</text>
+    <text x="12" y="78" font-family="Noto Sans KR" font-size="9" fill="#555">• 파라미터 변경 실험</text>
+    <text x="12" y="94" font-family="Noto Sans KR" font-size="9" fill="#555">• 활동지 작성</text>
+    <line x1="12" y1="104" x2="128" y2="104" stroke="#eee" stroke-width="0.8"/>
+    <text x="12" y="118" font-family="Noto Sans KR" font-size="8" fill="#888">교사: 순회 지도</text>
+    <text x="12" y="132" font-family="Noto Sans KR" font-size="8" fill="#888">학생: 실험 + 발견</text>
+  </g>
+
+  <line x1="622" y1="155" x2="630" y2="155" stroke="#888" stroke-width="1.5" marker-end="url(#arrowR)"/>
+
+  <!-- Stage 5: 정리 (8분) -->
+  <g transform="translate(635, 82)">
+    <rect width="140" height="145" rx="10" fill="white" stroke="#2980b9" stroke-width="1.5" filter="url(#shadow)"/>
+    <rect width="140" height="28" rx="10" fill="#2980b9"/>
+    <rect x="0" y="16" width="140" height="12" fill="#2980b9"/>
+    <text x="70" y="20" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="white">📝 정리 (8분)</text>
+    <text x="12" y="46" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#2980b9">성찰 및 공유</text>
+    <text x="12" y="62" font-family="Noto Sans KR" font-size="9" fill="#555">• 발견한 점 공유</text>
+    <text x="12" y="78" font-family="Noto Sans KR" font-size="9" fill="#555">• 핵심 개념 정리</text>
+    <text x="12" y="94" font-family="Noto Sans KR" font-size="9" fill="#555">• AI 윤리 토론</text>
+    <line x1="12" y1="104" x2="128" y2="104" stroke="#eee" stroke-width="0.8"/>
+    <text x="12" y="118" font-family="Noto Sans KR" font-size="8" fill="#888">교사: 정리 + 피드백</text>
+    <text x="12" y="132" font-family="Noto Sans KR" font-size="8" fill="#888">학생: 발표 + 성찰</text>
+  </g>
+
+  <!-- Bottom caption -->
+  <text x="400" y="252" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#999">그림 8. RL 틱택토 수업 흐름도 — 도입(5분) → 개념(8분) → 탐색(10분) → 실습(14분) → 정리(8분)</text>
+</svg>

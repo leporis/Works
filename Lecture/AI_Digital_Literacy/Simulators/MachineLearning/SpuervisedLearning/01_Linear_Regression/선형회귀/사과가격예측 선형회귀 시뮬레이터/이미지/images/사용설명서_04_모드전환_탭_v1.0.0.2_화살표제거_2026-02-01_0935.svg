@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrowRed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#E53935"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9C27B0"/>
+    </marker>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="800" height="300" fill="url(#bgGrad)"/>
+  
+  <!-- 제목 -->
+  <text x="400" y="35" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="22" font-weight="700" fill="#3E2723">🔄 모드 전환 탭</text>
+  
+  <!-- 탭 UI 크게 표시 -->
+  <g filter="url(#shadow)">
+    <!-- 학습 모드 탭 (활성) -->
+    <rect x="200" y="70" width="180" height="55" rx="12" fill="#E53935"/>
+    <text x="290" y="105" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="600" fill="white">🧠 학습 모드</text>
+    
+    <!-- 추론 모드 탭 (비활성) -->
+    <rect x="400" y="70" width="180" height="55" rx="12" fill="white" stroke="#FFCCBC" stroke-width="2"/>
+    <text x="490" y="105" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="500" fill="#5D4037">🔮 추론 모드</text>
+  </g>
+  
+  <!-- 화살표와 설명 -->
+  <!-- 학습 모드 설명: 좌측 배치 -->
+  <line x1="290" y1="135" x2="200" y2="165" stroke="#E53935" stroke-width="2" marker-end="url(#arrowRed)"/>
+  <g filter="url(#shadow)">
+    <rect x="50" y="175" width="300" height="105" rx="12" fill="white" stroke="#E53935" stroke-width="2"/>
+    <rect x="50" y="175" width="300" height="35" rx="12" fill="#FFEBEE"/>
+    <rect x="50" y="200" width="300" height="10" fill="#FFEBEE"/>
+    <text x="200" y="200" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" font-weight="600" fill="#C62828">🧠 학습 모드에서 할 수 있는 것</text>
+    
+    <text x="70" y="230" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">• 데이터 생성 및 확인</text>
+    <text x="70" y="250" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">• 학습률, 에포크 조절</text>
+    <text x="70" y="270" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">• 모델 학습 및 손실 그래프 확인</text>
+  </g>
+  
+  <!-- 추론 모드 설명: 우측 배치 -->
+  <line x1="490" y1="135" x2="580" y2="165" stroke="#9C27B0" stroke-width="2" marker-end="url(#arrowPurple)"/>
+  <g filter="url(#shadow)">
+    <rect x="450" y="175" width="300" height="105" rx="12" fill="white" stroke="#9C27B0" stroke-width="2"/>
+    <rect x="450" y="175" width="300" height="35" rx="12" fill="#F3E5F5"/>
+    <rect x="450" y="200" width="300" height="10" fill="#F3E5F5"/>
+    <text x="600" y="200" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" font-weight="600" fill="#7B1FA2">🔮 추론 모드에서 할 수 있는 것</text>
+    
+    <text x="470" y="230" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">• 새로운 사과 값 입력 (당도, 무게)</text>
+    <text x="470" y="250" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">• 품질 점수 계산 과정 확인</text>
+    <text x="470" y="270" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">• 예측 가격 및 시각화 확인</text>
+  </g>
+</svg>

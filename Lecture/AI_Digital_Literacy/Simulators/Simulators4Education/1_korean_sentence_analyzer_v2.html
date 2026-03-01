@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📝 문장 성분 분석 시뮬레이터</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    /* ═══ 1단계: 기본 팔레트 ═══ */
+    --color-red-500:    #ef4444;
+    --color-blue-500:   #3b82f6;
+    --color-green-500:  #10b981;
+    --color-amber-500:  #f59e0b;
+    --color-purple-500: #8b5cf6;
+    --color-slate-800:  #1e293b;
+    --color-slate-100:  #f8fafc;
+    --color-white:      #ffffff;
+    --color-yellow-50:  #FFFBEA;
+    --color-yellow-400: #FFE66D;
+
+    /* ═══ 2단계: 의미적 별칭 ═══ */
+    --clr-subject:    var(--color-red-500);
+    --clr-object:     var(--color-blue-500);
+    --clr-verb:       var(--color-green-500);
+    --clr-modifier:   var(--color-amber-500);
+    --clr-complement: var(--color-purple-500);
+    --bg-body:        var(--color-slate-100);
+    --bg-panel:       var(--color-white);
+    --text-dark:      var(--color-slate-800);
+
+    /* ═══ 버튼 (터치 타겟 필수) ═══ */
+    --btn-min-height: 48px;
+    --btn-min-width:  120px;
+    --btn-radius: 12px;
+
+    /* ═══ 폰트 (16px 최소) ═══ */
+    --font-primary:   'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    --font-size-base: 16px;
+    --font-size-lg:   20px;
+    --font-size-xl:   26px;
+
+    /* ═══ 간격 ═══ */
+    --sp-sm: 8px;
+    --sp-md: 16px;
+    --sp-lg: 24px;
+}
+
+* { box-sizing: border-box; }
+body {
+    font-family: var(--font-primary);
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    margin: 0; padding: 20px; min-height: 100vh;
+    font-size: var(--font-size-base);
+}
+header { text-align: center; color: white; margin-bottom: 20px; }
+h1 { margin: 0; font-size: var(--font-size-xl); text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+.subtitle { font-size: var(--font-size-base); margin-top: 8px; opacity: 0.9; }
+
+.container {
+    max-width: 1100px; margin: 0 auto;
+    background: var(--bg-panel); border-radius: 20px;
+    padding: var(--sp-lg); box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* ══ 예제 버튼 ══ */
+.example-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px; margin: var(--sp-md) 0;
+}
+.example-btn {
+    min-height: var(--btn-min-height);
+    min-width: var(--btn-min-width);
+    padding: 12px 16px;
+    background: #f0f9ff; border: 2px solid #bae6fd;
+    border-radius: var(--btn-radius); cursor: pointer;
+    font-size: var(--font-size-base); font-weight: 700;
+    font-family: var(--font-primary);
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+}
+.example-btn:hover { background: #e0f2fe; border-color: #38bdf8; transform: translateY(-2px); }
+
+/* ══ 단어 뱅크 ══ */
+.word-bank {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    padding: var(--sp-md); background: var(--bg-body);
+    border-radius: 12px; min-height: 80px;
+    border: 3px dashed #cbd5e1; margin: var(--sp-md) 0;
+    align-items: center;
+}
+.word-placeholder { color: #94a3b8; font-size: var(--font-size-base); }
+
+/* ══ 단어 카드 ══ */
+.word {
+    padding: 12px 20px;
+    background: var(--bg-panel); border: 2px solid #cbd5e1;
+    border-radius: 8px; cursor: grab;
+    font-size: var(--font-size-base); font-weight: 700;
+    font-family: var(--font-primary);
+    user-select: none; transition: all 0.2s;
+    position: relative;
+}
+.word:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.word.dragging { opacity: 0.5; cursor: grabbing; }
+.word.touchdrag { position: fixed; z-index: 1000; opacity: 0.9; }
+
+/* ══ 드롭 존 (문장 성분) ══ */
+.drop-zones {
+    display: grid; grid-template-columns: 1fr; gap: 12px;
+    margin: var(--sp-md) 0;
+}
+.drop-zone {
+    min-height: 80px; padding: var(--sp-md);
+    border: 3px dashed #cbd5e1; border-radius: 12px;
+    background: white; transition: all 0.3s;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+}
+.drop-zone.dragover { border-color: #3b82f6; background: #eff6ff; }
+.drop-zone-label {
+    display: inline-block; padding: 6px 12px; border-radius: 6px;
+    font-weight: 700; font-size: var(--font-size-base);
+    margin-right: 8px; color: white;
+}
+.zone-subject .drop-zone-label    { background: var(--clr-subject); }
+.zone-verb .drop-zone-label        { background: var(--clr-verb); }
+.zone-object .drop-zone-label      { background: var(--clr-object); }
+.zone-modifier .drop-zone-label    { background: var(--clr-modifier); }
+.zone-complement .drop-zone-label  { background: var(--clr-complement); }
+
+/* ══ 버튼 그룹 ══ */
+.btn-group {
+    display: flex; gap: 10px; margin: var(--sp-lg) 0;
+    flex-wrap: wrap;
+}
+.btn {
+    min-height: var(--btn-min-height);
+    min-width: var(--btn-min-width);
+    padding: 12px 24px;
+    border: none; border-radius: var(--btn-radius);
+    font-size: var(--font-size-base); font-weight: 700;
+    font-family: var(--font-primary);
+    cursor: pointer; transition: all 0.2s;
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.btn:active { transform: scale(0.96); }
+.btn-check { background: #10b981; color: white; }
+.btn-hint  { background: #f59e0b; color: white; }
+.btn-reset { background: #64748b; color: white; }
+.btn-next  { background: #3b82f6; color: white; }
+
+/* ══ 피드백 박스 ══ */
+.feedback-box, .hint-box {
+    padding: var(--sp-md); border-radius: 12px;
+    margin: var(--sp-md) 0; border: 2px solid;
+    font-size: var(--font-size-base); line-height: 1.6;
+}
+.feedback-box.correct {
+    background: #d1fae5; border-color: #10b981; color: #065f46;
+}
+.feedback-box.wrong {
+    background: #fee2e2; border-color: #ef4444; color: #991b1b;
+}
+.hint-box {
+    background: var(--color-yellow-50);
+    border-color: var(--color-yellow-400);
+    color: #92400e;
+}
+.hint-box.hidden { display: none; }
+
+/* ══ 점수판 ══ */
+.scoreboard {
+    display: flex; gap: 20px; padding: var(--sp-md);
+    background: #f0f9ff; border-radius: 12px;
+    margin: var(--sp-md) 0;
+}
+.score-item {
+    flex: 1; text-align: center;
+}
+.score-label {
+    display: block; font-size: var(--font-size-base);
+    color: #64748b; margin-bottom: 4px;
+}
+.score-value {
+    display: block; font-size: var(--font-size-lg);
+    font-weight: 700; color: var(--text-dark);
+}
+
+/* ══ 배지 ══ */
+.badge-list {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin: var(--sp-md) 0;
+}
+.badge-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border-radius: 8px;
+    background: white; border: 2px solid #e2e8f0;
+    font-size: var(--font-size-base);
+}
+.badge-item.earned {
+    border-color: #FFD700;
+    background: var(--color-yellow-50);
+}
+.badge-item.locked {
+    opacity: 0.5;
+    filter: grayscale(1);
+}
+.badge-icon {
+    font-size: 24px;
+}
+.badge-name {
+    font-weight: 700;
+}
+
+/* ══ 숨김 클래스 ══ */
+.hidden { display: none !important; }
+.initially-hidden { display: none; }
+
+/* ══ 애니메이션 ══ */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+.correct { animation: bounce 0.5s ease; }
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+.wrong { animation: shake 0.3s ease; }
+
+/* ══ 토스트 ══ */
+.toast-container {
+    position: fixed; top: 20px; right: 20px; z-index: 2000;
+    display: flex; flex-direction: column; gap: 10px;
+}
+.toast {
+    background: white; padding: 16px 20px; border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-size: var(--font-size-base);
+    animation: slideIn 0.3s ease;
+}
+.toast.success { border-left: 4px solid #10b981; }
+.toast.error { border-left: 4px solid #ef4444; }
+.toast-out {
+    animation: slideOut 0.3s ease;
+}
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+@media (max-width: 768px) {
+    .container { padding: var(--sp-md); }
+    .example-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>📝 문장 성분 분석 시뮬레이터</h1>
+    <p class="subtitle">단어를 드래그하여 알맞은 문장 성분에 배치해보세요!</p>
+</header>
+
+<div class="container">
+    <h3>📚 예제 문장</h3>
+    <div class="example-grid" id="exampleGrid"></div>
+
+    <h3>🎯 현재 문제 <span id="questionNum"></span></h3>
+    <div id="sentenceDisplay" style="font-size: var(--font-size-lg); font-weight: 700; text-align: center; margin: var(--sp-md) 0; color: var(--text-dark);"></div>
+
+    <h3>💬 단어 뱅크</h3>
+    <div class="word-bank" id="wordBank">
+        <span class="word-placeholder">단어를 아래 성분에 배치하세요</span>
+    </div>
+
+    <h3>✏️ 문장 성분</h3>
+    <div class="drop-zones" id="dropZones"></div>
+
+    <div class="btn-group">
+        <button class="btn btn-check" id="checkBtn">✓ 정답 확인</button>
+        <button class="btn btn-hint" id="hintBtn">💡 힌트 보기</button>
+        <button class="btn btn-reset" id="resetBtn">🔄 초기화</button>
+        <button class="btn btn-next hidden" id="nextBtn">→ 다음 문제</button>
+    </div>
+
+    <div class="hint-box hidden" id="hintBox"></div>
+    <div class="feedback-box hidden" id="feedbackBox"></div>
+
+    <h3>📊 내 점수</h3>
+    <div class="scoreboard" id="scoreBoard">
+        <div class="score-item">
+            <span class="score-label">정답</span>
+            <span class="score-value" id="scoreCorrect">0/0</span>
+        </div>
+        <div class="score-item">
+            <span class="score-label">평균</span>
+            <span class="score-value" id="scoreAvg">0점</span>
+        </div>
+    </div>
+
+    <h3>🏆 획득 배지</h3>
+    <div class="badge-list" id="badgeList"></div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// CONFIG & UI_TEXT
+// ════════════════════════════════════════════════════════════════
+const CONFIG_SUBJECT = {
+    CURRICULUM: {
+        subject:     '국어',
+        grade:       4,
+        semester:    1,
+        unit:        '1. 생각과 느낌을 나타내요',
+        achievement: '[4국01-01] 대화의 즐거움을 알고 대화를 나눈다.'
+    },
+    DIFFICULTY: {
+        level:        'medium',
+        grade_range:  [4, 5],
+        hint_enabled: true,
+        vocabulary:   'elementary'
+    },
+    SCORING: {
+        base_score:   100,
+        hint_penalty: 10,
+        time_bonus:   false
+    },
+    ACCESSIBILITY: {
+        fontSize:   'large',
+        colorBlind: false,
+        narration:  false,
+        subtitles:  true
+    }
+};
+
+const UI_TEXT = {
+    TITLE:    '📝 문장 성분 분석 시뮬레이터',
+    SUBTITLE: '단어를 드래그하여 알맞은 문장 성분에 배치해보세요!',
+
+    FEEDBACK_CORRECT: [
+        '정답이에요! 👏',
+        '잘했어요! ⭐',
+        '맞았어요! 🎉',
+        '훌륭해요! 💯',
+        '완벽해요! 🌟'
+    ],
+    FEEDBACK_WRONG: [
+        '다시 한번 생각해봐요 🤔',
+        '거의 다 왔어요! 💪',
+        '힌트를 확인해봐요 💡',
+        '조금만 더 생각해보세요 ✨'
+    ],
+
+    BTN_CHECK: '✓ 정답 확인',
+    BTN_HINT:  '💡 힌트 보기',
+    BTN_RESET: '🔄 초기화',
+    BTN_NEXT:  '→ 다음 문제',
+
+    HINT_EXHAUSTED: '힌트를 모두 사용했어요! 다시 한번 도전해보세요 💪',
+
+    COMPLETE:      '🎉 모두 완료했어요!',
+    SCORE_DISPLAY: (c, t) => `${t}문제 중 ${c}개 맞혔어요!`,
+
+    ERROR_INCOMPLETE: '모든 성분에 단어를 배치해주세요!',
+};
+
+// ════════════════════════════════════════════════════════════════
+// 데이터
+// ════════════════════════════════════════════════════════════════
+const QUESTIONS = [
+    {
+        id: 'q1',
+        sentence: '철수가 책을 읽는다.',
+        words: ['철수가', '책을', '읽는다'],
+        answer: { subject: '철수가', object: '책을', verb: '읽는다' },
+        components: ['subject', 'object', 'verb'],
+        hints: ['누가 동작을 하나요?', '무엇을 읽나요?', '어떤 동작을 하나요?']
+    },
+    {
+        id: 'q2',
+        sentence: '예쁜 꽃이 피었다.',
+        words: ['예쁜', '꽃이', '피었다'],
+        answer: { modifier: '예쁜', subject: '꽃이', verb: '피었다' },
+        components: ['modifier', 'subject', 'verb'],
+        hints: ['꽃을 꾸며주는 말은?', '무엇이 피었나요?', '어떤 일이 일어났나요?']
+    },
+    {
+        id: 'q3',
+        sentence: '우리는 학교에 갔다.',
+        words: ['우리는', '학교에', '갔다'],
+        answer: { subject: '우리는', modifier: '학교에', verb: '갔다' },
+        components: ['subject', 'modifier', 'verb'],
+        hints: ['누가 갔나요?', '어디로 갔나요?', '어떤 동작을 했나요?']
+    },
+    {
+        id: 'q4',
+        sentence: '동생이 밥을 먹는다.',
+        words: ['동생이', '밥을', '먹는다'],
+        answer: { subject: '동생이', object: '밥을', verb: '먹는다' },
+        components: ['subject', 'object', 'verb'],
+        hints: ['누가 먹나요?', '무엇을 먹나요?', '어떤 동작을 하나요?']
+    },
+    {
+        id: 'q5',
+        sentence: '나는 친구가 되었다.',
+        words: ['나는', '친구가', '되었다'],
+        answer: { subject: '나는', complement: '친구가', verb: '되었다' },
+        components: ['subject', 'complement', 'verb'],
+        hints: ['누가 되었나요?', '무엇이 되었나요?', '어떤 상태가 되었나요?']
+    }
+];
+
+const COMPONENT_LABELS = {
+    subject:    { name: '주어', desc: '동작이나 상태의 주체' },
+    verb:       { name: '서술어', desc: '주어의 동작이나 상태' },
+    object:     { name: '목적어', desc: '동작의 대상' },
+    modifier:   { name: '수식어', desc: '다른 말을 꾸며주는 말' },
+    complement: { name: '보어', desc: '문장을 완성하는 말' }
+};
+
+const ACHIEVEMENTS_BASE = {
+    first_correct: {
+        id: 'first_correct', name: '첫 정답!', icon: '🌟',
+        desc: '첫 번째 문제를 맞혔어요',
+        condition: (s) => s.correct >= 1
+    },
+    no_hint: {
+        id: 'no_hint', name: '힌트 없이!', icon: '🧠',
+        desc: '힌트 없이 문제를 맞혔어요',
+        condition: (s) => s.correctWithoutHint >= 1
+    },
+    all_clear: {
+        id: 'all_clear', name: '전체 완료!', icon: '🏆',
+        desc: '모든 문제를 완료했어요',
+        condition: (s, sess, total) => s.correct >= total
+    }
+};
+
+// ════════════════════════════════════════════════════════════════
+// 상태
+// ════════════════════════════════════════════════════════════════
+let currentQuestionIndex = 0;
+let currentQuestion = null;
+let draggedElement = null;
+let touchStartX = 0, touchStartY = 0, originalParent = null;
+
+// ════════════════════════════════════════════════════════════════
+// HintManager
+// ════════════════════════════════════════════════════════════════
+const HintManager = {
+    currentStep: 0,
+    maxHints: 0,
+
+    init(hints) {
+        this.currentStep = 0;
+        this.maxHints = hints.length;
+        this.hidePanel();
+    },
+
+    show(hints) {
+        if (this.currentStep >= hints.length) {
+            this.showInPanel(UI_TEXT.HINT_EXHAUSTED);
+            return;
+        }
+        const hint = hints[this.currentStep];
+        this.showInPanel(`💡 힌트 ${this.currentStep + 1}: ${hint}`);
+        this.currentStep++;
+        return this.currentStep;
+    },
+
+    showInPanel(message) {
+        const el = document.getElementById('hintBox');
+        el.textContent = message;
+        el.classList.remove('hidden');
+    },
+
+    hidePanel() {
+        const el = document.getElementById('hintBox');
+        el.classList.add('hidden');
+    },
+
+    getUsedCount() { return this.currentStep; },
+    reset() { this.currentStep = 0; this.hidePanel(); }
+};
+
+// ════════════════════════════════════════════════════════════════
+// ScoreManager
+// ════════════════════════════════════════════════════════════════
+const ScoreManager = {
+    currentSubject: null,
+
+    init(subject) { this.currentSubject = subject; },
+
+    record(questionId, isCorrect, hintsUsed = 0) {
+        const cfg = CONFIG_SUBJECT.SCORING;
+        const baseScore = cfg.base_score;
+        const penalty = hintsUsed * cfg.hint_penalty;
+
+        let score = 0;
+        if (isCorrect) {
+            score = Math.max(baseScore - penalty, 40);
+        }
+
+        const key = `${this.currentSubject}_${questionId}`;
+        const entry = { score, isCorrect, hintsUsed, timestamp: Date.now() };
+
+        try {
+            localStorage.setItem(key, JSON.stringify(entry));
+        } catch (e) {
+            console.warn('진도 저장 실패:', e);
+        }
+
+        return score;
+    },
+
+    getSummary(subject = null) {
+        subject = subject || this.currentSubject;
+        const keys = Object.keys(localStorage).filter(k => k.startsWith(subject + '_'));
+
+        if (keys.length === 0) {
+            return { total: 0, correct: 0, avgScore: 0, correctWithoutHint: 0 };
+        }
+
+        const entries = keys.map(k => JSON.parse(localStorage.getItem(k)));
+
+        return {
+            total: entries.length,
+            correct: entries.filter(e => e.isCorrect).length,
+            avgScore: entries.reduce((s, e) => s + e.score, 0) / entries.length,
+            correctWithoutHint: entries.filter(e => e.isCorrect && e.hintsUsed === 0).length
+        };
+    },
+
+    renderScoreBoard() {
+        const summary = this.getSummary();
+        document.getElementById('scoreCorrect').textContent = `${summary.correct}/${summary.total}`;
+        document.getElementById('scoreAvg').textContent = `${summary.avgScore.toFixed(0)}점`;
+    }
+};
+
+// ════════════════════════════════════════════════════════════════
+// AchievementManager
+// ════════════════════════════════════════════════════════════════
+const AchievementManager = {
+    subject: null,
+    totalQuestions: 0,
+
+    init(subject, total) {
+        this.subject = subject;
+        this.totalQuestions = total;
+        this.render();
+    },
+
+    check() {
+        const summary = ScoreManager.getSummary(this.subject);
+        const session = {};
+
+        Object.values(ACHIEVEMENTS_BASE).forEach(badge => {
+            const earned = this.isEarned(badge.id);
+            const unlocked = badge.condition(summary, session, this.totalQuestions);
+
+            if (unlocked && !earned) {
+                this.earn(badge);
+            }
+        });
+    },
+
+    isEarned(badgeId) {
+        const key = `badges_${this.subject}`;
+        const earned = JSON.parse(localStorage.getItem(key) || '[]');
+        return earned.includes(badgeId);
+    },
+
+    earn(badge) {
+        const key = `badges_${this.subject}`;
+        const earned = JSON.parse(localStorage.getItem(key) || '[]');
+        earned.push(badge.id);
+
+        try {
+            localStorage.setItem(key, JSON.stringify(earned));
+        } catch (e) {
+            console.warn('배지 저장 실패:', e);
+        }
+
+        showToast(`${badge.icon} 배지 획득: ${badge.name}`, 'success', 3000);
+        this.render();
+    },
+
+    render() {
+        const el = document.getElementById('badgeList');
+        if (!el) return;
+
+        el.innerHTML = Object.values(ACHIEVEMENTS_BASE).map(badge => {
+            const earned = this.isEarned(badge.id);
+            return `
+                <div class="badge-item ${earned ? 'earned' : 'locked'}">
+                    <div class="badge-icon">${badge.icon}</div>
+                    <div>
+                        <div class="badge-name">${badge.name}</div>
+                        <div style="font-size: 14px; color: #64748b;">${badge.desc}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+};
+
+// ════════════════════════════════════════════════════════════════
+// 유틸리티
+// ════════════════════════════════════════════════════════════════
+function showToast(message, type = 'info', duration = 2500) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('toast-out');
+        toast.addEventListener('animationend', () => toast.remove());
+    }, duration);
+}
+
+function showFeedback(type) {
+    const pool = UI_TEXT['FEEDBACK_' + type.toUpperCase()];
+    const msg = pool[Math.floor(Math.random() * pool.length)];
+
+    const el = document.getElementById('feedbackBox');
+    el.textContent = msg;
+    el.className = `feedback-box ${type}`;
+    el.classList.remove('hidden');
+}
+
+function hideFeedback() {
+    document.getElementById('feedbackBox').classList.add('hidden');
+}
+
+function bindInteraction(element, handler) {
+    element.addEventListener('click', handler);
+    element.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        handler(e);
+    });
+}
+
+// ════════════════════════════════════════════════════════════════
+// 드래그 앤 드롭
+// ════════════════════════════════════════════════════════════════
+function setupDragAndDrop() {
+    const words = document.querySelectorAll('.word');
+    const zones = document.querySelectorAll('.drop-zone');
+
+    // 마우스 드래그
+    words.forEach(word => {
+        word.draggable = true;
+
+        word.addEventListener('dragstart', (e) => {
+            draggedElement = word;
+            word.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+
+        word.addEventListener('dragend', () => {
+            word.classList.remove('dragging');
+            draggedElement = null;
+        });
+
+        // 터치 드래그
+        setupTouchDrag(word);
+    });
+
+    zones.forEach(zone => {
+        zone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            zone.classList.add('dragover');
+        });
+
+        zone.addEventListener('dragleave', () => {
+            zone.classList.remove('dragover');
+        });
+
+        zone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            zone.classList.remove('dragover');
+
+            if (draggedElement) {
+                zone.appendChild(draggedElement);
+            }
+        });
+    });
+
+    // 단어 뱅크도 드롭 가능
+    const bank = document.getElementById('wordBank');
+    bank.addEventListener('dragover', (e) => e.preventDefault());
+    bank.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (draggedElement) {
+            bank.appendChild(draggedElement);
+        }
+    });
+}
+
+function setupTouchDrag(element) {
+    element.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        originalParent = element.parentElement;
+        element.classList.add('touchdrag');
+    });
+
+    element.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        element.style.left = (touch.clientX - 40) + 'px';
+        element.style.top = (touch.clientY - 20) + 'px';
+    }, { passive: false });
+
+    element.addEventListener('touchend', (e) => {
+        element.classList.remove('touchdrag');
+        element.style.position = '';
+        element.style.left = '';
+        element.style.top = '';
+
+        const touch = e.changedTouches[0];
+        const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+
+        if (dropTarget && dropTarget.classList.contains('drop-zone')) {
+            dropTarget.appendChild(element);
+        } else if (dropTarget && dropTarget.id === 'wordBank') {
+            dropTarget.appendChild(element);
+        } else if (originalParent) {
+            originalParent.appendChild(element);
+        }
+    });
+}
+
+// ════════════════════════════════════════════════════════════════
+// 문제 로드
+// ════════════════════════════════════════════════════════════════
+function loadQuestion(index) {
+    currentQuestionIndex = index;
+    currentQuestion = QUESTIONS[index];
+
+    // 문제 표시
+    document.getElementById('questionNum').textContent = `(${index + 1}/${QUESTIONS.length})`;
+    document.getElementById('sentenceDisplay').textContent = currentQuestion.sentence;
+
+    // 단어 뱅크 초기화
+    const bank = document.getElementById('wordBank');
+    bank.innerHTML = '';
+    currentQuestion.words.forEach(word => {
+        const el = document.createElement('div');
+        el.className = 'word';
+        el.textContent = word;
+        bank.appendChild(el);
+    });
+
+    // 드롭 존 생성
+    const dropZones = document.getElementById('dropZones');
+    dropZones.innerHTML = '';
+    currentQuestion.components.forEach(comp => {
+        const zone = document.createElement('div');
+        zone.className = `drop-zone zone-${comp}`;
+        zone.dataset.component = comp;
+        zone.innerHTML = `<span class="drop-zone-label">${COMPONENT_LABELS[comp].name}</span>`;
+        dropZones.appendChild(zone);
+    });
+
+    // 드래그 설정
+    setupDragAndDrop();
+
+    // 힌트 초기화
+    HintManager.init(currentQuestion.hints);
+
+    // UI 초기화
+    hideFeedback();
+    document.getElementById('nextBtn').classList.add('hidden');
+}
+
+function loadExamples() {
+    const grid = document.getElementById('exampleGrid');
+    grid.innerHTML = '';
+    QUESTIONS.forEach((q, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'example-btn';
+        btn.textContent = `${i + 1}. ${q.sentence}`;
+        bindInteraction(btn, () => loadQuestion(i));
+        grid.appendChild(btn);
+    });
+}
+
+// ════════════════════════════════════════════════════════════════
+// 정답 확인
+// ════════════════════════════════════════════════════════════════
+function checkAnswer() {
+    const zones = document.querySelectorAll('.drop-zone');
+    const userAnswer = {};
+
+    // 사용자 답안 수집
+    zones.forEach(zone => {
+        const comp = zone.dataset.component;
+        const words = Array.from(zone.querySelectorAll('.word')).map(w => w.textContent);
+        if (words.length > 0) {
+            userAnswer[comp] = words[0];
+        }
+    });
+
+    // 완성도 체크
+    const required = currentQuestion.components.length;
+    const filled = Object.keys(userAnswer).length;
+
+    if (filled < required) {
+        showToast(UI_TEXT.ERROR_INCOMPLETE, 'error');
+        return;
+    }
+
+    // 정답 비교
+    const correct = currentQuestion.components.every(comp => {
+        return userAnswer[comp] === currentQuestion.answer[comp];
+    });
+
+    // Type A 파이프라인: 점수 기록 → 배지 확인 → 피드백 → 점수판 갱신
+    const hintsUsed = HintManager.getUsedCount();
+    ScoreManager.record(currentQuestion.id, correct, hintsUsed);
+    AchievementManager.check();
+    showFeedback(correct ? 'CORRECT' : 'WRONG');
+    ScoreManager.renderScoreBoard();
+
+    // 다음 문제 버튼
+    if (correct && currentQuestionIndex < QUESTIONS.length - 1) {
+        document.getElementById('nextBtn').classList.remove('hidden');
+    } else if (correct && currentQuestionIndex === QUESTIONS.length - 1) {
+        showToast(UI_TEXT.COMPLETE, 'success', 3000);
+    }
+}
+
+function resetQuestion() {
+    const bank = document.getElementById('wordBank');
+    const zones = document.querySelectorAll('.drop-zone');
+
+    zones.forEach(zone => {
+        const words = zone.querySelectorAll('.word');
+        words.forEach(word => bank.appendChild(word));
+    });
+
+    hideFeedback();
+    HintManager.reset();
+    document.getElementById('nextBtn').classList.add('hidden');
+}
+
+function nextQuestion() {
+    if (currentQuestionIndex < QUESTIONS.length - 1) {
+        loadQuestion(currentQuestionIndex + 1);
+    }
+}
+
+// ════════════════════════════════════════════════════════════════
+// 초기화
+// ════════════════════════════════════════════════════════════════
+window.onload = () => {
+    ScoreManager.init(CONFIG_SUBJECT.CURRICULUM.subject);
+    AchievementManager.init(CONFIG_SUBJECT.CURRICULUM.subject, QUESTIONS.length);
+    ScoreManager.renderScoreBoard();
+
+    loadExamples();
+    loadQuestion(0);
+
+    // 버튼 이벤트
+    bindInteraction(document.getElementById('checkBtn'), checkAnswer);
+    bindInteraction(document.getElementById('hintBtn'), () => HintManager.show(currentQuestion.hints));
+    bindInteraction(document.getElementById('resetBtn'), resetQuestion);
+    bindInteraction(document.getElementById('nextBtn'), nextQuestion);
+};
+</script>
+</body>
+</html>

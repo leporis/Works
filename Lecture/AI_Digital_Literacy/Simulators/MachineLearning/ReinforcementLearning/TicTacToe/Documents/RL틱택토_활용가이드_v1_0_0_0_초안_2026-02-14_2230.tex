@@ -1,0 +1,555 @@
+\documentclass[11pt,a4paper]{article}
+\input{preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{lightbrown}\emoji{graduation-cap} RL 틱택토 활용가이드}
+\fancyhead[R]{\small\color{lightbrown}v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\fontsize{48pt}{50pt}\selectfont \emoji{graduation-cap}}
+\vspace{1cm}
+
+{\Huge\bfseries\color{mainblue} RL 틱택토}
+\vspace{0.3cm}
+
+{\LARGE\color{darkbrown} 활용가이드}
+\vspace{1.5cm}
+
+{\large 교육용 Q-Learning 시뮬레이터의 수업 적용 가이드}
+\vspace{3cm}
+
+\begin{tabular}{rl}
+\textbf{문서 버전} & v1.0.0.0 \\
+\textbf{시뮬레이터} & rl-tictactoe-v3.html (v3) \\
+\textbf{작성일} & 2026-02-14 \\
+\end{tabular}
+\vfill
+{\small\color{lightbrown} 청주교육대학교 — 컴퓨팅사고와 AI교육}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{이 문서의 목적}
+% ============================================================
+
+\subsection{활용가이드란?}
+
+이 문서는 \textbf{RL 틱택토 시뮬레이터를 초등교육 현장에서 활용하는 방법}을 안내합니다. 예비 초등교사가 ``컴퓨팅 사고와 AI 교육'' 수업에서 강화학습 개념을 가르칠 때 바로 사용할 수 있는 수업 시나리오, 활동지, 질문 모음을 제공합니다.
+
+\subsection{관련 문서 읽기 순서}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|l|l|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{순서} & \textbf{문서} & \textbf{목적} & \textbf{소요 시간} \\
+\hline
+1 & \textbf{이론해설서} & Q-Learning 원리 이해 & 20분 \\
+\hline
+2 & \textbf{사용설명서} & 시뮬레이터 전체 기능 파악 & 15분 \\
+\hline
+3 & \textbf{활용가이드 (본 문서)} & 수업 적용 방법 & 10분 \\
+\hline
+4 & 퀵가이드 & 수업 중 빠른 참조 & 필요 시 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{수업 전 준비 사항}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{준비 내용} \\
+\hline
+파일 & \texttt{rl-tictactoe-v3.html}을 학생 PC에 배포 \\
+\hline
+브라우저 & Chrome, Edge, 또는 Firefox (최신 버전) \\
+\hline
+사전 학습 & 교사가 시뮬레이터를 10분 이상 직접 사용해 볼 것 \\
+\hline
+인쇄물 & 활동지 3종 인쇄 (§3 참조) \\
+\hline
+선택 & 이론해설서 §1\textasciitilde2 요약 슬라이드 \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{수업 시나리오 (45분)}
+% ============================================================
+
+\subsection{수업 개요}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{내용} \\
+\hline
+대상 & 초등 예비교사 (대학 2\textasciitilde4학년) \\
+\hline
+과목 & 컴퓨팅 사고와 AI 교육 \\
+\hline
+주제 & 강화학습의 원리 — AI가 게임을 배우는 방법 \\
+\hline
+학습 목표 & \emoji{check-mark-button} 강화학습의 3요소를 설명할 수 있다 \newline \emoji{check-mark-button} 파라미터 변경이 AI 학습에 미치는 영향을 실험으로 확인할 수 있다 \newline \emoji{check-mark-button} AI의 학습 과정을 관찰하고 교육적 시사점을 도출할 수 있다 \\
+\hline
+준비물 & PC (1인 1대), rl-tictactoe-v3.html, 활동지 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{수업 흐름 (5단계)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|p{3cm}|p{3cm}|p{2.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{시간} & \textbf{활동} & \textbf{시뮬레이터 기능} & \textbf{교사 역할} \\
+\hline
+\emoji{clapper-board} 도입 & 0\textasciitilde5분 & 동기 유발 & — & 시연 \\
+\hline
+\emoji{books} 개념 & 5\textasciitilde13분 & 핵심 원리 설명 & 도움말 모달 & 설명 + 비유 \\
+\hline
+\emoji{magnifying-glass-tilted-left} 탐색 & 13\textasciitilde23분 & 교사 주도 관찰 & 대시보드 학습 & 안내 + 질문 \\
+\hline
+\emoji{test-tube} 실습 & 23\textasciitilde37분 & 학생 주도 실험 & 파라미터, 대전 & 순회 지도 \\
+\hline
+\emoji{memo} 정리 & 37\textasciitilde45분 & 성찰 및 공유 & 학습 보고서 & 정리 + 피드백 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{단계별 상세}
+
+\subsubsection{\emoji{clapper-board} 도입 (5분) — ``AI도 게임을 배울 수 있을까?''}
+
+교사가 ``짝꿍과 틱택토 2판을 해보세요''로 시작하여 자유 발언을 이끌어낸 뒤, 시뮬레이터를 프로젝터에 띄우고 [\emoji{play-button} 학습 시작]을 클릭합니다. 3,000\textasciitilde5,000판 학습 후 [\emoji{bust-in-silhouette} 사람 대전]으로 전환하여 교사가 일부러 지는 시연을 합니다.
+
+\begin{tipbox}[\emoji{light-bulb} 포인트]
+학생이 ``AI가 처음엔 바보 $\to$ 점점 똑똑해진다''는 변화를 직접 목격하게 합니다.
+\end{tipbox}
+
+\subsubsection{\emoji{books} 개념 (8분) — 강화학습 3요소}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{개념} & \textbf{비유} \\
+\hline
+에이전트 & 처음 틱택토를 배우는 학생 \\
+\hline
+Q-테이블 & 학생의 비밀 노트 (``여기 두면 좋았어!'') \\
+\hline
+보상 & 이기면 사탕, 지면 벌칙 \\
+\hline
+탐험($\varepsilon$) & ``오늘은 새로운 수를 한번 둬볼까?'' \\
+\hline
+활용($1-\varepsilon$) & ``저번에 이겼던 그 수를 또 쓰자!'' \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{\emoji{magnifying-glass-tilted-left} 탐색 (10분) — 교사 주도 관찰 (활동지 1)}
+
+학생이 [\emoji{play-button} 학습 시작]을 클릭하고, 500판 $\to$ 5,000판 $\to$ 20,000판 순서로 정지하며 단계 이름, 승률 그래프 모양, $\varepsilon$ 값, Q-상태 수를 활동지 1에 기록합니다.
+
+\subsubsection{\emoji{test-tube} 실습 (14분) — 학생 주도 실험 (활동지 2, 3)}
+
+\textbf{활동 A: 파라미터 실험 (활동지 2)} — 초기화 $\to$ $\alpha$를 0.01로 $\to$ 10,000판 학습 $\to$ 다시 초기화 $\to$ $\alpha$를 0.8로 $\to$ 10,000판 학습 $\to$ 비교 기록.
+
+\textbf{활동 B: AI와 대전 (활동지 3)} — 20,000판 이상 학습된 AI에서 사람 대전, Q-값 히트맵 관찰, AI 판단 근거 기록.
+
+\subsubsection{\emoji{memo} 정리 (8분) — 성찰 및 공유}
+
+학생 2\textasciitilde3명이 실험 결과를 발표하고, 교사가 핵심 개념(에이전트·환경·보상, Q-값, $\varepsilon$)을 정리합니다. ``AI가 스스로 배운다는 것은 어떤 의미일까요?'' 토론으로 마무리합니다.
+
+% ============================================================
+\section{학습 활동지}
+% ============================================================
+
+\subsection{활동지 1: AI 성장 관찰 일지}
+
+\textbf{목표}: AI가 학습하면서 성장하는 과정을 단계별로 관찰하고 기록한다.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|c|c|c|p{3.5cm}|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{관찰 시점} & \textbf{단계 이름} & \textbf{등급} & \textbf{승률 그래프 모양} & \textbf{$\varepsilon$ 값} & \textbf{Q-상태 수} \\
+\hline
+500판 & (\hspace{1.5cm}) & (\hspace{0.8cm}) & & (\hspace{0.8cm})\% & (\hspace{0.8cm})개 \\
+\hline
+5,000판 & (\hspace{1.5cm}) & (\hspace{0.8cm}) & & (\hspace{0.8cm})\% & (\hspace{0.8cm})개 \\
+\hline
+20,000판 & (\hspace{1.5cm}) & (\hspace{0.8cm}) & & (\hspace{0.8cm})\% & (\hspace{0.8cm})개 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{생각해보기:}
+
+\begin{enumerate}
+\item 에피소드가 늘어나면서 가장 눈에 띄게 변한 것은 무엇인가요?
+\item 무승부 비율은 어떻게 변했나요? 그 이유를 추측해보세요.
+\item $\varepsilon$ 값이 줄어들면 AI의 행동은 어떻게 달라질까요?
+\end{enumerate}
+
+\subsection{활동지 2: 파라미터 실험 — 학습률($\alpha$)의 효과}
+
+\textbf{목표}: 학습률($\alpha$)이 AI 학습에 미치는 영향을 실험으로 확인한다.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{실험 A ($\alpha = 0.01$)} & \textbf{실험 B ($\alpha = 0.30$)} & \textbf{실험 C ($\alpha = 0.80$)} \\
+\hline
+10,000판 후 등급 & (\hspace{1.5cm}) & (\hspace{1.5cm}) & (\hspace{1.5cm}) \\
+\hline
+강도 (0\textasciitilde100) & (\hspace{1.5cm}) & (\hspace{1.5cm}) & (\hspace{1.5cm}) \\
+\hline
+그래프 안정적? & 예 / 아니오 & 예 / 아니오 & 예 / 아니오 \\
+\hline
+Q-상태 수 & (\hspace{1.5cm})개 & (\hspace{1.5cm})개 & (\hspace{1.5cm})개 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tipbox}[\emoji{light-bulb} 비유]
+학습률은 ``한 번에 얼마나 많이 고칠까?''입니다. 시험을 보고 오답노트를 할 때, 너무 조금 고치면 실력이 안 늘고, 너무 많이 고치면 맞았던 것도 헷갈려요!
+\end{tipbox}
+
+\subsection{활동지 3: AI와 대전 — Q-값 히트맵 읽기}
+
+\textbf{목표}: AI가 어떤 기준으로 수를 선택하는지 Q-값 히트맵을 해석한다.
+
+AI와 3판을 진행하면서, 매 판마다 내가 둔 첫수, AI가 둔 첫수, Q-값 히트맵에서 가장 진한 초록색 칸, 빨간색 칸 유무, 대국 결과를 기록합니다.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{색상} & \textbf{의미} \\
+\hline
+진한 초록 & AI가 ``여기에 두면 이길 확률이 높아!'' \\
+\hline
+연한 초록 & ``나쁘지 않은 수'' \\
+\hline
+빨간색 & ``여기 두면 불리해...'' \\
+\hline
+회색 & 이미 돌이 놓인 자리 (선택 불가) \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{학습 질문}
+% ============================================================
+
+\subsection{초급 (이해) — ``무엇인가요?''}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|p{7cm}|p{4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{질문} & \textbf{기대 답변 키워드} \\
+\hline
+1 & 강화학습의 3가지 핵심 요소는 무엇인가요? & 에이전트, 환경, 보상 \\
+\hline
+2 & Q-테이블은 무엇을 저장하는 표인가요? & 상태별 행동의 가치 (Q-값) \\
+\hline
+3 & 이 시뮬레이터에서 이기면 몇 점을 받나요? & $+1.0$ \\
+\hline
+4 & 에피소드(episode)란 무엇인가요? & 한 판의 게임 \\
+\hline
+5 & Q-값 히트맵에서 진한 초록색은 무슨 뜻? & AI가 좋다고 판단하는 위치 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{중급 (적용) — ``어떻게 달라지나요?''}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|p{6cm}|p{5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{질문} & \textbf{실험 방법} \\
+\hline
+1 & $\alpha$를 0.01로 낮추면 AI 성장 속도가? & $\alpha = 0.01$ vs $0.30$ 비교 \\
+\hline
+2 & $\gamma$를 0.1로 낮추면 전략이? & $\gamma = 0.1$ vs $0.9$ 비교 \\
+\hline
+3 & $\varepsilon$ 감소율을 0.99로 빠르게 줄이면? & 감소율 $0.99$ vs $0.9995$ 비교 \\
+\hline
+4 & ``X 단독''과 ``자기대국''의 차이? & 학습 방식 전환 후 비교 \\
+\hline
+5 & 500판 AI vs 50,000판 AI 차이가 느껴지나요? & 사람 대전에서 체감 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{고급 (분석) — ``왜 그런가요?''}
+
+\begin{enumerate}
+\item AI가 충분히 학습하면 왜 무승부가 가장 많아지나요?
+\item 대칭성 정규화를 하면 왜 학습 효율이 7\textasciitilde8배 올라가나요?
+\item 탐험($\varepsilon$)을 처음부터 0\%로 설정하면 왜 AI가 잘 배우지 못할까요?
+\item 역방향 갱신이 왜 순방향보다 효과적인가요?
+\item 무승부를 0이 아닌 $+0.3$으로 설정한 이유는?
+\end{enumerate}
+
+\subsection{확장 (창의) — ``어디에 쓸 수 있을까요?''}
+
+\begin{enumerate}
+\item 강화학습으로 배울 수 있는 다른 게임에는 무엇이 있을까요?
+\item 로봇이 걷는 법을 배울 때, 에이전트·환경·보상은 각각 무엇일까요?
+\item 유튜브 추천 알고리즘도 강화학습과 비슷한 점이 있을까요?
+\item 초등학생에게 강화학습을 설명한다면 어떤 비유를 사용할 건가요?
+\item AI가 스스로 배운다면, AI에게 ``가르침''이 필요 없을까요?
+\end{enumerate}
+
+% ============================================================
+\section{수업지도안}
+% ============================================================
+
+\subsection{수업 정보}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{내용} \\
+\hline
+과목 & 컴퓨팅 사고와 AI 교육 \\
+\hline
+대상 & 초등 예비교사 (대학 2\textasciitilde4학년) \\
+\hline
+차시 & 1차시 (45분) \\
+\hline
+단원 & 머신러닝의 이해 — 강화학습 \\
+\hline
+주제 & AI가 게임을 배우는 방법: Q-Learning과 강화학습 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{성취 기준}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{영역} & \textbf{성취 기준} \\
+\hline
+지식 & 강화학습의 3요소와 Q-Learning의 기본 원리를 설명할 수 있다 \\
+\hline
+기능 & 파라미터를 조절하여 AI 학습 결과를 비교·분석할 수 있다 \\
+\hline
+태도 & AI의 학습 과정을 관찰하며 탐구적 태도를 기르고, AI 교육의 가치를 인식한다 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{평가 계획}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{5cm}|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{평가 영역} & \textbf{평가 내용} & \textbf{평가 방법} \\
+\hline
+지식 이해 & 강화학습 3요소를 올바르게 설명 & 활동지 1 서술 \\
+\hline
+탐구 능력 & 파라미터 변경 후 결과 비교·분석 & 활동지 2 기록 \\
+\hline
+관찰·해석 & Q-값 히트맵을 올바르게 해석 & 활동지 3 기록 \\
+\hline
+의사소통 & 실험 결과를 논리적으로 발표 & 발표 관찰 \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{교사용 팁}
+% ============================================================
+
+\subsection{수업 운영 팁}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\small
+\begin{tabular}{|p{3.5cm}|p{8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{상황} & \textbf{대처 방법} \\
+\hline
+학생 PC가 느려서 학습이 오래 걸림 & 속도 슬라이더를 1ms로 낮추면 배치 크기 500으로 빠르게 진행 \\
+\hline
+그래프가 심하게 요동침 & 정상 현상임을 설명. 50판 평균이므로 초기에는 변동이 큼 \\
+\hline
+``왜 AI가 저한테 져요?'' & 학습량이 부족한 경우. 20,000판 이상 학습 필요 안내 \\
+\hline
+초기화를 깜빡하고 실험함 & [\emoji{clipboard} 보고서] 다운로드로 현재 상태 기록 후 초기화 \\
+\hline
+파라미터를 원래대로 못 돌림 & 기본값 안내: $\alpha=0.30$, $\gamma=0.90$, $\varepsilon$ 감소율$=0.9995$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{자주 나오는 학생 질문}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\small
+\begin{tabular}{|p{4cm}|p{7.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{질문} & \textbf{답변 가이드} \\
+\hline
+``AI끼리 대전하면 누가 이겨요?'' & 충분히 학습하면 거의 무승부. [\emoji{crossed-swords} AI 대전]으로 직접 확인 \\
+\hline
+``다른 게임에도 적용할 수 있나요?'' & 상태가 유한한 게임에 적합. 바둑은 딥러닝 필요 \\
+\hline
+``왜 무승부에 +0.3을 주나요?'' & 0이면 방어적 플레이를 못 배움. 약간의 보상으로 유도 \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{수업 확장 아이디어}
+% ============================================================
+
+\subsection{심화 활동}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{6cm}|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{활동} & \textbf{내용} & \textbf{소요 시간} \\
+\hline
+AI 대전 토너먼트 & 다른 파라미터로 학습한 AI끼리 대전 & 15분 \\
+\hline
+학습 보고서 비교 & 보고서 다운로드 후 조별 비교 발표 & 10분 \\
+\hline
+보상 체계 토론 & ``무승부를 $-0.5$로 바꾸면?'' 예측·토론 & 10분 \\
+\hline
+X vs O 비교 & X 단독 vs O 단독 학습 후 성능 비교 & 15분 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{교과 연계}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{교과} & \textbf{연계 내용} \\
+\hline
+수학 & 확률과 통계 — 승률 그래프 읽기, 평균 개념 \\
+\hline
+도덕 & AI 윤리 — ``AI가 스스로 배운다면 행동 책임은 누구에게?'' \\
+\hline
+국어 & 설명문 쓰기 — ``AI가 틱택토를 배우는 과정'' 설명문 \\
+\hline
+실과 & 소프트웨어 교육 — 알고리즘 개념, 컴퓨팅 사고력 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{다른 시뮬레이터와의 비교 수업}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{비교 대상} & \textbf{비교 포인트} \\
+\hline
+사과 가격 예측 (선형 회귀) & 지도학습 vs 강화학습 — 정답 유무의 차이 \\
+\hline
+KNN 분류 & 데이터 기반 vs 경험 기반 — 학습 방식의 차이 \\
+\hline
+K-means 군집화 & 비지도학습 vs 강화학습 — 목표의 차이 \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\newpage
+\section*{참고자료}
+% ============================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|l|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & rl-tictactoe-v3.html & 시뮬레이터 & 소스 코드 \\
+\hline
+2 & RL틱택토\_사용설명서\_v1.0.0.0 & 프로젝트 문서 & 전체 기능 상세 \\
+\hline
+3 & RL틱택토\_이론해설서\_v1.0.0.0 & 프로젝트 문서 & Q-Learning 원리 \\
+\hline
+4 & RL틱택토\_퀵가이드\_v1.0.0.0 & 프로젝트 문서 & 빠른 시작 참조 \\
+\hline
+5 & 코딩관리지침\_v3.0.0.0 & 프로젝트 지침 & §7 수업 활용 자료 \\
+\hline
+6 & 문서작성지침서\_v1.6.0.0 & 프로젝트 지침 & 톤/어조 \\
+\hline
+\end{tabular}
+\end{center}
+
+\section*{생성/수정 이력}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{|l|l|l|l|p{5cm}|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경 수준} & \textbf{변경 내용} & \textbf{작성자} \\
+\hline
+v1.0.0.0 & 2026-02-14 & 22:30 & 최초 & 초안 작성 — 수업 시나리오, 활동지 3종, 학습 질문 4단계, 수업지도안, 교사용 팁, 확장 아이디어 & Claude \\
+\hline
+\end{tabular}
+\end{center}
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\emph{RL 틱택토 활용가이드 — 교육용 Q-Learning 시뮬레이터의 수업 적용 가이드}
+\end{center}
+
+\end{document}

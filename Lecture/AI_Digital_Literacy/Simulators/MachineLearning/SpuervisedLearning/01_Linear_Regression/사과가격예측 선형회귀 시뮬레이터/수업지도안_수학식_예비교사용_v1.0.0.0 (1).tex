@@ -1,0 +1,389 @@
+% 사과 가격 예측 시뮬레이터 - 수학식 LaTeX 문서 (예비교사용)
+% 문서 버전: v1.0.0.0
+% 대상: 초등 예비교사
+% 작성일: 2026-02-02
+% 컴파일: xelatex 파일명.tex
+
+\documentclass[11pt,a4paper]{article}
+
+% 한글 지원
+\usepackage{fontspec}
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+
+% 컬러 이모지 (twemojis 패키지)
+\usepackage{twemojis}
+
+% 수학 패키지
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+% 색상
+\usepackage{xcolor}
+\definecolor{teal}{RGB}{0,131,143}
+\definecolor{darkblue}{RGB}{21,101,192}
+\definecolor{lightcyan}{RGB}{224,247,250}
+\definecolor{lightblue}{RGB}{227,242,253}
+\definecolor{lightyellow}{RGB}{255,249,196}
+\definecolor{lightgreen}{RGB}{232,245,233}
+
+% 박스
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+% 페이지 설정
+\usepackage[margin=2.5cm]{geometry}
+
+% 제목 스타일
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries\color{teal}}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries\color{darkblue}}{\thesubsection}{1em}{}
+
+% 하이퍼링크
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=teal,urlcolor=darkblue}
+
+\title{\Huge\textbf{\texttwemoji{red apple} 사과 가격 예측 시뮬레이터}\\[0.5em]
+\Large 수학식 참고 문서 \textbf{(예비교사용)}}
+\author{문서 버전: v1.0.0.0}
+\date{2026년 2월 2일}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+이 문서는 ``사과 가격 예측 선형 회귀 시뮬레이터 v1.2.4.1''에서 사용되는 
+수학적 공식들을 LaTeX으로 정리한 \textbf{예비교사용} 참고 문서입니다.
+경사 하강법의 수학적 유도, 정규화 기법, 성능 지표의 통계적 의미 등
+\textbf{심화 내용}을 포함합니다.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%=============================================
+\section{\texttwemoji{star} 품질 점수 계산}
+%=============================================
+
+\subsection{품질 점수 공식}
+
+사과의 품질 점수는 \textbf{당도}와 \textbf{무게}를 각각 0--50점으로 환산하여 합산합니다.
+이는 \textbf{Min-Max 정규화}의 변형으로, 두 변수를 동일한 스케일로 통합합니다.
+
+\begin{tcolorbox}[colback=lightcyan,colframe=teal,title=\textbf{\texttwemoji{sparkles} 품질 점수 공식}]
+\begin{equation}
+\boxed{\text{품질} = \text{당도점수} + \text{무게점수}}
+\end{equation}
+
+\textbf{일반화 형태 (Min-Max 정규화):}
+\begin{equation}
+\text{정규화 점수} = \frac{x - x_{\min}}{x_{\max} - x_{\min}} \times \text{목표범위}
+\end{equation}
+\end{tcolorbox}
+
+\subsection{\texttwemoji{honey pot} 당도 점수 계산}
+
+\begin{tcolorbox}[colback=lightblue,colframe=darkblue,title=\textbf{당도 점수 공식}]
+\begin{equation}
+\text{당도점수} = \frac{\text{당도} - 10}{18 - 10} \times 50 = \frac{\text{당도} - 10}{8} \times 50
+\end{equation}
+
+\begin{itemize}
+    \item \textbf{입력 범위:} $10 \leq \text{당도} \leq 18$ (Brix)
+    \item \textbf{출력 범위:} $0 \leq \text{당도점수} \leq 50$
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{\texttwemoji{balance scale} 무게 점수 계산}
+
+\begin{tcolorbox}[colback=lightblue,colframe=darkblue,title=\textbf{무게 점수 공식}]
+\begin{equation}
+\text{무게점수} = \frac{\text{무게} - 150}{350 - 150} \times 50 = \frac{\text{무게} - 150}{200} \times 50
+\end{equation}
+
+\begin{itemize}
+    \item \textbf{입력 범위:} $150 \leq \text{무게} \leq 350$ (g)
+    \item \textbf{출력 범위:} $0 \leq \text{무게점수} \leq 50$
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{\texttwemoji{teacher} 교육적 의의}
+
+\begin{tcolorbox}[colback=lightyellow,colframe=orange,title=\textbf{수업 활용 포인트}]
+\begin{itemize}
+    \item \textbf{단위 통일의 필요성}: 당도(Brix)와 무게(g)는 단위가 다르므로 직접 비교 불가
+    \item \textbf{정규화의 개념}: 서로 다른 스케일을 동일한 기준(0--50점)으로 변환
+    \item \textbf{가중치 개념 도입}: 현재는 50:50이지만, 비율 조정 가능함을 언급 가능
+\end{itemize}
+\end{tcolorbox}
+
+%=============================================
+\section{\texttwemoji{chart increasing} 선형 회귀 모델}
+%=============================================
+
+\subsection{단순 선형 회귀 (Simple Linear Regression)}
+
+\begin{tcolorbox}[colback=lightcyan,colframe=teal,title=\textbf{\texttwemoji{brain} 선형 회귀 모델}]
+\begin{equation}
+\boxed{\hat{y} = wx + b}
+\end{equation}
+
+시뮬레이터에서:
+\begin{equation}
+\text{가격} = w \times \text{품질} + b
+\end{equation}
+
+\textbf{파라미터:}
+\begin{itemize}
+    \item $w$ (weight): 기울기 -- 품질 1점당 가격 변화량
+    \item $b$ (bias): 절편 -- 품질이 0일 때의 예측 가격
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{최소제곱법 (Ordinary Least Squares)}
+
+선형 회귀의 해석적 해(closed-form solution):
+
+\begin{align}
+w &= \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^{n}(x_i - \bar{x})^2} = \frac{\text{Cov}(X, Y)}{\text{Var}(X)} \\[0.5em]
+b &= \bar{y} - w\bar{x}
+\end{align}
+
+\begin{tcolorbox}[colback=lightyellow,colframe=orange,title=\textbf{\texttwemoji{light bulb} 시뮬레이터에서 경사 하강법을 사용하는 이유}]
+\begin{itemize}
+    \item 해석적 해가 존재하지만, \textbf{학습 과정의 시각화}가 목적
+    \item 경사 하강법은 딥러닝의 기본 원리이므로 \textbf{교육적 가치}가 높음
+    \item 학생들이 ``AI가 스스로 학습한다''는 개념을 직관적으로 이해 가능
+\end{itemize}
+\end{tcolorbox}
+
+%=============================================
+\section{\texttwemoji{gear} 데이터 생성 공식}
+%=============================================
+
+\subsection{실제 가격 산정 (Ground Truth)}
+
+\begin{tcolorbox}[colback=lightcyan,colframe=teal,title=\textbf{\texttwemoji{sparkles} 데이터 생성 공식}]
+\begin{equation}
+y_{\text{true}} = 1000 + 30 \times \text{품질} + \epsilon
+\end{equation}
+
+\textbf{구성 요소:}
+\begin{itemize}
+    \item 기본 가격: 1,000원 (품질 0점일 때)
+    \item 품질 기여: 1점당 30원
+    \item $\epsilon$: 노이즈 (현실 세계의 불확실성 반영)
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{노이즈 모델}
+
+\begin{equation}
+\epsilon = \text{기본가격} \times \text{노이즈수준} \times (2r - 1), \quad r \sim U(0, 1)
+\end{equation}
+
+이는 균등 분포 $U(-\text{노이즈수준}, +\text{노이즈수준})$을 따릅니다.
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{노이즈 수준} & \textbf{분포} & \textbf{교육적 의미} \\
+\hline
+5\% & $\epsilon \sim U(-5\%, +5\%)$ & 이상적인 데이터 \\
+10\% & $\epsilon \sim U(-10\%, +10\%)$ & 현실적인 데이터 \\
+20\% & $\epsilon \sim U(-20\%, +20\%)$ & 노이즈가 많은 데이터 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=lightyellow,colframe=orange,title=\textbf{\texttwemoji{teacher} 수업 활용 포인트}]
+노이즈가 많을수록 $R^2$ 점수가 낮아짐을 실험으로 확인시키면, 
+``AI도 완벽하지 않다'', ``데이터 품질이 중요하다''는 메시지 전달 가능
+\end{tcolorbox}
+
+%=============================================
+\section{\texttwemoji{rocket} 경사 하강법 (Gradient Descent)}
+%=============================================
+
+\subsection{손실 함수 (Loss Function)}
+
+평균 제곱 오차(Mean Squared Error, MSE):
+
+\begin{tcolorbox}[colback=lightcyan,colframe=teal,title=\textbf{\texttwemoji{bar chart} MSE 손실 함수}]
+\begin{equation}
+L(w, b) = \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} \left( y_i - \hat{y}_i \right)^2 = \frac{1}{n} \sum_{i=1}^{n} \left( y_i - (wx_i + b) \right)^2
+\end{equation}
+\end{tcolorbox}
+
+\subsection{그래디언트 유도}
+
+손실 함수를 각 파라미터로 편미분:
+
+\begin{tcolorbox}[colback=lightblue,colframe=darkblue,title=\textbf{그래디언트 계산}]
+\begin{align}
+\frac{\partial L}{\partial w} &= \frac{\partial}{\partial w} \left[ \frac{1}{n} \sum_{i=1}^{n} (y_i - wx_i - b)^2 \right] \\
+&= \frac{1}{n} \sum_{i=1}^{n} 2(y_i - wx_i - b)(-x_i) \\
+&= \boxed{-\frac{2}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i) x_i}
+\end{align}
+
+\begin{align}
+\frac{\partial L}{\partial b} &= \frac{\partial}{\partial b} \left[ \frac{1}{n} \sum_{i=1}^{n} (y_i - wx_i - b)^2 \right] \\
+&= \frac{1}{n} \sum_{i=1}^{n} 2(y_i - wx_i - b)(-1) \\
+&= \boxed{-\frac{2}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)}
+\end{align}
+\end{tcolorbox}
+
+\subsection{파라미터 업데이트 규칙}
+
+\begin{tcolorbox}[colback=lightgreen,colframe=green!50!black,title=\textbf{\texttwemoji{counterclockwise arrows button} 경사 하강법 업데이트}]
+\begin{align}
+w^{(t+1)} &= w^{(t)} - \alpha \cdot \frac{\partial L}{\partial w} \\[0.5em]
+b^{(t+1)} &= b^{(t)} - \alpha \cdot \frac{\partial L}{\partial b}
+\end{align}
+
+여기서 $\alpha > 0$는 \textbf{학습률(learning rate)}입니다.
+\end{tcolorbox}
+
+\subsection{학습률의 영향}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{학습률} & \textbf{수렴 속도} & \textbf{안정성} & \textbf{시뮬레이터 설정} \\
+\hline
+$\alpha = 0.001$ & 매우 느림 & 안정적 & 최솟값 \\
+$\alpha = 0.01$ & 적절함 & 안정적 & \textbf{기본값 (권장)} \\
+$\alpha = 0.1$ & 빠름 & 발산 위험 & 최댓값 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=lightyellow,colframe=orange,title=\textbf{\texttwemoji{warning} 발산 현상 설명}]
+학습률이 너무 크면 그래디언트 방향으로 ``너무 멀리'' 이동하여 
+최솟값을 지나쳐 버리고, 손실이 오히려 증가하는 현상이 발생합니다.
+시뮬레이터에서 $\alpha = 0.1$로 실험하면 이 현상을 관찰할 수 있습니다.
+\end{tcolorbox}
+
+%=============================================
+\section{\texttwemoji{abacus} Z-score 정규화}
+%=============================================
+
+\subsection{정규화의 필요성}
+
+\begin{itemize}
+    \item 품질 점수(0--100)와 가격(1000--4000)은 스케일이 다름
+    \item 스케일 차이가 크면 경사 하강법 수렴이 불안정해짐
+    \item Z-score 정규화로 평균 0, 표준편차 1로 변환
+\end{itemize}
+
+\begin{tcolorbox}[colback=lightcyan,colframe=teal,title=\textbf{Z-score 정규화}]
+\begin{equation}
+z = \frac{x - \mu}{\sigma}
+\end{equation}
+
+정규화 후: $\mathbb{E}[z] = 0$, $\text{Var}(z) = 1$
+\end{tcolorbox}
+
+\subsection{역정규화 (Denormalization)}
+
+학습은 정규화된 공간에서 수행하고, 결과는 원래 스케일로 변환:
+
+\begin{tcolorbox}[colback=lightblue,colframe=darkblue,title=\textbf{가중치 역정규화}]
+\begin{align}
+w_{\text{real}} &= w_{\text{norm}} \cdot \frac{\sigma_y}{\sigma_x} \\[0.5em]
+b_{\text{real}} &= b_{\text{norm}} \cdot \sigma_y + \mu_y - w_{\text{real}} \cdot \mu_x
+\end{align}
+
+\textbf{유도:}
+\begin{align}
+\hat{y}_{\text{norm}} &= w_{\text{norm}} \cdot x_{\text{norm}} + b_{\text{norm}} \\
+\frac{\hat{y} - \mu_y}{\sigma_y} &= w_{\text{norm}} \cdot \frac{x - \mu_x}{\sigma_x} + b_{\text{norm}} \\
+\hat{y} &= \underbrace{w_{\text{norm}} \cdot \frac{\sigma_y}{\sigma_x}}_{w_{\text{real}}} \cdot x + \underbrace{b_{\text{norm}} \cdot \sigma_y + \mu_y - w_{\text{norm}} \cdot \frac{\sigma_y}{\sigma_x} \cdot \mu_x}_{b_{\text{real}}}
+\end{align}
+\end{tcolorbox}
+
+%=============================================
+\section{\texttwemoji{trophy} 성능 지표}
+%=============================================
+
+\subsection{결정 계수 ($R^2$ Score)}
+
+\begin{tcolorbox}[colback=lightcyan,colframe=teal,title=\textbf{\texttwemoji{hundred points} $R^2$ 점수}]
+\begin{equation}
+R^2 = 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}} = 1 - \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}{\sum_{i=1}^{n}(y_i - \bar{y})^2}
+\end{equation}
+
+\textbf{해석:}
+\begin{itemize}
+    \item $SS_{\text{res}}$: 잔차 제곱합 (모델이 설명하지 못한 변동)
+    \item $SS_{\text{tot}}$: 총 제곱합 (데이터의 전체 변동)
+    \item $R^2$: 모델이 설명하는 변동의 비율
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{$R^2$ 값의 의미}
+
+\begin{center}
+\begin{tabular}{|c|c|l|}
+\hline
+\textbf{$R^2$ 값} & \textbf{상태} & \textbf{해석} \\
+\hline
+$R^2 = 1$ & 완벽 & 모든 점이 회귀선 위에 있음 \\
+$R^2 > 0.8$ & \texttwemoji{check mark button} 양호 & 모델이 데이터를 잘 설명함 \\
+$0.5 < R^2 \leq 0.8$ & \texttwemoji{warning} 보통 & 개선 여지 있음 \\
+$R^2 \leq 0.5$ & \texttwemoji{cross mark} 부족 & 모델이 부적합하거나 노이즈 과다 \\
+$R^2 < 0$ & 실패 & 평균 예측보다 못함 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{MSE와 $R^2$의 관계}
+
+\begin{equation}
+R^2 = 1 - \frac{n \cdot \text{MSE}}{SS_{\text{tot}}}
+\end{equation}
+
+MSE가 작아질수록 $R^2$는 1에 가까워집니다.
+
+%=============================================
+\section{\texttwemoji{books} 참고자료}
+%=============================================
+
+\begin{center}
+\begin{tabular}{|c|l|c|l|}
+\hline
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & 사과가격예측\_시뮬레이터\_v1.2.4.1.html & 파일 & 실습용 시뮬레이터 \\
+\hline
+2 & 수업지도안\_예비교사용\_v1.2.1.0.docx & 문서 & 예비교사 대상 수업지도안 \\
+\hline
+3 & 사과가격예측\_개발일지\_v1.2.4.1.md & 문서 & 시뮬레이터 기술 문서 \\
+\hline
+4 & 문서버전관리가이드\_v1.2.2.md & 문서 & 버전 관리 체계 \\
+\hline
+\end{tabular}
+\end{center}
+
+%=============================================
+\section{\texttwemoji{memo} 생성/수정 이력}
+%=============================================
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|l|c|}
+\hline
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경 수준} & \textbf{변경 내용} & \textbf{작성자} \\
+\hline
+v1.0.0.0 & 2026-02-02 & 11:25 & 최초 & 초안 작성 (예비교사용) & Claude \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+\begin{center}
+\textit{\texttwemoji{red apple} 사과 가격 예측 시뮬레이터 - 수학식 참고 문서 (예비교사용)}
+\end{center}
+
+\end{document}

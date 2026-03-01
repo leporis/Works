@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍎 과일 분류 의사결정트리 시뮬레이터</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+        
+        :root {
+            --apple-red: #e74c3c;
+            --banana-yellow: #f1c40f;
+            --grape-purple: #9b59b6;
+            --watermelon-green: #27ae60;
+            --bg-cream: #fef9e7;
+            --bg-light: #fdfefe;
+            --text-dark: #2c3e50;
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ffecd2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease;
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            font-family: 'Jua', sans-serif;
+            font-size: 2.8rem;
+            color: var(--text-dark);
+            text-shadow: 3px 3px 0 #fff;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            background: rgba(255,255,255,0.7);
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr 320px;
+            gap: 20px;
+            animation: fadeIn 1s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .panel {
+            background: var(--bg-light);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+        
+        .panel-title {
+            font-family: 'Jua', sans-serif;
+            font-size: 1.4rem;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px dashed #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* 과일 데이터 테이블 */
+        .fruit-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+        
+        .fruit-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .fruit-table th:first-child { border-radius: 10px 0 0 10px; }
+        .fruit-table th:last-child { border-radius: 0 10px 10px 0; }
+        
+        .fruit-table td {
+            padding: 10px 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        
+        .fruit-table tr:hover td {
+            background: #e8f4fd;
+            transform: scale(1.02);
+        }
+        
+        .fruit-table td:first-child { border-radius: 8px 0 0 8px; }
+        .fruit-table td:last-child { border-radius: 0 8px 8px 0; }
+        
+        .fruit-emoji {
+            font-size: 1.5rem;
+        }
+        
+        .feature-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .color-red { background: #ffebee; color: #c62828; }
+        .color-yellow { background: #fffde7; color: #f9a825; }
+        .color-purple { background: #f3e5f5; color: #7b1fa2; }
+        .color-green { background: #e8f5e9; color: #2e7d32; }
+        
+        .shape-round { background: #e3f2fd; color: #1565c0; }
+        .shape-long { background: #fff3e0; color: #ef6c00; }
+        .shape-small-round { background: #fce4ec; color: #c2185b; }
+        .shape-oval { background: #e0f2f1; color: #00695c; }
+        
+        .size-big { background: #ffebee; color: #d32f2f; }
+        .size-medium { background: #e8f5e9; color: #388e3c; }
+        .size-small { background: #e3f2fd; color: #1976d2; }
+        
+        /* 의사결정트리 빌더 */
+        .tree-builder {
+            min-height: 500px;
+            position: relative;
+        }
+        
+        .tree-canvas {
+            width: 100%;
+            height: 450px;
+            background: linear-gradient(180deg, #f8f9fa 0%, #fff 100%);
+            border-radius: 15px;
+            border: 2px dashed #ddd;
+            position: relative;
+            overflow: auto;
+        }
+        
+        .tree-node {
+            position: absolute;
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            min-width: 120px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid #ddd;
+        }
+        
+        .tree-node:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow);
+        }
+        
+        .tree-node.root {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .tree-node.question {
+            border-color: #00b894;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+        }
+        
+        .tree-node.leaf {
+            border-color: #fdcb6e;
+            background: linear-gradient(135deg, #fdcb6e 0%, #f39c12 100%);
+        }
+        
+        .tree-node.leaf .fruit-result {
+            font-size: 2rem;
+        }
+        
+        .node-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .branch-label {
+            position: absolute;
+            background: #fff;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* 컨트롤 패널 */
+        .control-section {
+            margin-bottom: 25px;
+        }
+        
+        .control-section h3 {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feature-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .feature-btn {
+            padding: 12px 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feature-btn:hover {
+            transform: translateX(5px);
+        }
+        
+        .feature-btn.color-btn {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            color: white;
+        }
+        
+        .feature-btn.shape-btn {
+            background: linear-gradient(135deg, #5f27cd, #a55eea);
+            color: white;
+        }
+        
+        .feature-btn.size-btn {
+            background: linear-gradient(135deg, #00d2d3, #54a0ff);
+            color: white;
+        }
+        
+        .feature-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .reset-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background: #ee5a5a;
+            transform: scale(1.02);
+        }
+        
+        .auto-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .auto-btn:hover {
+            transform: scale(1.02);
+        }
+        
+        /* 테스트 섹션 */
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .test-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .test-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .test-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .test-row label {
+            width: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .test-row select {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .test-row select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .predict-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .predict-btn:hover {
+            transform: scale(1.02);
+        }
+        
+        .predict-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .prediction-result {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+        }
+        
+        .prediction-result.show {
+            display: block;
+            animation: popIn 0.5s ease;
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .result-emoji {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+        
+        .result-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .result-path {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #666;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        /* 정확도 표시 */
+        .accuracy-display {
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+        }
+        
+        .accuracy-label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .accuracy-value {
+            font-family: 'Jua', sans-serif;
+            font-size: 2.5rem;
+        }
+        
+        /* 설명 섹션 */
+        .info-box {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .info-box strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        
+        /* SVG 연결선 */
+        .tree-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        /* 반응형 */
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tree-builder {
+                order: -1;
+            }
+        }
+        
+        /* 단계 표시 */
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            border-radius: 25px;
+            box-shadow: var(--shadow-sm);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .step.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        
+        .step.active .step-num {
+            background: white;
+            color: #667eea;
+        }
+        
+        /* 현재 노드 강조 */
+        .tree-node.current {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.5); }
+            50% { box-shadow: 0 0 0 15px rgba(102, 126, 234, 0); }
+        }
+        
+        /* 트리 깊이 표시 */
+        .depth-indicator {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+            font-size: 0.75rem;
+            color: #999;
+        }
+        
+        .depth-level {
+            padding: 5px 10px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍎 과일 분류 의사결정트리 🍇</h1>
+            <p class="subtitle">머신러닝의 기본! 특징을 선택하여 과일을 분류하는 트리를 만들어보세요</p>
+        </header>
+        
+        <div class="step-indicator">
+            <div class="step active" id="step1">
+                <span class="step-num">1</span>
+                <span>데이터 확인</span>
+            </div>
+            <div class="step" id="step2">
+                <span class="step-num">2</span>
+                <span>분류 기준 선택</span>
+            </div>
+            <div class="step" id="step3">
+                <span class="step-num">3</span>
+                <span>트리 완성</span>
+            </div>
+            <div class="step" id="step4">
+                <span class="step-num">4</span>
+                <span>예측 테스트</span>
+            </div>
+        </div>
+        
+        <div class="main-grid">
+            <!-- 왼쪽: 훈련 데이터 -->
+            <div class="panel">
+                <h2 class="panel-title">📊 훈련 데이터</h2>
+                <table class="fruit-table">
+                    <thead>
+                        <tr>
+                            <th>과일</th>
+                            <th>색깔</th>
+                            <th>모양</th>
+                            <th>크기</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fruitTableBody">
+                        <!-- 동적 생성 -->
+                    </tbody>
+                </table>
+                
+                <div class="info-box">
+                    <strong>💡 의사결정트리란?</strong>
+                    특징(색깔, 모양, 크기)에 따라 질문을 던지며 데이터를 분류하는 방법입니다. 
+                    마치 스무고개 게임처럼 예/아니오 질문으로 정답을 찾아갑니다!
+                </div>
+            </div>
+            
+            <!-- 중앙: 의사결정트리 시각화 -->
+            <div class="panel tree-builder">
+                <h2 class="panel-title">🌳 의사결정트리</h2>
+                <div class="tree-canvas" id="treeCanvas">
+                    <svg class="tree-lines" id="treeLines"></svg>
+                    <div id="treeNodes"></div>
+                </div>
+            </div>
+            
+            <!-- 오른쪽: 컨트롤 패널 -->
+            <div class="panel">
+                <h2 class="panel-title">🎮 컨트롤</h2>
+                
+                <div class="control-section">
+                    <h3>📌 분류 기준 선택</h3>
+                    <p style="font-size: 0.85rem; color: #666; margin-bottom: 12px;">
+                        현재 노드: <strong id="currentNodeLabel">루트</strong>
+                    </p>
+                    <div class="feature-buttons">
+                        <button class="feature-btn color-btn" onclick="addSplit('color')" id="colorBtn">
+                            🎨 색깔로 분류
+                        </button>
+                        <button class="feature-btn shape-btn" onclick="addSplit('shape')" id="shapeBtn">
+                            ⭕ 모양으로 분류
+                        </button>
+                        <button class="feature-btn size-btn" onclick="addSplit('size')" id="sizeBtn">
+                            📏 크기로 분류
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <h3>⚡ 빠른 실행</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn auto-btn" onclick="autoGenerateTree()">
+                            🤖 자동으로 최적 트리 생성
+                        </button>
+                        <button class="action-btn reset-btn" onclick="resetTree()">
+                            🔄 트리 초기화
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="accuracy-display" id="accuracyDisplay" style="display: none;">
+                    <div class="accuracy-label">현재 트리 정확도</div>
+                    <div class="accuracy-value" id="accuracyValue">0%</div>
+                </div>
+                
+                <!-- 테스트 섹션 -->
+                <div class="test-section" id="testSection">
+                    <div class="test-title">🔮 새로운 과일 예측하기</div>
+                    <div class="test-inputs">
+                        <div class="test-row">
+                            <label>색깔</label>
+                            <select id="testColor">
+                                <option value="빨강">🔴 빨강</option>
+                                <option value="노랑">🟡 노랑</option>
+                                <option value="보라">🟣 보라</option>
+                                <option value="초록">🟢 초록</option>
+                            </select>
+                        </div>
+                        <div class="test-row">
+                            <label>모양</label>
+                            <select id="testShape">
+                                <option value="둥근">⚪ 둥근</option>
+                                <option value="긴">📏 긴</option>
+                                <option value="작고둥근">🔘 작고둥근</option>
+                                <option value="타원형">🥚 타원형</option>
+                            </select>
+                        </div>
+                        <div class="test-row">
+                            <label>크기</label>
+                            <select id="testSize">
+                                <option value="큰">🔺 큰</option>
+                                <option value="중간">🔹 중간</option>
+                                <option value="작은">🔸 작은</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="predict-btn" onclick="predictFruit()" id="predictBtn" disabled>
+                        🎯 예측하기
+                    </button>
+                    
+                    <div class="prediction-result" id="predictionResult">
+                        <div class="result-emoji" id="resultEmoji">🍎</div>
+                        <div class="result-text" id="resultText">사과입니다!</div>
+                        <div class="result-path" id="resultPath">경로: 색깔=빨강 → 사과</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 과일 데이터
+        const fruits = [
+            { name: '사과', emoji: '🍎', color: '빨강', shape: '둥근', size: '중간' },
+            { name: '사과', emoji: '🍎', color: '빨강', shape: '둥근', size: '중간' },
+            { name: '바나나', emoji: '🍌', color: '노랑', shape: '긴', size: '중간' },
+            { name: '바나나', emoji: '🍌', color: '노랑', shape: '긴', size: '중간' },
+            { name: '포도', emoji: '🍇', color: '보라', shape: '작고둥근', size: '작은' },
+            { name: '포도', emoji: '🍇', color: '보라', shape: '작고둥근', size: '작은' },
+            { name: '수박', emoji: '🍉', color: '초록', shape: '타원형', size: '큰' },
+            { name: '수박', emoji: '🍉', color: '초록', shape: '타원형', size: '큰' }
+        ];
+        
+        // 특징별 가능한 값
+        const featureValues = {
+            color: ['빨강', '노랑', '보라', '초록'],
+            shape: ['둥근', '긴', '작고둥근', '타원형'],
+            size: ['큰', '중간', '작은']
+        };
+        
+        const featureLabels = {
+            color: '색깔',
+            shape: '모양',
+            size: '크기'
+        };
+        
+        // 의사결정트리 구조
+        let tree = null;
+        let currentNode = null;
+        let usedFeatures = new Set();
+        
+        // 트리 노드 클래스
+        class TreeNode {
+            constructor(data, depth = 0) {
+                this.data = data;
+                this.depth = depth;
+                this.feature = null;
+                this.children = {};
+                this.isLeaf = false;
+                this.prediction = null;
+                this.id = 'node_' + Math.random().toString(36).substr(2, 9);
+            }
+            
+            getMajorityClass() {
+                const counts = {};
+                this.data.forEach(f => {
+                    counts[f.name] = (counts[f.name] || 0) + 1;
+                });
+                let maxCount = 0;
+                let majority = null;
+                for (const [name, count] of Object.entries(counts)) {
+                    if (count > maxCount) {
+                        maxCount = count;
+                        majority = name;
+                    }
+                }
+                return majority;
+            }
+            
+            isPure() {
+                const names = new Set(this.data.map(f => f.name));
+                return names.size === 1;
+            }
+        }
+        
+        // 초기화
+        function init() {
+            renderFruitTable();
+            resetTree();
+        }
+        
+        // 과일 테이블 렌더링
+        function renderFruitTable() {
+            const tbody = document.getElementById('fruitTableBody');
+            tbody.innerHTML = fruits.map(f => `
+                <tr>
+                    <td><span class="fruit-emoji">${f.emoji}</span> ${f.name}</td>
+                    <td><span class="feature-badge color-${f.color === '빨강' ? 'red' : f.color === '노랑' ? 'yellow' : f.color === '보라' ? 'purple' : 'green'}">${f.color}</span></td>
+                    <td><span class="feature-badge shape-${f.shape === '둥근' ? 'round' : f.shape === '긴' ? 'long' : f.shape === '작고둥근' ? 'small-round' : 'oval'}">${f.shape}</span></td>
+                    <td><span class="feature-badge size-${f.size === '큰' ? 'big' : f.size === '중간' ? 'medium' : 'small'}">${f.size}</span></td>
+                </tr>
+            `).join('');
+        }
+        
+        // 트리 초기화
+        function resetTree() {
+            tree = new TreeNode([...fruits], 0);
+            currentNode = tree;
+            usedFeatures.clear();
+            updateButtons();
+            renderTree();
+            updateSteps(1);
+            document.getElementById('accuracyDisplay').style.display = 'none';
+            document.getElementById('predictBtn').disabled = true;
+            document.getElementById('predictionResult').classList.remove('show');
+        }
+        
+        // 분기 추가
+        function addSplit(feature) {
+            if (!currentNode || currentNode.isLeaf) return;
+            if (usedFeatures.has(feature)) return;
+            
+            currentNode.feature = feature;
+            usedFeatures.add(feature);
+            
+            // 특징값별로 데이터 분할
+            const values = featureValues[feature];
+            values.forEach(value => {
+                const subset = currentNode.data.filter(f => f[feature] === value);
+                if (subset.length > 0) {
+                    const childNode = new TreeNode(subset, currentNode.depth + 1);
+                    
+                    // 순수 노드이거나 더 분할할 수 없으면 리프 노드로
+                    if (childNode.isPure() || currentNode.depth >= 2) {
+                        childNode.isLeaf = true;
+                        childNode.prediction = childNode.getMajorityClass();
+                    }
+                    
+                    currentNode.children[value] = childNode;
+                }
+            });
+            
+            // 다음 분할할 노드 찾기
+            findNextNode();
+            updateButtons();
+            renderTree();
+            calculateAccuracy();
+        }
+        
+        // 다음 분할할 노드 찾기
+        function findNextNode() {
+            currentNode = null;
+            
+            function traverse(node) {
+                if (!node) return;
+                if (!node.isLeaf && !node.feature) {
+                    currentNode = node;
+                    return;
+                }
+                for (const child of Object.values(node.children)) {
+                    if (currentNode) return;
+                    traverse(child);
+                }
+            }
+            
+            traverse(tree);
+            
+            if (!currentNode) {
+                // 모든 노드가 처리됨 - 트리 완성
+                updateSteps(4);
+                document.getElementById('predictBtn').disabled = false;
+            } else {
+                updateSteps(2);
+            }
+            
+            document.getElementById('currentNodeLabel').textContent = 
+                currentNode ? `깊이 ${currentNode.depth}의 노드 (${currentNode.data.length}개 데이터)` : '완성됨!';
+        }
+        
+        // 버튼 상태 업데이트
+        function updateButtons() {
+            const allUsed = usedFeatures.size >= 3 || !currentNode;
+            
+            document.getElementById('colorBtn').disabled = usedFeatures.has('color') || allUsed;
+            document.getElementById('shapeBtn').disabled = usedFeatures.has('shape') || allUsed;
+            document.getElementById('sizeBtn').disabled = usedFeatures.has('size') || allUsed;
+        }
+        
+        // 단계 표시 업데이트
+        function updateSteps(step) {
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('step' + i).classList.toggle('active', i <= step);
+            }
+        }
+        
+        // 트리 렌더링
+        function renderTree() {
+            const container = document.getElementById('treeNodes');
+            const svg = document.getElementById('treeLines');
+            container.innerHTML = '';
+            svg.innerHTML = '';
+            
+            if (!tree) return;
+            
+            const nodePositions = {};
+            const canvasWidth = document.getElementById('treeCanvas').offsetWidth;
+            const canvasHeight = document.getElementById('treeCanvas').offsetHeight;
+            
+            // 노드 위치 계산
+            function calculatePositions(node, x, width, y) {
+                if (!node) return;
+                
+                nodePositions[node.id] = { x, y };
+                
+                const childKeys = Object.keys(node.children);
+                if (childKeys.length > 0) {
+                    const childWidth = width / childKeys.length;
+                    childKeys.forEach((key, index) => {
+                        const childX = x - width/2 + childWidth/2 + childWidth * index;
+                        calculatePositions(node.children[key], childX, childWidth, y + 120);
+                    });
+                }
+            }
+            
+            calculatePositions(tree, canvasWidth / 2, canvasWidth - 100, 40);
+            
+            // 연결선 그리기
+            function drawLines(node) {
+                if (!node) return;
+                
+                const pos = nodePositions[node.id];
+                for (const [value, child] of Object.entries(node.children)) {
+                    const childPos = nodePositions[child.id];
+                    
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    const midY = (pos.y + childPos.y + 50) / 2 + 20;
+                    line.setAttribute('d', `M${pos.x},${pos.y + 50} Q${pos.x},${midY} ${childPos.x},${childPos.y}`);
+                    line.setAttribute('stroke', '#ccc');
+                    line.setAttribute('stroke-width', '3');
+                    line.setAttribute('fill', 'none');
+                    svg.appendChild(line);
+                    
+                    // 분기 레이블
+                    const labelDiv = document.createElement('div');
+                    labelDiv.className = 'branch-label';
+                    labelDiv.style.left = ((pos.x + childPos.x) / 2 - 20) + 'px';
+                    labelDiv.style.top = (midY - 10) + 'px';
+                    labelDiv.textContent = value;
+                    container.appendChild(labelDiv);
+                    
+                    drawLines(child);
+                }
+            }
+            
+            drawLines(tree);
+            
+            // 노드 그리기
+            function drawNodes(node) {
+                if (!node) return;
+                
+                const pos = nodePositions[node.id];
+                const div = document.createElement('div');
+                div.className = 'tree-node';
+                
+                if (node === tree) {
+                    div.classList.add('root');
+                } else if (node.isLeaf) {
+                    div.classList.add('leaf');
+                } else if (node.feature) {
+                    div.classList.add('question');
+                }
+                
+                if (node === currentNode) {
+                    div.classList.add('current');
+                }
+                
+                div.style.left = (pos.x - 60) + 'px';
+                div.style.top = pos.y + 'px';
+                
+                if (node.isLeaf) {
+                    const emoji = fruits.find(f => f.name === node.prediction)?.emoji || '❓';
+                    div.innerHTML = `
+                        <div class="fruit-result">${emoji}</div>
+                        <div class="node-label">${node.prediction}</div>
+                    `;
+                } else if (node.feature) {
+                    div.innerHTML = `
+                        <div class="node-label">${featureLabels[node.feature]}?</div>
+                        <div style="font-size: 0.8rem; margin-top: 5px;">(${node.data.length}개)</div>
+                    `;
+                } else {
+                    div.innerHTML = `
+                        <div class="node-label">시작</div>
+                        <div style="font-size: 0.8rem; margin-top: 5px;">(${node.data.length}개)</div>
+                    `;
+                }
+                
+                container.appendChild(div);
+                
+                for (const child of Object.values(node.children)) {
+                    drawNodes(child);
+                }
+            }
+            
+            drawNodes(tree);
+        }
+        
+        // 정확도 계산
+        function calculateAccuracy() {
+            let correct = 0;
+            
+            fruits.forEach(fruit => {
+                const prediction = predictWithTree(fruit);
+                if (prediction === fruit.name) correct++;
+            });
+            
+            const accuracy = Math.round((correct / fruits.length) * 100);
+            document.getElementById('accuracyValue').textContent = accuracy + '%';
+            document.getElementById('accuracyDisplay').style.display = 'block';
+            
+            if (accuracy === 100) {
+                updateSteps(4);
+            }
+        }
+        
+        // 트리로 예측
+        function predictWithTree(fruit) {
+            let node = tree;
+            const path = [];
+            
+            while (node && !node.isLeaf) {
+                if (!node.feature) {
+                    return node.getMajorityClass();
+                }
+                
+                const value = fruit[node.feature];
+                path.push(`${featureLabels[node.feature]}=${value}`);
+                
+                if (node.children[value]) {
+                    node = node.children[value];
+                } else {
+                    return node.getMajorityClass();
+                }
+            }
+            
+            return node ? node.prediction : '알 수 없음';
+        }
+        
+        // 사용자 입력으로 예측
+        function predictFruit() {
+            const testFruit = {
+                color: document.getElementById('testColor').value,
+                shape: document.getElementById('testShape').value,
+                size: document.getElementById('testSize').value
+            };
+            
+            let node = tree;
+            const path = [];
+            
+            while (node && !node.isLeaf) {
+                if (!node.feature) break;
+                
+                const value = testFruit[node.feature];
+                path.push(`${featureLabels[node.feature]}=${value}`);
+                
+                if (node.children[value]) {
+                    node = node.children[value];
+                } else {
+                    break;
+                }
+            }
+            
+            const prediction = node ? (node.isLeaf ? node.prediction : node.getMajorityClass()) : '알 수 없음';
+            const emoji = fruits.find(f => f.name === prediction)?.emoji || '❓';
+            
+            document.getElementById('resultEmoji').textContent = emoji;
+            document.getElementById('resultText').textContent = `${prediction}입니다!`;
+            document.getElementById('resultPath').textContent = `경로: ${path.join(' → ')} → ${prediction}`;
+            document.getElementById('predictionResult').classList.add('show');
+        }
+        
+        // 자동 트리 생성 (최적 순서로)
+        function autoGenerateTree() {
+            resetTree();
+            
+            // 정보 이득이 높은 순서로 특징 선택 (간단한 휴리스틱)
+            // 실제로는 색깔이 가장 구분력이 좋음
+            setTimeout(() => {
+                addSplit('color');
+                setTimeout(() => {
+                    // 모든 색깔로 완벽하게 분류되므로 추가 분할 불필요
+                    updateSteps(4);
+                    document.getElementById('predictBtn').disabled = false;
+                }, 500);
+            }, 300);
+        }
+        
+        // 윈도우 리사이즈 시 트리 다시 그리기
+        window.addEventListener('resize', () => {
+            if (tree) renderTree();
+        });
+        
+        // 초기화 실행
+        init();
+    </script>
+</body>
+</html>

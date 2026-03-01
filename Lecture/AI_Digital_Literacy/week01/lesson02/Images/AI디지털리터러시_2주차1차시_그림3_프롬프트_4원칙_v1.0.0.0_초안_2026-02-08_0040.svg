@@ -1,0 +1,48 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="800" height="600" fill="#f4f7f6"/>
+  <text x="400" y="50" font-family="'Noto Sans KR', sans-serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#2d3436">프롬프트 작성 4원칙</text>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#636e72" />
+    </marker>
+  </defs>
+  <g transform="translate(300, 250)">
+    <rect x="0" y="0" width="200" height="120" rx="15" fill="#00b894" stroke="#00a884" stroke-width="3" filter="drop-shadow(2px 4px 6px rgba(0,0,0,0.2))"/>
+    <text x="100" y="45" font-family="'Noto Sans KR', sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="white">효과적인</text>
+    <text x="100" y="85" font-family="'Noto Sans KR', sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="white">프롬프트</text>
+  </g>
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="240" height="130" rx="10" fill="#74b9ff" stroke="#0984e3" stroke-width="2"/>
+    <text x="20" y="35" font-family="'Noto Sans KR', sans-serif" font-size="18" font-weight="bold" fill="white">① 명확하고 구체적으로</text>
+    <line x1="20" y1="50" x2="220" y2="50" stroke="white" stroke-width="1" opacity="0.7"/>
+    <text x="20" y="80" font-family="'Noto Sans KR', sans-serif" font-size="14" fill="#f1f2f6">"누가, 무엇을,</text>
+    <text x="20" y="105" font-family="'Noto Sans KR', sans-serif" font-size="14" fill="#f1f2f6">어떻게, 얼마나"</text>
+  </g>
+  <g transform="translate(510, 100)">
+    <rect x="0" y="0" width="240" height="130" rx="10" fill="#a29bfe" stroke="#6c5ce7" stroke-width="2"/>
+    <text x="20" y="35" font-family="'Noto Sans KR', sans-serif" font-size="18" font-weight="bold" fill="white">② 맥락과 배경 정보 제공</text>
+    <line x1="20" y1="50" x2="220" y2="50" stroke="white" stroke-width="1" opacity="0.7"/>
+    <text x="20" y="80" font-family="'Noto Sans KR', sans-serif" font-size="14" fill="#f1f2f6">대상, 수준,</text>
+    <text x="20" y="105" font-family="'Noto Sans KR', sans-serif" font-size="14" fill="#f1f2f6">목적, 상황</text>
+  </g>
+  <g transform="translate(50, 400)">
+    <rect x="0" y="0" width="240" height="130" rx="10" fill="#fab1a0" stroke="#e17055" stroke-width="2"/>
+    <text x="20" y="35" font-family="'Noto Sans KR', sans-serif" font-size="18" font-weight="bold" fill="white">③ 출력 형식 지정하기</text>
+    <line x1="20" y1="50" x2="220" y2="50" stroke="white" stroke-width="1" opacity="0.7"/>
+    <text x="20" y="80" font-family="'Noto Sans KR', sans-serif" font-size="14" fill="#f1f2f6">표, 목록, 분량</text>
+    <text x="20" y="105" font-family="'Noto Sans KR', sans-serif" font-size="14" fill="#f1f2f6">구조 등 명시</text>
+  </g>
+  <g transform="translate(510, 400)">
+    <rect x="0" y="0" width="240" height="130" rx="10" fill="#fdcb6e" stroke="#e6ba43" stroke-width="2"/>
+    <text x="20" y="35" font-family="'Noto Sans KR', sans-serif" font-size="18" font-weight="bold" fill="white">④ 단계별로 나누어 요청</text>
+    <line x1="20" y1="50" x2="220" y2="50" stroke="white" stroke-width="1" opacity="0.7"/>
+    <text x="20" y="80" font-family="'Noto Sans KR', sans-serif" font-size="14" fill="#f1f2f6">복잡한 과제를</text>
+    <text x="20" y="105" font-family="'Noto Sans KR', sans-serif" font-size="14" fill="#f1f2f6">작은 단위로</text>
+  </g>
+  <g stroke="#636e72" stroke-width="3" fill="none">
+    <path d="M 170 230 L 300 280" marker-end="url(#arrow)"/>
+    <path d="M 630 230 L 500 280" marker-end="url(#arrow)"/>
+    <path d="M 170 400 L 300 340" marker-end="url(#arrow)"/>
+    <path d="M 630 400 L 500 340" marker-end="url(#arrow)"/>
+  </g>
+</svg>

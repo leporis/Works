@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" font-family="'Noto Sans KR', sans-serif">
+  <defs>
+    <filter id="ds"><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-opacity="0.10"/></filter>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="900" height="620" rx="12" fill="#FAFAFA"/>
+
+  <!-- 제목 영역 -->
+  <rect x="0" y="0" width="900" height="78" rx="12" fill="#1976D2"/>
+  <rect x="0" y="40" width="900" height="38" fill="#1976D2"/>
+  <text x="450" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">경로 재설정 — 기술의 방향을 바꾸는 3단계</text>
+  <text x="450" y="62" text-anchor="middle" font-size="13" font-weight="400" fill="#BBDEFB">『권력과 진보』 11장 · Redirecting Technology</text>
+
+  <!-- ========== 3단계 카드 ========== -->
+  <!-- 카드 폭 240, 쉐브론 30, 시작 x=50, 340, 630 -->
+
+  <!-- STEP 1: 내러티브 전환 -->
+  <rect x="40" y="100" width="240" height="230" rx="14" fill="#E3F2FD" stroke="#42A5F5" stroke-width="2" filter="url(#ds)"/>
+  <rect x="40" y="100" width="240" height="52" rx="14" fill="#42A5F5"/>
+  <rect x="40" y="130" width="240" height="22" fill="#42A5F5"/>
+  <text x="160" y="122" text-anchor="middle" font-size="12" font-weight="500" fill="#BBDEFB">STEP 1</text>
+  <text x="160" y="146" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">🔄 내러티브 전환</text>
+
+  <text x="60" y="178" font-size="13" font-weight="600" fill="#0D47A1">"기술 중립은 허구다"</text>
+  <text x="60" y="198" font-size="12" fill="#1565C0">기존 내러티브를 깨뜨리고</text>
+  <text x="60" y="216" font-size="12" fill="#1565C0">대안적 관점을 제시한다</text>
+
+  <line x1="56" y1="228" x2="264" y2="228" stroke="#90CAF9" stroke-width="1"/>
+  <text x="60" y="248" font-size="10" font-weight="700" fill="#1976D2">역사 속 사례</text>
+  <text x="60" y="266" font-size="11" fill="#42A5F5">· 환경운동: "오염은 불가피하지 않다"</text>
+  <text x="60" y="284" font-size="11" fill="#42A5F5">· 노동운동: "저임금은 자연법칙이 아니다"</text>
+  <text x="60" y="302" font-size="11" fill="#42A5F5">· 여성운동: "참정권은 당연한 권리다"</text>
+  <text x="60" y="320" font-size="11" fill="#42A5F5">· AI 비판: "자동화는 선택이지 운명이 아니다"</text>
+
+  <!-- 쉐브론 1→2 -->
+  <polygon points="290,180 320,215 290,250" fill="#42A5F5" opacity="0.7"/>
+  <polygon points="300,192 320,215 300,238" fill="#1976D2" opacity="0.8"/>
+
+  <!-- STEP 2: 대항 권력 형성 -->
+  <rect x="330" y="100" width="240" height="230" rx="14" fill="#E3F2FD" stroke="#1976D2" stroke-width="2" filter="url(#ds)"/>
+  <rect x="330" y="100" width="240" height="52" rx="14" fill="#1976D2"/>
+  <rect x="330" y="130" width="240" height="22" fill="#1976D2"/>
+  <text x="450" y="122" text-anchor="middle" font-size="12" font-weight="500" fill="#BBDEFB">STEP 2</text>
+  <text x="450" y="146" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">✊ 대항 권력 형성</text>
+
+  <text x="350" y="178" font-size="13" font-weight="600" fill="#0D47A1">"시민이 목소리를 내다"</text>
+  <text x="350" y="198" font-size="12" fill="#1565C0">조직화된 힘으로</text>
+  <text x="350" y="216" font-size="12" fill="#1565C0">비전 설정자에게 맞서다</text>
+
+  <line x1="346" y1="228" x2="554" y2="228" stroke="#90CAF9" stroke-width="1"/>
+  <text x="350" y="248" font-size="10" font-weight="700" fill="#1976D2">역사 속 사례</text>
+  <text x="350" y="266" font-size="11" fill="#1976D2">· 노동조합 결성과 파업</text>
+  <text x="350" y="284" font-size="11" fill="#1976D2">· 시민단체 (그린피스, NAACP)</text>
+  <text x="350" y="302" font-size="11" fill="#1976D2">· 소비자 불매운동</text>
+  <text x="350" y="320" font-size="11" fill="#1976D2">· 디지털 노동조합 · 알고리즘 감사</text>
+
+  <!-- 쉐브론 2→3 -->
+  <polygon points="580,180 610,215 580,250" fill="#1976D2" opacity="0.7"/>
+  <polygon points="590,192 610,215 590,238" fill="#0D47A1" opacity="0.8"/>
+
+  <!-- STEP 3: 정책 변화 -->
+  <rect x="620" y="100" width="240" height="230" rx="14" fill="#E3F2FD" stroke="#0D47A1" stroke-width="2" filter="url(#ds)"/>
+  <rect x="620" y="100" width="240" height="52" rx="14" fill="#0D47A1"/>
+  <rect x="620" y="130" width="240" height="22" fill="#0D47A1"/>
+  <text x="740" y="122" text-anchor="middle" font-size="12" font-weight="500" fill="#90CAF9">STEP 3</text>
+  <text x="740" y="146" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">📜 정책 변화</text>
+
+  <text x="640" y="178" font-size="13" font-weight="600" fill="#0D47A1">"법과 제도로 방향을 고정하다"</text>
+  <text x="640" y="198" font-size="12" fill="#1565C0">대항 권력의 성과를</text>
+  <text x="640" y="216" font-size="12" fill="#1565C0">제도화하여 지속시키다</text>
+
+  <line x1="636" y1="228" x2="844" y2="228" stroke="#90CAF9" stroke-width="1"/>
+  <text x="640" y="248" font-size="10" font-weight="700" fill="#0D47A1">역사 속 사례</text>
+  <text x="640" y="266" font-size="11" fill="#0D47A1">· 청정대기법 (1970, 미국)</text>
+  <text x="640" y="284" font-size="11" fill="#0D47A1">· 반독점법 (셔먼법, 1890)</text>
+  <text x="640" y="302" font-size="11" fill="#0D47A1">· 노동 8시간 법제화</text>
+  <text x="640" y="320" font-size="11" fill="#0D47A1">· EU AI법 (2024)</text>
+
+  <!-- ========== 하단: 환경운동 사례로 본 3단계 ========== -->
+  <line x1="40" y1="350" x2="860" y2="350" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="450" y="372" text-anchor="middle" font-size="13" font-weight="700" fill="#424242">🌍 환경운동에서 배우는 3단계 — 기술의 방향은 바꿀 수 있다</text>
+
+  <!-- 환경 타임라인 -->
+  <line x1="100" y1="402" x2="800" y2="402" stroke="#388E3C" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- 마커 1 -->
+  <circle cx="200" cy="402" r="8" fill="#42A5F5" stroke="#fff" stroke-width="2"/>
+  <text x="200" y="394" text-anchor="middle" font-size="10" fill="#757575">1962</text>
+  <rect x="110" y="418" width="180" height="68" rx="8" fill="#E8F5E9" stroke="#388E3C" stroke-width="1" filter="url(#ds)"/>
+  <text x="200" y="436" text-anchor="middle" font-size="11" font-weight="700" fill="#2E7D32">내러티브 전환</text>
+  <text x="200" y="454" text-anchor="middle" font-size="10" fill="#388E3C">레이첼 카슨 『침묵의 봄』</text>
+  <text x="200" y="470" text-anchor="middle" font-size="10" fill="#388E3C">"농약은 진보가 아니라 재앙"</text>
+  <text x="200" y="482" text-anchor="middle" font-size="10" fill="#66BB6A">→ 환경 내러티브의 탄생</text>
+
+  <!-- 마커 2 -->
+  <circle cx="450" cy="402" r="8" fill="#1976D2" stroke="#fff" stroke-width="2"/>
+  <text x="450" y="394" text-anchor="middle" font-size="10" fill="#757575">1960~70s</text>
+  <rect x="360" y="418" width="180" height="68" rx="8" fill="#E8F5E9" stroke="#388E3C" stroke-width="1" filter="url(#ds)"/>
+  <text x="450" y="436" text-anchor="middle" font-size="11" font-weight="700" fill="#2E7D32">대항 권력 형성</text>
+  <text x="450" y="454" text-anchor="middle" font-size="10" fill="#388E3C">시에라클럽 · 그린피스 결성</text>
+  <text x="450" y="470" text-anchor="middle" font-size="10" fill="#388E3C">지구의 날 시위 (2000만 명)</text>
+  <text x="450" y="482" text-anchor="middle" font-size="10" fill="#66BB6A">→ 조직화된 환경운동</text>
+
+  <!-- 마커 3 -->
+  <circle cx="700" cy="402" r="8" fill="#0D47A1" stroke="#fff" stroke-width="2"/>
+  <text x="700" y="394" text-anchor="middle" font-size="10" fill="#757575">1970~</text>
+  <rect x="610" y="418" width="180" height="68" rx="8" fill="#E8F5E9" stroke="#388E3C" stroke-width="1" filter="url(#ds)"/>
+  <text x="700" y="436" text-anchor="middle" font-size="11" font-weight="700" fill="#2E7D32">정책 변화</text>
+  <text x="700" y="454" text-anchor="middle" font-size="10" fill="#388E3C">청정대기법 (1970)</text>
+  <text x="700" y="470" text-anchor="middle" font-size="10" fill="#388E3C">환경보호청 EPA 설립</text>
+  <text x="700" y="482" text-anchor="middle" font-size="10" fill="#66BB6A">→ 제도적 보장 달성</text>
+
+  <!-- ========== 하단: AI 교육 적용 ========== -->
+  <rect x="80" y="504" width="740" height="56" rx="10" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="1.5"/>
+  <text x="450" y="526" text-anchor="middle" font-size="13" font-weight="700" fill="#4A148C">AI 교육에 적용한다면?</text>
+  <text x="450" y="546" text-anchor="middle" font-size="11" fill="#7B1FA2">STEP 1  "AI는 교사를 대체하지 않는다"  →  STEP 2  교사 연대 · 학부모 참여  →  STEP 3  AI 교육 가이드라인 법제화</text>
+
+  <!-- ========== 하단: 핵심 메시지 ========== -->
+  <rect x="120" y="572" width="660" height="36" rx="8" fill="#E3F2FD" stroke="#1976D2" stroke-width="1.5"/>
+  <text x="450" y="590" text-anchor="middle" font-size="13" font-weight="600" fill="#0D47A1">핵심 메시지 :  "기술의 방향은 정해진 것이 아니라, 우리가 선택하는 것이다"</text>
+  <text x="450" y="604" text-anchor="middle" font-size="11" fill="#1565C0">💡 교사는 어디서부터 시작할 수 있을까?</text>
+
+</svg>

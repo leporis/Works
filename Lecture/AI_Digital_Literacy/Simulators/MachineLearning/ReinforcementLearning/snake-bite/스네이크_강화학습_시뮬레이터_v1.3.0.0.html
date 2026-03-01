@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐍 스네이크 강화학습 시뮬레이터</title>
+<style>
+:root {
+    --bg-primary: #000000;
+    --bg-secondary: #0a0a0a;
+    --bg-card: #111111;
+    --bg-input: #0a0a0a;
+    --border-color: #222222;
+    --text-primary: #e0e0e0;
+    --text-secondary: #999999;
+    --text-muted: #666666;
+    --accent-green: #00ff00;
+    --accent-red: #ff0000;
+    --accent-cyan: #00ccff;
+    --accent-yellow: #ffcc00;
+    --accent-orange: #ff8800;
+    --snake-color: #00dd00;
+    --snake-head-color: #00ff00;
+    --food-color: #ff0000;
+    --radius: 4px;
+    --transition: 0.15s ease;
+    --font-main: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+body { font-family: var(--font-main); background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; }
+
+/* ===== 헤더 ===== */
+.header {
+    background: var(--bg-secondary); border-bottom: 1px solid var(--border-color);
+    padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}
+.header-title { display: flex; align-items: center; gap: 10px; }
+.header-title h1 { font-size: 1.2rem; font-weight: 700; color: var(--accent-green); text-shadow: 0 0 10px rgba(0,255,0,0.3); }
+.header-title .badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 3px; background: rgba(0,255,0,0.1); color: var(--accent-green); border: 1px solid rgba(0,255,0,0.3); font-family: var(--font-mono); }
+.header-stats { display: flex; gap: 18px; font-size: 0.8rem; }
+.header-stats .stat { display: flex; align-items: center; gap: 5px; }
+.header-stats .stat-label { color: var(--text-muted); }
+.header-stats .stat-value { color: var(--accent-green); font-family: var(--font-mono); font-weight: 600; }
+
+/* ===== 모드 탭 ===== */
+.mode-tabs { display: flex; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 0 20px; }
+.mode-tab { padding: 10px 20px; cursor: pointer; font-size: 0.85rem; color: var(--text-muted); border-bottom: 2px solid transparent; transition: var(--transition); user-select: none; }
+.mode-tab:hover { color: var(--text-secondary); }
+.mode-tab.active { color: var(--accent-green); border-bottom-color: var(--accent-green); }
+
+/* ===== 메인 ===== */
+.main-layout { display: grid; grid-template-columns: 270px 1fr 320px; gap: 0; min-height: calc(100vh - 100px); }
+.panel { padding: 14px; border-right: 1px solid var(--border-color); background: var(--bg-secondary); overflow-y: auto; max-height: calc(100vh - 100px); }
+.panel:last-child { border-right: none; border-left: 1px solid var(--border-color); }
+.panel-section { margin-bottom: 16px; }
+.panel-section h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+
+/* ===== 입력 ===== */
+.input-group { margin-bottom: 10px; }
+.input-group label { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 4px; }
+.input-group label .value { font-family: var(--font-mono); color: var(--accent-green); font-size: 0.78rem; }
+input[type="range"] { width: 100%; height: 3px; -webkit-appearance: none; appearance: none; background: #222; border-radius: 2px; outline: none; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 2px; background: var(--accent-green); cursor: pointer; }
+select { width: 100%; padding: 6px 8px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: var(--radius); color: var(--text-primary); font-size: 0.8rem; outline: none; cursor: pointer; }
+select:focus { border-color: var(--accent-green); }
+
+/* ===== 버튼 ===== */
+.btn { padding: 8px 14px; border: none; border-radius: var(--radius); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%; font-family: var(--font-main); }
+.btn-primary { background: #005500; color: var(--accent-green); border: 1px solid var(--accent-green); }
+.btn-primary:hover { background: #007700; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-danger { background: #550000; color: var(--accent-red); border: 1px solid #880000; }
+.btn-danger:hover { background: #770000; }
+.btn-secondary { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-color); }
+.btn-secondary:hover { border-color: var(--accent-green); }
+.btn-group { display: flex; gap: 6px; }
+.btn-group .btn { flex: 1; }
+
+/* ===== 게임 영역 ===== */
+.game-area { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; background: var(--bg-primary); position: relative; }
+.game-container { position: relative; border: 2px solid #1a3a1a; transition: border-color 0.5s, box-shadow 0.5s; }
+.game-container.level-0 { border-color: #331111; box-shadow: 0 0 20px rgba(255,0,0,0.05); }
+.game-container.level-1 { border-color: #333311; box-shadow: 0 0 20px rgba(255,200,0,0.05); }
+.game-container.level-2 { border-color: #113311; box-shadow: 0 0 20px rgba(0,255,0,0.08); }
+.game-container.level-3 { border-color: #115533; box-shadow: 0 0 25px rgba(0,255,100,0.1); }
+.game-container.level-4 { border-color: #00ff66; box-shadow: 0 0 30px rgba(0,255,100,0.15); }
+#gameCanvas { display: block; background: #000; }
+.game-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); z-index: 10; pointer-events: none; opacity: 0; transition: opacity 0.3s ease; }
+.game-overlay.visible { opacity: 1; pointer-events: auto; }
+.game-overlay h2 { font-size: 1.4rem; margin-bottom: 6px; color: var(--accent-green); }
+.game-overlay p { color: var(--text-secondary); font-size: 0.85rem; }
+
+/* 속도 바 */
+.speed-bar { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 520px; margin-top: 10px; padding: 8px 14px; background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border-color); font-size: 0.78rem; }
+.speed-bar label { color: var(--text-muted); white-space: nowrap; min-width: 50px; }
+.speed-bar input[type="range"] { flex: 1; }
+.speed-bar .speed-val { font-family: var(--font-mono); color: var(--accent-green); min-width: 60px; text-align: right; }
+
+/* 상태 바 */
+.game-status-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 520px; margin-top: 8px; padding: 7px 14px; background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border-color); font-size: 0.78rem; }
+.game-status-bar .info { display: flex; gap: 14px; }
+.game-status-bar .info span { color: var(--text-muted); }
+.game-status-bar .info span b { color: var(--text-primary); font-family: var(--font-mono); }
+
+/* ===== 학습 성적표 (핵심 추가) ===== */
+.progress-dashboard {
+    background: linear-gradient(135deg, #0a1a0a 0%, #111 100%);
+    border-radius: var(--radius);
+    border: 1px solid #1a3a1a;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+.progress-dashboard h4 {
+    font-size: 0.82rem;
+    color: var(--accent-green);
+    margin-bottom: 10px;
+}
+/* 레벨 표시 */
+.level-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 10px;
+    background: rgba(0,255,0,0.03);
+    border-radius: var(--radius);
+    border: 1px solid #1a2a1a;
+}
+.level-emoji { font-size: 2rem; line-height: 1; }
+.level-info { flex: 1; }
+.level-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent-green);
+    font-family: var(--font-mono);
+}
+.level-desc { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+/* 레벨 프로그레스 */
+.level-progress {
+    margin-top: 6px;
+    height: 4px;
+    background: #1a1a1a;
+    border-radius: 2px;
+    overflow: hidden;
+}
+.level-progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease, background 0.5s ease;
+    background: var(--accent-green);
+}
+/* 비교 지표 */
+.compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+.compare-card {
+    background: #0a0a0a;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 8px;
+    text-align: center;
+}
+.compare-label { font-size: 0.62rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 4px; }
+.compare-value { font-size: 1.1rem; font-weight: 700; font-family: var(--font-mono); }
+.compare-value.up { color: #00ff88; }
+.compare-value.down { color: #ff4444; }
+.compare-value.neutral { color: var(--text-muted); }
+.compare-delta { font-size: 0.68rem; margin-top: 2px; font-family: var(--font-mono); }
+.compare-delta.up { color: #00ff88; }
+.compare-delta.down { color: #ff4444; }
+.compare-delta.neutral { color: var(--text-muted); }
+
+/* 개선 추이 미니 바 */
+.trend-bars {
+    display: flex;
+    gap: 2px;
+    align-items: flex-end;
+    height: 30px;
+    margin-top: 6px;
+    padding: 0 2px;
+}
+.trend-bar {
+    flex: 1;
+    min-width: 0;
+    border-radius: 1px 1px 0 0;
+    transition: height 0.3s, background 0.3s;
+}
+.trend-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.58rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+    font-family: var(--font-mono);
+}
+
+/* ===== 차트 ===== */
+.chart-card { background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border-color); padding: 10px; margin-bottom: 10px; }
+.chart-card h4 { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+.chart-canvas-wrap { position: relative; width: 100%; height: 100px; }
+.chart-canvas-wrap canvas { width: 100%; height: 100%; }
+
+/* Q-히트맵 */
+.q-heatmap { display: grid; grid-template-columns: auto repeat(4, 1fr); gap: 2px; font-size: 0.62rem; font-family: var(--font-mono); }
+.q-heatmap .q-header { text-align: center; color: var(--text-muted); padding: 2px; font-weight: 600; }
+.q-heatmap .q-label { color: var(--text-secondary); padding: 2px 4px; text-align: right; white-space: nowrap; }
+.q-heatmap .q-cell { text-align: center; padding: 3px 2px; border-radius: 2px; color: white; font-weight: 600; }
+
+/* 설명 */
+.explanation-card { background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border-color); padding: 12px; margin-bottom: 10px; }
+.explanation-card h4 { font-size: 0.82rem; color: var(--accent-green); margin-bottom: 6px; }
+.explanation-card p { font-size: 0.76rem; color: var(--text-secondary); line-height: 1.55; }
+.explanation-card code { font-family: var(--font-mono); background: rgba(0,255,0,0.08); padding: 1px 4px; border-radius: 2px; color: var(--accent-green); font-size: 0.72rem; }
+.formula-box { background: var(--bg-input); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 8px; margin: 6px 0; text-align: center; font-family: var(--font-mono); font-size: 0.76rem; color: var(--accent-yellow); }
+
+/* 토스트 */
+.toast-container { position: fixed; top: 16px; right: 16px; z-index: 1000; display: flex; flex-direction: column; gap: 6px; }
+.toast { padding: 8px 14px; border-radius: var(--radius); font-size: 0.8rem; animation: toastIn 0.25s ease, toastOut 0.25s ease 2.5s forwards; box-shadow: 0 4px 16px rgba(0,0,0,0.5); max-width: 300px; }
+.toast.success { background: #002200; color: #00ff00; border: 1px solid #005500; }
+.toast.info { background: #001122; color: #00ccff; border: 1px solid #003366; }
+.toast.warning { background: #221100; color: #ffcc00; border: 1px solid #664400; }
+.toast.milestone { background: #002211; color: #00ffaa; border: 1px solid #00aa66; font-weight: 600; font-size: 0.9rem; }
+@keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
+
+/* 로그 */
+.log-area { background: var(--bg-input); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 6px; max-height: 100px; overflow-y: auto; font-family: var(--font-mono); font-size: 0.65rem; line-height: 1.5; color: var(--text-muted); }
+.log-area .log-entry { padding: 1px 0; }
+.log-area .log-entry.good { color: var(--accent-green); }
+.log-area .log-entry.bad { color: var(--accent-red); }
+.log-area .log-entry.info { color: var(--accent-cyan); }
+.log-area .log-entry.milestone { color: var(--accent-yellow); font-weight: 600; }
+
+/* 반응형 */
+@media (max-width: 1100px) {
+    .main-layout { grid-template-columns: 1fr; }
+    .panel { max-height: none; border-right: none; border-bottom: 1px solid var(--border-color); }
+    .panel:last-child { border-left: none; }
+}
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<div class="header">
+    <div class="header-title">
+        <h1>🐍 스네이크 강화학습 시뮬레이터</h1>
+        <span class="badge">Q-Learning</span>
+    </div>
+    <div class="header-stats">
+        <div class="stat"><span class="stat-label">에피소드</span><span class="stat-value" id="statEpisode">0</span></div>
+        <div class="stat"><span class="stat-label">최고점수</span><span class="stat-value" id="statBestScore">0</span></div>
+        <div class="stat"><span class="stat-label">평균보상</span><span class="stat-value" id="statAvgReward">0.0</span></div>
+        <div class="stat"><span class="stat-label">ε</span><span class="stat-value" id="statEpsilon">1.00</span></div>
+    </div>
+</div>
+
+<!-- 모드 탭 -->
+<div class="mode-tabs">
+    <div class="mode-tab active" data-mode="train" onclick="switchMode('train')">🧠 AI 학습</div>
+    <div class="mode-tab" data-mode="play" onclick="switchMode('play')">🎮 직접 플레이</div>
+    <div class="mode-tab" data-mode="demo" onclick="switchMode('demo')">🤖 AI 시연</div>
+</div>
+
+<div class="main-layout">
+    <!-- 좌측 -->
+    <div class="panel" id="leftPanel">
+        <div class="panel-section" id="sectionTrainSettings">
+            <h3>⚙️ 학습 파라미터</h3>
+            <div class="input-group"><label>학습률 (α) <span class="value" id="valLR">0.10</span></label><input type="range" id="sliderLR" min="0.01" max="0.5" step="0.01" value="0.10" oninput="updateSlider('LR')"></div>
+            <div class="input-group"><label>할인율 (γ) <span class="value" id="valGamma">0.95</span></label><input type="range" id="sliderGamma" min="0.5" max="0.99" step="0.01" value="0.95" oninput="updateSlider('Gamma')"></div>
+            <div class="input-group"><label>탐험률 (ε) <span class="value" id="valEpsilon">1.00</span></label><input type="range" id="sliderEpsilon" min="0.01" max="1.0" step="0.01" value="1.0" oninput="updateSlider('Epsilon')"></div>
+            <div class="input-group"><label>ε 감소율 <span class="value" id="valDecay">0.995</span></label><input type="range" id="sliderDecay" min="0.9" max="0.999" step="0.001" value="0.995" oninput="updateSlider('Decay')"></div>
+            <div class="input-group"><label>ε 최솟값 <span class="value" id="valEpsilonMin">0.01</span></label><input type="range" id="sliderEpsilonMin" min="0.001" max="0.1" step="0.001" value="0.01" oninput="updateSlider('EpsilonMin')"></div>
+        </div>
+        <div class="panel-section" id="sectionGrid">
+            <h3>🗺️ 맵 설정</h3>
+            <div class="input-group"><label>그리드 크기 <span class="value" id="valGrid">20×20</span></label>
+                <select id="selectGrid" onchange="changeGridSize()">
+                    <option value="10">10 × 10</option><option value="15">15 × 15</option>
+                    <option value="20" selected>20 × 20</option><option value="25">25 × 25</option><option value="30">30 × 30</option>
+                </select>
+            </div>
+        </div>
+        <div class="panel-section" id="sectionSuccessPause">
+            <h3>🎉 이벤트 표시</h3>
+            <div class="input-group">
+                <label style="cursor:pointer;gap:6px;">
+                    <span style="display:flex;align-items:center;gap:6px;">
+                        <input type="checkbox" id="chkSuccessEnabled" checked onchange="CONFIG.SUCCESS.ENABLED=this.checked" style="accent-color:var(--accent-green);width:14px;height:14px;cursor:pointer;">
+                        🍎 먹이 획득 시 "성공" 표시
+                    </span>
+                </label>
+            </div>
+            <div class="input-group">
+                <label>성공 정지 시간 <span class="value" id="valPauseMs">700ms</span></label>
+                <input type="range" id="sliderPauseMs" min="200" max="2000" step="100" value="700" oninput="CONFIG.SUCCESS.PAUSE_MS=+this.value;document.getElementById('valPauseMs').textContent=this.value+'ms'">
+            </div>
+            <div class="input-group" style="margin-top:8px;">
+                <label style="cursor:pointer;gap:6px;">
+                    <span style="display:flex;align-items:center;gap:6px;">
+                        <input type="checkbox" id="chkFailureEnabled" checked onchange="CONFIG.FAILURE.ENABLED=this.checked" style="accent-color:var(--accent-red);width:14px;height:14px;cursor:pointer;">
+                        💀 사망 시 "실패" 표시
+                    </span>
+                </label>
+            </div>
+            <div class="input-group">
+                <label>실패 정지 시간 <span class="value" id="valFailPauseMs">900ms</span></label>
+                <input type="range" id="sliderFailPauseMs" min="200" max="2000" step="100" value="900" oninput="CONFIG.FAILURE.PAUSE_MS=+this.value;document.getElementById('valFailPauseMs').textContent=this.value+'ms'">
+            </div>
+        </div>
+        <div class="panel-section">
+            <h3>▶️ 제어</h3>
+            <div class="btn-group" style="margin-bottom:6px;">
+                <button class="btn btn-primary" id="btnStart" onclick="startTraining()">▶️ 학습 시작</button>
+                <button class="btn btn-danger" id="btnStop" onclick="stopAll()" style="display:none;">⏹️ 정지</button>
+            </div>
+            <button class="btn btn-secondary" onclick="resetAll()" style="margin-bottom:6px;">🔄 초기화</button>
+        </div>
+        <div class="panel-section" id="sectionReward">
+            <h3>🎁 보상 설정</h3>
+            <div class="input-group"><label>먹이 보상 <span class="value" id="valRewardFood">10</span></label><input type="range" id="sliderRewardFood" min="1" max="50" step="1" value="10" oninput="updateSlider('RewardFood')"></div>
+            <div class="input-group"><label>충돌 벌점 <span class="value" id="valRewardDeath">-10</span></label><input type="range" id="sliderRewardDeath" min="-50" max="-1" step="1" value="-10" oninput="updateSlider('RewardDeath')"></div>
+            <div class="input-group"><label>접근 보상 <span class="value" id="valRewardCloser">1</span></label><input type="range" id="sliderRewardCloser" min="0" max="5" step="0.5" value="1" oninput="updateSlider('RewardCloser')"></div>
+            <div class="input-group"><label>멀어짐 벌점 <span class="value" id="valRewardFarther">-1</span></label><input type="range" id="sliderRewardFarther" min="-5" max="0" step="0.5" value="-1" oninput="updateSlider('RewardFarther')"></div>
+        </div>
+    </div>
+
+    <!-- 중앙 -->
+    <div class="game-area">
+        <div class="game-container level-0" id="gameContainer">
+            <canvas id="gameCanvas" width="500" height="500"></canvas>
+            <div class="game-overlay visible" id="gameOverlay">
+                <h2 id="overlayTitle">🐍 준비</h2>
+                <p id="overlayMsg">학습 시작을 눌러 AI를 훈련시키세요</p>
+            </div>
+        </div>
+        <div class="speed-bar">
+            <label>⏩ 속도</label>
+            <input type="range" id="sliderGameSpeed" min="1" max="100" step="1" value="15" oninput="updateGameSpeed()">
+            <span class="speed-val" id="speedLabel">15 fps</span>
+        </div>
+        <div class="game-status-bar">
+            <div class="info">
+                <span>점수: <b id="currentScore">0</b></span>
+                <span>길이: <b id="currentLength">3</b></span>
+                <span>스텝: <b id="currentStep">0</b></span>
+            </div>
+            <div class="info"><span>모드: <b id="currentMode">학습</b></span></div>
+        </div>
+    </div>
+
+    <!-- 우측 -->
+    <div class="panel" id="rightPanel">
+
+        <!-- ★ 학습 성적표 — 핵심 추가 ★ -->
+        <div class="progress-dashboard" id="progressDashboard">
+            <h4>📈 학습 성적표</h4>
+
+            <!-- 레벨 표시 -->
+            <div class="level-display">
+                <div class="level-emoji" id="levelEmoji">🥚</div>
+                <div class="level-info">
+                    <div class="level-name" id="levelName">미학습</div>
+                    <div class="level-desc" id="levelDesc">학습을 시작해보세요</div>
+                    <div class="level-progress"><div class="level-progress-fill" id="levelProgressFill" style="width:0%"></div></div>
+                </div>
+            </div>
+
+            <!-- 이전 vs 최근 비교 -->
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <div class="compare-label">최근 50회 평균점수</div>
+                    <div class="compare-value neutral" id="cmpRecentScore">-</div>
+                    <div class="compare-delta neutral" id="cmpScoreDelta">-</div>
+                </div>
+                <div class="compare-card">
+                    <div class="compare-label">최근 50회 평균보상</div>
+                    <div class="compare-value neutral" id="cmpRecentReward">-</div>
+                    <div class="compare-delta neutral" id="cmpRewardDelta">-</div>
+                </div>
+                <div class="compare-card">
+                    <div class="compare-label">최근 50회 평균생존</div>
+                    <div class="compare-value neutral" id="cmpRecentSurvival">-</div>
+                    <div class="compare-delta neutral" id="cmpSurvivalDelta">-</div>
+                </div>
+                <div class="compare-card">
+                    <div class="compare-label">Q-테이블 크기</div>
+                    <div class="compare-value neutral" id="cmpQSize">0</div>
+                    <div class="compare-delta neutral" id="cmpQDesc">학습된 상태 수</div>
+                </div>
+            </div>
+
+            <!-- 구간별 평균 점수 추이 바 -->
+            <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:3px;">구간별 평균 점수 추이 (50 에피소드 단위)</div>
+            <div class="trend-bars" id="trendBars"></div>
+            <div class="trend-label-row">
+                <span id="trendStartLabel">-</span>
+                <span id="trendEndLabel">-</span>
+            </div>
+        </div>
+
+        <!-- 차트 -->
+        <div class="chart-card">
+            <h4>📊 보상 추이 <span style="color:#00ccff;font-size:0.6rem;">(━ 이동평균)</span></h4>
+            <div class="chart-canvas-wrap"><canvas id="rewardChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+            <h4>🏆 점수 추이 <span style="color:#00ff00;font-size:0.6rem;">(━ 이동평균)</span></h4>
+            <div class="chart-canvas-wrap"><canvas id="scoreChart"></canvas></div>
+        </div>
+
+        <!-- Q-값 -->
+        <div class="chart-card" id="qValueCard">
+            <h4>🧩 현재 상태 Q-값</h4>
+            <div class="q-heatmap" id="qHeatmap">
+                <div class="q-header"></div><div class="q-header">⬆️</div><div class="q-header">⬇️</div><div class="q-header">⬅️</div><div class="q-header">➡️</div>
+                <div class="q-label">현재</div><div class="q-cell" id="q00">0</div><div class="q-cell" id="q01">0</div><div class="q-cell" id="q02">0</div><div class="q-cell" id="q03">0</div>
+                <div class="q-label">먹이↑</div><div class="q-cell" id="q10">0</div><div class="q-cell" id="q11">0</div><div class="q-cell" id="q12">0</div><div class="q-cell" id="q13">0</div>
+                <div class="q-label">먹이↓</div><div class="q-cell" id="q20">0</div><div class="q-cell" id="q21">0</div><div class="q-cell" id="q22">0</div><div class="q-cell" id="q23">0</div>
+                <div class="q-label">먹이←</div><div class="q-cell" id="q30">0</div><div class="q-cell" id="q31">0</div><div class="q-cell" id="q32">0</div><div class="q-cell" id="q33">0</div>
+                <div class="q-label">먹이→</div><div class="q-cell" id="q40">0</div><div class="q-cell" id="q41">0</div><div class="q-cell" id="q42">0</div><div class="q-cell" id="q43">0</div>
+            </div>
+        </div>
+
+        <!-- 설명 -->
+        <div class="explanation-card">
+            <h4>💡 Q-Learning이란?</h4>
+            <p>환경과 상호작용하며 <code>Q(s,a)</code> 값을 업데이트하여 최적 행동 정책을 학습합니다.</p>
+            <div class="formula-box">Q(s,a) ← Q(s,a) + α[r + γ·max Q(s',a') − Q(s,a)]</div>
+            <p><b>상태</b>: 뱀 주변 위험, 먹이 방향 &nbsp;|&nbsp; <b>행동</b>: 상·하·좌·우<br><b>보상</b>: 먹이 획득(+), 충돌(−), 접근/이탈(±)</p>
+        </div>
+        <div class="explanation-card">
+            <h4>🎲 탐험 vs 활용 (ε-greedy)</h4>
+            <p>확률 ε로 랜덤 탐험, 1−ε로 Q-값 기반 최적 행동. 학습 초기엔 탐험↑, 후반엔 활용↑으로 전환됩니다.</p>
+        </div>
+
+        <div class="chart-card">
+            <h4>📝 학습 로그</h4>
+            <div class="log-area" id="logArea"></div>
+        </div>
+    </div>
+</div>
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════
+const CONFIG = {
+    GRID: { SIZE: 20, CELL_PX: 25 },
+    CANVAS: { SIZE: 500 },
+    SNAKE: { INIT_LENGTH: 3 },
+    GAME_SPEED: { FPS: 15, MIN_FPS: 1, MAX_FPS: 100, TURBO_THRESHOLD: 60 },
+    RL: { LEARNING_RATE: 0.10, GAMMA: 0.95, EPSILON: 1.0, EPSILON_DECAY: 0.995, EPSILON_MIN: 0.01 },
+    REWARD: { FOOD: 10, DEATH: -10, CLOSER: 1, FARTHER: -1 },
+    COLORS: { BG: '#000000', SNAKE: '#00dd00', SNAKE_HEAD: '#00ff00', FOOD: '#ff0000', DEAD: '#ff4444' },
+    CHART: { MAX_POINTS: 200 },
+    MAX_STEPS_PER_EPISODE: 200,
+    SUCCESS: {
+        PAUSE_MS: 700,          // 성공 표시 지속 시간 (ms)
+        ENABLED: true,          // 성공 표시 ON/OFF
+        TURBO_SKIP: true        // 터보 속도에서는 표시 생략
+    },
+    FAILURE: {
+        PAUSE_MS: 900,          // 실패 표시 지속 시간 (ms)
+        ENABLED: true,          // 실패 표시 ON/OFF
+        TURBO_SKIP: true
+    },
+    // 학습 단계 정의
+    LEVELS: [
+        { name: '미학습',   emoji: '🥚', desc: '학습을 시작해보세요',           threshold: 0,   color: '#666666' },
+        { name: '방황 중',  emoji: '🐣', desc: '벽을 피하는 법을 배우는 중',     threshold: 0.1, color: '#ff4444' },
+        { name: '눈치 있음', emoji: '🐥', desc: '먹이 방향을 인식하기 시작',     threshold: 0.5, color: '#ff8800' },
+        { name: '사냥꾼',   emoji: '🐔', desc: '안정적으로 먹이를 찾아감',       threshold: 2.0, color: '#ffcc00' },
+        { name: '마스터',   emoji: '🦅', desc: '효율적 경로로 빠르게 사냥!',     threshold: 5.0, color: '#00ff88' }
+    ]
+};
+
+// ═══════════════════════════════════════════════════════
+// 전역 상태
+// ═══════════════════════════════════════════════════════
+let gameState = null, qTable = {}, isRunning = false, currentMode = 'train';
+let episode = 0, bestScore = 0;
+let rewardHistory = [], scoreHistory = [], survivalHistory = [];
+let manualDirection = null, animFrameId = null, lastFrameTime = 0, rlState = null;
+let prevBestScore = 0;
+let lastMilestoneLevel = -1;
+// 이벤트 일시정지 상태 (성공/실패 공용)
+let eventPause = {
+    active: false, type: null, until: 0, fadeStart: 0,
+    pos: null, score: 0, steps: 0
+};
+// 성공 카운터 팝 애니메이션 시각
+let scorePopTime = 0;
+
+const DIRS = [
+    { dx: 0, dy: -1 }, { dx: 0, dy: 1 }, { dx: -1, dy: 0 }, { dx: 1, dy: 0 }
+];
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// ═══════════════════════════════════════════════════════
+// 캔버스
+// ═══════════════════════════════════════════════════════
+function resizeCanvas() {
+    CONFIG.GRID.CELL_PX = Math.floor(CONFIG.CANVAS.SIZE / CONFIG.GRID.SIZE);
+    const s = CONFIG.GRID.CELL_PX * CONFIG.GRID.SIZE;
+    canvas.width = s; canvas.height = s;
+}
+
+// ═══════════════════════════════════════════════════════
+// 속도
+// ═══════════════════════════════════════════════════════
+function updateGameSpeed() {
+    const v = parseInt(document.getElementById('sliderGameSpeed').value);
+    CONFIG.GAME_SPEED.FPS = v;
+    const el = document.getElementById('speedLabel');
+    if (v >= CONFIG.GAME_SPEED.TURBO_THRESHOLD) {
+        el.textContent = `×${getStepsPerFrame()} 터보`;
+    } else {
+        el.textContent = `${v} fps`;
+    }
+}
+function getFrameInterval() { return 1000 / Math.min(CONFIG.GAME_SPEED.FPS, CONFIG.GAME_SPEED.TURBO_THRESHOLD); }
+function getStepsPerFrame() {
+    const f = CONFIG.GAME_SPEED.FPS;
+    return f >= CONFIG.GAME_SPEED.TURBO_THRESHOLD ? Math.ceil((f - CONFIG.GAME_SPEED.TURBO_THRESHOLD) / 5) + 1 : 1;
+}
+
+// ═══════════════════════════════════════════════════════
+// 게임 로직
+// ═══════════════════════════════════════════════════════
+function createGame() {
+    const g = CONFIG.GRID.SIZE, mx = Math.floor(g/2), my = Math.floor(g/2);
+    const snake = [];
+    for (let i = CONFIG.SNAKE.INIT_LENGTH - 1; i >= 0; i--) snake.push({x:mx-i, y:my});
+    const st = { snake, direction:3, food:null, score:0, steps:0, totalReward:0, alive:true };
+    st.food = spawnFood(st);
+    return st;
+}
+function spawnFood(st) {
+    const g = CONFIG.GRID.SIZE, occ = new Set(st.snake.map(s=>`${s.x},${s.y}`));
+    for (let i=0;i<1000;i++) {
+        const x=Math.floor(Math.random()*g), y=Math.floor(Math.random()*g);
+        if (!occ.has(`${x},${y}`)) return {x,y};
+    }
+    return {x:0,y:0};
+}
+function step(st, action) {
+    if (!st.alive) return CONFIG.REWARD.DEATH;
+    const head = st.snake[st.snake.length-1], d = DIRS[action];
+    const nh = { x: head.x+d.dx, y: head.y+d.dy }, g = CONFIG.GRID.SIZE;
+    if (nh.x<0||nh.x>=g||nh.y<0||nh.y>=g) { st.alive=false; st.totalReward+=CONFIG.REWARD.DEATH; return CONFIG.REWARD.DEATH; }
+    for (let i=1;i<st.snake.length;i++) if(st.snake[i].x===nh.x&&st.snake[i].y===nh.y){ st.alive=false; st.totalReward+=CONFIG.REWARD.DEATH; return CONFIG.REWARD.DEATH; }
+    st.snake.push(nh); st.direction=action; st.steps++;
+    let reward;
+    if (nh.x===st.food.x&&nh.y===st.food.y) {
+        st.score++; reward=CONFIG.REWARD.FOOD;
+        st._lastEatenPos = { x: nh.x, y: nh.y };  // 먹은 위치 기록
+        st.food=spawnFood(st);
+    }
+    else { st.snake.shift(); const od=Math.abs(head.x-st.food.x)+Math.abs(head.y-st.food.y), nd=Math.abs(nh.x-st.food.x)+Math.abs(nh.y-st.food.y); reward=nd<od?CONFIG.REWARD.CLOSER:CONFIG.REWARD.FARTHER; st._lastEatenPos=null; }
+    st.totalReward+=reward;
+    if (st.steps>=CONFIG.MAX_STEPS_PER_EPISODE+st.score*20) st.alive=false;
+    return reward;
+}
+
+// ═══════════════════════════════════════════════════════
+// 상태 인코딩 / Q-Learning
+// ═══════════════════════════════════════════════════════
+function getState(gs) {
+    if (!gs||!gs.alive) return 'dead';
+    const h=gs.snake[gs.snake.length-1], g=CONFIG.GRID.SIZE;
+    const dn=DIRS.map(d=>{const nx=h.x+d.dx,ny=h.y+d.dy;if(nx<0||nx>=g||ny<0||ny>=g)return 1;for(const s of gs.snake)if(s.x===nx&&s.y===ny)return 1;return 0;});
+    const fx=gs.food.x>h.x?1:(gs.food.x<h.x?-1:0), fy=gs.food.y>h.y?1:(gs.food.y<h.y?-1:0);
+    return `${dn.join('')}_${fx}_${fy}_${gs.direction}`;
+}
+function getQ(s,a){return qTable[`${s}_${a}`]||0;}
+function setQ(s,a,v){qTable[`${s}_${a}`]=v;}
+function getBestAction(s){let b=-Infinity,act=0;for(let a=0;a<4;a++){const v=getQ(s,a);if(v>b){b=v;act=a;}}return act;}
+function chooseAction(s){return Math.random()<CONFIG.RL.EPSILON?Math.floor(Math.random()*4):getBestAction(s);}
+function updateQLearning(s,a,r,sN){
+    const old=getQ(s,a);let mx=-Infinity;
+    for(let a2=0;a2<4;a2++)mx=Math.max(mx,getQ(sN,a2));
+    if(mx===-Infinity)mx=0;
+    setQ(s,a,old+CONFIG.RL.LEARNING_RATE*(r+CONFIG.RL.GAMMA*mx-old));
+}
+
+// ═══════════════════════════════════════════════════════
+// 메인 루프
+// ═══════════════════════════════════════════════════════
+function mainLoop(ts) {
+    if (!isRunning) return;
+
+    // 이벤트 일시정지 중이면 렌더링만 하고 스텝 건너뛰기
+    if (eventPause.active) {
+        if (ts < eventPause.until) {
+            drawGame(gameState);
+            drawEventOverlay(ts);
+            animFrameId = requestAnimationFrame(mainLoop);
+            return;
+        }
+        // 정지 해제
+        eventPause.active = false;
+        eventPause.type = null;
+        eventPause.pos = null;
+        lastFrameTime = ts;
+    }
+
+    if (ts - lastFrameTime < getFrameInterval()) { animFrameId=requestAnimationFrame(mainLoop); return; }
+    lastFrameTime = ts;
+    const spf = getStepsPerFrame();
+    if (currentMode==='train') trainStep(spf, ts);
+    else if (currentMode==='play') playStep(ts);
+    else if (currentMode==='demo') demoStep(spf, ts);
+    animFrameId = requestAnimationFrame(mainLoop);
+}
+
+function shouldShowEvent(type) {
+    const cfg = type === 'success' ? CONFIG.SUCCESS : CONFIG.FAILURE;
+    if (!cfg.ENABLED) return false;
+    if (cfg.TURBO_SKIP && CONFIG.GAME_SPEED.FPS >= CONFIG.GAME_SPEED.TURBO_THRESHOLD) return false;
+    return true;
+}
+
+function triggerEventPause(type, gs, ts) {
+    const cfg = type === 'success' ? CONFIG.SUCCESS : CONFIG.FAILURE;
+    const c = CONFIG.GRID.CELL_PX;
+    let pos;
+    if (type === 'success' && gs._lastEatenPos) {
+        pos = gs._lastEatenPos;
+        scorePopTime = ts;
+    } else {
+        const head = gs.snake[gs.snake.length - 1];
+        pos = head;
+    }
+    eventPause.active = true;
+    eventPause.type = type;
+    eventPause.until = ts + cfg.PAUSE_MS;
+    eventPause.fadeStart = ts;
+    eventPause.pos = { x: pos.x * c + c / 2, y: pos.y * c + c / 2 };
+    eventPause.score = gs.score;
+    eventPause.steps = gs.steps;
+}
+
+function trainStep(spf, ts) {
+    for (let i=0;i<spf;i++) {
+        if (!gameState||!gameState.alive) {
+            if (gameState) finishEpisode();
+            gameState=createGame(); rlState=getState(gameState);
+        }
+        const a=chooseAction(rlState);
+        const prevAlive = gameState.alive;
+        const r=step(gameState,a);
+        const sN=getState(gameState);
+        updateQLearning(rlState,a,r,sN);
+        rlState=sN;
+
+        // 먹이 획득 → 성공 정지
+        if (r === CONFIG.REWARD.FOOD && shouldShowEvent('success')) {
+            triggerEventPause('success', gameState, ts);
+            drawGame(gameState); drawEventOverlay(ts);
+            updateStatusBar(gameState); updateQHeatmap(gameState);
+            if (episode%5===0) updateAllUI();
+            return;
+        }
+        // 사망 → 실패 정지
+        if (prevAlive && !gameState.alive && shouldShowEvent('failure')) {
+            triggerEventPause('failure', gameState, ts);
+            drawGame(gameState); drawEventOverlay(ts);
+            updateStatusBar(gameState); updateQHeatmap(gameState);
+            if (episode%5===0) updateAllUI();
+            return;
+        }
+    }
+    drawGame(gameState); updateStatusBar(gameState); updateQHeatmap(gameState);
+    if (episode%5===0) updateAllUI();
+}
+
+function finishEpisode() {
+    episode++;
+    CONFIG.RL.EPSILON=Math.max(CONFIG.RL.EPSILON_MIN, CONFIG.RL.EPSILON*CONFIG.RL.EPSILON_DECAY);
+
+    const score = gameState.score;
+    const survived = gameState.steps;
+
+    // 최고점 갱신 감지
+    if (score > bestScore) {
+        const oldBest = bestScore;
+        bestScore = score;
+        if (oldBest > 0) {
+            showToast(`🏆 신기록! ${score}점 (이전: ${oldBest}점)`, 'milestone');
+            addLog(`🏆 신기록 달성! ${score}점`, 'milestone');
+        }
+    }
+
+    rewardHistory.push(gameState.totalReward);
+    scoreHistory.push(score);
+    survivalHistory.push(survived);
+
+    // 레벨 변화 감지
+    checkLevelUp();
+
+    if (episode%50===0) {
+        addLog(`EP ${episode}: 점수 ${score}, 보상 ${gameState.totalReward.toFixed(0)}, ε=${CONFIG.RL.EPSILON.toFixed(3)}`, score>0?'good':'');
+        updateAllUI();
+    }
+}
+
+function playStep(ts) {
+    if (!gameState||!gameState.alive) {
+        if (gameState&&!gameState.alive) { showOverlay('💀 게임 오버',`점수: ${gameState.score}`); addLog(`🎮 점수 ${gameState.score}`,gameState.score>3?'good':'bad'); isRunning=false; showStartBtn(); }
+        return;
+    }
+    const prevAlive = gameState.alive;
+    const r = step(gameState,manualDirection);
+    drawGame(gameState); updateStatusBar(gameState);
+
+    if (r === CONFIG.REWARD.FOOD && shouldShowEvent('success')) {
+        triggerEventPause('success', gameState, ts);
+        drawEventOverlay(ts);
+    }
+    if (prevAlive && !gameState.alive && shouldShowEvent('failure')) {
+        triggerEventPause('failure', gameState, ts);
+        drawEventOverlay(ts);
+    }
+}
+
+function demoStep(spf, ts) {
+    for (let i=0;i<spf;i++) {
+        if (!gameState||!gameState.alive) {
+            if (gameState&&!gameState.alive) addLog(`🤖 점수 ${gameState.score}`,gameState.score>3?'good':'bad');
+            gameState=createGame();
+        }
+        const s=getState(gameState), a=getBestAction(s);
+        const prevAlive = gameState.alive;
+        const r = step(gameState,a);
+
+        if (r === CONFIG.REWARD.FOOD && shouldShowEvent('success')) {
+            triggerEventPause('success', gameState, ts);
+            drawGame(gameState); drawEventOverlay(ts);
+            updateStatusBar(gameState); updateQHeatmap(gameState);
+            return;
+        }
+        if (prevAlive && !gameState.alive && shouldShowEvent('failure')) {
+            triggerEventPause('failure', gameState, ts);
+            drawGame(gameState); drawEventOverlay(ts);
+            updateStatusBar(gameState); updateQHeatmap(gameState);
+            return;
+        }
+    }
+    drawGame(gameState); updateStatusBar(gameState); updateQHeatmap(gameState);
+}
+
+// ═══════════════════════════════════════════════════════
+// 시작/정지/초기화/모드전환
+// ═══════════════════════════════════════════════════════
+function startTraining(){ if(isRunning)return; isRunning=true; hideOverlay(); showStopBtn(); showToast('학습 시작!','success'); addLog('🚀 학습 시작','info'); gameState=createGame(); rlState=getState(gameState); lastFrameTime=0; animFrameId=requestAnimationFrame(mainLoop); }
+function startPlay(){ if(isRunning)return; isRunning=true; hideOverlay(); showStopBtn(); gameState=createGame(); manualDirection=3; drawGame(gameState); lastFrameTime=0; animFrameId=requestAnimationFrame(mainLoop); }
+function startDemo(){ if(isRunning)return; if(!Object.keys(qTable).length){showToast('먼저 학습을 진행해주세요!','warning');return;} isRunning=true; hideOverlay(); showStopBtn(); showToast(`Q-테이블 ${Object.keys(qTable).length}개 항목으로 시연`,'info'); gameState=createGame(); lastFrameTime=0; animFrameId=requestAnimationFrame(mainLoop); }
+function stopAll(){ isRunning=false; if(animFrameId){cancelAnimationFrame(animFrameId);animFrameId=null;} eventPause.active=false; eventPause.type=null; eventPause.pos=null; showStartBtn(); showToast('정지','info'); addLog(`⏹️ 정지 (EP: ${episode})`,'info'); updateAllUI(); }
+function resetAll(){ stopAll(); qTable={}; episode=0; bestScore=0; prevBestScore=0; lastMilestoneLevel=-1; rewardHistory=[]; scoreHistory=[]; survivalHistory=[]; CONFIG.RL.EPSILON=parseFloat(document.getElementById('sliderEpsilon').value); gameState=createGame(); drawGame(gameState); updateAllUI(); updateProgressDashboard(); showOverlay('🐍 준비','학습 시작을 눌러 AI를 훈련시키세요'); showToast('초기화 완료','info'); addLog('🔄 초기화','info'); }
+function showStopBtn(){ document.getElementById('btnStart').style.display='none'; document.getElementById('btnStop').style.display=''; }
+function showStartBtn(){ document.getElementById('btnStart').style.display=''; document.getElementById('btnStop').style.display='none'; }
+
+function switchMode(mode) {
+    stopAll(); currentMode=mode;
+    document.querySelectorAll('.mode-tab').forEach(t=>t.classList.toggle('active',t.dataset.mode===mode));
+    const ts=document.getElementById('sectionTrainSettings'), rs=document.getElementById('sectionReward'), btn=document.getElementById('btnStart');
+    if(mode==='train'){ts.style.display='';rs.style.display='';btn.textContent='▶️ 학습 시작';btn.onclick=startTraining;document.getElementById('currentMode').textContent='학습';showOverlay('🧠 AI 학습','학습 시작을 눌러 AI를 훈련시키세요');}
+    else if(mode==='play'){ts.style.display='none';rs.style.display='none';btn.textContent='🎮 게임 시작';btn.onclick=startPlay;document.getElementById('currentMode').textContent='플레이';document.getElementById('sliderGameSpeed').value=8;updateGameSpeed();showOverlay('🎮 직접 플레이','방향키 또는 WASD로 조종');}
+    else if(mode==='demo'){ts.style.display='none';rs.style.display='none';btn.textContent='🤖 시연 시작';btn.onclick=startDemo;document.getElementById('currentMode').textContent='AI 시연';const q=Object.keys(qTable).length;showOverlay('🤖 AI 시연',q>0?`Q-테이블 ${q}개 항목으로 시연`:'⚠️ 먼저 학습을 진행해주세요');}
+    gameState=createGame(); drawGame(gameState);
+}
+
+// 키보드
+document.addEventListener('keydown',(e)=>{
+    if(currentMode!=='play')return;
+    const m={ArrowUp:0,ArrowDown:1,ArrowLeft:2,ArrowRight:3,w:0,s:1,a:2,d:3};
+    if(e.key in m){e.preventDefault();const nd=m[e.key];if(gameState&&gameState.alive){const c=manualDirection;if((c===0&&nd===1)||(c===1&&nd===0)||(c===2&&nd===3)||(c===3&&nd===2))return;manualDirection=nd;}}
+});
+
+// ═══════════════════════════════════════════════════════
+// 렌더링 — 레트로 + HUD
+// ═══════════════════════════════════════════════════════
+function drawGame(gs) {
+    if (!gs) return;
+    const g=CONFIG.GRID.SIZE, c=CONFIG.GRID.CELL_PX, w=canvas.width, h=canvas.height, gap=1;
+    ctx.fillStyle=CONFIG.COLORS.BG; ctx.fillRect(0,0,w,h);
+
+    // 먹이
+    if (gs.food) {
+        ctx.fillStyle=CONFIG.COLORS.FOOD;
+        ctx.fillRect(gs.food.x*c+gap, gs.food.y*c+gap, c-gap*2, c-gap*2);
+    }
+    // 뱀
+    gs.snake.forEach((seg,i)=>{
+        ctx.fillStyle=(i===gs.snake.length-1)?CONFIG.COLORS.SNAKE_HEAD:CONFIG.COLORS.SNAKE;
+        ctx.fillRect(seg.x*c+gap, seg.y*c+gap, c-gap*2, c-gap*2);
+    });
+    // 죽음 표시
+    if (!gs.alive&&gs.snake.length>0) {
+        const hd=gs.snake[gs.snake.length-1];
+        ctx.fillStyle=CONFIG.COLORS.DEAD;
+        ctx.fillRect(hd.x*c+gap,hd.y*c+gap,c-gap*2,c-gap*2);
+    }
+
+    // ★ 캔버스 HUD ★
+    ctx.save();
+    if (currentMode === 'train' && episode > 0) {
+        ctx.font='bold 11px "JetBrains Mono", monospace';
+        ctx.fillStyle='rgba(255,255,255,0.3)';
+        ctx.textAlign='left';
+        ctx.fillText(`EP ${episode}`, 6, 14);
+
+        ctx.textAlign='right';
+        ctx.fillStyle='rgba(255,204,0,0.35)';
+        ctx.fillText(`BEST ${bestScore}`, w-6, 14);
+        ctx.fillStyle='rgba(0,204,255,0.3)';
+        ctx.fillText(`ε ${CONFIG.RL.EPSILON.toFixed(2)}`, w-6, 27);
+    }
+
+    // ★ 성공 횟수 카운터 (좌하단, 항상 표시) ★
+    if (gs.alive && gs.score > 0) {
+        const now = performance.now();
+        const popElapsed = now - scorePopTime;
+        const isPop = popElapsed < 400;
+        const popScale = isPop ? 1.0 + 0.3 * Math.max(0, 1 - popElapsed / 400) : 1.0;
+        const popGlow = isPop ? 15 * Math.max(0, 1 - popElapsed / 400) : 0;
+
+        const baseSize = Math.max(20, Math.min(w, h) * 0.07);
+        const fontSize = baseSize * popScale;
+        const label = `🍎×${gs.score}`;
+
+        ctx.font = `bold ${fontSize}px "JetBrains Mono", monospace`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'bottom';
+        const tw = ctx.measureText(label).width;
+
+        // 배경
+        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillRect(4, h - fontSize - 10, tw + 16, fontSize + 8);
+
+        // 텍스트
+        ctx.shadowColor = '#00ff00';
+        ctx.shadowBlur = popGlow;
+        ctx.fillStyle = isPop ? '#00ff88' : 'rgba(0,255,0,0.6)';
+        ctx.fillText(label, 12, h - 6);
+    }
+    ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════
+// 이벤트 오버레이 (성공/실패 통합)
+// ═══════════════════════════════════════════════════════
+function drawEventOverlay(ts) {
+    if (!eventPause.pos) return;
+    const w = canvas.width, h = canvas.height;
+    const elapsed = ts - eventPause.fadeStart;
+    const isSuccess = eventPause.type === 'success';
+    const duration = isSuccess ? CONFIG.SUCCESS.PAUSE_MS : CONFIG.FAILURE.PAUSE_MS;
+
+    let alpha = 1;
+    if (elapsed < 120) alpha = elapsed / 120;
+    else if (elapsed > duration - 200) alpha = Math.max(0, (duration - elapsed) / 200);
+
+    ctx.save();
+
+    // 반투명 배경
+    ctx.fillStyle = isSuccess ? `rgba(0, 30, 0, ${0.35 * alpha})` : `rgba(40, 0, 0, ${0.45 * alpha})`;
+    ctx.fillRect(0, 0, w, h);
+
+    // 이벤트 위치 하이라이트
+    const px = eventPause.pos.x, py = eventPause.pos.y;
+    const ringR = 16 + Math.sin(elapsed * 0.012) * 5;
+    ctx.beginPath();
+    ctx.arc(px, py, ringR, 0, Math.PI * 2);
+    ctx.strokeStyle = isSuccess ? `rgba(0, 255, 100, ${0.7 * alpha})` : `rgba(255, 60, 60, ${0.8 * alpha})`;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    if (!isSuccess) {
+        const xSize = 10;
+        ctx.beginPath();
+        ctx.moveTo(px-xSize, py-xSize); ctx.lineTo(px+xSize, py+xSize);
+        ctx.moveTo(px+xSize, py-xSize); ctx.lineTo(px-xSize, py+xSize);
+        ctx.strokeStyle = `rgba(255, 80, 80, ${0.9 * alpha})`;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+    }
+
+    const fontSize = Math.min(w, h) * 0.12;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    if (isSuccess) {
+        // ─── 성공 오버레이 ───
+        const mainText = '성공!';
+        ctx.font = `bold ${fontSize}px "JetBrains Mono", monospace`;
+        ctx.shadowColor = '#00ff00';
+        ctx.shadowBlur = 25 * alpha;
+
+        const textY = h / 2;
+        const tw = ctx.measureText(mainText).width;
+        ctx.fillStyle = `rgba(0, 0, 0, ${0.65 * alpha})`;
+        ctx.fillRect(w/2 - tw/2 - 24, textY - fontSize/2 - 14, tw + 48, fontSize + 28 + fontSize*0.4);
+
+        ctx.fillStyle = `rgba(0, 255, 80, ${alpha})`;
+        ctx.fillText(mainText, w/2, textY);
+
+        ctx.shadowBlur = 0;
+        ctx.font = `bold ${fontSize * 0.3}px "JetBrains Mono", monospace`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.7 * alpha})`;
+        ctx.fillText(`🍎 누적 ${eventPause.score}회  |  +${CONFIG.REWARD.FOOD} 보상`, w/2, textY + fontSize * 0.5);
+
+    } else {
+        // ─── 실패 오버레이 (핵심: 누적 성공 횟수 강조 비교) ───
+        const centerY = h / 2;
+
+        // 배경 박스 크기 계산
+        const boxW = Math.min(w * 0.85, 380);
+        const boxH = fontSize * 2.8;
+        ctx.fillStyle = `rgba(0, 0, 0, ${0.7 * alpha})`;
+        ctx.fillRect(w/2 - boxW/2, centerY - boxH/2, boxW, boxH);
+        ctx.strokeStyle = `rgba(255, 60, 60, ${0.3 * alpha})`;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(w/2 - boxW/2, centerY - boxH/2, boxW, boxH);
+
+        // "실패!" 텍스트
+        ctx.font = `bold ${fontSize}px "JetBrains Mono", monospace`;
+        ctx.shadowColor = '#ff3333';
+        ctx.shadowBlur = 20 * alpha;
+        ctx.fillStyle = `rgba(255, 70, 70, ${alpha})`;
+        ctx.fillText('실패!', w/2, centerY - fontSize * 0.45);
+        ctx.shadowBlur = 0;
+
+        // ★ 핵심: 이번 성공 횟수 크게 표시 ★
+        const scoreSize = fontSize * 0.55;
+        ctx.font = `bold ${scoreSize}px "JetBrains Mono", monospace`;
+        const scoreLabel = `🍎 성공 ${eventPause.score}회`;
+        const scoreColor = eventPause.score > 0 ? `rgba(0, 255, 100, ${alpha})` : `rgba(255, 255, 255, ${0.5 * alpha})`;
+        ctx.fillStyle = scoreColor;
+        ctx.fillText(scoreLabel, w/2, centerY + fontSize * 0.35);
+
+        // ★ 이전 평균과 비교 ★
+        const infoSize = fontSize * 0.22;
+        ctx.font = `bold ${infoSize}px "JetBrains Mono", monospace`;
+
+        if (scoreHistory.length >= 5) {
+            const recentN = Math.min(50, scoreHistory.length);
+            const recentAvg = scoreHistory.slice(-recentN).reduce((a,b)=>a+b,0) / recentN;
+            const diff = eventPause.score - recentAvg;
+            let compareText, compareColor;
+            if (diff > 0.5) {
+                compareText = `평균 ${recentAvg.toFixed(1)}회 대비 ▲${diff.toFixed(1)} 향상!`;
+                compareColor = `rgba(0, 255, 160, ${0.85 * alpha})`;
+            } else if (diff < -0.5) {
+                compareText = `평균 ${recentAvg.toFixed(1)}회 대비 ▼${Math.abs(diff).toFixed(1)}`;
+                compareColor = `rgba(255, 120, 80, ${0.7 * alpha})`;
+            } else {
+                compareText = `최근 ${recentN}회 평균: ${recentAvg.toFixed(1)}회`;
+                compareColor = `rgba(200, 200, 200, ${0.6 * alpha})`;
+            }
+            ctx.fillStyle = compareColor;
+            ctx.fillText(compareText, w/2, centerY + fontSize * 0.72);
+        } else {
+            ctx.fillStyle = `rgba(150, 150, 150, ${0.5 * alpha})`;
+            ctx.fillText(`${eventPause.steps}스텝 생존  |  ${CONFIG.REWARD.DEATH} 벌점`, w/2, centerY + fontSize * 0.72);
+        }
+    }
+
+    ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════
+// 학습 단계 시스템
+// ═══════════════════════════════════════════════════════
+function getCurrentLevel() {
+    if (scoreHistory.length < 10) return 0;
+    const recent = scoreHistory.slice(-50);
+    const avg = recent.reduce((a,b)=>a+b,0)/recent.length;
+    const levels = CONFIG.LEVELS;
+    let lvl = 0;
+    for (let i = levels.length-1; i >= 0; i--) {
+        if (avg >= levels[i].threshold) { lvl = i; break; }
+    }
+    return lvl;
+}
+
+function checkLevelUp() {
+    const lvl = getCurrentLevel();
+    if (lvl > lastMilestoneLevel && lastMilestoneLevel >= 0) {
+        const info = CONFIG.LEVELS[lvl];
+        showToast(`${info.emoji} 레벨 업! → ${info.name}`, 'milestone');
+        addLog(`${info.emoji} 레벨 업! → ${info.name}: ${info.desc}`, 'milestone');
+    }
+    lastMilestoneLevel = lvl;
+}
+
+// ═══════════════════════════════════════════════════════
+// 학습 성적표 업데이트
+// ═══════════════════════════════════════════════════════
+function updateProgressDashboard() {
+    const lvl = getCurrentLevel();
+    const info = CONFIG.LEVELS[lvl];
+
+    // 레벨 표시
+    document.getElementById('levelEmoji').textContent = info.emoji;
+    document.getElementById('levelName').textContent = info.name;
+    document.getElementById('levelDesc').textContent = info.desc;
+
+    // 프로그레스 바: 다음 레벨까지 진행도
+    const fill = document.getElementById('levelProgressFill');
+    if (lvl < CONFIG.LEVELS.length - 1) {
+        const recent = scoreHistory.slice(-50);
+        const avg = recent.length > 0 ? recent.reduce((a,b)=>a+b,0)/recent.length : 0;
+        const curr = CONFIG.LEVELS[lvl].threshold;
+        const next = CONFIG.LEVELS[lvl + 1].threshold;
+        const pct = Math.min(100, Math.max(0, ((avg - curr) / (next - curr)) * 100));
+        fill.style.width = pct + '%';
+        fill.style.background = info.color;
+    } else {
+        fill.style.width = '100%';
+        fill.style.background = info.color;
+    }
+
+    // 게임 보더 색상
+    const container = document.getElementById('gameContainer');
+    container.className = 'game-container level-' + lvl;
+
+    // 비교 지표
+    updateCompareMetrics();
+
+    // 구간별 추이 바
+    updateTrendBars();
+}
+
+function updateCompareMetrics() {
+    const n = scoreHistory.length;
+    if (n < 10) {
+        ['cmpRecentScore','cmpRecentReward','cmpRecentSurvival'].forEach(id=>{
+            document.getElementById(id).textContent = '-';
+            document.getElementById(id).className = 'compare-value neutral';
+        });
+        ['cmpScoreDelta','cmpRewardDelta','cmpSurvivalDelta'].forEach(id=>{
+            document.getElementById(id).textContent = '데이터 수집 중';
+            document.getElementById(id).className = 'compare-delta neutral';
+        });
+        document.getElementById('cmpQSize').textContent = Object.keys(qTable).length;
+        return;
+    }
+
+    const windowSize = Math.min(50, Math.floor(n/2));
+    const recent = arr => arr.slice(-windowSize);
+    const prev = arr => arr.slice(-(windowSize*2), -windowSize);
+    const avg = arr => arr.length>0 ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
+
+    const metrics = [
+        { recentArr: scoreHistory, id: 'Score', unit: '점', decimals: 1 },
+        { recentArr: rewardHistory, id: 'Reward', unit: '', decimals: 0 },
+        { recentArr: survivalHistory, id: 'Survival', unit: '스텝', decimals: 0 }
+    ];
+
+    metrics.forEach(m => {
+        const rAvg = avg(recent(m.recentArr));
+        const pAvg = avg(prev(m.recentArr));
+        const delta = rAvg - pAvg;
+        const pct = pAvg !== 0 ? (delta / Math.abs(pAvg) * 100) : 0;
+
+        const valEl = document.getElementById('cmpRecent' + m.id);
+        const deltaEl = document.getElementById('cmp' + m.id + 'Delta');
+
+        valEl.textContent = rAvg.toFixed(m.decimals) + (m.unit ? ' ' + m.unit : '');
+
+        const cls = delta > 0.01 ? 'up' : (delta < -0.01 ? 'down' : 'neutral');
+        valEl.className = 'compare-value ' + cls;
+
+        if (prev(m.recentArr).length > 0) {
+            const arrow = delta > 0 ? '▲' : (delta < 0 ? '▼' : '→');
+            deltaEl.textContent = `${arrow} ${Math.abs(delta).toFixed(m.decimals)} (${pct >= 0 ? '+' : ''}${pct.toFixed(0)}%)`;
+            deltaEl.className = 'compare-delta ' + cls;
+        } else {
+            deltaEl.textContent = '비교 구간 부족';
+            deltaEl.className = 'compare-delta neutral';
+        }
+    });
+
+    document.getElementById('cmpQSize').textContent = Object.keys(qTable).length.toLocaleString();
+    document.getElementById('cmpQSize').className = 'compare-value up';
+}
+
+function updateTrendBars() {
+    const container = document.getElementById('trendBars');
+    container.innerHTML = '';
+    if (scoreHistory.length < 10) {
+        container.innerHTML = '<div style="color:#444;font-size:0.65rem;width:100%;text-align:center;line-height:30px;">학습 데이터 수집 중...</div>';
+        document.getElementById('trendStartLabel').textContent = '-';
+        document.getElementById('trendEndLabel').textContent = '-';
+        return;
+    }
+
+    const chunkSize = 50;
+    const chunks = [];
+    for (let i = 0; i < scoreHistory.length; i += chunkSize) {
+        const chunk = scoreHistory.slice(i, i + chunkSize);
+        chunks.push(chunk.reduce((a,b)=>a+b,0) / chunk.length);
+    }
+
+    const maxVal = Math.max(...chunks, 0.1);
+
+    chunks.forEach((avg, i) => {
+        const bar = document.createElement('div');
+        bar.className = 'trend-bar';
+        const h = Math.max(2, (avg / maxVal) * 28);
+        bar.style.height = h + 'px';
+        // 색상: 낮을수록 빨강, 높을수록 초록
+        const norm = avg / maxVal;
+        const r = Math.round(255 * (1 - norm));
+        const g = Math.round(255 * norm);
+        bar.style.background = `rgb(${r},${g},0)`;
+        bar.title = `EP ${i*chunkSize+1}~${Math.min((i+1)*chunkSize, scoreHistory.length)}: 평균 ${avg.toFixed(2)}점`;
+        container.appendChild(bar);
+    });
+
+    document.getElementById('trendStartLabel').textContent = 'EP 1';
+    document.getElementById('trendEndLabel').textContent = `EP ${scoreHistory.length}`;
+}
+
+// ═══════════════════════════════════════════════════════
+// 차트 — 이동평균선 추가
+// ═══════════════════════════════════════════════════════
+function drawLineChart(canvasId, data, color) {
+    const cvs=document.getElementById(canvasId);
+    const c=cvs.getContext('2d');
+    const w=cvs.width=cvs.parentElement.clientWidth, h=cvs.height=cvs.parentElement.clientHeight;
+    const pad={top:8,right:8,bottom:18,left:36}, pw=w-pad.left-pad.right, ph=h-pad.top-pad.bottom;
+    c.clearRect(0,0,w,h);
+    if(data.length<2){c.fillStyle='#444';c.font='10px sans-serif';c.textAlign='center';c.fillText('데이터 수집 중...',w/2,h/2);return;}
+
+    // 다운샘플
+    const ws=Math.max(1,Math.floor(data.length/CONFIG.CHART.MAX_POINTS));
+    const sampled=[];
+    for(let i=0;i<data.length;i+=ws){const ch=data.slice(i,i+ws);sampled.push(ch.reduce((a,b)=>a+b,0)/ch.length);}
+
+    // 이동평균 (20포인트)
+    const maWindow = Math.max(3, Math.floor(sampled.length / 8));
+    const ma=[];
+    for(let i=0;i<sampled.length;i++){
+        const start=Math.max(0,i-maWindow+1);
+        const slice=sampled.slice(start,i+1);
+        ma.push(slice.reduce((a,b)=>a+b,0)/slice.length);
+    }
+
+    const allVals=[...sampled,...ma];
+    const minV=Math.min(...allVals), maxV=Math.max(...allVals), range=maxV-minV||1;
+
+    // 축
+    c.strokeStyle='#222';c.lineWidth=0.5;
+    c.beginPath();c.moveTo(pad.left,pad.top);c.lineTo(pad.left,h-pad.bottom);c.lineTo(w-pad.right,h-pad.bottom);c.stroke();
+    c.fillStyle='#555';c.font='9px monospace';c.textAlign='right';
+    c.fillText(maxV.toFixed(1),pad.left-3,pad.top+8);
+    c.fillText(minV.toFixed(1),pad.left-3,h-pad.bottom);
+
+    const toX=i=>pad.left+(i/(sampled.length-1))*pw;
+    const toY=v=>pad.top+ph-((v-minV)/range)*ph;
+
+    // 원본 데이터 (얇은 선)
+    c.beginPath();c.strokeStyle=color+'55';c.lineWidth=0.8;
+    sampled.forEach((v,i)=>{const x=toX(i),y=toY(v);i===0?c.moveTo(x,y):c.lineTo(x,y);});
+    c.stroke();
+
+    // 이동평균 (굵은 선) ★
+    c.beginPath();c.strokeStyle=color;c.lineWidth=2;
+    ma.forEach((v,i)=>{const x=toX(i),y=toY(v);i===0?c.moveTo(x,y):c.lineTo(x,y);});
+    c.stroke();
+
+    // 그라데이션 채우기 (이동평균 기반)
+    c.lineTo(toX(ma.length-1),h-pad.bottom);
+    c.lineTo(pad.left,h-pad.bottom);c.closePath();
+    const grad=c.createLinearGradient(0,pad.top,0,h-pad.bottom);
+    grad.addColorStop(0,color+'22');grad.addColorStop(1,'transparent');
+    c.fillStyle=grad;c.fill();
+
+    // 마지막 값 표시
+    if (ma.length > 0) {
+        const lastV = ma[ma.length-1];
+        const lx = toX(ma.length-1), ly = toY(lastV);
+        c.beginPath();c.arc(lx,ly,3,0,Math.PI*2);c.fillStyle=color;c.fill();
+        c.fillStyle=color;c.font='bold 9px monospace';c.textAlign='right';
+        c.fillText(lastV.toFixed(1),w-pad.right,pad.top+8);
+    }
+}
+
+// ═══════════════════════════════════════════════════════
+// Q-히트맵
+// ═══════════════════════════════════════════════════════
+function updateQHeatmap(gs) {
+    if(!gs||!gs.alive)return;
+    const s=getState(gs); if(s==='dead')return;
+    const parts=s.split('_'), dangers=parts[0];
+    const qVals=[0,1,2,3].map(a=>getQ(s,a));
+    const maxQ=Math.max(...qVals), minQ=Math.min(...qVals), qR=maxQ-minQ||1;
+    for(let a=0;a<4;a++){
+        for(let row=0;row<5;row++){
+            const cell=document.getElementById(`q${row}${a}`);
+            let v;
+            if(row===0){v=qVals[a];}
+            else{const dirs=[{fx:0,fy:-1},{fx:0,fy:1},{fx:-1,fy:0},{fx:1,fy:0}];const d=dirs[row-1];v=getQ(`${dangers}_${d.fx}_${d.fy}_${gs.direction}`,a);}
+            cell.textContent=v.toFixed(1);
+            const norm=Math.max(0,Math.min(1,(v+10)/20));
+            cell.style.background=`rgb(${Math.round(180-norm*150)},${Math.round(30+norm*180)},30)`;
+            cell.style.outline=(row===0&&a===qVals.indexOf(maxQ))?'1px solid #ffcc00':'none';
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════
+// UI
+// ═══════════════════════════════════════════════════════
+function updateStatusBar(gs){if(!gs)return;document.getElementById('currentScore').textContent=gs.score;document.getElementById('currentLength').textContent=gs.snake.length;document.getElementById('currentStep').textContent=gs.steps;}
+
+function updateAllUI(){
+    document.getElementById('statEpisode').textContent=episode;
+    document.getElementById('statBestScore').textContent=bestScore;
+    document.getElementById('statEpsilon').textContent=CONFIG.RL.EPSILON.toFixed(2);
+    const r50=rewardHistory.slice(-50);
+    document.getElementById('statAvgReward').textContent=(r50.length>0?r50.reduce((a,b)=>a+b,0)/r50.length:0).toFixed(1);
+    drawLineChart('rewardChart',rewardHistory,'#00ccff');
+    drawLineChart('scoreChart',scoreHistory,'#00ff00');
+    updateProgressDashboard();
+}
+
+// 슬라이더
+function updateSlider(name){
+    const m={
+        LR:{el:'sliderLR',d:'valLR',fn:()=>CONFIG.RL.LEARNING_RATE=+document.getElementById('sliderLR').value},
+        Gamma:{el:'sliderGamma',d:'valGamma',fn:()=>CONFIG.RL.GAMMA=+document.getElementById('sliderGamma').value},
+        Epsilon:{el:'sliderEpsilon',d:'valEpsilon',fn:()=>CONFIG.RL.EPSILON=+document.getElementById('sliderEpsilon').value},
+        Decay:{el:'sliderDecay',d:'valDecay',fn:()=>CONFIG.RL.EPSILON_DECAY=+document.getElementById('sliderDecay').value},
+        EpsilonMin:{el:'sliderEpsilonMin',d:'valEpsilonMin',fn:()=>CONFIG.RL.EPSILON_MIN=+document.getElementById('sliderEpsilonMin').value},
+        RewardFood:{el:'sliderRewardFood',d:'valRewardFood',fn:()=>CONFIG.REWARD.FOOD=+document.getElementById('sliderRewardFood').value},
+        RewardDeath:{el:'sliderRewardDeath',d:'valRewardDeath',fn:()=>CONFIG.REWARD.DEATH=+document.getElementById('sliderRewardDeath').value},
+        RewardCloser:{el:'sliderRewardCloser',d:'valRewardCloser',fn:()=>CONFIG.REWARD.CLOSER=+document.getElementById('sliderRewardCloser').value},
+        RewardFarther:{el:'sliderRewardFarther',d:'valRewardFarther',fn:()=>CONFIG.REWARD.FARTHER=+document.getElementById('sliderRewardFarther').value}
+    };const e=m[name];if(!e)return;document.getElementById(e.d).textContent=document.getElementById(e.el).value;e.fn();
+}
+function changeGridSize(){const s=parseInt(document.getElementById('selectGrid').value);CONFIG.GRID.SIZE=s;document.getElementById('valGrid').textContent=`${s}×${s}`;resizeCanvas();resetAll();}
+
+// 오버레이/토스트/로그
+function showOverlay(t,m){document.getElementById('overlayTitle').textContent=t;document.getElementById('overlayMsg').textContent=m;document.getElementById('gameOverlay').classList.add('visible');}
+function hideOverlay(){document.getElementById('gameOverlay').classList.remove('visible');}
+function showToast(msg,type='info'){const c=document.getElementById('toastContainer'),t=document.createElement('div');t.className=`toast ${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3000);}
+function addLog(text,type=''){const a=document.getElementById('logArea'),e=document.createElement('div');e.className=`log-entry ${type}`;e.textContent=`[${new Date().toLocaleTimeString()}] ${text}`;a.appendChild(e);a.scrollTop=a.scrollHeight;while(a.children.length>100)a.removeChild(a.firstChild);}
+
+// ═══════════════════════════════════════════════════════
+// 초기화
+// ═══════════════════════════════════════════════════════
+function init(){
+    resizeCanvas();gameState=createGame();drawGame(gameState);updateAllUI();updateGameSpeed();updateProgressDashboard();
+    ['LR','Gamma','Epsilon','Decay','EpsilonMin','RewardFood','RewardDeath','RewardCloser','RewardFarther'].forEach(updateSlider);
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

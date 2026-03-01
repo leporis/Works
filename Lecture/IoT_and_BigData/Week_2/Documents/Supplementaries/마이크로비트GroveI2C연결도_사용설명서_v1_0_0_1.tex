@@ -1,0 +1,186 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}마이크로비트 Grove I2C 연결도 사용설명서 v1.0.0.1}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{electric-plug} 마이크로비트 Grove I2C 연결도}\\[0.5cm]
+{\Huge\bfseries\color{primary} 사용설명서}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v1.0.3.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 사용설명서는 마이크로비트 Grove I2C 연결도의 전체 기능을 상세히 설명합니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{1. 개요}
+
+\subsection*{1.1 목적}
+
+이 문서는 \textbf{마이크로비트 Grove I2C 연결도}의 전체 기능을 상세히 설명하는 사용설명서입니다. 이 자료는 정적 인포그래픽으로, 화면을 보며 구조를 이해하는 참고자료입니다.
+
+
+\subsection*{1.2 관련 문서}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{5.5cm}|p{7.3cm}|p{2.3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{문서} & \textbf{용도} & \textbf{깊이} \\
+\hline
+퀵가이드 & 소프트웨어 사용 \textbf{중} 빠른 참조 & \emoji{star} \\
+\hline
+\textbf{사용설명서 (본 문서)} & \textbf{사용 전/후 전체 기능 이해} & \textbf{\emoji{star}\emoji{star}\emoji{star}} \\
+\hline
+이론해설서 & 배경 개념·원리 학습 & \emoji{star}\emoji{star}\emoji{star}\emoji{star} \\
+\hline
+활용가이드 & 수업 적용 방법 & \emoji{star}\emoji{star}\emoji{star} \\
+\hline
+개발참조문서 & 코드 구조·기술 사양 & \emoji{star}\emoji{star}\emoji{star}\emoji{star}\emoji{star} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{1.3 시스템 요구사항}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.6cm}|p{12.4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{요구사항} \\
+\hline
+브라우저 & Chrome, Edge, Firefox (최신 버전) \\
+\hline
+화면 & 1024px 이상 권장 (반응형 지원) \\
+\hline
+인터넷 & 불필요 (단일 HTML, 오프라인 사용 가능) \\
+\hline
+설치 & 불필요 (HTML 파일 더블클릭으로 실행) \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{2. 화면 구성}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{images/S2_GroveI2C_screen.png}
+\end{center}
+
+
+\section*{3. 기능 상세}
+
+\subsection*{3.1 연결 구조}
+
+마이크로비트 \textrightarrow{} Grove Shield \textrightarrow{} I2C 버스 \textrightarrow{} 센서 6종의 배선 시각화
+
+
+\subsection*{3.2 센서 카드}
+
+각 센서의 I2C 주소, 측정 데이터, 아이콘 표시
+
+
+\subsection*{3.3 버스 배선}
+
+SDA/SCL 2선이 모든 센서를 관통하는 구조 시각화
+
+
+\subsection*{3.4 색상 코딩}
+
+신호선별 색상 구분 (SDA=파랑, SCL=보라, VCC=빨강, GND=검정)
+
+
+\subsection*{3.5 반응형}
+
+화면 크기에 따라 레이아웃 자동 조정
+
+
+
+\section*{4. 읽는 방법}
+
+이 자료는 정적 다이어그램이므로 별도 조작이 필요 없습니다. 다음 순서로 읽으면 효과적입니다:
+
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{6.4cm}|p{7.1cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{순서} & \textbf{영역} & \textbf{확인 사항} \\
+\hline
+1 & 상단 마이크로비트 + Shield & 전체 연결 구조 파악 \\
+\hline
+2 & I2C 버스 배선 & SDA/SCL 2선이 모든 센서를 관통 \\
+\hline
+3 & 개별 센서 카드 & I2C 주소, 측정 데이터 항목 확인 \\
+\hline
+4 & 범례 & 색상별 신호선 의미 확인 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{5. 자주 묻는 질문 (FAQ)}
+
+\textbf{Q: 다이어그램을 클릭할 수 있나요?}
+
+
+A: 아닙니다. 정적 인포그래픽이므로 클릭·드래그 등 인터랙션은 없습니다.
+
+
+\textbf{Q: I2C 주소 옆의 0x는 무엇인가요?}
+
+
+A: 16진수(hexadecimal) 표기를 의미합니다. 0x44는 10진수 68입니다.
+
+
+\textbf{Q: 센서를 6개 이상 연결할 수 없나요?}
+
+
+A: I2C 프로토콜은 이론상 112개까지 가능하지만, Grove Shield 포트 수(6개)와 전력 제한으로 6개가 실용적 한계입니다.
+
+
+
+\section*{6. 참고자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{10.7cm}|p{2.8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{비고} \\
+\hline
+1 & 마이크로비트GroveI2C연결도\_퀵가이드 & 빠른 참조 \\
+\hline
+2 & 마이크로비트GroveI2C연결도\_개발참조 & 기술 사양 \\
+\hline
+3 & 마이크로비트GroveI2C연결도\_활용가이드 & 수업 적용 \\
+\hline
+4 & 마이크로비트GroveI2C연결도\_이론해설서 & 배경 이론 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{마이크로비트 Grove I2C 연결도 사용설명서}
+\end{center}
+\end{document}

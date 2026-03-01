@@ -1,0 +1,588 @@
+% !TEX program = xelatex
+\documentclass[10pt, aspectratio=169]{beamer}
+\usetheme{metropolis}
+
+\usepackage{fontspec}
+\setsansfont{Noto Sans CJK KR}[
+  Path=/usr/share/fonts/opentype/noto/,
+  Extension=.ttc,
+  UprightFont=NotoSansCJK-Regular,
+  BoldFont=NotoSansCJK-Bold,
+  FontIndex=1, BoldFontIndex=1
+]
+\setmonofont{Noto Sans Mono CJK KR}[
+  Path=/usr/share/fonts/opentype/noto/,
+  Extension=.ttc,
+  UprightFont=NotoSansCJK-Regular,
+  BoldFont=NotoSansCJK-Bold,
+  FontIndex=6, BoldFontIndex=6,
+  Scale=0.8
+]
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{xcolor}
+
+\definecolor{mainblue}{HTML}{1976D2}
+\definecolor{darkblue}{HTML}{0D47A1}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{tipgreen}{HTML}{E8F5E9}
+\definecolor{warnamber}{HTML}{FFF8E1}
+\definecolor{keymsg}{HTML}{FCE4EC}
+\definecolor{cogreen}{HTML}{2E7D32}
+\definecolor{cored}{HTML}{C62828}
+
+\setbeamercolor{palette primary}{bg=mainblue}
+\setbeamercolor{frametitle}{bg=mainblue, fg=white}
+\setbeamercolor{title}{fg=darkblue}
+\setbeamercolor{alerted text}{fg=cored}
+
+\graphicspath{{images/}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcommand{\COtwo}{CO\textsubscript{2}}
+\newcommand{\tld}{\raise.17ex\hbox{$\scriptstyle\sim$}}
+
+% ── 한글 레이블 ──
+\renewcommand{\figurename}{그림}
+\renewcommand{\tablename}{표}
+
+\title{사물인터넷과 빅데이터}
+\subtitle{3주차: 프로젝트 기획}
+\author{청주교육대학교 컴퓨터교육과}
+\date{}
+
+\begin{document}
+
+% ── 슬라이드 1: 표지 ──
+\begin{frame}[plain]
+\maketitle
+\end{frame}
+
+% ── 슬라이드 2: 학습 목표 ──
+\begin{frame}{오늘의 학습 목표}
+\begin{enumerate}
+  \item 학교 현장에서 센서로 측정 가능한 프로젝트 주제를 \textbf{선정}한다.
+  \item 프로젝트 주제에 적합한 센서를 \textbf{선택}하고 이유를 설명한다.
+  \item 데이터 수집 계획서를 작성하여 수집 절차를 \textbf{구체화}한다.
+  \item ``측정 가능한 질문''과 ``측정 불가능한 질문''을 \textbf{구분}한다.
+\end{enumerate}
+\end{frame}
+
+% ── 슬라이드 3: 프로젝트 4단계 ──
+\begin{frame}{프로젝트 4단계 --- 지금 어디?}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{그림3-1_프로젝트4단계흐름도.pdf}
+\end{center}
+\vfill
+\begin{alertblock}{}
+오늘 만드는 계획서 = 나머지 10주의 설계도
+\end{alertblock}
+\end{frame}
+
+% ── 슬라이드 4: 좋은 주제 조건 ──
+\begin{frame}{좋은 프로젝트 주제의 조건}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{그림3-2_좋은주제4조건.pdf}
+\end{center}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{필수 조건:}
+\begin{itemize}
+  \item 센서로 측정 가능
+  \item 학교에서 수집 가능
+\end{itemize}
+\column{0.5\textwidth}
+\textbf{권장 조건:}
+\begin{itemize}
+  \item 비교{\textperiodcentered}분석 가능
+  \item 교육적 의미
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% ── 슬라이드 5: 조건 1 ──
+\begin{frame}{조건 1 --- 센서로 측정 가능한가?}
+\textbf{센서 = 숫자를 만들어내는 장치}
+
+\vspace{4mm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{측정 가능}
+\begin{itemize}
+  \item 온도 (25.3℃)
+  \item 소음 크기 (72)
+  \item 밝기 (350 lux)
+  \item \COtwo{} 농도 (800 ppm)
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{측정 불가능}
+\begin{itemize}
+  \item 학생의 기분
+  \item 수업의 재미
+  \item 급식의 맛
+  \item 교실의 분위기
+\end{itemize}
+\end{columns}
+
+\vfill
+\begin{block}{핵심}
+``숫자로 표현할 수 있는가?''
+\end{block}
+\end{frame}
+
+% ── 슬라이드 6: 조건 2~4 ──
+\begin{frame}{나머지 3가지 조건}
+\textbf{조건 2: 학교에서 수집 가능한가?}\\
+교실, 복도, 급식실, 도서관, 운동장 (야외 하천, 산속은 X)
+
+\vspace{4mm}
+\textbf{조건 3: 비교{\textperiodcentered}분석이 가능한가?}\\
+시간 비교 (1교시 vs 5교시), 장소 비교 (1층 vs 3층), 조건 비교 (창문 열림 vs 닫힘)
+
+\vspace{4mm}
+\textbf{조건 4: 교육적 의미가 있는가?}\\
+초등학교 현장에 적용 가능한 주제 $\rightarrow$ 미래 수업 설계에 도움
+\end{frame}
+
+% ── 슬라이드 7: 주제 카드 1/2 ──
+\begin{frame}{프로젝트 주제 예시 카드 (1/2)}
+\begin{center}
+\small
+\begin{tabular}{clll}
+\toprule
+& \textbf{주제} & \textbf{센서} & \textbf{난이도} \\
+\midrule
+1 & 교실 쾌적도 측정 & SHT40 + SGP30 & 중 \\
+2 & 복도 소음 패턴 & 내장 마이크 & 하 \\
+3 & 급식실 대기 환경 & VL53L0X + SHT40 & 중 \\
+4 & 운동장 활동 환경 & SHT40 + TSL2561 & 중 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\vfill
+\begin{center}
+\includegraphics[width=0.9\textwidth]{그림3-3_주제카드8종.pdf}
+\end{center}
+\end{frame}
+
+% ── 슬라이드 8: 주제 카드 2/2 ──
+\begin{frame}{프로젝트 주제 예시 카드 (2/2)}
+\begin{center}
+\small
+\begin{tabular}{clll}
+\toprule
+& \textbf{주제} & \textbf{센서} & \textbf{난이도} \\
+\midrule
+5 & 도서관 조용함 & 내장 마이크 + 빛 센서 & 하 \\
+6 & 화장실 사용 패턴 & VL53L0X & 중 \\
+7 & 교실 환기 알림 & SGP30 + SHT40 & 상 \\
+8 & 자연광 변화 관찰 & TSL2561 & 하 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vfill
+\begin{block}{}
+이 중에서 골라도, 변형해도, 새로 만들어도 OK!
+\end{block}
+\end{frame}
+
+% ── 슬라이드 9: 측정 가능 vs 불가능 ──
+\begin{frame}{``측정 불가능''을 ``측정 가능''으로 바꾸기}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{그림3-4_측정가능vs불가능.pdf}
+\end{center}
+
+\vspace{2mm}
+\small
+\begin{center}
+\begin{tabular}{lcl}
+\toprule
+\textbf{측정 불가능} & & \textbf{측정 가능} \\
+\midrule
+``덥다'' & $\rightarrow$ & ``온도가 28℃ 이상'' \\
+``시끄럽다'' & $\rightarrow$ & ``소음이 70 이상'' \\
+``쾌적하다'' & $\rightarrow$ & ``22{\tld}26℃, 40{\tld}60\% 시간 비율'' \\
+``맛있다'' & $\times$ & (센서 변환 불가) \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+% ── 슬라이드 10: 핵심 메시지 ──
+\begin{frame}{이번 학기에서 가장 중요한 메시지}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{그림3-12_센서데이터기준판단흐름도.pdf}
+\end{center}
+
+\vfill
+\begin{alertblock}{핵심}
+\begin{itemize}
+  \item \textbf{센서는 현재 상태만 측정한다.} 미래를 예측하지 않는다.
+  \item \textbf{AI는 판단하지 않는다.} 우리가 만든 기준을 계산할 뿐이다.
+\end{itemize}
+\end{alertblock}
+\end{frame}
+
+% ── 슬라이드 11: 내장 센서 ──
+\begin{frame}{마이크로비트 V2 내장 센서 (5종)}
+\begin{columns}[T]
+\column{0.45\textwidth}
+\includegraphics[width=\textwidth]{그림3-5_마이크로비트V2센서배치도.pdf}
+
+\column{0.52\textwidth}
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{센서} & \textbf{출력} & \textbf{특징} \\
+\midrule
+온도 & --5{\tld}50℃ & CPU +2{\tld}3℃ \\
+빛 & 0{\tld}255 & 상대값 \\
+마이크 & 0{\tld}255 & V2 전용 \\
+가속도 & $\pm$2g & 3축 \\
+나침반 & 0{\tld}360° & 자기장 \\
+\bottomrule
+\end{tabular}
+
+\vspace{3mm}
+{\footnotesize\color{coorange} 내장 온도: CPU 발열로 +2{\tld}3℃ 높음}
+\end{columns}
+\end{frame}
+
+% ── 슬라이드 12: Grove 확장 센서 ──
+\begin{frame}{Grove 확장 센서 --- I2C 연결}
+\begin{columns}[T]
+\column{0.45\textwidth}
+\includegraphics[width=\textwidth]{그림3-6_GroveI2C연결도_3주차용.pdf}
+
+\column{0.52\textwidth}
+\small
+\begin{tabular}{llll}
+\toprule
+\textbf{센서} & \textbf{모듈} & \textbf{측정} & \textbf{I2C} \\
+\midrule
+온습도 & SHT40 & $\pm$0.2℃ & 0x44 \\
+공기질 & SGP30 & \COtwo{} & 0x58 \\
+거리 & VL53L0X & mm & 0x29 \\
+조도 & TSL2561 & lux & 0x39 \\
+기압 & BMP280 & hPa & 0x76 \\
+\bottomrule
+\end{tabular}
+
+\vspace{3mm}
+{\footnotesize I2C = 센서마다 고유 ``주소''로 통신}
+\end{columns}
+\end{frame}
+
+% ── 슬라이드 13: 내장 vs 확장 비교 ──
+\begin{frame}{내장 센서 vs 확장 센서 비교}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{그림3-13_내장vs확장센서비교.pdf}
+\end{center}
+
+\vfill
+\begin{block}{}
+처음이라면 내장 센서부터 시작하는 것도 좋아요!
+\end{block}
+\end{frame}
+
+% ── 슬라이드 14: 도구 3종 ──
+\begin{frame}{센서 선택 도구 3종}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{그림3-14_도구연계흐름도.pdf}
+\end{center}
+
+\vspace{3mm}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{그림3-8_도구3종화면.png}
+\end{center}
+\end{frame}
+
+% ── 슬라이드 15: 실습 시뮬레이터 ──
+\begin{frame}{[실습] 센서 시뮬레이터 v9 \hfill {\normalsize 5분}}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\includegraphics[width=\textwidth]{그림3-7_시뮬레이터v9화면.png}
+
+\column{0.42\textwidth}
+\textbf{실습 순서:}
+\begin{enumerate}
+  \item 시뮬레이터 열기
+  \item 센서 드래그 $\rightarrow$ 포트 드롭
+  \item 측정값 범위 확인
+  \item 조합 메모
+\end{enumerate}
+\end{columns}
+\end{frame}
+
+% ── 슬라이드 16: 실습 카탈로그+검색 ──
+\begin{frame}{[실습] 카탈로그 + 검색 도구 \hfill {\normalsize 7분}}
+\textbf{카탈로그 (3분):} Excel 필터로 측정 항목 $\rightarrow$ 난이도 $\rightarrow$ 조합 확인
+
+\textbf{검색 도구 (4분):} 키워드 입력 $\rightarrow$ 센서 추천
+
+\vspace{3mm}
+\begin{center}
+\small
+\begin{tabular}{ll}
+\toprule
+\textbf{키워드} & \textbf{추천 센서} \\
+\midrule
+``교실 환경'' & SHT40, SGP30 \\
+``소음'' & 내장 마이크 \\
+``밝기 정밀'' & TSL2561 \\
+``사람 감지'' & VL53L0X \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+% ── 슬라이드 17: 의사결정 가이드 ──
+\begin{frame}{센서 선택 의사결정 가이드}
+\begin{center}
+\includegraphics[width=\textwidth]{그림3-9_센서선택플로차트.pdf}
+\end{center}
+\end{frame}
+
+% ── 슬라이드 18: 계획서란? ──
+\begin{frame}{데이터 수집 계획서 = 프로젝트의 설계도}
+\begin{columns}[T]
+\column{0.45\textwidth}
+\includegraphics[width=\textwidth]{그림3-10_수집계획서양식.pdf}
+
+\column{0.52\textwidth}
+\textbf{10개 필수 항목:}
+\begin{enumerate}
+  \item 프로젝트 제목
+  \item 연구 질문
+  \item 측정 항목
+  \item 사용 센서
+  \item 수집 장소
+  \item 수집 간격
+  \item 수집 기간
+  \item 예상 데이터 양
+  \item 예상 결과
+  \item 주의 사항
+\end{enumerate}
+\end{columns}
+\end{frame}
+
+% ── 슬라이드 19: 연구 질문 ──
+\begin{frame}{좋은 연구 질문 만들기}
+\small
+\begin{center}
+\begin{tabular}{p{4cm}p{7cm}}
+\toprule
+\textbf{나쁜 예} & \textbf{좋은 예} \\
+\midrule
+``교실이 쾌적한가?'' & ``1교시와 5교시 중 쾌적 범위(22{\tld}26℃)에 있는 시간은 언제가 더 긴가?'' \\
+``복도가 시끄러운가?'' & ``쉬는 시간 복도 소음은 수업 시간 대비 몇 배인가?'' \\
+``밝기가 변하는가?'' & ``교실 창가 밝기가 가장 높은 시간대는 언제인가?'' \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vfill
+\begin{block}{포인트}
+``{\tld}할까?'' 형태 + 센서 측정값 + 구체적 비교
+\end{block}
+\end{frame}
+
+% ── 슬라이드 20: 수집 간격 ──
+\begin{frame}{수집 간격 --- 얼마나 자주 기록할까?}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{그림3-11_수집간격별데이터양.pdf}
+\end{center}
+
+\vspace{2mm}
+\small
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+\textbf{대상} & \textbf{속도} & \textbf{권장} & \textbf{6시간} \\
+\midrule
+온도{\textperiodcentered}습도 & 느림 & 5분 & 72개 \\
+\COtwo{} & 느림 & 5분 & 72개 \\
+소음 & 빠름 & 10초{\tld}1분 & 360{\tld}2,160 \\
+거리 & 매우빠름 & 1초 & 21,600 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+% ── 슬라이드 21: 데이터 양 계산 ──
+\begin{frame}{예상 데이터 양 계산}
+\begin{block}{공식}
+예상 데이터 개수 = (하루 수집 시간 $\div$ 수집 간격) $\times$ 수집 일수
+\end{block}
+
+\vspace{4mm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{그림3-15_저장용량시뮬레이션.pdf}
+\end{center}
+
+\vfill
+{\footnotesize\color{coorange} 저장 용량 한계: 약 10,000개 (64KB). 1초 $\times$ 6시간 = 21,600개 $\rightarrow$ 초과!}
+\end{frame}
+
+% ── 슬라이드 22: 작성 예시 ──
+\begin{frame}{작성 예시: ``교실 쾌적도 측정''}
+\small
+\begin{center}
+\begin{tabular}{lp{8cm}}
+\toprule
+\textbf{항목} & \textbf{내용} \\
+\midrule
+제목 & 교실 쾌적도 시간대별 변화 측정 \\
+연구 질문 & 1교시와 5교시 중 쾌적 범위에 있는 시간은? \\
+측정/센서 & 온도, 습도, \COtwo{} / SHT40 + SGP30 \\
+장소 & 3-1 교실 창가 책상 위 (70cm) \\
+간격/기간 & 5분 / 5일(월{\tld}금) 09:00{\tld}15:00 \\
+데이터 양 & 72개/일 $\times$ 5일 = 360개 \\
+예상 결과 & 오후가 온도{\textperiodcentered}\COtwo{} 높을 것 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+% ── 슬라이드 23: 실습 계획서 ──
+\begin{frame}{[실습] 데이터 수집 계획서 작성 \hfill {\normalsize 12분}}
+\textbf{순서:}
+\begin{enumerate}
+  \item 주제 카드 8종 또는 나만의 주제에서 선택
+  \item 도구 3종으로 센서 결정
+  \item 양식 10개 항목 채우기
+\end{enumerate}
+
+\vspace{4mm}
+\textbf{자주 묻는 질문:}
+
+\begin{description}
+  \item[Q. 두 개 중 못 고르겠어요] 측정 항목이 겹치면 합칠 수 있어요
+  \item[Q. 장소를 아직 못 정했어요] 5주차에 정해도 됩니다
+  \item[Q. 예상 결과를 모르겠어요] 틀려도 OK!
+\end{description}
+\end{frame}
+
+% ── 슬라이드 24: 주의 사항 ──
+\begin{frame}{현장 수집에서 자주 생기는 문제}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{문제} & \textbf{대비책} \\
+\midrule
+학생이 기기를 건드림 & 투명 케이스, 책꽂이 뒤 \\
+배터리 방전 & 5분 간격, 매일 교체 \\
+데이터 유실 & 매일 USB로 CSV 다운로드 \\
+센서 오작동 & 수집 전 5분 테스트 \\
+비{\textperiodcentered}먼지 (운동장) & 지퍼백 + 센서 구멍 노출 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vfill
+\begin{block}{}
+미리 생각해두면 5{\tld}8주차가 편해요!
+\end{block}
+\end{frame}
+
+% ── 슬라이드 25: 발표 가이드 ──
+\begin{frame}{계획서 간단 발표 (2{\tld}3명)}
+\textbf{발표 시 반드시 포함할 3가지:}
+
+\begin{enumerate}
+  \item \textbf{연구 질문} --- ``나는 {\tld}를 알고 싶다''
+  \item \textbf{센서 선택} --- ``{\tld}센서를 사용할 것이다. 왜냐하면 {\tld}''
+  \item \textbf{예상 결과} --- ``{\tld}일 것이라고 예상한다''
+\end{enumerate}
+
+\vspace{5mm}
+\textbf{동료 피드백 포인트:}
+\begin{itemize}
+  \item 센서로 측정 가능한 질문인가?
+  \item 연구 질문에 적합한 센서인가?
+  \item 학교에서 실제로 수집할 수 있는가?
+\end{itemize}
+\end{frame}
+
+% ── 슬라이드 26: 과제 ──
+\begin{frame}{이번 주 과제}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{항목} & \textbf{내용} \\
+\midrule
+과제명 & 데이터 수집 계획서 \\
+제출물 & 수집 계획서 (양식) + 개발일지 (PDF) \\
+기한 & 일요일 자정 (LMS) \\
+배점 & 5\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{4mm}
+\textbf{개발일지 포함 내용:}
+\begin{itemize}
+  \item 오늘 한 것: 주제 선정 과정, 센서 선택 이유
+  \item 고민한 것: 후보 주제 비교, 센서 조합
+  \item 다음에 할 것: 4주차 수집기 제작 계획
+  \item 느낀 점: 기획 경험 소감
+\end{itemize}
+\end{frame}
+
+% ── 슬라이드 27: 등급 기준 ──
+\begin{frame}{등급 기준}
+\begin{center}
+\begin{tabular}{ccl}
+\toprule
+\textbf{등급} & \textbf{점수} & \textbf{기준} \\
+\midrule
+A & 100\% & 질문 명확 + 센서 타당 + 계획 구체 + 일지 충실 + 통찰 \\
+B & 85\% & 대부분 항목 작성 + 일지 충실 \\
+C & 70\% & 일부 미흡 또는 일지 기본 수준 \\
+D & 55\% & 다수 항목 미흡 \\
+F & 0\% & 미제출 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vfill
+\begin{block}{}
+핵심: 연구 질문이 명확하고, 센서 선택에 이유가 있으면 높은 점수!
+\end{block}
+\end{frame}
+
+% ── 슬라이드 28: 핵심 요약 ──
+\begin{frame}{오늘의 핵심 요약}
+\begin{enumerate}
+  \item 좋은 주제 = \textbf{측정 가능} + \textbf{학교 수집} + 비교 가능 + 교육적 의미
+  \item ``측정 불가능''을 ``측정 가능''으로 바꾸는 것이 핵심
+  \item 도구 3종: 검색 $\rightarrow$ 카탈로그 $\rightarrow$ 시뮬레이터
+  \item 계획서 10개 항목을 꼼꼼히 작성
+  \item[\textbf{5.}] \textbf{센서는 현재 상태만 측정한다. 판단과 예측은 사람의 몫이다.}
+\end{enumerate}
+\end{frame}
+
+% ── 슬라이드 29: 다음 주 예고 ──
+\begin{frame}{4주차 예고: 데이터수집기 제작}
+오늘 만든 계획서 $\rightarrow$ 다음 주의 설계도!
+
+\vspace{5mm}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{항목} & \textbf{내용} \\
+\midrule
+주제 & 데이터수집기 제작 \\
+핵심 활동 & MakeCode 블록 코딩으로 Data Logger 작성 \\
+사용 도구 & MakeCode 온라인 에디터 + 마이크로비트 V2 \\
+과제 & MakeCode 파일 (.hex) + 테스트 결과 + 개발일지 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+\end{document}

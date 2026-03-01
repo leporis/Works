@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 720" font-family="'Noto Sans KR', sans-serif">
+  <defs>
+    <marker id="ag" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#2E7D32"/>
+    </marker>
+    <marker id="ao" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#E65100"/>
+    </marker>
+    <filter id="ds"><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-opacity="0.10"/></filter>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="900" height="720" rx="12" fill="#FAFAFA"/>
+
+  <!-- 제목 영역 -->
+  <rect x="0" y="0" width="900" height="78" rx="12" fill="#1976D2"/>
+  <rect x="0" y="40" width="900" height="38" fill="#1976D2"/>
+  <text x="450" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#fff">생산성 밴드왜건 (Productivity Bandwagon)</text>
+  <text x="450" y="62" text-anchor="middle" font-size="13" font-weight="400" fill="#BBDEFB">『권력과 진보』 프롤로그 · 핵심 개념</text>
+
+  <!-- 중앙 분리선 -->
+  <line x1="450" y1="100" x2="450" y2="620" stroke="#E0E0E0" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+  <!-- ========== 좌측: 작동할 때 ========== -->
+  <text x="225" y="110" text-anchor="middle" font-size="16" font-weight="700" fill="#2E7D32">✅ 밴드왜건이 작동할 때</text>
+
+  <!-- 노드 L1: 기술 혁신 -->
+  <rect x="120" y="128" width="210" height="56" rx="28" fill="#E8F5E9" stroke="#388E3C" stroke-width="2" filter="url(#ds)"/>
+  <text x="225" y="153" text-anchor="middle" font-size="14" font-weight="700" fill="#1B5E20">① 기술 혁신</text>
+  <text x="225" y="172" text-anchor="middle" font-size="11" fill="#388E3C">새로운 기술의 등장</text>
+
+  <!-- 화살표 L1→L2 -->
+  <line x1="225" y1="184" x2="225" y2="200" stroke="#2E7D32" stroke-width="2.5" marker-end="url(#ag)"/>
+
+  <!-- 노드 L2: 생산성 향상 -->
+  <rect x="120" y="206" width="210" height="56" rx="28" fill="#E8F5E9" stroke="#388E3C" stroke-width="2" filter="url(#ds)"/>
+  <text x="225" y="231" text-anchor="middle" font-size="14" font-weight="700" fill="#1B5E20">② 생산성 향상</text>
+  <text x="225" y="250" text-anchor="middle" font-size="11" fill="#388E3C">더 적은 비용으로 더 많이 생산</text>
+
+  <!-- 화살표 L2→L3 -->
+  <line x1="225" y1="262" x2="225" y2="278" stroke="#2E7D32" stroke-width="2.5" marker-end="url(#ag)"/>
+
+  <!-- 노드 L3: 노동 수요 증가 -->
+  <rect x="120" y="284" width="210" height="56" rx="28" fill="#E8F5E9" stroke="#388E3C" stroke-width="2" filter="url(#ds)"/>
+  <text x="225" y="309" text-anchor="middle" font-size="14" font-weight="700" fill="#1B5E20">③ 노동 수요 증가</text>
+  <text x="225" y="328" text-anchor="middle" font-size="11" fill="#388E3C">기업이 더 많은 노동자를 원함</text>
+
+  <!-- 화살표 L3→L4 -->
+  <line x1="225" y1="340" x2="225" y2="356" stroke="#2E7D32" stroke-width="2.5" marker-end="url(#ag)"/>
+
+  <!-- 노드 L4: 임금 상승 -->
+  <rect x="120" y="362" width="210" height="56" rx="28" fill="#E8F5E9" stroke="#388E3C" stroke-width="2" filter="url(#ds)"/>
+  <text x="225" y="387" text-anchor="middle" font-size="14" font-weight="700" fill="#1B5E20">④ 임금 상승</text>
+  <text x="225" y="406" text-anchor="middle" font-size="11" fill="#388E3C">경쟁적으로 더 높은 임금 제시</text>
+
+  <!-- 화살표 L4→L5 -->
+  <line x1="225" y1="418" x2="225" y2="434" stroke="#2E7D32" stroke-width="2.5" marker-end="url(#ag)"/>
+
+  <!-- 노드 L5: 공유된 번영 -->
+  <rect x="120" y="440" width="210" height="56" rx="28" fill="#388E3C" stroke="#1B5E20" stroke-width="2" filter="url(#ds)"/>
+  <text x="225" y="465" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">⑤ 공유된 번영</text>
+  <text x="225" y="484" text-anchor="middle" font-size="11" fill="#C8E6C9">모두의 삶이 나아짐</text>
+
+  <!-- 순환 화살표 L5→L1 (좌측 점선) -->
+  <path d="M120,468 Q70,468 70,310 Q70,156 120,156" fill="none" stroke="#2E7D32" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#ag)"/>
+  <text x="52" y="316" text-anchor="middle" font-size="10" font-weight="500" fill="#2E7D32" transform="rotate(-90,52,316)">선순환</text>
+
+  <!-- ========== 우측: 끊길 때 ========== -->
+  <text x="675" y="110" text-anchor="middle" font-size="16" font-weight="700" fill="#E65100">⚠️ 밴드왜건이 끊길 때</text>
+
+  <!-- 노드 R1: 기술 혁신 -->
+  <rect x="570" y="128" width="210" height="56" rx="28" fill="#FFF3E0" stroke="#E65100" stroke-width="2" filter="url(#ds)"/>
+  <text x="675" y="153" text-anchor="middle" font-size="14" font-weight="700" fill="#BF360C">① 기술 혁신</text>
+  <text x="675" y="172" text-anchor="middle" font-size="11" fill="#E65100">새로운 기술의 등장</text>
+
+  <!-- 화살표 R1→R2 -->
+  <line x1="675" y1="184" x2="675" y2="200" stroke="#E65100" stroke-width="2.5" marker-end="url(#ao)"/>
+
+  <!-- 노드 R2: 자동화 -->
+  <rect x="570" y="206" width="210" height="56" rx="28" fill="#FFF3E0" stroke="#E65100" stroke-width="2" filter="url(#ds)"/>
+  <text x="675" y="231" text-anchor="middle" font-size="14" font-weight="700" fill="#BF360C">② 자동화 (인간 대체)</text>
+  <text x="675" y="250" text-anchor="middle" font-size="11" fill="#E65100">기계가 인간을 대신함</text>
+
+  <!-- 화살표 R2→R3 -->
+  <line x1="675" y1="262" x2="675" y2="278" stroke="#E65100" stroke-width="2.5" marker-end="url(#ao)"/>
+
+  <!-- 노드 R3: 일자리 감소 -->
+  <rect x="570" y="284" width="210" height="56" rx="28" fill="#FFF3E0" stroke="#E65100" stroke-width="2" filter="url(#ds)"/>
+  <text x="675" y="309" text-anchor="middle" font-size="14" font-weight="700" fill="#BF360C">③ 일자리 감소</text>
+  <text x="675" y="328" text-anchor="middle" font-size="11" fill="#E65100">기업이 노동자를 줄임</text>
+
+  <!-- 화살표 R3→R4 -->
+  <line x1="675" y1="340" x2="675" y2="356" stroke="#E65100" stroke-width="2.5" marker-end="url(#ao)"/>
+
+  <!-- 노드 R4: 임금 정체 -->
+  <rect x="570" y="362" width="210" height="56" rx="28" fill="#FFF3E0" stroke="#E65100" stroke-width="2" filter="url(#ds)"/>
+  <text x="675" y="387" text-anchor="middle" font-size="14" font-weight="700" fill="#BF360C">④ 임금 정체 · 하락</text>
+  <text x="675" y="406" text-anchor="middle" font-size="11" fill="#E65100">교섭력 없이 방치됨</text>
+
+  <!-- 화살표 R4→R5 -->
+  <line x1="675" y1="418" x2="675" y2="434" stroke="#E65100" stroke-width="2.5" marker-end="url(#ao)"/>
+
+  <!-- 노드 R5: 불평등 심화 -->
+  <rect x="570" y="440" width="210" height="56" rx="28" fill="#E65100" stroke="#BF360C" stroke-width="2" filter="url(#ds)"/>
+  <text x="675" y="465" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">⑤ 불평등 심화</text>
+  <text x="675" y="484" text-anchor="middle" font-size="11" fill="#FFE0B2">소수만 부유해짐</text>
+
+  <!-- ========== 하단: 끊기는 3가지 조건 ========== -->
+  <rect x="490" y="516" width="370" height="100" rx="10" fill="none" stroke="#E65100" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="675" y="538" text-anchor="middle" font-size="12" font-weight="700" fill="#E65100">밴드왜건이 끊기는 3가지 조건</text>
+
+  <circle cx="520" cy="558" r="4" fill="#E65100"/>
+  <text x="530" y="563" font-size="12" fill="#424242">ⓐ 대체형 기술 — 자동화가 일자리를 없앰</text>
+
+  <circle cx="520" cy="580" r="4" fill="#E65100"/>
+  <text x="530" y="585" font-size="12" fill="#424242">ⓑ 교섭력 부재 — 노동조합 · 참정권 없음</text>
+
+  <circle cx="520" cy="602" r="4" fill="#E65100"/>
+  <text x="530" y="607" font-size="12" fill="#424242">ⓒ 재분배 제도 없음 — 세금 · 사회보장 부재</text>
+
+  <!-- ========== 하단: 핵심 조건 (좌측) ========== -->
+  <rect x="40" y="516" width="370" height="100" rx="10" fill="none" stroke="#388E3C" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="225" y="538" text-anchor="middle" font-size="12" font-weight="700" fill="#2E7D32">밴드왜건이 작동하는 3가지 조건</text>
+
+  <circle cx="70" cy="558" r="4" fill="#388E3C"/>
+  <text x="80" y="563" font-size="12" fill="#424242">ⓐ 보완형 기술 — 새 업무 · 일자리 창출</text>
+
+  <circle cx="70" cy="580" r="4" fill="#388E3C"/>
+  <text x="80" y="585" font-size="12" fill="#424242">ⓑ 교섭력 보장 — 노동자가 임금 협상 가능</text>
+
+  <circle cx="70" cy="602" r="4" fill="#388E3C"/>
+  <text x="80" y="607" font-size="12" fill="#424242">ⓒ 재분배 제도 — 세금 · 사회보장 · 공교육</text>
+
+  <!-- ========== 최하단: 핵심 질문 ========== -->
+  <rect x="40" y="640" width="820" height="52" rx="10" fill="#E3F2FD" stroke="#1976D2" stroke-width="1.5"/>
+  <text x="450" y="664" text-anchor="middle" font-size="14" font-weight="500" fill="#0D47A1">💡 핵심 질문 :  오늘날 AI 시대에, 밴드왜건은 작동하고 있는가?</text>
+  <text x="450" y="682" text-anchor="middle" font-size="11" fill="#1565C0">기술이 모두에게 이롭게 되려면, 우리 사회는 어떤 조건을 갖추어야 하는가?</text>
+
+  <!-- ========== 가운데 VS 표시 ========== -->
+  <circle cx="450" cy="310" r="22" fill="#fff" stroke="#BDBDBD" stroke-width="1.5"/>
+  <text x="450" y="316" text-anchor="middle" font-size="14" font-weight="700" fill="#757575">VS</text>
+
+</svg>

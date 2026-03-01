@@ -1,0 +1,201 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}수업 집중도 분석 프로그램 활용가이드 v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{bar-chart} 수업 집중도 분석 프로그램}\\[0.5cm]
+{\Huge\bfseries\color{primary} 활용가이드}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v2.4.0.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 활용가이드는 수업 집중도 분석 프로그램의 수업 적용 방법을 안내합니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{1. 수업 개요}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.8cm}|p{12.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{내용} \\
+\hline
+강좌 & 사물인터넷과 빅데이터 \\
+\hline
+적용 주차 & 9\textasciitilde{}13주차 \\
+\hline
+자료 역할 & 참고자료 \\
+\hline
+대상 & 4학년 (프로그래밍 비전공, 초등 예비교사) \\
+\hline
+수업 시간 & 45분 (1차시) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{1.1 학습 목표}
+
+$\bullet$ 데이터에서 상관관계를 발견하고 인과관계와 구분할 수 있다
+
+$\bullet$ 규칙 기반 모델과 회귀 모델의 차이점을 비교할 수 있다
+
+$\bullet$ AI가 '판단'이 아닌 '계산'을 수행한다는 점을 설명할 수 있다
+
+
+
+\section*{2. 수업 시나리오 (45분)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{1.5cm}|p{7.8cm}|p{4.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{시간} & \textbf{활동} & \textbf{시뮬레이터 활용} \\
+\hline
+도입 & 5분 & "시끄러운 교실에서 집중이 잘 되나요?" 경험 공유 & — \\
+\hline
+데이터 & 10분 & 샘플 데이터 로드 후 분석 탭에서 산점도 관찰 & \emoji{inbox-tray} 수집, \emoji{bar-chart} 분석 \\
+\hline
+실습1 & 10분 & 학생 모델 탭에서 나만의 온도·소음 기준 설정 & \emoji{man-student} 학생 모델 \\
+\hline
+시연 & 10분 & 교수 모델 학습 시작 \textrightarrow{} 수식·R² 확인 \textrightarrow{} 비교 탭 & \emoji{man-teacher} 교수, \emoji{balance-scale} 비교 \\
+\hline
+토론 & 10분 & "AI가 집중도를 판단하는 걸까?" 토론 + 정리 & — \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{3. 학습 질문}
+
+\subsection*{초급 (이해)}
+
+$\bullet$ Q: 온도와 집중도 사이에 어떤 관계가 보이나요?
+
+$\bullet$ Q: 학생 모델과 교수 모델의 가장 큰 차이는 무엇인가요?
+
+
+\subsection*{중급 (적용)}
+
+$\bullet$ Q: 슬라이더로 온도 기준을 바꾸면 정확도가 어떻게 변하나요?
+
+$\bullet$ Q: R²가 0.3이면 무엇을 의미하나요?
+
+
+\subsection*{고급 (분석)}
+
+$\bullet$ Q: 상관관계가 있다고 인과관계가 있다고 할 수 있나요? 예를 들어 설명해보세요.
+
+$\bullet$ Q: AI가 '집중도를 판단한다'는 표현이 정확한가요?
+
+
+\subsection*{확장 (창의)}
+
+$\bullet$ Q: 집중도 외에 이 분석 방법을 적용할 수 있는 다른 분야는 무엇이 있을까요?
+
+$\bullet$ Q: 더 정확한 모델을 만들려면 어떤 데이터가 추가로 필요할까요?
+
+
+
+\section*{4. 학생 활동지}
+
+\subsection*{활동: 나만의 집중도 규칙 만들기}
+
+\textbf{목표}: 온도·소음 기준을 설정하여 집중도 예측 모델을 만든다
+
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.8cm}|p{6.4cm}|p{4.1cm}|p{2.7cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{시도} & \textbf{최적 온도 범위} & \textbf{소음 기준} & \textbf{정확도} \\
+\hline
+1 & \_\_\_°C \textasciitilde{} \_\_\_°C & \_\_\_dB & \_\_\_\% \\
+\hline
+2 & \_\_\_°C \textasciitilde{} \_\_\_°C & \_\_\_dB & \_\_\_\% \\
+\hline
+3 & \_\_\_°C \textasciitilde{} \_\_\_°C & \_\_\_dB & \_\_\_\% \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{비교}: 교수 모델 정확도: \_\_\_\% / 나의 최고 정확도: \_\_\_\%
+
+
+\textbf{생각해보기}: 두 모델의 차이가 생기는 이유는 무엇인가요?
+
+
+
+\section*{5. 평가 관찰 체크리스트}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.1cm}|p{5.5cm}|p{4.4cm}|p{2.0cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{평가 항목} & \textbf{상} & \textbf{중} & \textbf{하} \\
+\hline
+상관 vs 인과 구분 & 예시를 들어 정확히 구분 & 차이를 대략 이해 & 혼동 \\
+\hline
+모델 비교 & 두 모델 차이를 분석적으로 비교 & 정확도 비교만 수행 & 비교 미수행 \\
+\hline
+AI 본질 이해 & '계산'과 '판단'의 차이 설명 & AI 작동 원리를 대략 이해 & 이해 부족 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{6. 수업 팁}
+
+$\bullet$ \emoji{light-bulb} 샘플 데이터로 시작한 뒤 랜덤 생성으로 확장하면 부담이 줄어듭니다
+
+$\bullet$ \emoji{light-bulb} 학생 모델에서 '틀린 규칙'도 가치가 있음을 강조하세요 — 시행착오가 학습입니다
+
+$\bullet$ \emoji{light-bulb} "AI가 판단한다"는 표현을 학생들이 쓸 때마다 "AI가 계산한다"로 교정하세요
+
+
+
+\section*{7. 관련 자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{6.9cm}|p{6.6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{비고} \\
+\hline
+1 & 수업집중도분석프로그램\_퀵가이드 & 소프트웨어 사용 중 빠른 참조 \\
+\hline
+2 & 수업집중도분석프로그램\_사용설명서 & 전체 기능 상세 \\
+\hline
+3 & 수업집중도분석프로그램\_이론해설서 & 배경 이론 \\
+\hline
+4 & 수업집중도분석프로그램\_개발참조 & 기술 사양 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{수업 집중도 분석 프로그램 활용가이드}
+\end{center}
+\end{document}

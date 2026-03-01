@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 KNN 분류 시뮬레이터</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* ===== 1단계: 기본 색상 ===== */
+            --color-red-500: #E53935;
+            --color-red-700: #C62828;
+            --color-green-500: #43A047;
+            --color-green-700: #2E7D32;
+            --color-yellow-500: #FFC107;
+            --color-blue-500: #2196F3;
+            --color-blue-700: #1976D2;
+            --color-purple-500: #9C27B0;
+            --color-purple-700: #7B1FA2;
+            --color-gray-500: #757575;
+            --color-cream-100: #FFFBF5;
+            --color-cream-200: #FFF3E0;
+            --color-brown-900: #3E2723;
+            --color-brown-700: #5D4037;
+            --color-brown-500: #8D6E63;
+            --color-peach-200: #FFCCBC;
+            
+            /* ===== 2단계: 의미적 색상 ===== */
+            --primary: var(--color-blue-500);
+            --primary-dark: var(--color-blue-700);
+            --success: var(--color-green-500);
+            --success-dark: var(--color-green-700);
+            --warning: var(--color-yellow-500);
+            --danger: var(--color-red-500);
+            --highlight: var(--color-yellow-500);
+            --bg-light: var(--color-cream-100);
+            --bg-medium: var(--color-cream-200);
+            --text-dark: var(--color-brown-900);
+            --text-medium: var(--color-brown-700);
+            --text-light: var(--color-brown-500);
+            --border-color: var(--color-peach-200);
+            
+            /* ===== 간격 시스템 ===== */
+            --spacing-2xs: 4px;
+            --spacing-xs: 6px;
+            --spacing-sm: 8px;
+            --spacing-md: 10px;
+            --spacing-lg: 12px;
+            --spacing-xl: 16px;
+            --spacing-2xl: 20px;
+            
+            /* ===== 폰트 크기 ===== */
+            --font-2xs: 0.75rem;
+            --font-xs: 0.8rem;
+            --font-sm: 0.85rem;
+            --font-md: 0.9rem;
+            --font-lg: 0.95rem;
+            --font-xl: 1rem;
+            --font-2xl: 1.6rem;
+            
+            /* ===== 레이아웃 ===== */
+            --sidebar-left-width: 240px;
+            --sidebar-right-width: 260px;
+            --panel-padding: 16px;
+            --panel-radius: 16px;
+            --btn-radius: 8px;
+            
+            /* ===== 그림자 ===== */
+            --shadow-soft: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-medium: 0 4px 16px rgba(0,0,0,0.12);
+            
+            /* ===== 애니메이션 ===== */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-medium) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 헤더 */
+        .header {
+            text-align: center;
+            padding: 16px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            color: var(--text-medium);
+            font-size: 0.9rem;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        /* 모드 탭 */
+        .mode-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .mode-tab {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .mode-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .mode-tab:not(.active) {
+            background: white;
+            color: var(--text-medium);
+            border: 2px solid var(--border-color);
+        }
+
+        .mode-tab:not(.active):hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* 메인 레이아웃 */
+        .main-layout {
+            display: grid;
+            grid-template-columns: var(--sidebar-left-width) 1fr var(--sidebar-right-width);
+            gap: var(--spacing-xl);
+            align-items: start;
+        }
+
+        /* 패널 공통 */
+        .panel {
+            background: white;
+            border-radius: var(--panel-radius);
+            padding: var(--panel-padding);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .panel-title {
+            font-size: var(--font-xl);
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--bg-medium);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        /* 사이드바 */
+        .sidebar-left, .sidebar-right {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+
+        /* 입력 그룹 */
+        .input-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .input-group label {
+            display: block;
+            font-size: var(--font-sm);
+            font-weight: 500;
+            color: var(--text-medium);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .input-group input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--bg-medium);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .input-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .input-group select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .value-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .value-display .current {
+            font-weight: 600;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* 버튼 */
+        .btn {
+            padding: var(--spacing-md) var(--spacing-2xl);
+            border: none;
+            border-radius: var(--btn-radius);
+            font-size: var(--font-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: var(--success-dark);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--text-medium);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .run-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 0.95rem;
+            margin-top: 12px;
+        }
+
+        /* 차트 영역 */
+        .chart-area {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .chart-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1.3;
+        }
+
+        .canvas-wrapper canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .chart-large {
+            grid-column: 1 / -1;
+        }
+
+        .chart-large .canvas-wrapper {
+            aspect-ratio: 2;
+        }
+
+        /* 범례 */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        /* 데이터 테이블 */
+        .data-table-wrapper {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .data-table th, .data-table td {
+            padding: 6px 8px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background: var(--bg-medium);
+            position: sticky;
+            top: 0;
+            font-weight: 500;
+        }
+
+        /* 결과 테이블 */
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 0.85rem;
+        }
+
+        .result-table th, .result-table td {
+            padding: 8px 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .result-table th {
+            background: var(--bg-medium);
+            font-weight: 500;
+        }
+
+        .status-good { color: var(--success); font-weight: 600; }
+        .status-ok { color: var(--honey-yellow); font-weight: 600; }
+        .status-bad { color: var(--danger); font-weight: 600; }
+
+        /* 예측 결과 */
+        .prediction-result {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        .prediction-result .label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .prediction-result .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        /* K개 이웃 표시 */
+        .neighbors-list {
+            background: var(--bg-medium);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .neighbors-list h4 {
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .neighbor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 0.8rem;
+        }
+
+        .neighbor-item:last-child {
+            border-bottom: none;
+        }
+
+        .neighbor-class {
+            padding: 2px 8px;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* 투표 결과 */
+        .vote-result {
+            background: var(--bg-medium);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .vote-result h4 {
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .vote-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .vote-label {
+            width: 60px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .vote-track {
+            flex: 1;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 8px;
+        }
+
+        .vote-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .vote-count {
+            width: 30px;
+            text-align: right;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* 학습 결과 패널 */
+        .result-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow-soft);
+            margin-top: 16px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .result-section {
+            background: var(--bg-medium);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .result-section h4 {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        /* 혼동행렬 */
+        .confusion-matrix {
+            font-size: 0.75rem;
+            margin-top: 10px;
+        }
+
+        .confusion-matrix table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .confusion-matrix th, .confusion-matrix td {
+            padding: 6px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .confusion-matrix th {
+            background: var(--bg-medium);
+            font-weight: 500;
+        }
+
+        .confusion-matrix .diagonal {
+            background: rgba(67, 160, 71, 0.2);
+            font-weight: 600;
+        }
+
+        /* 토글 */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .toggle-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        /* 프리셋 버튼 */
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .preset-btn {
+            padding: 10px 8px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--primary);
+            background: #E3F2FD;
+        }
+
+        .preset-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 숨김 */
+        .hidden {
+            display: none !important;
+        }
+
+        /* KNN 설명 */
+        .knn-info {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.8rem;
+        }
+
+        .knn-info h4 {
+            color: #1565C0;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+        }
+
+        .knn-info code {
+            background: white;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        /* 토스트 메시지 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--danger);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-medium);
+            z-index: 1000;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 반응형 */
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 220px 1fr 220px;
+            }
+            
+            .result-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .chart-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar-right {
+                order: -1;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <h1>🎯 KNN 분류 시뮬레이터 <span class="version-badge">v1.0.1</span></h1>
+            <p><strong>K-최근접 이웃(K-Nearest Neighbors)</strong> 알고리즘으로 데이터를 분류해보세요!</p>
+        </header>
+
+        <!-- 모드 탭 -->
+        <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="train" onclick="switchMode('train')">🧠 학습 모드</button>
+            <button class="mode-tab" data-mode="inference" onclick="switchMode('inference')">🔮 추론 모드</button>
+        </div>
+
+        <!-- 메인 레이아웃 -->
+        <div class="main-layout" id="mainLayout">
+            <!-- 왼쪽 사이드바 -->
+            <aside class="sidebar-left">
+                <!-- 학습 모드: 데이터 패널 -->
+                <div class="panel" id="dataPanel">
+                    <h3 class="panel-title">📊 데이터 생성</h3>
+                    
+                    <div class="preset-grid">
+                        <button class="preset-btn active" onclick="loadPreset('fruit')">🍎 과일</button>
+                        <button class="preset-btn" onclick="loadPreset('flower')">🌸 꽃</button>
+                        <button class="preset-btn" onclick="loadPreset('animal')">🐧 동물</button>
+                        <button class="preset-btn" onclick="loadPreset('random')">🎲 랜덤</button>
+                    </div>
+
+                    <div class="input-group">
+                        <label>데이터 개수</label>
+                        <input type="range" id="dataCount" min="20" max="150" value="60">
+                        <div class="value-display">
+                            <span>20</span>
+                            <span class="current" id="dataCountValue">60개</span>
+                            <span>150</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>클래스 수</label>
+                        <input type="range" id="classCount" min="2" max="4" value="3">
+                        <div class="value-display">
+                            <span>2</span>
+                            <span class="current" id="classCountValue">3개</span>
+                            <span>4</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>데이터 분산도</label>
+                        <input type="range" id="dataSpread" min="1" max="5" value="3">
+                        <div class="value-display">
+                            <span>밀집</span>
+                            <span class="current" id="dataSpreadValue">보통</span>
+                            <span>분산</span>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="generateData()">✨ 데이터 생성</button>
+                        <button class="btn btn-outline" onclick="resetAll()">🗑️ 초기화</button>
+                    </div>
+
+                    <div class="knn-info">
+                        <h4>📌 KNN 알고리즘이란?</h4>
+                        <p>새로운 데이터가 들어오면 가장 가까운 <code>K개</code>의 이웃을 찾아 <strong>다수결 투표</strong>로 분류합니다.</p>
+                    </div>
+
+                    <div class="data-table-wrapper" id="dataTableWrapper" style="display: none;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>X₁</th>
+                                    <th>X₂</th>
+                                    <th>클래스</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dataTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 추론 모드: 입력 패널 -->
+                <div class="panel hidden" id="inferencePanel">
+                    <h3 class="panel-title">🎯 분류할 데이터</h3>
+                    
+                    <div class="input-group">
+                        <label id="labelX1">📏 특성 1 (X₁)</label>
+                        <input type="range" id="predX1" min="0" max="100" step="0.5" value="50">
+                        <div class="value-display">
+                            <span>0</span>
+                            <span class="current" id="predX1Value">50.0</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label id="labelX2">📐 특성 2 (X₂)</label>
+                        <input type="range" id="predX2" min="0" max="100" step="0.5" value="50">
+                        <div class="value-display">
+                            <span>0</span>
+                            <span class="current" id="predX2Value">50.0</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+
+                    <div class="neighbors-list" id="neighborsList">
+                        <h4>🔗 K개의 최근접 이웃</h4>
+                        <div id="neighborsContent">데이터를 생성하고 분류를 실행하세요.</div>
+                    </div>
+
+                    <div class="vote-result" id="voteResult">
+                        <h4>🗳️ 다수결 투표 결과</h4>
+                        <div id="voteContent">--</div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 차트 영역 -->
+            <div class="chart-area">
+                <!-- 학습 모드 차트 -->
+                <div class="chart-row" id="trainCharts">
+                    <div class="chart-container">
+                        <div class="chart-title" id="scatterTitle">📈 데이터 분포</div>
+                        <div class="canvas-wrapper">
+                            <canvas id="scatterChart"></canvas>
+                        </div>
+                        <div class="legend" id="scatterLegend"></div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">🗺️ 결정 경계</div>
+                        <div class="canvas-wrapper">
+                            <canvas id="boundaryChart"></canvas>
+                        </div>
+                        <div class="toggle-row" style="margin-top: 10px; justify-content: center;">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="showBoundary" onchange="toggleBoundary()" checked>
+                                <span>결정 경계 표시</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 추론 모드 차트 -->
+                <div class="chart-row hidden" id="inferenceCharts">
+                    <div class="chart-container chart-large">
+                        <div class="chart-title" id="inferenceChartTitle">🔮 분류 시각화</div>
+                        <div class="canvas-wrapper">
+                            <canvas id="inferenceChart"></canvas>
+                        </div>
+                        <div class="legend" id="inferenceLegend"></div>
+                    </div>
+                </div>
+
+                <!-- 결과 패널 -->
+                <div class="result-panel" id="resultPanel" style="display: none;">
+                    <div class="result-grid">
+                        <!-- 분류 결과 -->
+                        <div class="result-section">
+                            <h4>📊 분류 결과</h4>
+                            <table class="result-table">
+                                <thead>
+                                    <tr>
+                                        <th>K값</th>
+                                        <th>정확도</th>
+                                        <th>상태</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultTableBody"></tbody>
+                            </table>
+                        </div>
+
+                        <!-- 혼동행렬 -->
+                        <div class="result-section">
+                            <h4>📋 혼동행렬</h4>
+                            <div class="confusion-matrix" id="confusionMatrix">
+                                <p style="text-align: center; color: var(--text-light);">분류 실행 후 표시됩니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- K값 분석 -->
+                        <div class="result-section">
+                            <h4>📈 K값별 정확도</h4>
+                            <div style="height: 150px;">
+                                <canvas id="kChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 오른쪽 사이드바 -->
+            <aside class="sidebar-right">
+                <!-- 학습 모드: 설정 패널 -->
+                <div class="panel" id="trainPanel">
+                    <h3 class="panel-title">⚙️ KNN 설정</h3>
+                    
+                    <div class="input-group">
+                        <label>K값 (이웃 수)</label>
+                        <input type="range" id="kValue" min="1" max="15" value="5">
+                        <div class="value-display">
+                            <span>1</span>
+                            <span class="current" id="kValueDisplay">5</span>
+                            <span>15</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>거리 측정 방식</label>
+                        <select id="distanceMethod">
+                            <option value="euclidean">유클리드 거리</option>
+                            <option value="manhattan">맨해튼 거리</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-success run-btn" id="btnClassify" onclick="runClassification()">
+                        ⚡ 분류 실행
+                    </button>
+
+                    <div class="knn-info" style="margin-top: 12px; background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);">
+                        <h4 style="color: #7B1FA2;">💡 K값 선택 팁</h4>
+                        <p>
+                            • K가 작으면: 노이즈에 민감<br>
+                            • K가 크면: 경계가 부드러움<br>
+                            • 보통 <code>홀수</code>를 사용 (동점 방지)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 추론 모드: 결과 패널 -->
+                <div class="panel hidden" id="inferenceResultPanel">
+                    <h3 class="panel-title">🏷️ 분류 결과</h3>
+                    
+                    <div class="prediction-result" id="predictionResult">
+                        <div class="label">예측 클래스</div>
+                        <div class="value" id="predictionValue">--</div>
+                    </div>
+
+                    <div style="margin-top: 12px; padding: 10px; background: var(--bg-medium); border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px;">
+                            <span>사용된 K값</span>
+                            <span id="usedKValue" style="font-weight: 600; color: var(--primary);">--</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px;">
+                            <span>신뢰도</span>
+                            <span id="confidence" style="font-weight: 600; color: var(--success);">--</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                            <span>거리 방식</span>
+                            <span id="usedDistance" style="font-weight: 600;">--</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        // ========== 설정 상수 ==========
+        const CONFIG = {
+            // 시각화
+            POINT_RADIUS: 4,
+            POINT_RADIUS_SMALL: 3,
+            HIGHLIGHT_RADIUS: 10,
+            CHART_PADDING: 50,
+            BOUNDARY_RESOLUTION: 50,
+            
+            // K값 범위
+            K_MIN: 1,
+            K_MAX: 15,
+            K_DEFAULT: 5,
+            
+            // 데이터 범위
+            DATA_COUNT_MIN: 20,
+            DATA_COUNT_MAX: 150,
+            DATA_COUNT_DEFAULT: 60,
+            CLASS_COUNT_MIN: 2,
+            CLASS_COUNT_MAX: 4,
+            CLASS_COUNT_DEFAULT: 3,
+            
+            // 성능 임계값
+            THRESHOLD_EXCELLENT: 0.9,
+            THRESHOLD_GOOD: 0.7,
+            
+            // 색상
+            CLASS_COLORS: ['#E53935', '#43A047', '#2196F3', '#9C27B0'],
+            CLASS_NAMES: ['A', 'B', 'C', 'D'],
+            CLASS_EMOJIS: ['🔴', '🟢', '🔵', '🟣'],
+        };
+
+        const UI_TEXT = {
+            // 상태
+            STATUS_EXCELLENT: '🎯 우수',
+            STATUS_GOOD: '✅ 양호',
+            STATUS_POOR: '⚠️ 개선필요',
+            
+            // 버튼
+            BTN_GENERATE: '✨ 데이터 생성',
+            BTN_CLASSIFY: '⚡ 분류 실행',
+            BTN_CLASSIFYING: '⏳ 분류 중...',
+            BTN_RESET: '🗑️ 초기화',
+            
+            // 에러 메시지
+            ERROR_NO_DATA: '먼저 데이터를 생성해주세요!',
+            
+            // 분산도 레이블
+            SPREAD_LABELS: ['매우 밀집', '밀집', '보통', '분산', '매우 분산'],
+        };
+
+        const PRESETS = {
+            fruit: {
+                name: '과일 분류',
+                x1Label: '🍬 당도 (Brix)',
+                x2Label: '⚖️ 무게 (g)',
+                classNames: ['사과', '배', '귤', '포도'],
+                centers: [[30, 70], [70, 80], [50, 30], [80, 50]],
+            },
+            flower: {
+                name: '꽃 분류',
+                x1Label: '🌸 꽃잎 길이 (cm)',
+                x2Label: '🌿 꽃잎 너비 (cm)',
+                classNames: ['장미', '튤립', '백합', '국화'],
+                centers: [[25, 60], [75, 70], [40, 30], [70, 40]],
+            },
+            animal: {
+                name: '동물 분류',
+                x1Label: '📏 몸길이 (cm)',
+                x2Label: '⚖️ 체중 (kg)',
+                classNames: ['고양이', '강아지', '토끼', '햄스터'],
+                centers: [[35, 55], [65, 75], [50, 35], [25, 25]],
+            },
+            random: {
+                name: '랜덤 분류',
+                x1Label: '📊 특성 1 (X₁)',
+                x2Label: '📈 특성 2 (X₂)',
+                classNames: ['클래스 A', '클래스 B', '클래스 C', '클래스 D'],
+                centers: [[30, 30], [70, 30], [30, 70], [70, 70]],
+            },
+        };
+
+        // ========== 전역 변수 ==========
+        let data = [];
+        let currentPreset = 'fruit';
+        let classCount = CONFIG.CLASS_COUNT_DEFAULT;
+        let kValue = CONFIG.K_DEFAULT;
+        let distanceMethod = 'euclidean';
+        let kChart = null;
+        let showBoundary = true;
+        let isClassified = false;
+
+        // ========== 유틸리티 함수 ==========
+        function showError(message) {
+            // 기존 토스트 제거
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) existingToast.remove();
+            
+            // 새 토스트 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // 표시
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // 3초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ========== 초기화 ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            initSliders();
+            initKChart();
+        });
+
+        function initSliders() {
+            // K값 슬라이더 동적 설정
+            const kSlider = document.getElementById('kValue');
+            kSlider.min = CONFIG.K_MIN;
+            kSlider.max = CONFIG.K_MAX;
+            kSlider.value = CONFIG.K_DEFAULT;
+            document.getElementById('kValueDisplay').textContent = CONFIG.K_DEFAULT;
+            
+            document.getElementById('dataCount').addEventListener('input', (e) => {
+                document.getElementById('dataCountValue').textContent = e.target.value + '개';
+            });
+
+            document.getElementById('classCount').addEventListener('input', (e) => {
+                classCount = parseInt(e.target.value);
+                document.getElementById('classCountValue').textContent = e.target.value + '개';
+            });
+
+            document.getElementById('dataSpread').addEventListener('input', (e) => {
+                document.getElementById('dataSpreadValue').textContent = UI_TEXT.SPREAD_LABELS[parseInt(e.target.value) - 1];
+            });
+
+            document.getElementById('kValue').addEventListener('input', (e) => {
+                kValue = parseInt(e.target.value);
+                document.getElementById('kValueDisplay').textContent = e.target.value;
+                if (isClassified) {
+                    drawBoundaryChart();
+                }
+            });
+
+            document.getElementById('predX1').addEventListener('input', (e) => {
+                document.getElementById('predX1Value').textContent = parseFloat(e.target.value).toFixed(1);
+                if (data.length > 0) updatePrediction();
+            });
+
+            document.getElementById('predX2').addEventListener('input', (e) => {
+                document.getElementById('predX2Value').textContent = parseFloat(e.target.value).toFixed(1);
+                if (data.length > 0) updatePrediction();
+            });
+        }
+
+        function initKChart() {
+            const ctx = document.getElementById('kChart').getContext('2d');
+            kChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '정확도',
+                        data: [],
+                        borderColor: '#2196F3',
+                        backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#2196F3',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { 
+                            title: { display: true, text: 'K값' },
+                            grid: { display: false }
+                        },
+                        y: { 
+                            title: { display: true, text: '정확도 (%)' },
+                            min: 0,
+                            max: 100,
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ========== 모드 전환 ==========
+        function switchMode(mode) {
+            document.querySelectorAll('.mode-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.mode === mode);
+            });
+
+            if (mode === 'train') {
+                document.getElementById('dataPanel').classList.remove('hidden');
+                document.getElementById('inferencePanel').classList.add('hidden');
+                document.getElementById('trainCharts').classList.remove('hidden');
+                document.getElementById('inferenceCharts').classList.add('hidden');
+                document.getElementById('trainPanel').classList.remove('hidden');
+                document.getElementById('inferenceResultPanel').classList.add('hidden');
+            } else {
+                document.getElementById('dataPanel').classList.add('hidden');
+                document.getElementById('inferencePanel').classList.remove('hidden');
+                document.getElementById('trainCharts').classList.add('hidden');
+                document.getElementById('inferenceCharts').classList.remove('hidden');
+                document.getElementById('trainPanel').classList.add('hidden');
+                document.getElementById('inferenceResultPanel').classList.remove('hidden');
+                
+                if (data.length > 0) {
+                    updatePrediction();
+                }
+            }
+        }
+
+        // ========== 프리셋 ==========
+        function loadPreset(presetId) {
+            currentPreset = presetId;
+            
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            const preset = PRESETS[presetId];
+            document.getElementById('labelX1').textContent = preset.x1Label;
+            document.getElementById('labelX2').textContent = preset.x2Label;
+            
+            updateLegend();
+        }
+
+        function updateLegend() {
+            const preset = PRESETS[currentPreset];
+            let legendHtml = '';
+            for (let i = 0; i < classCount; i++) {
+                legendHtml += `
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: ${CONFIG.CLASS_COLORS[i]}"></div>
+                        <span>${preset.classNames[i]}</span>
+                    </div>
+                `;
+            }
+            document.getElementById('scatterLegend').innerHTML = legendHtml;
+            document.getElementById('inferenceLegend').innerHTML = legendHtml;
+        }
+
+        // ========== 데이터 생성 ==========
+        function generateData() {
+            const count = parseInt(document.getElementById('dataCount').value);
+            const spread = parseInt(document.getElementById('dataSpread').value) * 8;
+            const preset = PRESETS[currentPreset];
+
+            data = [];
+            const perClass = Math.floor(count / classCount);
+
+            for (let c = 0; c < classCount; c++) {
+                const center = preset.centers[c];
+                for (let i = 0; i < perClass; i++) {
+                    const x1 = center[0] + (Math.random() - 0.5) * spread;
+                    const x2 = center[1] + (Math.random() - 0.5) * spread;
+                    data.push({
+                        x1: Math.max(0, Math.min(100, x1)),
+                        x2: Math.max(0, Math.min(100, x2)),
+                        class: c
+                    });
+                }
+            }
+
+            // 섞기
+            for (let i = data.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [data[i], data[j]] = [data[j], data[i]];
+            }
+
+            updateLegend();
+            displayDataTable();
+            drawScatterChart();
+            drawBoundaryChart();
+            
+            isClassified = false;
+            document.getElementById('resultPanel').style.display = 'none';
+        }
+
+        function displayDataTable() {
+            const wrapper = document.getElementById('dataTableWrapper');
+            const tbody = document.getElementById('dataTableBody');
+            const preset = PRESETS[currentPreset];
+            
+            tbody.innerHTML = data.slice(0, 50).map((d, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${d.x1.toFixed(1)}</td>
+                    <td>${d.x2.toFixed(1)}</td>
+                    <td style="color: ${CONFIG.CLASS_COLORS[d.class]}">${preset.classNames[d.class]}</td>
+                </tr>
+            `).join('');
+            
+            wrapper.style.display = 'block';
+        }
+
+        // ========== 거리 계산 ==========
+        function calculateDistance(p1, p2, method = 'euclidean') {
+            if (method === 'euclidean') {
+                return Math.sqrt((p1.x1 - p2.x1) ** 2 + (p1.x2 - p2.x2) ** 2);
+            } else {
+                return Math.abs(p1.x1 - p2.x1) + Math.abs(p1.x2 - p2.x2);
+            }
+        }
+
+        // ========== KNN 분류 ==========
+        function knnClassify(point, k, method) {
+            const distances = data.map((d, idx) => ({
+                idx,
+                distance: calculateDistance(point, d, method),
+                class: d.class
+            }));
+
+            distances.sort((a, b) => a.distance - b.distance);
+            const neighbors = distances.slice(0, k);
+
+            // 투표
+            const votes = {};
+            neighbors.forEach(n => {
+                votes[n.class] = (votes[n.class] || 0) + 1;
+            });
+
+            let maxVotes = 0;
+            let predictedClass = 0;
+            Object.entries(votes).forEach(([cls, count]) => {
+                if (count > maxVotes) {
+                    maxVotes = count;
+                    predictedClass = parseInt(cls);
+                }
+            });
+
+            return {
+                predictedClass,
+                neighbors,
+                votes,
+                confidence: (maxVotes / k * 100).toFixed(1)
+            };
+        }
+
+        // ========== 분류 실행 ==========
+        function runClassification() {
+            if (data.length === 0) {
+                showError(UI_TEXT.ERROR_NO_DATA);
+                return;
+            }
+
+            kValue = parseInt(document.getElementById('kValue').value);
+            distanceMethod = document.getElementById('distanceMethod').value;
+
+            // K값별 정확도 계산 (Leave-One-Out Cross Validation)
+            const kAccuracies = [];
+            for (let k = CONFIG.K_MIN; k <= CONFIG.K_MAX; k += 2) {
+                let correct = 0;
+                data.forEach((d, idx) => {
+                    const testData = data.filter((_, i) => i !== idx);
+                    const tempData = data;
+                    data = testData;
+                    const result = knnClassify(d, k, distanceMethod);
+                    data = tempData;
+                    if (result.predictedClass === d.class) correct++;
+                });
+                kAccuracies.push({ k, accuracy: (correct / data.length * 100).toFixed(1) });
+            }
+
+            // 현재 K값 정확도
+            const currentAccuracy = kAccuracies.find(a => a.k === kValue)?.accuracy || 
+                                    kAccuracies[Math.floor(kValue / 2)]?.accuracy || 0;
+
+            // 혼동행렬 계산
+            const confusionMatrix = Array(classCount).fill(null).map(() => Array(classCount).fill(0));
+            data.forEach((d, idx) => {
+                const testData = data.filter((_, i) => i !== idx);
+                const tempData = data;
+                data = testData;
+                const result = knnClassify(d, kValue, distanceMethod);
+                data = tempData;
+                confusionMatrix[d.class][result.predictedClass]++;
+            });
+
+            // UI 업데이트
+            updateResultTable(currentAccuracy);
+            updateConfusionMatrix(confusionMatrix);
+            updateKChart(kAccuracies);
+            drawBoundaryChart();
+
+            isClassified = true;
+            document.getElementById('resultPanel').style.display = 'block';
+        }
+
+        function updateResultTable(accuracy) {
+            const accNum = parseFloat(accuracy);
+            let status, statusClass;
+            
+            if (accNum > CONFIG.THRESHOLD_EXCELLENT * 100) {
+                status = UI_TEXT.STATUS_EXCELLENT;
+                statusClass = 'status-good';
+            } else if (accNum > CONFIG.THRESHOLD_GOOD * 100) {
+                status = UI_TEXT.STATUS_GOOD;
+                statusClass = 'status-ok';
+            } else {
+                status = UI_TEXT.STATUS_POOR;
+                statusClass = 'status-bad';
+            }
+            
+            document.getElementById('resultTableBody').innerHTML = `
+                <tr>
+                    <td>${kValue}</td>
+                    <td>${accuracy}%</td>
+                    <td class="${statusClass}">${status}</td>
+                </tr>
+            `;
+        }
+
+        function updateConfusionMatrix(matrix) {
+            const preset = PRESETS[currentPreset];
+            let html = '<table><thead><tr><th></th>';
+            
+            for (let i = 0; i < classCount; i++) {
+                html += `<th style="color: ${CONFIG.CLASS_COLORS[i]}">${preset.classNames[i].slice(0, 2)}</th>`;
+            }
+            html += '</tr></thead><tbody>';
+
+            for (let i = 0; i < classCount; i++) {
+                html += `<tr><th style="color: ${CONFIG.CLASS_COLORS[i]}">${preset.classNames[i].slice(0, 2)}</th>`;
+                for (let j = 0; j < classCount; j++) {
+                    const cellClass = i === j ? 'diagonal' : '';
+                    html += `<td class="${cellClass}">${matrix[i][j]}</td>`;
+                }
+                html += '</tr>';
+            }
+            html += '</tbody></table>';
+
+            document.getElementById('confusionMatrix').innerHTML = html;
+        }
+
+        function updateKChart(kAccuracies) {
+            kChart.data.labels = kAccuracies.map(a => a.k);
+            kChart.data.datasets[0].data = kAccuracies.map(a => parseFloat(a.accuracy));
+            kChart.update();
+        }
+
+        // ========== 시각화 ==========
+        function drawScatterChart() {
+            const canvas = document.getElementById('scatterChart');
+            const ctx = canvas.getContext('2d');
+            
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            const width = rect.width;
+            const height = rect.height;
+            const padding = CONFIG.CHART_PADDING;
+
+            ctx.clearRect(0, 0, width, height);
+
+            if (data.length === 0) {
+                ctx.fillStyle = '#8D6E63';
+                ctx.font = '14px Noto Sans KR';
+                ctx.textAlign = 'center';
+                ctx.fillText('데이터를 생성해주세요', width / 2, height / 2);
+                return;
+            }
+
+            const scaleX = (v) => padding + v / 100 * (width - 2 * padding);
+            const scaleY = (v) => height - padding - v / 100 * (height - 2 * padding);
+
+            // 축
+            drawAxes(ctx, width, height, padding);
+
+            // 데이터 점
+            data.forEach(d => {
+                ctx.beginPath();
+                ctx.arc(scaleX(d.x1), scaleY(d.x2), CONFIG.POINT_RADIUS, 0, Math.PI * 2);
+                ctx.fillStyle = CONFIG.CLASS_COLORS[d.class];
+                ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+
+            // 축 레이블
+            const preset = PRESETS[currentPreset];
+            ctx.fillStyle = '#5D4037';
+            ctx.font = '12px Noto Sans KR';
+            ctx.textAlign = 'center';
+            ctx.fillText(preset.x1Label.split(' ')[1] || 'X₁', width / 2, height - 10);
+            
+            ctx.save();
+            ctx.translate(15, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText(preset.x2Label.split(' ')[1] || 'X₂', 0, 0);
+            ctx.restore();
+        }
+
+        function drawBoundaryChart() {
+            const canvas = document.getElementById('boundaryChart');
+            const ctx = canvas.getContext('2d');
+            
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            const width = rect.width;
+            const height = rect.height;
+            const padding = CONFIG.CHART_PADDING;
+
+            ctx.clearRect(0, 0, width, height);
+
+            if (data.length === 0) {
+                ctx.fillStyle = '#8D6E63';
+                ctx.font = '14px Noto Sans KR';
+                ctx.textAlign = 'center';
+                ctx.fillText('데이터를 생성해주세요', width / 2, height / 2);
+                return;
+            }
+
+            const scaleX = (v) => padding + v / 100 * (width - 2 * padding);
+            const scaleY = (v) => height - padding - v / 100 * (height - 2 * padding);
+
+            // 결정 경계 (격자)
+            if (showBoundary && data.length > 0) {
+                const resolution = CONFIG.BOUNDARY_RESOLUTION;
+                const cellWidth = (width - 2 * padding) / resolution;
+                const cellHeight = (height - 2 * padding) / resolution;
+
+                for (let i = 0; i < resolution; i++) {
+                    for (let j = 0; j < resolution; j++) {
+                        const x1 = (i + 0.5) / resolution * 100;
+                        const x2 = (j + 0.5) / resolution * 100;
+                        const result = knnClassify({ x1, x2 }, kValue, distanceMethod);
+                        
+                        ctx.fillStyle = CONFIG.CLASS_COLORS[result.predictedClass] + '30';
+                        ctx.fillRect(
+                            padding + i * cellWidth,
+                            height - padding - (j + 1) * cellHeight,
+                            cellWidth + 1,
+                            cellHeight + 1
+                        );
+                    }
+                }
+            }
+
+            // 축
+            drawAxes(ctx, width, height, padding);
+
+            // 데이터 점
+            data.forEach(d => {
+                ctx.beginPath();
+                ctx.arc(scaleX(d.x1), scaleY(d.x2), CONFIG.POINT_RADIUS_SMALL, 0, Math.PI * 2);
+                ctx.fillStyle = CONFIG.CLASS_COLORS[d.class];
+                ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+        }
+
+        function drawAxes(ctx, width, height, padding) {
+            ctx.strokeStyle = '#BCAAA4';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // 눈금
+            ctx.fillStyle = '#8D6E63';
+            ctx.font = '10px JetBrains Mono';
+            ctx.textAlign = 'center';
+            
+            for (let i = 0; i <= 4; i++) {
+                const v = i * 25;
+                const x = padding + v / 100 * (width - 2 * padding);
+                const y = height - padding - v / 100 * (height - 2 * padding);
+                
+                ctx.fillText(v.toString(), x, height - padding + 15);
+                ctx.textAlign = 'right';
+                ctx.fillText(v.toString(), padding - 5, y + 4);
+                ctx.textAlign = 'center';
+            }
+        }
+
+        function toggleBoundary() {
+            showBoundary = document.getElementById('showBoundary').checked;
+            drawBoundaryChart();
+        }
+
+        // ========== 추론 ==========
+        function updatePrediction() {
+            if (data.length === 0) return;
+
+            const x1 = parseFloat(document.getElementById('predX1').value);
+            const x2 = parseFloat(document.getElementById('predX2').value);
+            const k = parseInt(document.getElementById('kValue').value);
+            const method = document.getElementById('distanceMethod').value;
+
+            const result = knnClassify({ x1, x2 }, k, method);
+            const preset = PRESETS[currentPreset];
+
+            // 예측 결과
+            document.getElementById('predictionValue').textContent = 
+                CONFIG.CLASS_EMOJIS[result.predictedClass] + ' ' + preset.classNames[result.predictedClass];
+            document.getElementById('predictionResult').style.background = 
+                `linear-gradient(135deg, ${CONFIG.CLASS_COLORS[result.predictedClass]} 0%, ${CONFIG.CLASS_COLORS[result.predictedClass]}CC 100%)`;
+
+            // 메타 정보
+            document.getElementById('usedKValue').textContent = k;
+            document.getElementById('confidence').textContent = result.confidence + '%';
+            document.getElementById('usedDistance').textContent = method === 'euclidean' ? '유클리드' : '맨해튼';
+
+            // 이웃 목록
+            let neighborsHtml = '';
+            result.neighbors.forEach((n, idx) => {
+                neighborsHtml += `
+                    <div class="neighbor-item">
+                        <span>#${idx + 1} (거리: ${n.distance.toFixed(1)})</span>
+                        <span class="neighbor-class" style="background: ${CONFIG.CLASS_COLORS[n.class]}">${preset.classNames[n.class]}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('neighborsContent').innerHTML = neighborsHtml;
+
+            // 투표 결과
+            let voteHtml = '';
+            for (let c = 0; c < classCount; c++) {
+                const count = result.votes[c] || 0;
+                const percentage = (count / k * 100).toFixed(0);
+                voteHtml += `
+                    <div class="vote-bar">
+                        <span class="vote-label" style="color: ${CONFIG.CLASS_COLORS[c]}">${preset.classNames[c].slice(0, 3)}</span>
+                        <div class="vote-track">
+                            <div class="vote-fill" style="width: ${percentage}%; background: ${CONFIG.CLASS_COLORS[c]}"></div>
+                        </div>
+                        <span class="vote-count">${count}</span>
+                    </div>
+                `;
+            }
+            document.getElementById('voteContent').innerHTML = voteHtml;
+
+            // 추론 차트
+            drawInferenceChart(x1, x2, result);
+        }
+
+        function drawInferenceChart(predX1, predX2, result) {
+            const canvas = document.getElementById('inferenceChart');
+            const ctx = canvas.getContext('2d');
+            
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            const width = rect.width;
+            const height = rect.height;
+            const padding = 60;
+
+            ctx.clearRect(0, 0, width, height);
+
+            const scaleX = (v) => padding + v / 100 * (width - 2 * padding);
+            const scaleY = (v) => height - padding - v / 100 * (height - 2 * padding);
+
+            // 결정 경계
+            if (showBoundary) {
+                const resolution = 40;
+                const cellWidth = (width - 2 * padding) / resolution;
+                const cellHeight = (height - 2 * padding) / resolution;
+
+                for (let i = 0; i < resolution; i++) {
+                    for (let j = 0; j < resolution; j++) {
+                        const x1 = (i + 0.5) / resolution * 100;
+                        const x2 = (j + 0.5) / resolution * 100;
+                        const r = knnClassify({ x1, x2 }, kValue, distanceMethod);
+                        
+                        ctx.fillStyle = CONFIG.CLASS_COLORS[r.predictedClass] + '20';
+                        ctx.fillRect(
+                            padding + i * cellWidth,
+                            height - padding - (j + 1) * cellHeight,
+                            cellWidth + 1,
+                            cellHeight + 1
+                        );
+                    }
+                }
+            }
+
+            // 축
+            ctx.strokeStyle = '#BCAAA4';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // 축 레이블
+            const preset = PRESETS[currentPreset];
+            ctx.fillStyle = '#5D4037';
+            ctx.font = '14px Noto Sans KR';
+            ctx.textAlign = 'center';
+            ctx.fillText(preset.x1Label, width / 2, height - 15);
+            
+            ctx.save();
+            ctx.translate(20, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText(preset.x2Label, 0, 0);
+            ctx.restore();
+
+            // 이웃 연결선
+            const px = scaleX(predX1);
+            const py = scaleY(predX2);
+
+            result.neighbors.forEach((n, idx) => {
+                const d = data[n.idx];
+                ctx.beginPath();
+                ctx.moveTo(px, py);
+                ctx.lineTo(scaleX(d.x1), scaleY(d.x2));
+                ctx.strokeStyle = CONFIG.CLASS_COLORS[n.class] + '60';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            });
+
+            // 데이터 점
+            data.forEach(d => {
+                ctx.beginPath();
+                ctx.arc(scaleX(d.x1), scaleY(d.x2), CONFIG.POINT_RADIUS_SMALL, 0, Math.PI * 2);
+                ctx.fillStyle = CONFIG.CLASS_COLORS[d.class] + '80';
+                ctx.fill();
+            });
+
+            // K개 이웃 강조
+            result.neighbors.forEach((n, idx) => {
+                const d = data[n.idx];
+                ctx.beginPath();
+                ctx.arc(scaleX(d.x1), scaleY(d.x2), CONFIG.POINT_RADIUS + 2, 0, Math.PI * 2);
+                ctx.fillStyle = CONFIG.CLASS_COLORS[n.class];
+                ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            });
+
+            // 예측점
+            ctx.beginPath();
+            ctx.arc(px, py, CONFIG.HIGHLIGHT_RADIUS, 0, Math.PI * 2);
+            ctx.fillStyle = '#FFC107';
+            ctx.fill();
+            ctx.strokeStyle = '#FF9800';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // 예측점 내부 클래스 색상
+            ctx.beginPath();
+            ctx.arc(px, py, 5, 0, Math.PI * 2);
+            ctx.fillStyle = CONFIG.CLASS_COLORS[result.predictedClass];
+            ctx.fill();
+
+            // 레이블
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 12px JetBrains Mono';
+            ctx.textAlign = 'center';
+            ctx.fillText(`(${predX1.toFixed(1)}, ${predX2.toFixed(1)})`, px, py - 18);
+
+            // 눈금
+            ctx.fillStyle = '#8D6E63';
+            ctx.font = '11px JetBrains Mono';
+            for (let i = 0; i <= 4; i++) {
+                const v = i * 25;
+                ctx.textAlign = 'center';
+                ctx.fillText(v.toString(), scaleX(v), height - padding + 20);
+                ctx.textAlign = 'right';
+                ctx.fillText(v.toString(), padding - 8, scaleY(v) + 4);
+            }
+        }
+
+        // ========== 초기화 ==========
+        function resetAll() {
+            data = [];
+            isClassified = false;
+            document.getElementById('dataTableWrapper').style.display = 'none';
+            document.getElementById('resultPanel').style.display = 'none';
+            drawScatterChart();
+            drawBoundaryChart();
+            
+            kChart.data.labels = [];
+            kChart.data.datasets[0].data = [];
+            kChart.update();
+        }
+
+        window.addEventListener('resize', () => {
+            drawScatterChart();
+            drawBoundaryChart();
+            if (document.getElementById('inferenceCharts').classList.contains('hidden') === false && data.length > 0) {
+                updatePrediction();
+            }
+        });
+    </script>
+</body>
+</html>

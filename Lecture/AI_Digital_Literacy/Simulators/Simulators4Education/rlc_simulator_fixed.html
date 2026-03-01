@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RLC 진동 시뮬레이터 v1.5.1</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { 
+            --r-color: #E53935; 
+            --l-color: #FB8C00; 
+            --c-color: #1E88E5; 
+            --bg-circuit: #121212; 
+        }
+        body { 
+            font-family: 'JetBrains Mono', monospace; 
+            background: #f0f2f5; 
+            margin: 0; 
+            padding: 15px; 
+        }
+        .main-layout { 
+            display: grid; 
+            grid-template-columns: 280px 1fr 300px; 
+            gap: 15px; 
+            height: 85vh; 
+        }
+        .panel { 
+            background: white; 
+            border-radius: 15px; 
+            padding: 20px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+            display: flex; 
+            flex-direction: column; 
+        }
+        #circuitCanvas { 
+            background: var(--bg-circuit); 
+            border-radius: 10px; 
+            flex: 1; 
+            width: 100%; 
+        }
+        .val { 
+            font-weight: bold; 
+            color: var(--l-color); 
+            float: right; 
+        }
+        input[type=range] { 
+            width: 100%; 
+            margin-top: 5px; 
+        }
+        button {
+            padding: 10px;
+            cursor: pointer;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #555;
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+        .status-item {
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header style="text-align: center; margin-bottom: 10px;">
+    <h2>⚡ RLC 직렬 회로 시뮬레이터 <span style="font-size:0.7rem; border:1px solid #ccc; padding:2px 5px;">v1.5.1</span></h2>
+</header>
+
+<div class="main-layout">
+    <aside class="panel">
+        <h3>⚙️ 파라미터</h3>
+        <div style="margin-bottom:15px;">
+            저항 (R): <span id="rDisplay" class="val">10 Ω</span>
+            <input type="range" id="R" min="1" max="50" value="10">
+        </div>
+        <div style="margin-bottom:15px;">
+            인덕터 (L): <span id="lDisplay" class="val">0.5 H</span>
+            <input type="range" id="L" min="0.1" max="2" step="0.1" value="0.5">
+        </div>
+        <div style="margin-bottom:15px;">
+            커패시터 (C): <span id="cDisplay" class="val">100 mF</span>
+            <input type="range" id="C" min="10" max="500" value="100">
+        </div>
+        <hr>
+        <button id="resetBtn">🔄 회로 초기화</button>
+        <button id="pauseBtn" style="margin-top: 10px;">⏸️ 일시정지</button>
+        <p style="font-size:0.8rem; color:#666; margin-top:15px;">
+            * 스위치를 닫으면 에너지가 R, L, C 사이에서 진동하며 감쇠합니다.
+        </p>
+        <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-radius: 5px; font-size: 0.8rem;">
+            <strong>공진 주파수:</strong><br>
+            <span id="resonanceFreq">계산 중...</span>
+        </div>
+    </aside>
+
+    <main class="panel">
+        <canvas id="circuitCanvas"></canvas>
+    </main>
+
+    <aside class="panel">
+        <h3>📊 오실로스코프</h3>
+        <div style="flex:1;">
+            <canvas id="scopeChart"></canvas>
+        </div>
+        <div class="status-grid">
+            <div class="status-item">
+                <strong>전류 (i):</strong><br>
+                <span id="curI" style="color: var(--l-color); font-size: 1.1rem;">0.00</span> A
+            </div>
+            <div class="status-item">
+                <strong>전압 (Vc):</strong><br>
+                <span id="curVc" style="color: var(--c-color); font-size: 1.1rem;">10.00</span> V
+            </div>
+            <div class="status-item" style="grid-column: 1 / -1;">
+                <strong>에너지 상태:</strong><br>
+                <span id="energyState">대기 중...</span>
+            </div>
+            <div class="status-item" style="grid-column: 1 / -1;">
+                <strong>총 에너지:</strong><br>
+                <span id="totalEnergy">0.00</span> J
+            </div>
+        </div>
+    </aside>
+</div>
+
+<script>
+/**
+ * RLC Circuit Simulator v1.5.1
+ * Fixed version with proper physics and visualization
+ */
+const SimApp = {
+    CONFIG: {
+        DT: 0.003,           // 물리 시간 간격 (더 작은 값으로 정확도 향상)
+        MAX_POINTS: 400,
+        INITIAL_VC: 10       // 커패시터 초기 전압 (충전 상태)
+    },
+
+    state: {
+        i: 0,                // 전류 (A)
+        vC: 10,              // 커패시터 전압 (V)
+        time: 0,
+        history: [],
+        timer: null,
+        isPaused: false
+    },
+
+    engine: {
+        update() {
+            // RLC 직렬 회로 미분방정식
+            // L(di/dt) + Ri + Vc = 0
+            // i = C(dVc/dt)
+            
+            const R = parseFloat(document.getElementById('R').value);
+            const L = parseFloat(document.getElementById('L').value);
+            const C = parseFloat(document.getElementById('C').value) * 0.001; // mF to F
+
+            // 개선된 수치 해석 (Runge-Kutta 2차)
+            const dt = SimApp.CONFIG.DT;
+            
+            // k1 계산
+            const di_dt = (-R * SimApp.state.i - SimApp.state.vC) / L;
+            const dvc_dt = SimApp.state.i / C;
+            
+            // k2 계산 (중간점)
+            const i_mid = SimApp.state.i + di_dt * dt / 2;
+            const vc_mid = SimApp.state.vC + dvc_dt * dt / 2;
+            const di_dt2 = (-R * i_mid - vc_mid) / L;
+            const dvc_dt2 = i_mid / C;
+            
+            // 업데이트
+            SimApp.state.i += di_dt2 * dt;
+            SimApp.state.vC += dvc_dt2 * dt;
+            SimApp.state.time += dt;
+
+            // 데이터 기록
+            SimApp.state.history.push({ 
+                t: SimApp.state.time, 
+                i: SimApp.state.i,
+                vc: SimApp.state.vC 
+            });
+            
+            if (SimApp.state.history.length > SimApp.CONFIG.MAX_POINTS) {
+                SimApp.state.history.shift();
+            }
+        },
+
+        loop() {
+            if (!SimApp.state.isPaused) {
+                SimApp.engine.update();
+                SimApp.viz.draw();
+            }
+            SimApp.state.timer = requestAnimationFrame(SimApp.engine.loop);
+        },
+
+        reset() {
+            SimApp.state.i = 0;
+            SimApp.state.vC = SimApp.CONFIG.INITIAL_VC;
+            SimApp.state.time = 0;
+            SimApp.state.history = [];
+            SimApp.viz.updateChart();
+        },
+
+        togglePause() {
+            SimApp.state.isPaused = !SimApp.state.isPaused;
+            document.getElementById('pauseBtn').innerText = 
+                SimApp.state.isPaused ? '▶️ 재생' : '⏸️ 일시정지';
+        },
+
+        calculateResonance() {
+            const L = parseFloat(document.getElementById('L').value);
+            const C = parseFloat(document.getElementById('C').value) * 0.001;
+            const freq = 1 / (2 * Math.PI * Math.sqrt(L * C));
+            const omega = 2 * Math.PI * freq;
+            const R = parseFloat(document.getElementById('R').value);
+            const dampingRatio = R / (2 * Math.sqrt(L / C));
+            
+            let dampingType = '';
+            if (dampingRatio < 1) dampingType = '저감쇠 (진동)';
+            else if (dampingRatio === 1) dampingType = '임계감쇠';
+            else dampingType = '과감쇠';
+            
+            document.getElementById('resonanceFreq').innerHTML = 
+                `f₀ = ${freq.toFixed(2)} Hz<br>ω₀ = ${omega.toFixed(2)} rad/s<br>감쇠: ${dampingType}`;
+        }
+    },
+
+    viz: {
+        ctx: null,
+        chart: null,
+
+        init() {
+            const cvs = document.getElementById('circuitCanvas');
+            this.ctx = cvs.getContext('2d');
+            this.resize();
+            this.initChart();
+            window.addEventListener('resize', () => this.resize());
+        },
+
+        resize() {
+            const cvs = this.ctx.canvas;
+            cvs.width = cvs.clientWidth;
+            cvs.height = cvs.clientHeight;
+        },
+
+        draw() {
+            const { ctx } = this;
+            const { width: w, height: h } = ctx.canvas;
+            ctx.clearRect(0, 0, w, h);
+
+            // 회로도 그리기
+            const centerX = w / 2;
+            const centerY = h / 2;
+            const circuitWidth = w * 0.6;
+            const circuitHeight = h * 0.5;
+            
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 3;
+            
+            // 회로 사각형
+            ctx.beginPath();
+            ctx.rect(centerX - circuitWidth/2, centerY - circuitHeight/2, circuitWidth, circuitHeight);
+            ctx.stroke();
+
+            // 소자 위치
+            const resistorPos = { x: centerX - circuitWidth/2 + 40, y: centerY - circuitHeight/2 };
+            const inductorPos = { x: centerX, y: centerY - circuitHeight/2 };
+            const capacitorPos = { x: centerX + circuitWidth/2 - 40, y: centerY - circuitHeight/2 };
+
+            // R, L, C 그리기
+            this.drawResistor(resistorPos.x, resistorPos.y);
+            this.drawInductor(inductorPos.x, inductorPos.y);
+            this.drawCapacitor(capacitorPos.x, capacitorPos.y);
+
+            // 전류 흐름 애니메이션
+            if (Math.abs(SimApp.state.i) > 0.001) {
+                const dashOffset = (SimApp.state.time * 100) % 40;
+                ctx.setLineDash([10, 10]);
+                ctx.lineDashOffset = -dashOffset * Math.sign(SimApp.state.i);
+                ctx.strokeStyle = SimApp.state.i > 0 ? '#00FF00' : '#FF00FF';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(centerX - circuitWidth/2, centerY - circuitHeight/2, circuitWidth, circuitHeight);
+                ctx.setLineDash([]);
+            }
+
+            // 전류 방향 화살표
+            if (Math.abs(SimApp.state.i) > 0.01) {
+                this.drawArrow(centerX, centerY + circuitHeight/2 + 30, SimApp.state.i > 0);
+            }
+
+            // 수치 업데이트
+            document.getElementById('curI').innerText = SimApp.state.i.toFixed(3);
+            document.getElementById('curVc').innerText = SimApp.state.vC.toFixed(2);
+            
+            // 에너지 계산
+            const L = parseFloat(document.getElementById('L').value);
+            const C = parseFloat(document.getElementById('C').value) * 0.001;
+            const energyL = 0.5 * L * SimApp.state.i * SimApp.state.i;
+            const energyC = 0.5 * C * SimApp.state.vC * SimApp.state.vC;
+            const totalEnergy = energyL + energyC;
+            
+            document.getElementById('totalEnergy').innerText = totalEnergy.toFixed(4);
+            
+            if (Math.abs(SimApp.state.i) < 0.01 && Math.abs(SimApp.state.vC) < 0.1) {
+                document.getElementById('energyState').innerText = "에너지 소진 (저항 손실)";
+            } else {
+                const percentL = (energyL / (totalEnergy + 0.0001) * 100).toFixed(0);
+                const percentC = (energyC / (totalEnergy + 0.0001) * 100).toFixed(0);
+                document.getElementById('energyState').innerText = 
+                    `L: ${percentL}% | C: ${percentC}%`;
+            }
+        },
+
+        drawResistor(x, y) {
+            const ctx = this.ctx;
+            ctx.strokeStyle = '#E53935';
+            ctx.fillStyle = '#E53935';
+            ctx.lineWidth = 4;
+            
+            // 지그재그 패턴
+            ctx.beginPath();
+            for (let i = 0; i < 5; i++) {
+                ctx.lineTo(x + i * 6, y + (i % 2 === 0 ? -10 : 10));
+            }
+            ctx.stroke();
+            
+            // 라벨
+            ctx.fillStyle = 'white';
+            ctx.font = '14px JetBrains Mono';
+            ctx.fillText('R', x + 10, y - 15);
+        },
+
+        drawInductor(x, y) {
+            const ctx = this.ctx;
+            ctx.strokeStyle = '#FB8C00';
+            ctx.fillStyle = '#FB8C00';
+            ctx.lineWidth = 3;
+            
+            // 코일 모양
+            ctx.beginPath();
+            for (let i = 0; i < 4; i++) {
+                ctx.arc(x + i * 12, y, 6, Math.PI, 0, false);
+            }
+            ctx.stroke();
+            
+            // 라벨
+            ctx.fillStyle = 'white';
+            ctx.font = '14px JetBrains Mono';
+            ctx.fillText('L', x + 15, y - 15);
+        },
+
+        drawCapacitor(x, y) {
+            const ctx = this.ctx;
+            ctx.strokeStyle = '#1E88E5';
+            ctx.fillStyle = '#1E88E5';
+            ctx.lineWidth = 4;
+            
+            // 평행판
+            ctx.beginPath();
+            ctx.moveTo(x - 5, y - 15);
+            ctx.lineTo(x - 5, y + 15);
+            ctx.moveTo(x + 5, y - 15);
+            ctx.lineTo(x + 5, y + 15);
+            ctx.stroke();
+            
+            // 라벨
+            ctx.fillStyle = 'white';
+            ctx.font = '14px JetBrains Mono';
+            ctx.fillText('C', x + 10, y - 15);
+        },
+
+        drawArrow(x, y, rightward) {
+            const ctx = this.ctx;
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            if (rightward) {
+                ctx.moveTo(x - 20, y);
+                ctx.lineTo(x + 20, y);
+                ctx.lineTo(x + 15, y - 5);
+                ctx.moveTo(x + 20, y);
+                ctx.lineTo(x + 15, y + 5);
+            } else {
+                ctx.moveTo(x + 20, y);
+                ctx.lineTo(x - 20, y);
+                ctx.lineTo(x - 15, y - 5);
+                ctx.moveTo(x - 20, y);
+                ctx.lineTo(x - 15, y + 5);
+            }
+            ctx.stroke();
+        },
+
+        initChart() {
+            const ctx = document.getElementById('scopeChart').getContext('2d');
+            this.chart = new Chart(ctx, {
+                type: 'line',
+                data: { 
+                    labels: [], 
+                    datasets: [
+                        { 
+                            label: '전류 (A)', 
+                            data: [], 
+                            borderColor: '#FB8C00', 
+                            backgroundColor: 'rgba(251, 140, 0, 0.1)',
+                            tension: 0.4, 
+                            pointRadius: 0,
+                            borderWidth: 2
+                        },
+                        {
+                            label: '전압 (V)',
+                            data: [],
+                            borderColor: '#1E88E5',
+                            backgroundColor: 'rgba(30, 136, 229, 0.1)',
+                            tension: 0.4,
+                            pointRadius: 0,
+                            borderWidth: 2
+                        }
+                    ] 
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    animation: false,
+                    scales: { 
+                        y: { 
+                            min: -12, 
+                            max: 12,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        },
+
+        updateChart() {
+            if (!this.chart) return;
+            this.chart.data.labels = SimApp.state.history.map(d => d.t.toFixed(2));
+            this.chart.data.datasets[0].data = SimApp.state.history.map(d => d.i);
+            this.chart.data.datasets[1].data = SimApp.state.history.map(d => d.vc);
+            this.chart.update('none'); // 애니메이션 없이 업데이트
+        }
+    }
+};
+
+// 이벤트 바인딩 및 초기화
+window.onload = () => {
+    SimApp.viz.init();
+    SimApp.engine.loop();
+    SimApp.engine.calculateResonance();
+    
+    // 차트 업데이트 (60fps)
+    setInterval(() => SimApp.viz.updateChart(), 16);
+
+    // 리셋 버튼
+    document.getElementById('resetBtn').onclick = () => {
+        SimApp.engine.reset();
+    };
+    
+    // 일시정지 버튼
+    document.getElementById('pauseBtn').onclick = () => {
+        SimApp.engine.togglePause();
+    };
+    
+    // 슬라이더 인터랙션
+    const sliders = [
+        { id: 'R', unit: ' Ω', display: 'rDisplay' },
+        { id: 'L', unit: ' H', display: 'lDisplay' },
+        { id: 'C', unit: ' mF', display: 'cDisplay' }
+    ];
+    
+    sliders.forEach(slider => {
+        const element = document.getElementById(slider.id);
+        element.oninput = (e) => {
+            document.getElementById(slider.display).innerText = e.target.value + slider.unit;
+            SimApp.engine.calculateResonance();
+        };
+    });
+};
+</script>
+</body>
+</html>

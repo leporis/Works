@@ -1,0 +1,854 @@
+\documentclass[a4paper,11pt]{ltjsarticle}
+
+%% ─── 폰트 설정 ───
+\usepackage{luatexja-fontspec}
+\setmainjfont[BoldFont={Noto Sans CJK KR Bold}]{Noto Sans CJK KR}
+\setsansjfont[BoldFont={Noto Sans CJK KR Bold}]{Noto Sans CJK KR}
+\setmainfont[BoldFont={Noto Sans CJK KR Bold}]{Noto Sans CJK KR}
+\setsansfont[BoldFont={Noto Sans CJK KR Bold}]{Noto Sans CJK KR}
+\setmonofont{Noto Sans CJK KR}
+
+%% ─── 레이아웃 ───
+\usepackage[a4paper, top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\renewcommand{\arraystretch}{1.35}
+
+%% ─── 섹션 스타일 ───
+\usepackage{titlesec}
+\usepackage{xcolor}
+\definecolor{secblue}{HTML}{1565C0}
+\titleformat{\section}{\Large\bfseries\color{secblue}}{}{0em}{}[\vspace{-0.3em}\textcolor{secblue}{\rule{\textwidth}{0.5pt}}\vspace{0.3em}]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{}{0em}{}
+\titlespacing{\section}{0pt}{1.5em}{0.8em}
+\titlespacing{\subsection}{0pt}{1em}{0.5em}
+\titlespacing{\subsubsection}{0pt}{0.8em}{0.4em}
+
+%% ─── 하이퍼링크 ───
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=secblue, urlcolor=secblue}
+
+%% ─── 헤더/푸터 ───
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\fancyhead[R]{\small\textcolor{gray}{AI디지털리터러시 평가 루브릭 v2.1.2.0}}
+\renewcommand{\headrulewidth}{0.3pt}
+
+%% ─── 인용 블록 ───
+\usepackage{mdframed}
+\newmdenv[
+  leftmargin=8pt, rightmargin=0pt,
+  innerleftmargin=10pt, innerrightmargin=10pt,
+  innertopmargin=6pt, innerbottommargin=6pt,
+  linewidth=3pt, linecolor=secblue!40,
+  topline=false, bottomline=false, rightline=false,
+  backgroundcolor=blue!3
+]{quoteblock}
+
+%% ─── 평가표 환경 (음영 박스) ───
+\newmdenv[
+  linewidth=1.5pt, linecolor=gray!60,
+  innerleftmargin=10pt, innerrightmargin=10pt,
+  innertopmargin=10pt, innerbottommargin=10pt,
+  backgroundcolor=gray!5
+]{evalbox}
+
+\renewcommand{\contentsname}{목 차}
+
+\begin{document}
+
+%% ════════════ 표지 ════════════
+\begin{center}
+{\LARGE\bfseries AI디지털리터러시 평가 루브릭}\\[0.8em]
+{\Large 주차별 평가 기준 (5주 × 10점 = 50점 만점)}\\[0.5em]
+{\normalsize 문서 버전: v2.1.2.0}
+\end{center}
+\vspace{1em}
+\tableofcontents
+\newpage
+
+%% ════════════ 1. 평가 체계 총괄 ════════════
+\section{평가 체계 총괄}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|>{\centering\arraybackslash}p{1cm}|p{3.5cm}|X|}
+\hline
+\textbf{주차} & \textbf{평가 영역} & \textbf{배점} & \textbf{평가 시기} & \textbf{평가 방법} \\ \hline
+1주차 & 이론 퀴즈 & 10점 & 2주차 1차시 시작 (10분) & 5지선다 10문항 + 단답형 5문항 \\ \hline
+2주차 & 이론 퀴즈 & 10점 & 3주차 1차시 시작 (10분) & 5지선다 10문항 + 단답형 5문항 \\ \hline
+3주차 & 엔트리 AI 작품 & 10점 & 3주차 종료 전 20분 & 작품 제작·제출 \\ \hline
+4주차 & 엔트리 AI 작품 (생성형 AI 활용) & 10점 & 4주차 종료 전 30분 & 작품 + 프롬프트 제출 \\ \hline
+5주차 & 수업 지도안 (생성형 AI 활용) & 10점 & 5주차 종료 전 30분 & 지도안 + 프롬프트 제출 \\ \hline
+ & \textbf{합계} & \textbf{50점} & & \\ \hline
+\end{tabularx}
+
+%% ════════════ 2. 1주차 평가 ════════════
+\section{1주차 평가: 이론 퀴즈 (10점)}
+
+\subsection{기본 정보}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|}
+\hline
+\textbf{항목} & \textbf{내용} \\ \hline
+실시 시기 & 2주차 1차시 시작 \\ \hline
+제한 시간 & 10분 \\ \hline
+출제 범위 & 1주차 전체 내용 (AI의 이해 + 기계학습의 원리) \\ \hline
+문항 구성 & 5지선다형 10문항 + 단답형 5문항 (총 15문항) \\ \hline
+배점 방식 & 5지선다형 각 0.5점 (5점) + 단답형 각 1점 (5점) = 10점 \\ \hline
+\end{tabularx}
+
+\subsection{출제 범위 및 예상 문항 배분}
+
+\textbf{5지선다형 (10문항 × 0.5점 = 5점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{3cm}|>{\centering\arraybackslash}p{2cm}|X|}
+\hline
+\textbf{영역} & \textbf{예상 문항 수} & \textbf{주요 출제 내용} \\ \hline
+AI 정의와 유형 & 3문항 & AI 정의, 약한/강한 AI 구분, 기능별 분류(인식/예측/분류/생성) \\ \hline
+AI 발전 역사 & 2문항 & AI의 봄과 겨울, 주요 사건(튜링 테스트, AlphaGo 등) \\ \hline
+기계학습 개념 & 2문항 & ML 정의, AI/ML/DL 포함 관계 \\ \hline
+학습 유형 & 3문항 & 지도학습, 비지도학습, 강화학습의 정의와 사례 구분 \\ \hline
+\end{tabularx}
+
+\vspace{0.5em}
+\textbf{단답형 (5문항 × 1점 = 5점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{3cm}|>{\centering\arraybackslash}p{2cm}|X|}
+\hline
+\textbf{영역} & \textbf{예상 문항 수} & \textbf{주요 출제 내용} \\ \hline
+AI 유형·분류 & 2문항 & 약한/강한 AI 구분 이유 서술, 기능별 분류 사례 기술 \\ \hline
+기계학습 원리 & 2문항 & 학습 과정(수집→학습→평가→예측) 단계 설명, 학습 유형 비교 \\ \hline
+통합 이해 & 1문항 & AI/ML/DL 포함 관계 설명 또는 사례 적용 \\ \hline
+\end{tabularx}
+
+\subsection{등급 기준}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1.5cm}|>{\centering\arraybackslash}p{2cm}|X|}
+\hline
+\textbf{등급} & \textbf{점수} & \textbf{설명} \\ \hline
+A & 9\textasciitilde{}10점 & 우수 \\ \hline
+B & 7\textasciitilde{}8점 & 양호 \\ \hline
+C & 5\textasciitilde{}6점 & 보통 \\ \hline
+D & 3\textasciitilde{}4점 & 미흡 \\ \hline
+F & 0\textasciitilde{}2점 & 매우 미흡 \\ \hline
+\end{tabularx}
+
+%% ════════════ 3. 2주차 평가 ════════════
+\section{2주차 평가: 이론 퀴즈 (10점)}
+
+\subsection{기본 정보}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|}
+\hline
+\textbf{항목} & \textbf{내용} \\ \hline
+실시 시기 & 3주차 1차시 시작 \\ \hline
+제한 시간 & 10분 \\ \hline
+출제 범위 & 2주차 전체 내용 (데이터·딥러닝 + 생성형 AI) \\ \hline
+문항 구성 & 5지선다형 10문항 + 단답형 5문항 (총 15문항) \\ \hline
+배점 방식 & 5지선다형 각 0.5점 (5점) + 단답형 각 1점 (5점) = 10점 \\ \hline
+\end{tabularx}
+
+\subsection{출제 범위 및 예상 문항 배분}
+
+\textbf{5지선다형 (10문항 × 0.5점 = 5점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{3cm}|>{\centering\arraybackslash}p{2cm}|X|}
+\hline
+\textbf{영역} & \textbf{예상 문항 수} & \textbf{주요 출제 내용} \\ \hline
+데이터의 역할 & 2문항 & 데이터 유형(이미지/텍스트/소리), AI 학습에서 데이터의 중요성 \\ \hline
+데이터 편향 & 1문항 & 편향의 정의, 편향이 AI에 미치는 영향 사례 \\ \hline
+딥러닝/신경망 & 2문항 & 신경망 구조(입력층/은닉층/출력층), 딥러닝 정의 \\ \hline
+LLM과 생성형 AI & 3문항 & LLM 원리, 전통 AI vs 생성형 AI 차이, 생성형 AI 사례 \\ \hline
+증강/자동화 & 2문항 & 증강과 자동화의 정의 및 차이, 프롬프트 엔지니어링 4원칙 \\ \hline
+\end{tabularx}
+
+\vspace{0.5em}
+\textbf{단답형 (5문항 × 1점 = 5점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{3cm}|>{\centering\arraybackslash}p{2cm}|X|}
+\hline
+\textbf{영역} & \textbf{예상 문항 수} & \textbf{주요 출제 내용} \\ \hline
+데이터·편향 & 1문항 & 데이터 편향 사례와 해결 방안 서술 \\ \hline
+딥러닝 구조 & 1문항 & 신경망 구조 설명 또는 딥러닝 특징 기술 \\ \hline
+생성형 AI & 2문항 & LLM 작동 원리 서술, 증강과 자동화 차이 설명 \\ \hline
+프롬프트 & 1문항 & 프롬프트 엔지니어링 4원칙 나열 또는 적용 \\ \hline
+\end{tabularx}
+
+\subsection{등급 기준}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1.5cm}|>{\centering\arraybackslash}p{2cm}|X|}
+\hline
+\textbf{등급} & \textbf{점수} & \textbf{설명} \\ \hline
+A & 9\textasciitilde{}10점 & 우수 \\ \hline
+B & 7\textasciitilde{}8점 & 양호 \\ \hline
+C & 5\textasciitilde{}6점 & 보통 \\ \hline
+D & 3\textasciitilde{}4점 & 미흡 \\ \hline
+F & 0\textasciitilde{}2점 & 매우 미흡 \\ \hline
+\end{tabularx}
+
+%% ════════════ 4. 3주차 평가 ════════════
+\section{3주차 평가: 엔트리 AI 블록 활용 작품 (10점)}
+
+\subsection{기본 정보}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|}
+\hline
+\textbf{항목} & \textbf{내용} \\ \hline
+제작 시간 & 3주차 2차시 종료 전 20분 \\ \hline
+과제 내용 & 엔트리 인공지능 블록 1종 이상을 활용한 AI 작품 \\ \hline
+제출물 & 엔트리 작품 URL \\ \hline
+필수 조건 & AI 블록(음성인식/번역/읽어주기/사물인식/사람인식 중 1종+) + 블록 코딩 연동 \\ \hline
+\end{tabularx}
+
+\subsection{평가 영역 및 배점}
+
+\noindent
+\begin{tabularx}{\textwidth}{|X|>{\centering\arraybackslash}p{1.3cm}|X|}
+\hline
+\textbf{평가 영역} & \textbf{배점} & \textbf{세부 항목} \\ \hline
+A. AI 블록 활용 & 4점 & 블록 선택·적용(2) + 기능 작동(2) \\ \hline
+B. 블록 코딩 구현 & 4점 & AI 결과 연동(2) + 동작 구현(2) \\ \hline
+C. 제출 요건 & 2점 & 기한 준수(1) + 작품 실행 가능(1) \\ \hline
+\end{tabularx}
+
+\subsection{항목별 평가 기준}
+
+\subsubsection{A. AI 블록 활용 (4점)}
+
+\textbf{A-1. AI 블록 선택·적용 (2점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{점수} & \textbf{기준} \\ \hline
+\textbf{2점} & 인공지능 블록을 2종 이상 조합하여 활용하거나, 1종을 창의적으로 심화 활용 \\ \hline
+\textbf{1점} & 인공지능 블록을 1종 활용했으나 시연과 유사한 수준 \\ \hline
+\textbf{0점} & 인공지능 블록을 활용하지 못함 \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}
+\textbf{A-2. 기능 작동 (2점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{점수} & \textbf{기준} \\ \hline
+\textbf{2점} & AI 블록 기능이 안정적으로 작동하고, 결과가 작품 흐름에 자연스럽게 통합됨 \\ \hline
+\textbf{1점} & AI 블록 기능이 작동하나 불안정하거나, 작품과의 연계가 부자연스러움 \\ \hline
+\textbf{0점} & AI 블록 기능이 작동하지 않음 \\ \hline
+\end{tabularx}
+
+\subsubsection{B. 블록 코딩 구현 (4점)}
+
+\textbf{B-1. AI 결과 연동 (2점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{점수} & \textbf{기준} \\ \hline
+\textbf{2점} & AI 블록의 출력(인식 결과, 번역 결과 등)을 블록 코딩에서 조건 분기나 변수로 활용 \\ \hline
+\textbf{1점} & AI 블록 출력을 단순 표시만 하거나, 연동이 형식적 \\ \hline
+\textbf{0점} & AI 블록 출력을 블록 코딩에 연동하지 못함 \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}
+\textbf{B-2. 동작 구현 (2점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{점수} & \textbf{기준} \\ \hline
+\textbf{2점} & AI 인식 결과에 따라 2가지 이상의 서로 다른 동작이 정상 작동 \\ \hline
+\textbf{1점} & AI 인식 결과에 따른 동작이 1가지이거나, 일부 동작이 오류 \\ \hline
+\textbf{0점} & AI 결과와 무관한 동작이거나 작동하지 않음 \\ \hline
+\end{tabularx}
+
+\subsubsection{C. 제출 요건 (2점)}
+
+\textbf{C-1. 기한 준수 (1점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{점수} & \textbf{기준} \\ \hline
+\textbf{1점} & 수업 종료 시간까지 제출 완료 \\ \hline
+\textbf{0점} & 수업 종료 시간 초과 \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}
+\textbf{C-2. 작품 실행 가능 (1점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{점수} & \textbf{기준} \\ \hline
+\textbf{1점} & 제출된 URL로 접근 가능하고, 작품이 정상 실행됨 \\ \hline
+\textbf{0점} & URL 접근 불가 또는 작품 실행 오류 \\ \hline
+\end{tabularx}
+
+\subsection{등급 기준}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1.5cm}|>{\centering\arraybackslash}p{2cm}|X|}
+\hline
+\textbf{등급} & \textbf{점수} & \textbf{설명} \\ \hline
+A & 9\textasciitilde{}10점 & 우수 \\ \hline
+B & 7\textasciitilde{}8점 & 양호 \\ \hline
+C & 5\textasciitilde{}6점 & 보통 \\ \hline
+D & 3\textasciitilde{}4점 & 미흡 \\ \hline
+F & 0\textasciitilde{}2점 & 매우 미흡 \\ \hline
+\end{tabularx}
+
+\subsection{종합 평가표}
+
+\begin{evalbox}
+\begin{center}
+\textbf{AI디지털리터러시 3주차 엔트리 AI 블록 작품 평가표}
+\end{center}
+\vspace{0.3em}
+
+학번: \rule{4cm}{0.4pt} \hfill 이름: \rule{4cm}{0.4pt} \hfill 제출시간: \rule{3cm}{0.4pt}
+
+\vspace{0.8em}
+\textbf{[A. AI 블록 활용] (4점)}
+
+\noindent
+\begin{tabularx}{\linewidth}{|p{2.5cm}|X|>{\centering\arraybackslash}p{1.5cm}|}
+\hline
+\textbf{항목} & \textbf{기준} & \textbf{점수} \\ \hline
+A-1 블록적용 & 0: 미활용 / 1: 시연수준 / 2: 2종 조합 또는 심화 활용 & \hspace{1em}/2 \\ \hline
+A-2 기능작동 & 0: 미작동 / 1: 불안정 / 2: 안정 작동 & \hspace{1em}/2 \\ \hline
+\end{tabularx}
+\hfill 소계: \rule{1.5cm}{0.4pt}/4점
+
+\vspace{0.5em}
+\textbf{[B. 블록 코딩 구현] (4점)}
+
+\noindent
+\begin{tabularx}{\linewidth}{|p{2.5cm}|X|>{\centering\arraybackslash}p{1.5cm}|}
+\hline
+B-1 결과연동 & 0: 미연동 / 1: 단순표시 / 2: 조건분기·변수 활용 & \hspace{1em}/2 \\ \hline
+B-2 동작구현 & 0: 미작동 / 1: 1가지 / 2: 2가지 이상 동작 & \hspace{1em}/2 \\ \hline
+\end{tabularx}
+\hfill 소계: \rule{1.5cm}{0.4pt}/4점
+
+\vspace{0.5em}
+\textbf{[C. 제출 요건] (2점)}
+
+\noindent
+\begin{tabularx}{\linewidth}{|p{2.5cm}|X|>{\centering\arraybackslash}p{1.5cm}|}
+\hline
+C-1 기한 & 0: 초과 / 1: 기한 내 & \hspace{1em}/1 \\ \hline
+C-2 실행 & 0: 오류 / 1: 정상 실행 & \hspace{1em}/1 \\ \hline
+\end{tabularx}
+\hfill 소계: \rule{1.5cm}{0.4pt}/2점
+
+\vspace{0.8em}
+\begin{center}
+\textbf{총점: \rule{2cm}{0.4pt} / 10점}
+\end{center}
+
+\vspace{0.3em}
+\textbf{피드백:} \rule{0.82\linewidth}{0.4pt}
+
+\vspace{1em}
+\rule{0.97\linewidth}{0.4pt}
+\end{evalbox}
+
+%% ════════════ 5. 4주차 평가 ════════════
+\section{4주차 평가: 엔트리 AI 작품 --- 생성형 AI 활용 (10점)}
+
+\subsection{기본 정보}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|}
+\hline
+\textbf{항목} & \textbf{내용} \\ \hline
+제작 시간 & 4주차 2차시 종료 전 30분 \\ \hline
+과제 내용 & 생성형 AI의 도움을 받아 엔트리 AI 모델 학습 기능을 활용한 작품 \\ \hline
+제출물 & 엔트리 작품 URL + 생성형 AI 활용 프롬프트 전문 \\ \hline
+필수 조건 & AI 모델 학습 활용(이미지 분류 또는 테이블 학습) + 생성형 AI 활용 과정 기록 \\ \hline
+\end{tabularx}
+
+\subsection{평가 영역 및 배점}
+
+\noindent
+\begin{tabularx}{\textwidth}{|X|>{\centering\arraybackslash}p{1.3cm}|X|}
+\hline
+\textbf{평가 영역} & \textbf{배점} & \textbf{세부 항목} \\ \hline
+A. 작품 완성도 & 4점 & AI 모델 활용(2) + 동작 구현(2) \\ \hline
+B. 생성형 AI 활용 & 4점 & 프롬프트 품질(2) + 활용 적절성(2) \\ \hline
+C. 제출 요건 & 2점 & 기한 준수(1) + 제출물 완전성(1) \\ \hline
+\end{tabularx}
+
+\subsection{항목별 평가 기준}
+
+\subsubsection{A. 작품 완성도 (4점)}
+
+\textbf{A-1. AI 모델 활용 (2점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{점수} & \textbf{기준} \\ \hline
+\textbf{2점} & 이미지 분류 모델 또는 테이블 학습(선형회귀/KNN/K평균)을 활용하여 작품에 통합, 학습 데이터가 충분하고 결과가 안정적 \\ \hline
+\textbf{1점} & AI 모델 학습을 시도했으나 학습 데이터가 부족하거나 모델 정확도가 낮음 \\ \hline
+\textbf{0점} & AI 모델 학습이 완료되지 않았거나 작품에 활용되지 않음 \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}
+\textbf{A-2. 동작 구현 (2점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{점수} & \textbf{기준} \\ \hline
+\textbf{2점} & 모델 학습 결과(분류, 예측 등)에 따른 조건 분기 동작이 2개 이상 정상 작동 \\ \hline
+\textbf{1점} & 기본적 동작은 하나 일부 오류 또는 단순 동작만 구현 \\ \hline
+\textbf{0점} & 동작이 거의 작동하지 않음 \\ \hline
+\end{tabularx}
+
+\subsubsection{B. 생성형 AI 활용 (4점)}
+
+\textbf{B-1. 프롬프트 품질 (2점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{점수} & \textbf{기준} \\ \hline
+\textbf{2점} & 구체적 목표, 조건, 형식을 명시한 체계적 프롬프트 (3개 이상의 조건 포함) \\ \hline
+\textbf{1점} & 요청은 있으나 조건이 모호하거나 구조화 부족 (1\textasciitilde{}2개 조건) \\ \hline
+\textbf{0점} & 프롬프트가 없거나 ``코드 짜줘'' 수준의 단순 요청 \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}
+\textbf{B-2. 활용 적절성 (2점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{점수} & \textbf{기준} \\ \hline
+\textbf{2점} & 생성형 AI를 아이디어 구상, 코드 설계, 디버깅 등 2가지 이상 용도로 활용 \\ \hline
+\textbf{1점} & 생성형 AI를 1가지 용도로만 활용 \\ \hline
+\textbf{0점} & 생성형 AI를 실질적으로 활용하지 않음 (프롬프트 형식적 기록만) \\ \hline
+\end{tabularx}
+
+\subsubsection{C. 제출 요건 (2점)}
+
+\textbf{C-1. 기한 준수 (1점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{1점} & 수업 종료 시간까지 제출 완료 \\ \hline
+\textbf{0점} & 수업 종료 시간 초과 \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}
+\textbf{C-2. 제출물 완전성 (1점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{1점} & 엔트리 작품 URL + 프롬프트 전문 모두 제출, 작품 정상 실행 \\ \hline
+\textbf{0점} & 제출물 누락(URL 또는 프롬프트 미제출) 또는 작품 실행 오류 \\ \hline
+\end{tabularx}
+
+\subsection{등급 기준}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1.5cm}|>{\centering\arraybackslash}p{2cm}|X|}
+\hline
+\textbf{등급} & \textbf{점수} & \textbf{설명} \\ \hline
+A & 9\textasciitilde{}10점 & 우수 \\ \hline
+B & 7\textasciitilde{}8점 & 양호 \\ \hline
+C & 5\textasciitilde{}6점 & 보통 \\ \hline
+D & 3\textasciitilde{}4점 & 미흡 \\ \hline
+F & 0\textasciitilde{}2점 & 매우 미흡 \\ \hline
+\end{tabularx}
+
+\subsection{종합 평가표}
+
+\begin{evalbox}
+\begin{center}
+\textbf{AI디지털리터러시 4주차 엔트리 AI 작품 (생성형 AI) 평가표}
+\end{center}
+\vspace{0.3em}
+
+학번: \rule{4cm}{0.4pt} \hfill 이름: \rule{4cm}{0.4pt} \hfill 제출시간: \rule{3cm}{0.4pt}
+
+\vspace{0.8em}
+\textbf{[A. 작품 완성도] (4점)}
+
+\noindent
+\begin{tabularx}{\linewidth}{|p{2.5cm}|X|>{\centering\arraybackslash}p{1.5cm}|}
+\hline
+A-1 모델활용 & 0: 미활용 / 1: 부족 / 2: 안정적 모델 활용 & \hspace{1em}/2 \\ \hline
+A-2 동작구현 & 0: 미작동 / 1: 부분 / 2: 조건분기 동작 정상 & \hspace{1em}/2 \\ \hline
+\end{tabularx}
+\hfill 소계: \rule{1.5cm}{0.4pt}/4점
+
+\vspace{0.5em}
+\textbf{[B. 생성형 AI 활용] (4점)}
+
+\noindent
+\begin{tabularx}{\linewidth}{|p{2.5cm}|X|>{\centering\arraybackslash}p{1.5cm}|}
+\hline
+B-1 프롬프트 & 0: 없음 / 1: 모호 / 2: 체계적 프롬프트 & \hspace{1em}/2 \\ \hline
+B-2 활용도 & 0: 미활용 / 1: 1가지 / 2: 2가지 이상 용도 & \hspace{1em}/2 \\ \hline
+\end{tabularx}
+\hfill 소계: \rule{1.5cm}{0.4pt}/4점
+
+\vspace{0.5em}
+\textbf{[C. 제출 요건] (2점)}
+
+\noindent
+\begin{tabularx}{\linewidth}{|p{2.5cm}|X|>{\centering\arraybackslash}p{1.5cm}|}
+\hline
+C-1 기한 & 0: 초과 / 1: 기한 내 & \hspace{1em}/1 \\ \hline
+C-2 완전성 & 0: 누락/오류 / 1: 완전 & \hspace{1em}/1 \\ \hline
+\end{tabularx}
+\hfill 소계: \rule{1.5cm}{0.4pt}/2점
+
+\vspace{0.8em}
+\begin{center}
+\textbf{총점: \rule{2cm}{0.4pt} / 10점}
+\end{center}
+
+\vspace{0.3em}
+\textbf{피드백:} \rule{0.82\linewidth}{0.4pt}
+
+\vspace{1em}
+\rule{0.97\linewidth}{0.4pt}
+\end{evalbox}
+
+%% ════════════ 6. 5주차 평가 ════════════
+\section{5주차 평가: 수업 지도안 (10점)}
+
+\subsection{기본 정보}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|}
+\hline
+\textbf{항목} & \textbf{내용} \\ \hline
+제작 시간 & 5주차 2차시 종료 전 30분 \\ \hline
+과제 내용 & 생성형 AI의 도움을 받아 AI 활용 초등학교 수업 지도안 작성 \\ \hline
+분량 & A4 1\textasciitilde{}2쪽 \\ \hline
+제출물 & 수업 지도안 + 생성형 AI 활용 프롬프트 전문 \\ \hline
+필수 포함 요소 & 학년/주제/성취기준/학습목표/도구활용계획/학생활동/평가계획 \\ \hline
+\end{tabularx}
+
+\subsection{평가 영역 및 배점}
+
+\noindent
+\begin{tabularx}{\textwidth}{|X|>{\centering\arraybackslash}p{1.3cm}|X|}
+\hline
+\textbf{평가 영역} & \textbf{배점} & \textbf{세부 항목} \\ \hline
+A. 지도안 내용 & 4점 & 성취기준 연계(2) + 활동 설계(2) \\ \hline
+B. 도구 활용 & 4점 & 도구 연계 계획(2) + 생성형 AI 활용(2) \\ \hline
+C. 제출 요건 & 2점 & 기한 준수(1) + 제출물 완전성(1) \\ \hline
+\end{tabularx}
+
+\subsection{항목별 평가 기준}
+
+\subsubsection{A. 지도안 내용 (4점)}
+
+\textbf{A-1. 성취기준 연계 (2점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{2점} & 2022 개정 교육과정 성취기준을 명시하고, 학습목표가 성취기준과 명확히 연결됨 \\ \hline
+\textbf{1점} & 성취기준을 명시했으나 학습목표와의 연결이 불명확하거나 형식적 \\ \hline
+\textbf{0점} & 성취기준 미명시 또는 학습목표 없음 \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}
+\textbf{A-2. 활동 설계 (2점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{2점} & 초등학생 수준에 적합한 구체적 학생 활동 포함 (도입-전개-정리 구조, 시간 배분 명시) \\ \hline
+\textbf{1점} & 활동은 있으나 구체성 부족 (시간 배분 없음, 활동 내용 모호) \\ \hline
+\textbf{0점} & 학생 활동이 없거나 초등학생 수준에 부적합 \\ \hline
+\end{tabularx}
+
+\subsubsection{B. 도구 활용 (4점)}
+
+\textbf{B-1. 도구 연계 계획 (2점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{2점} & 엔트리 AI 또는 생성형 AI를 수업에 활용하는 구체적 계획 포함 (어떤 도구를, 어떤 활동에서, 어떻게 사용할지 명시) \\ \hline
+\textbf{1점} & 도구 활용 계획은 있으나 구체성 부족 (``AI를 활용한다'' 수준) \\ \hline
+\textbf{0점} & 도구 활용 계획 없음 \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}
+\textbf{B-2. 생성형 AI 활용 (2점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{2점} & 지도안 작성에 생성형 AI를 체계적으로 활용 (구체적 프롬프트, 결과물 수정·보완 과정 기록) \\ \hline
+\textbf{1점} & 생성형 AI를 활용했으나 프롬프트가 단순하거나 결과물을 그대로 사용 \\ \hline
+\textbf{0점} & 생성형 AI를 실질적으로 활용하지 않음 \\ \hline
+\end{tabularx}
+
+\subsubsection{C. 제출 요건 (2점)}
+
+\textbf{C-1. 기한 준수 (1점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{1점} & 수업 종료 시간까지 제출 완료 \\ \hline
+\textbf{0점} & 수업 종료 시간 초과 \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}
+\textbf{C-2. 제출물 완전성 (1점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|X|}
+\hline
+\textbf{1점} & 수업 지도안(필수 7요소 포함) + 프롬프트 전문 모두 제출 \\ \hline
+\textbf{0점} & 필수 요소 누락 또는 프롬프트 미제출 \\ \hline
+\end{tabularx}
+
+\begin{quoteblock}
+\textbf{필수 7요소}: 학년, 주제, 성취기준, 학습목표, 도구활용계획, 학생활동, 평가계획
+\end{quoteblock}
+
+\subsection{등급 기준}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1.5cm}|>{\centering\arraybackslash}p{2cm}|X|}
+\hline
+\textbf{등급} & \textbf{점수} & \textbf{설명} \\ \hline
+A & 9\textasciitilde{}10점 & 우수 \\ \hline
+B & 7\textasciitilde{}8점 & 양호 \\ \hline
+C & 5\textasciitilde{}6점 & 보통 \\ \hline
+D & 3\textasciitilde{}4점 & 미흡 \\ \hline
+F & 0\textasciitilde{}2점 & 매우 미흡 \\ \hline
+\end{tabularx}
+
+\subsection{종합 평가표}
+
+\begin{evalbox}
+\begin{center}
+\textbf{AI디지털리터러시 5주차 수업 지도안 평가표}
+\end{center}
+\vspace{0.3em}
+
+학번: \rule{4cm}{0.4pt} \hfill 이름: \rule{4cm}{0.4pt} \hfill 제출시간: \rule{3cm}{0.4pt}
+
+\vspace{0.8em}
+\textbf{[A. 지도안 내용] (4점)}
+
+\noindent
+\begin{tabularx}{\linewidth}{|p{2.5cm}|X|>{\centering\arraybackslash}p{1.5cm}|}
+\hline
+A-1 성취기준 & 0: 미명시 / 1: 형식적 / 2: 명확 연계 & \hspace{1em}/2 \\ \hline
+A-2 활동설계 & 0: 없음 / 1: 모호 / 2: 구체적 활동 & \hspace{1em}/2 \\ \hline
+\end{tabularx}
+\hfill 소계: \rule{1.5cm}{0.4pt}/4점
+
+\vspace{0.5em}
+\textbf{[B. 도구 활용] (4점)}
+
+\noindent
+\begin{tabularx}{\linewidth}{|p{2.5cm}|X|>{\centering\arraybackslash}p{1.5cm}|}
+\hline
+B-1 도구연계 & 0: 없음 / 1: 모호 / 2: 구체적 계획 & \hspace{1em}/2 \\ \hline
+B-2 AI활용 & 0: 미활용 / 1: 단순 / 2: 체계적 활용 & \hspace{1em}/2 \\ \hline
+\end{tabularx}
+\hfill 소계: \rule{1.5cm}{0.4pt}/4점
+
+\vspace{0.5em}
+\textbf{[C. 제출 요건] (2점)}
+
+\noindent
+\begin{tabularx}{\linewidth}{|p{2.5cm}|X|>{\centering\arraybackslash}p{1.5cm}|}
+\hline
+C-1 기한 & 0: 초과 / 1: 기한 내 & \hspace{1em}/1 \\ \hline
+C-2 완전성 & 0: 누락 / 1: 완전 & \hspace{1em}/1 \\ \hline
+\end{tabularx}
+\hfill 소계: \rule{1.5cm}{0.4pt}/2점
+
+\vspace{0.8em}
+\begin{center}
+\textbf{총점: \rule{2cm}{0.4pt} / 10점}
+\end{center}
+
+\vspace{0.3em}
+\textbf{피드백:} \rule{0.82\linewidth}{0.4pt}
+
+\vspace{1em}
+\rule{0.97\linewidth}{0.4pt}
+\end{evalbox}
+
+%% ════════════ 7. 전체 종합 평가표 ════════════
+\section{전체 종합 평가표 (50점)}
+
+\begin{evalbox}
+\begin{center}
+\textbf{AI디지털리터러시 종합 성적표 (50점 만점)}
+\end{center}
+\vspace{0.3em}
+
+학번: \rule{5cm}{0.4pt} \hfill 이름: \rule{5cm}{0.4pt}
+
+\vspace{0.8em}
+\textbf{[이론 퀴즈] (20점)}
+
+\noindent
+\begin{tabularx}{\linewidth}{|X|>{\centering\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}p{2.5cm}|}
+\hline
+\textbf{주차} & \textbf{배점} & \textbf{취득} \\ \hline
+1주차 퀴즈 & /10 & \\ \hline
+2주차 퀴즈 & /10 & \\ \hline
+\end{tabularx}
+\hfill 소계: \rule{2cm}{0.4pt}/20점
+
+\vspace{0.5em}
+\textbf{[엔트리 AI 작품 실습] (20점)}
+
+\noindent
+\begin{tabularx}{\linewidth}{|X|>{\centering\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}p{2.5cm}|}
+\hline
+3주차 작품 & /10 & \\ \hline
+4주차 작품 & /10 & \\ \hline
+\end{tabularx}
+\hfill 소계: \rule{2cm}{0.4pt}/20점
+
+\vspace{0.5em}
+\textbf{[수업 지도안] (10점)}
+
+\noindent
+\begin{tabularx}{\linewidth}{|X|>{\centering\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}p{2.5cm}|}
+\hline
+5주차 지도안 & /10 & \\ \hline
+\end{tabularx}
+\hfill 소계: \rule{2cm}{0.4pt}/10점
+
+\vspace{0.8em}
+\begin{center}
+{\Large\textbf{총점: \rule{2.5cm}{0.4pt} / 50점}}
+\end{center}
+
+\vspace{0.3em}
+\textbf{종합 피드백:} \rule{0.78\linewidth}{0.4pt}
+
+\vspace{1em}
+\rule{0.97\linewidth}{0.4pt}
+
+\vspace{1em}
+\rule{0.97\linewidth}{0.4pt}
+\end{evalbox}
+
+\vspace{0.8em}
+
+\textbf{종합 등급 기준 (50점 만점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1.5cm}|>{\centering\arraybackslash}p{2.5cm}|X|}
+\hline
+\textbf{등급} & \textbf{점수} & \textbf{설명} \\ \hline
+A & 45\textasciitilde{}50점 & 우수 \\ \hline
+B & 35\textasciitilde{}44점 & 양호 \\ \hline
+C & 25\textasciitilde{}34점 & 보통 \\ \hline
+D & 15\textasciitilde{}24점 & 미흡 \\ \hline
+F & 0\textasciitilde{}14점 & 매우 미흡 \\ \hline
+\end{tabularx}
+
+%% ════════════ 8. 부정행위 처리 기준 ════════════
+\section{부정행위 처리 기준}
+
+\subsection{적용 범위}
+
+본 기준은 이론 퀴즈(1\textasciitilde{}2주차), 엔트리 AI 작품(3\textasciitilde{}4주차), 수업 지도안(5주차) 등 모든 평가에 공통 적용된다.
+
+\subsection{부정행위 의심 시 처리 절차}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1.2cm}|>{\centering\arraybackslash}p{1.2cm}|X|}
+\hline
+\textbf{단계} & \textbf{주체} & \textbf{내용} \\ \hline
+1단계 & 교수 & 부정행위가 의심되는 경우, 교수는 해당 학생에게 확인을 요청할 수 있다. \\ \hline
+2단계 & 학생 & 학생은 교수의 확인 요청에 대하여 의무적으로 해명하여야 한다. \\ \hline
+3단계 & 교수 & 교수가 납득할 만한 해명이 이루어지지 않거나 학생이 해명을 거부하는 경우, 해당 퀴즈/과제의 평가 점수는 \textbf{0점} 처리한다. \\ \hline
+\end{tabularx}
+
+\subsection{부정행위 유형 예시}
+
+\begin{itemize}[nosep]
+\item \textbf{이론 퀴즈}: 타인의 답안 참조, 허용되지 않은 자료 사용
+\item \textbf{엔트리 AI 작품}: 타인의 작품을 그대로 제출, 본인이 제작하지 않은 작품 제출
+\item \textbf{수업 지도안}: 타인의 지도안을 복사하여 제출, 생성형 AI 활용 과정을 허위로 기록
+\end{itemize}
+
+\begin{quoteblock}
+\textbf{유의사항}: 생성형 AI를 활용하는 과제(4\textasciitilde{}5주차)의 경우, 생성형 AI 사용 자체는 부정행위가 아니다. 단, 프롬프트 전문을 성실하게 기록·제출하지 않거나, 타인의 프롬프트와 결과물을 그대로 복사하여 제출하는 행위는 부정행위에 해당한다.
+\end{quoteblock}
+
+\subsection{교수의 의무}
+
+교수는 평가 과정과 결과에 대한 학생의 문의에 성실하게 답변하여야 하며, 학생이 납득할 때까지 충분히 설명할 의무가 있다.
+
+%% ════════════ 참고자료 ════════════
+\section*{참고자료}
+\addcontentsline{toc}{section}{참고자료}
+
+{\small\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.5cm}|X|p{2cm}|X|}
+\hline
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\ \hline
+1 & AI디지털리터러시\_강의계획서\_v1.2.0.0 & 문서 & 평가 방법 및 주차별 상세 계획 \\ \hline
+2 & AI디지털리터러시\_실습과제평가루브릭\_v2.0.0.0 & 문서 & 이전 버전 \\ \hline
+\end{tabularx}
+}
+
+%% ════════════ 생성/수정 이력 ════════════
+\section*{생성/수정 이력}
+\addcontentsline{toc}{section}{생성/수정 이력}
+
+{\scriptsize\noindent
+\begin{tabularx}{\textwidth}{|p{1.2cm}|p{1.5cm}|p{0.8cm}|p{1cm}|X|p{0.8cm}|}
+\hline
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{수준} & \textbf{변경 내용} & \textbf{작성자} \\ \hline
+v1.0.0.0 & 2026-01-25 & 07:25 & 최초 & 실습 과제 평가 루브릭 초안 작성 & Claude \\ \hline
+v1.1.0.0 & 2026-01-25 & 07:45 & 마이너 & 평가 기준 세분화, 종합 평가표 추가 & Claude \\ \hline
+v1.2.0.0 & 2026-01-25 & 08:10 & 마이너 & 항목별 등급별(0/1/2점) 상세 예시 추가 & Claude \\ \hline
+v1.3.0.0 & 2026-02-07 & 22:30 & 마이너 & 과목명 변경: 소프트웨어교육론→AI디지털리터러시 & Claude \\ \hline
+v1.3.1.0 & 2026-02-08 & 00:40 & 리비전 & A-2 조건 판별 기준 명확화, C-1 경계값 명시, B-4 절감률 단서 추가, 이모지 제거 & Claude \\ \hline
+v2.0.0.0 & 2026-02-08 & 01:00 & 메이저 & 평가 체계 전면 재설계: 50점 만점(주차별 10점), 이론퀴즈+엔트리작품+지도안 체계 & Claude \\ \hline
+\textbf{v2.1.0.0} & \textbf{2026-02-08} & \textbf{03:40} & \textbf{마이너} & \textbf{강의계획서 v1.2.0.0 정합: 퀴즈 문항 변경(5지선다10×0.5+단답형5×1), 3주차 AI 블록, 4주차 모델 학습+생성형AI로 수정} & \textbf{Claude} \\ \hline
+\textbf{v2.1.1.0} & \textbf{2026-02-08} & \textbf{05:00} & \textbf{리비전} & \textbf{부정행위 처리 기준 신설 (§8): 의심 시 확인 절차, 해명 의무, 미해명 시 0점 처리 규정 추가} & \textbf{Claude} \\ \hline
+\textbf{v2.1.2.0} & \textbf{2026-02-08} & \textbf{05:10} & \textbf{리비전} & \textbf{교수의 의무 추가 (§8.4): 평가 과정·결과 문의에 대한 성실 답변 의무 규정} & \textbf{Claude} \\ \hline
+\end{tabularx}
+}
+
+\vspace{2em}
+\begin{center}
+\textit{AI디지털리터러시 평가 루브릭 v2.1.2.0 --- 주차별 10점 × 5주 = 50점 체계}
+\end{center}
+
+\end{document}

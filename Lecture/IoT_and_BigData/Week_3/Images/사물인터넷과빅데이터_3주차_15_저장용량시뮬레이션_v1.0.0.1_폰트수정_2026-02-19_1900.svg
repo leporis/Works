@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400" font-family="'Noto Sans CJK KR', sans-serif">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <rect width="700" height="400" rx="16" fill="#FAFAFA"/>
+  <text x="350" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#333">⏱️ 수집 간격별 저장 가능 일수 (64KB ≈ 10,000개 기준)</text>
+  <text x="350" y="48" text-anchor="middle" font-size="11" fill="#999">하루 6시간 수집 기준 | 데이터 한 개 = 약 6바이트</text>
+
+  <!-- 행 1: 1초 간격 -->
+  <rect x="30" y="70" width="55" height="55" rx="10" fill="#E53935" filter="url(#shadow)"/>
+  <text x="57" y="95" text-anchor="middle" font-size="14" font-weight="bold" fill="white">1초</text>
+  <text x="57" y="115" text-anchor="middle" font-size="9" fill="#FFCDD2">21,600/일</text>
+
+  <!-- 바: 0.46일 → 매우 짧음 (전체 bar 폭 540px = 140일 기준 → 1일=3.86px → 0.46일≈2px, 최소 표시) -->
+  <rect x="100" y="78" width="540" height="10" rx="5" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="0.5"/>
+  <rect x="100" y="78" width="4" height="10" rx="2" fill="#E53935"/>
+  <!-- 한계 표시 -->
+  <text x="115" y="87" font-size="11" font-weight="bold" fill="#C62828">0.46일 (약 2.8시간!)</text>
+
+  <rect x="100" y="95" width="540" height="25" rx="6" fill="#FFEBEE"/>
+  <text x="120" y="112" font-size="10" fill="#C62828">🔴 하루도 못 채움! 6시간 수집 → 21,600개 → 64KB 초과</text>
+  <text x="120" y="125" font-size="9" fill="#E53935" font-style="italic"/>
+
+  <!-- 행 2: 10초 간격 -->
+  <rect x="30" y="145" width="55" height="55" rx="10" fill="#FFA000" filter="url(#shadow)"/>
+  <text x="57" y="170" text-anchor="middle" font-size="14" font-weight="bold" fill="white">10초</text>
+  <text x="57" y="190" text-anchor="middle" font-size="9" fill="#FFF3E0">2,160/일</text>
+
+  <rect x="100" y="153" width="540" height="10" rx="5" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="0.5"/>
+  <!-- 4.6일 → 4.6×3.86=17.8px -->
+  <rect x="100" y="153" width="18" height="10" rx="2" fill="#FFA000"/>
+  <text x="125" y="162" font-size="11" font-weight="bold" fill="#E65100">4.6일</text>
+
+  <rect x="100" y="170" width="540" height="25" rx="6" fill="#FFF8E1"/>
+  <text x="120" y="187" font-size="10" fill="#E65100">🟡 일주일도 못 버팀! 실습 기간(4주) 중 수시 다운로드 필요</text>
+
+  <!-- 행 3: 1분 간격 -->
+  <rect x="30" y="220" width="55" height="55" rx="10" fill="#43A047" filter="url(#shadow)"/>
+  <text x="57" y="245" text-anchor="middle" font-size="14" font-weight="bold" fill="white">1분</text>
+  <text x="57" y="265" text-anchor="middle" font-size="9" fill="#C8E6C9">360/일</text>
+
+  <rect x="100" y="228" width="540" height="10" rx="5" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="0.5"/>
+  <!-- 27.8일 → 27.8×3.86=107px -->
+  <rect x="100" y="228" width="107" height="10" rx="5" fill="#43A047"/>
+  <text x="215" y="237" font-size="11" font-weight="bold" fill="#2E7D32">27.8일 ✅</text>
+
+  <rect x="100" y="245" width="540" height="25" rx="6" fill="#E8F5E9"/>
+  <text x="120" y="262" font-size="10" fill="#2E7D32">🟢 실습 4주 동안 충분! 온도·습도 등 느리게 변하는 데이터에 적합</text>
+
+  <!-- 행 4: 5분 간격 -->
+  <rect x="30" y="295" width="55" height="55" rx="10" fill="#1B5E20" filter="url(#shadow)"/>
+  <text x="57" y="320" text-anchor="middle" font-size="14" font-weight="bold" fill="white">5분</text>
+  <text x="57" y="340" text-anchor="middle" font-size="9" fill="#A5D6A7">72/일</text>
+
+  <rect x="100" y="303" width="540" height="10" rx="5" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="0.5"/>
+  <!-- 138.9일 → 거의 꽉 참 → 536px -->
+  <rect x="100" y="303" width="536" height="10" rx="5" fill="#1B5E20"/>
+  <text x="550" y="312" font-size="11" font-weight="bold" fill="white">138.9일 ✅</text>
+
+  <rect x="100" y="320" width="540" height="25" rx="6" fill="#E8F5E9"/>
+  <text x="120" y="337" font-size="10" fill="#1B5E20">🟢 한 학기(15주) 내내 가능! 기압·기온 등 장기 관측 프로젝트에 최적</text>
+
+  <!-- 하단 권장 배너 -->
+  <rect x="50" y="365" width="600" height="28" rx="14" fill="#FFF8E1" stroke="#FFD54F" stroke-width="1.5"/>
+  <text x="350" y="384" text-anchor="middle" font-size="12" font-weight="bold" fill="#F57F17">💡 권장: 대부분의 프로젝트에 1분~5분 간격 | 소음 측정만 10초~1분 간격</text>
+</svg>

@@ -1,0 +1,1052 @@
+% XeLaTeX + Twemoji 컬러 이모지
+% 컴파일: xelatex guide_v2.tex
+
+\documentclass[a4paper, 11pt]{article}
+
+% 한글 지원
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{korean}
+\setmainfont{Noto Sans CJK KR}
+\setmonofont{JetBrains Mono}[Scale=0.9]
+
+% 페이지 설정
+\usepackage[margin=2cm, headheight=14pt]{geometry}
+
+% 색상
+\usepackage{xcolor}
+\definecolor{applered}{HTML}{E53935}
+\definecolor{applered-light}{HTML}{FFCDD2}
+\definecolor{applegreen}{HTML}{43A047}
+\definecolor{applegreen-light}{HTML}{C8E6C9}
+\definecolor{titleblue}{HTML}{1565C0}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{lightgreen}{HTML}{E8F5E9}
+\definecolor{lightyellow}{HTML}{FFF8E1}
+\definecolor{lightgray}{HTML}{F5F5F5}
+\definecolor{warmcream}{HTML}{FFFBF5}
+\definecolor{codebg}{HTML}{F5F5F5}
+\definecolor{orange}{HTML}{FF9800}
+\definecolor{purple}{HTML}{7B1FA2}
+
+% 박스
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+
+% 표
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{colortbl}
+
+% 이미지
+\usepackage{graphicx}
+\graphicspath{{./emoji/}}
+
+% TikZ 다이어그램
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows.meta, positioning, calc}
+
+% 수식
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% 이모지 명령어
+\newcommand{\emoji}[1]{\raisebox{-0.15em}{\includegraphics[height=1em]{#1}}}
+\newcommand{\emojiL}[1]{\raisebox{-0.2em}{\includegraphics[height=1.5em]{#1}}}
+\newcommand{\emojiXL}[1]{\raisebox{-0.3em}{\includegraphics[height=2.5em]{#1}}}
+
+% 코드 블록
+\newtcolorbox{codebox}[1][]{
+    colback=codebg, colframe=gray!50, 
+    fontupper=\ttfamily\small, 
+    boxrule=0.5pt, arc=3pt,
+    #1
+}
+
+% 예시 박스
+\newtcolorbox{examplebox}[1][]{
+    colback=lightyellow, colframe=orange, 
+    title={\emoji{bulb} 예시}, fonttitle=\bfseries,
+    boxrule=1pt, arc=5pt,
+    #1
+}
+
+% 팁 박스
+\newtcolorbox{tipbox}[1][]{
+    colback=lightgreen, colframe=applegreen, 
+    title={\emoji{bulb} 교사 팁}, fonttitle=\bfseries,
+    boxrule=1pt, arc=5pt,
+    #1
+}
+
+% 주의 박스
+\newtcolorbox{warningbox}[1][]{
+    colback=applered-light, colframe=applered, 
+    title={\emoji{warning} 주의}, fonttitle=\bfseries,
+    boxrule=1pt, arc=5pt,
+    #1
+}
+
+% 대화 박스
+\newtcolorbox{dialogbox}[1][]{
+    colback=lightblue, colframe=titleblue, 
+    title={\emoji{brain} 교사-학생 대화 예시}, fonttitle=\bfseries,
+    boxrule=1pt, arc=5pt,
+    #1
+}
+
+% 헤더/푸터
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{gray}사과 가격 예측 시뮬레이터 활용가이드}
+\fancyhead[R]{\small\color{gray}v1.3.1.0}
+\fancyfoot[C]{\thepage}
+
+% 하이퍼링크
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=titleblue, urlcolor=titleblue}
+
+% 목차 깊이
+\setcounter{tocdepth}{2}
+
+\begin{document}
+
+% ========== 표지 ==========
+\begin{center}
+\vspace*{1cm}
+
+{\Huge\emojiXL{apple}}
+
+\vspace{0.8cm}
+
+{\Huge\bfseries\color{applered} 사과 가격 예측 시뮬레이터}
+
+\vspace{0.5cm}
+
+{\LARGE\color{titleblue} 교육 현장 활용가이드}
+
+\vspace{0.3cm}
+
+{\large v1.3.1.0 (내용 보강판)}
+
+\vspace{1cm}
+
+{\large 품질 점수 기반 단순 선형 회귀 학습을 위한 수업 설계 가이드}
+
+\vspace{1.5cm}
+
+\begin{tcolorbox}[colback=lightblue, colframe=titleblue, width=0.95\textwidth, boxrule=1pt]
+\centering
+\emoji{books} \textbf{문서 읽기 순서 안내 (5단계)}\\[8pt]
+\begin{tabular}{ccccc}
+\emoji{greenbook} & $\rightarrow$ & \emoji{openbook} & $\rightarrow$ & \emoji{bluebook} \\
+퀵가이드 & & 사용설명서 & & 이론해설서 \\
+(10분) & & (20분) & & (30분) \\
+\end{tabular}\\[8pt]
+$\rightarrow$ \emoji{note} \textbf{활용가이드} (현재 문서) $\rightarrow$ \emoji{memo} 수업지도안
+\end{tcolorbox}
+
+\vspace{1cm}
+
+\begin{tcolorbox}[colback=warmcream, colframe=applered, width=0.95\textwidth]
+\textbf{이 문서의 특징}
+\begin{itemize}
+    \item \emoji{target} 구체적인 수치 예시와 계산 과정 포함
+    \item \emoji{chart} 시각적 다이어그램으로 개념 설명
+    \item \emoji{brain} 교사-학생 대화 예시 제공
+    \item \emoji{clock} 상황별 수업 시간 조절 가이드
+\end{itemize}
+\end{tcolorbox}
+
+\vfill
+
+{\small 2026년 2월 2일}
+
+\end{center}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ========== 1. 교육 목표 ==========
+\section{\emoji{target} 교육 목표}
+
+\subsection{\emoji{graduation} 학습 목표}
+
+본 시뮬레이터를 활용한 수업 후, 학생들은 다음을 할 수 있어야 합니다:
+
+\begin{enumerate}
+    \item \textbf{단순 선형 회귀의 원리}를 이해하고 설명할 수 있다.
+    \item \textbf{품질 점수 계산}을 통해 여러 특성을 하나로 통합하는 개념을 경험한다.
+    \item \textbf{경사 하강법}으로 가중치가 최적화되는 과정을 시각적으로 관찰한다.
+    \item 학습된 모델로 \textbf{새로운 데이터를 예측}하는 과정을 체험한다.
+    \item \textbf{오차(잔차)}의 의미와 손실 함수의 역할을 이해한다.
+\end{enumerate}
+
+\begin{examplebox}
+\textbf{수업 후 학생이 할 수 있어야 하는 것:}\\[5pt]
+``당도 14 Brix, 무게 250g인 사과가 있어요. 이 사과의 품질 점수는 50점이고, 
+우리가 학습시킨 AI 모델(가격 = 30×품질 + 1000)에 넣으면 예측 가격은 2,500원이에요. 
+하지만 실제 가격은 2,600원이어서 오차가 100원 발생했어요.''
+\end{examplebox}
+
+\subsection{\emoji{brain} 핵심 역량}
+
+\begin{center}
+\begin{tabular}{>{\bfseries\color{titleblue}}p{3.5cm}p{9cm}}
+\toprule
+역량 & 세부 내용 및 활동 예시 \\
+\midrule
+컴퓨팅 사고력 & 
+\textbullet\ 데이터 추상화: 당도+무게 → 품질 점수로 변환\\
+& \textbullet\ 알고리즘적 사고: 경사 하강법의 반복 과정 이해 \\
+\midrule
+데이터 리터러시 & 
+\textbullet\ 데이터 생성 및 분포 관찰\\
+& \textbullet\ 노이즈가 결과에 미치는 영향 분석 \\
+\midrule
+비판적 사고 & 
+\textbullet\ R² 점수로 모델 성능 평가\\
+& \textbullet\ ``AI는 항상 맞지 않는다''는 한계 인식 \\
+\midrule
+창의적 탐구 & 
+\textbullet\ 학습률, 에포크 등 파라미터 실험\\
+& \textbullet\ 최적의 학습 조건 탐색 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ========== 2. 핵심 개념 설명 ==========
+\section{\emoji{books} 핵심 개념 상세 설명}
+
+이 섹션은 교사가 학생들에게 개념을 설명할 때 활용할 수 있는 자료입니다.
+
+\subsection{\emoji{star} 품질 점수 계산}
+
+시뮬레이터에서 사과의 ``품질''은 당도와 무게를 조합하여 계산합니다.
+
+\begin{tcolorbox}[colback=lightblue, colframe=titleblue, title={\emoji{pencil} 품질 점수 공식}]
+\begin{center}
+\Large
+$\text{품질} = \text{당도점수}(50\%) + \text{무게점수}(50\%)$
+\end{center}
+
+\vspace{5pt}
+\textbf{세부 계산식:}
+\begin{align*}
+\text{당도점수} &= \frac{\text{당도} - 10}{8} \times 50 \quad \text{(10\textasciitilde18 Brix → 0\textasciitilde50점)}\\[5pt]
+\text{무게점수} &= \frac{\text{무게} - 150}{200} \times 50 \quad \text{(150\textasciitilde350g → 0\textasciitilde50점)}
+\end{align*}
+\end{tcolorbox}
+
+\begin{examplebox}[title={\emoji{bulb} 계산 예시: 당도 14 Brix, 무게 250g인 사과}]
+\textbf{Step 1: 당도 점수 계산}
+\begin{codebox}
+당도점수 = (14 - 10) / 8 × 50 = 4/8 × 50 = 25점
+\end{codebox}
+
+\textbf{Step 2: 무게 점수 계산}
+\begin{codebox}
+무게점수 = (250 - 150) / 200 × 50 = 100/200 × 50 = 25점
+\end{codebox}
+
+\textbf{Step 3: 총 품질 점수}
+\begin{codebox}
+품질 = 25 + 25 = 50점
+\end{codebox}
+
+\vspace{5pt}
+\emoji{checkmark} 이 사과는 \textbf{50점}으로, 중간 품질의 사과입니다.
+\end{examplebox}
+
+\begin{tipbox}
+\textbf{학생들에게 품질 점수를 설명할 때:}\\
+``사과의 `점수표'를 만드는 거예요. 당도가 높으면 점수가 올라가고, 무게가 무거워도 점수가 올라가요. 
+두 점수를 합쳐서 이 사과가 얼마나 좋은지 숫자 하나로 표현하는 거죠.''
+\end{tipbox}
+
+\subsection{\emoji{chartup} 선형 회귀 모델}
+
+선형 회귀는 데이터의 패턴을 \textbf{직선}으로 표현하는 방법입니다.
+
+\begin{tcolorbox}[colback=lightgreen, colframe=applegreen, title={\emoji{pencil} 선형 회귀식}]
+\begin{center}
+\Large
+$\text{가격} = w \times \text{품질} + b$
+\end{center}
+
+\begin{itemize}
+    \item $w$ (가중치, Weight): 품질 1점당 가격 변화량 (직선의 \textbf{기울기})
+    \item $b$ (편향, Bias): 품질이 0일 때의 기본 가격 (직선의 \textbf{y절편})
+\end{itemize}
+\end{tcolorbox}
+
+\begin{examplebox}[title={\emoji{bulb} 회귀식 해석 예시}]
+학습 결과 다음과 같은 회귀식이 나왔다고 가정합니다:
+
+\begin{center}
+\Large\textbf{가격 = 30 × 품질 + 1000}
+\end{center}
+
+\textbf{이 수식의 의미:}
+\begin{itemize}
+    \item 품질이 \textbf{1점 오르면} 가격이 \textbf{30원 상승}
+    \item 품질이 \textbf{0점}이면 기본 가격은 \textbf{1,000원}
+    \item 품질 \textbf{50점} 사과 → $30 \times 50 + 1000 = 2,500$원
+    \item 품질 \textbf{100점} 사과 → $30 \times 100 + 1000 = 4,000$원
+\end{itemize}
+\end{examplebox}
+
+\begin{dialogbox}
+\textbf{교사}: 우리가 학습시킨 AI가 ``가격 = 30 × 품질 + 1000''이라고 배웠어요. 품질 60점 사과는 얼마로 예측할까요?\\[3pt]
+\textbf{학생}: 30 곱하기 60 더하기 1000이니까... 2,800원이요!\\[3pt]
+\textbf{교사}: 맞아요! 그런데 실제 가격이 2,900원이었다면?\\[3pt]
+\textbf{학생}: 100원 차이가 나요. 그게 오차인 거죠?\\[3pt]
+\textbf{교사}: 정확해요! AI도 완벽하지 않아서 항상 약간의 오차가 있어요.
+\end{dialogbox}
+
+\subsection{\emoji{ruler} 오차(잔차)와 손실 함수}
+
+\textbf{오차(Error)} 또는 \textbf{잔차(Residual)}는 실제 값과 예측 값의 차이입니다.
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    % 축
+    \draw[->] (0,0) -- (10,0) node[right] {품질};
+    \draw[->] (0,0) -- (0,6) node[above] {가격};
+    
+    % 회귀선
+    \draw[applered, line width=2pt] (0.5,1) -- (9,5) node[right] {회귀선};
+    
+    % 데이터 점들
+    \filldraw[applegreen] (2,2.5) circle (4pt);
+    \filldraw[applegreen] (4,2.8) circle (4pt);
+    \filldraw[applegreen] (5,3.8) circle (4pt);
+    \filldraw[applegreen] (7,4.2) circle (4pt);
+    
+    % 오차선
+    \draw[orange, dashed, line width=1.5pt] (2,2.5) -- (2,1.7);
+    \draw[orange, dashed, line width=1.5pt] (4,2.8) -- (4,2.6);
+    \draw[orange, dashed, line width=1.5pt] (5,3.8) -- (5,3.2);
+    \draw[orange, dashed, line width=1.5pt] (7,4.2) -- (7,4.0);
+    
+    % 회귀선 위 예측점
+    \filldraw[applered] (2,1.7) circle (3pt);
+    \filldraw[applered] (4,2.6) circle (3pt);
+    \filldraw[applered] (5,3.2) circle (3pt);
+    \filldraw[applered] (7,4.0) circle (3pt);
+    
+    % 범례
+    \node[right] at (10,4) {\small\color{applegreen}● 실제 데이터};
+    \node[right] at (10,3.5) {\small\color{applered}● 예측값};
+    \node[right] at (10,3) {\small\color{orange}--- 오차};
+\end{tikzpicture}
+\end{center}
+
+\begin{tcolorbox}[colback=lightyellow, colframe=orange, title={\emoji{pencil} 손실 함수 (MSE)}]
+AI는 모든 데이터의 오차를 줄이려고 합니다. 이때 사용하는 것이 \textbf{손실 함수}입니다.
+
+\begin{center}
+$\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(\text{실제값}_i - \text{예측값}_i)^2$
+\end{center}
+
+\textbf{MSE (Mean Squared Error, 평균 제곱 오차)}:
+\begin{itemize}
+    \item 각 데이터의 오차를 제곱해서 평균 낸 값
+    \item \textbf{작을수록 좋은 모델} (오차가 적다는 의미)
+    \item 왜 제곱? → 양수/음수 오차를 동일하게, 큰 오차에 더 큰 벌칙
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{\emoji{bolt} 경사 하강법과 학습률}
+
+\textbf{경사 하강법(Gradient Descent)}은 손실을 줄이는 방향으로 가중치를 조금씩 조정하는 방법입니다.
+
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+    % 손실 함수 곡선 (U자형)
+    \draw[titleblue, line width=2pt, domain=0:8, samples=50] plot (\x, {0.3*(\x-4)*(\x-4)+1});
+    
+    % 축
+    \draw[->] (-0.5,0) -- (9,0) node[right] {가중치 $w$};
+    \draw[->] (0,-0.5) -- (0,6) node[above] {손실};
+    
+    % 경사 하강 경로
+    \filldraw[applered] (1,3.7) circle (5pt);
+    \draw[->, applered, line width=2pt] (1,3.7) -- (2,2.2);
+    \filldraw[applered] (2,2.2) circle (5pt);
+    \draw[->, applered, line width=2pt] (2,2.2) -- (3,1.3);
+    \filldraw[applered] (3,1.3) circle (5pt);
+    \draw[->, applered, line width=2pt] (3,1.3) -- (3.8,1.02);
+    \filldraw[applegreen] (4,1) circle (6pt);
+    
+    % 라벨
+    \node[above] at (1,3.7) {\small 시작};
+    \node[below] at (4,0.7) {\small\color{applegreen} 최적점};
+    
+    % 설명
+    \node[right] at (5,4) {\small 화살표 = 학습률 크기};
+    \node[right] at (5,3.3) {\small (한 번에 이동하는 거리)};
+\end{tikzpicture}
+\end{center}
+
+\begin{tcolorbox}[colback=lightblue, colframe=titleblue]
+\textbf{학습률(Learning Rate)}은 한 번에 얼마나 이동할지 결정합니다.
+
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+학습률 & 특징 & 결과 \\
+\midrule
+\textbf{너무 작음} (0.001) & 조금씩 이동 & 학습이 느림, 시간 오래 걸림 \\
+\textbf{적당함} (0.01) & 적절한 이동 & 안정적으로 최적점 도달 \\
+\textbf{너무 큼} (0.1) & 크게 이동 & 최적점을 지나침, 발산 가능 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{tcolorbox}
+
+\begin{tipbox}
+\textbf{학습률 비유 (학생 설명용):}\\
+``산에서 가장 낮은 곳(계곡)을 찾아가는 거예요. 
+학습률이 작으면 아주 조금씩 걸어서 오래 걸리고, 
+너무 크면 뛰다가 계곡을 지나쳐버려요. 
+적당한 걸음으로 걸어야 해요!''
+\end{tipbox}
+
+% ========== 3. 시뮬레이터 화면 구성 ==========
+\section{\emoji{chart} 시뮬레이터 화면 구성}
+
+\subsection{\emoji{brain} 학습 모드 화면}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85, every node/.style={font=\small}]
+    % 전체 프레임
+    \draw[rounded corners=5pt, line width=1pt] (0,0) rectangle (14,8);
+    
+    % 헤더
+    \fill[applered-light] (0.1,7.3) rectangle (13.9,7.9);
+    \node at (7,7.6) {\emoji{apple} \textbf{사과 가격 예측 시뮬레이터 v1.2.4.1}};
+    
+    % 모드 탭
+    \fill[applered] (4,6.7) rectangle (6.5,7.1);
+    \node[white] at (5.25,6.9) {\small\textbf{학습 모드}};
+    \draw[rounded corners=2pt] (7,6.7) rectangle (9.5,7.1);
+    \node at (8.25,6.9) {\small 추론 모드};
+    
+    % 왼쪽 패널 (데이터)
+    \draw[rounded corners=3pt, fill=warmcream] (0.2,0.2) rectangle (3.5,6.5);
+    \node[titleblue, font=\bfseries] at (1.85,6.2) {데이터 생성};
+    \draw (0.4,5.9) -- (3.3,5.9);
+    \node[left] at (3.3,5.5) {\small 데이터 개수: 30개};
+    \node[left] at (3.3,5.0) {\small 노이즈: 10\%};
+    \fill[applegreen, rounded corners=2pt] (0.6,4.2) rectangle (3.1,4.6);
+    \node[white] at (1.85,4.4) {\small 데이터 생성};
+    
+    % 중앙 차트 (2개)
+    \draw[rounded corners=3pt, fill=white] (3.7,3.5) rectangle (7.2,6.5);
+    \node[titleblue, font=\bfseries] at (5.45,6.2) {손실 그래프};
+    \draw[applered, line width=1pt] (4,5.5) .. controls (5,4.5) and (6,4.2) .. (7,4.1);
+    
+    \draw[rounded corners=3pt, fill=white] (7.4,3.5) rectangle (10.9,6.5);
+    \node[titleblue, font=\bfseries] at (9.15,6.2) {품질 vs 가격};
+    % 산점도 점들
+    \foreach \x/\y in {7.8/4.2, 8.2/4.5, 8.6/4.8, 9.0/5.0, 9.4/5.3, 9.8/5.5, 10.2/5.8} {
+        \fill[applegreen] (\x,\y) circle (2pt);
+    }
+    % 회귀선
+    \draw[applered, line width=1.5pt] (7.6,4.0) -- (10.6,5.9);
+    
+    % 오른쪽 패널 (설정)
+    \draw[rounded corners=3pt, fill=warmcream] (11.1,0.2) rectangle (13.8,6.5);
+    \node[titleblue, font=\bfseries] at (12.45,6.2) {학습 설정};
+    \draw (11.3,5.9) -- (13.6,5.9);
+    \node[left] at (13.6,5.5) {\small 학습률: 0.01};
+    \node[left] at (13.6,5.0) {\small 에포크: 500};
+    \fill[applegreen, rounded corners=2pt] (11.4,4.2) rectangle (13.5,4.6);
+    \node[white] at (12.45,4.4) {\small 학습 실행};
+    
+    % 하단 결과 패널
+    \draw[rounded corners=3pt, fill=lightblue] (0.2,0.2) rectangle (13.8,3.3);
+    \node at (2.3,3.0) {\small\textbf{학습 결과}};
+    \node at (7,3.0) {\small\textbf{오차 분석}};
+    \node at (11.7,3.0) {\small\textbf{학습 재생}};
+    
+    % 구분선
+    \draw[dashed, gray] (4.5,0.4) -- (4.5,2.8);
+    \draw[dashed, gray] (9.5,0.4) -- (9.5,2.8);
+    
+    \node at (2.3,2.0) {\small 에포크: 500};
+    \node at (2.3,1.5) {\small R2: 0.92};
+    \node at (2.3,1.0) {\small 양호};
+    
+    \node at (7,2.0) {\small 오차선 표시};
+    \node at (7,1.5) {\small 평균 오차: 89원};
+    \node at (7,1.0) {\small MSE: 12,543};
+    
+    \node at (11.7,2.0) {\small 재생};
+    \node at (11.7,1.5) {\small 정지};
+    \node at (11.7,1.0) {\small 속도: 보통};
+\end{tikzpicture}
+\end{center}
+
+\subsection{\emoji{crystal} 추론 모드 화면}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85, every node/.style={font=\small}]
+    % 전체 프레임
+    \draw[rounded corners=5pt, line width=1pt] (0,0) rectangle (14,7);
+    
+    % 모드 탭
+    \draw[rounded corners=2pt] (4,6.2) rectangle (6.5,6.6);
+    \node at (5.25,6.4) {\small 학습 모드};
+    \fill[purple] (7,6.2) rectangle (9.5,6.6);
+    \node[white] at (8.25,6.4) {\small\textbf{추론 모드}};
+    
+    % 왼쪽: 입력
+    \draw[rounded corners=3pt, fill=warmcream] (0.2,0.2) rectangle (3.8,5.9);
+    \node[purple, font=\bfseries] at (2,5.6) {예측 입력};
+    \node[left] at (3.6,5.0) {\small 당도: 14.0 Brix};
+    \draw[applered, line width=3pt] (0.5,4.6) -- (3.5,4.6);
+    \node[left] at (3.6,4.0) {\small 무게: 250 g};
+    \draw[applered, line width=3pt] (0.5,3.6) -- (3.5,3.6);
+    
+    % 품질 점수 계산
+    \fill[lightblue, rounded corners=3pt] (0.4,1.5) rectangle (3.6,3.2);
+    \node[titleblue, font=\bfseries] at (2,2.9) {\small 품질 점수};
+    \node at (2,2.4) {\small 당도: 25.0점};
+    \node at (2,2.0) {\small 무게: 25.0점};
+    \draw (0.6,1.8) -- (3.4,1.8);
+    \node[applered, font=\bfseries] at (2,1.6) {\small 총: 50.0점};
+    
+    % 중앙: 차트
+    \draw[rounded corners=3pt, fill=white] (4,0.2) rectangle (10.2,5.9);
+    \node[purple, font=\bfseries] at (7.1,5.6) {예측 시각화};
+    
+    % 산점도
+    \foreach \x/\y in {4.5/1.2, 5.0/1.5, 5.5/1.8, 6.0/2.2, 6.5/2.5, 7.0/2.8, 7.5/3.2, 8.0/3.5, 8.5/3.9, 9.0/4.2, 9.5/4.5} {
+        \fill[gray!50] (\x,\y) circle (2pt);
+    }
+    % 회귀선
+    \draw[applered, line width=2pt] (4.3,1.0) -- (9.9,4.8);
+    
+    % 예측점 (노란색)
+    \fill[orange] (7.0,2.8) circle (6pt);
+    % 수직선
+    \draw[orange, dashed, line width=1pt] (7.0,0.5) -- (7.0,2.8);
+    % 수평선
+    \draw[orange, dashed, line width=1pt] (4.2,2.8) -- (7.0,2.8);
+    
+    \node at (7.0,0.3) {\tiny 품질 50};
+    \node at (4.0,2.8) {\tiny 2,500원};
+    
+    % 오른쪽: 결과
+    \draw[rounded corners=3pt, fill=warmcream] (10.4,0.2) rectangle (13.8,5.9);
+    \node[purple, font=\bfseries] at (12.1,5.6) {예측 결과};
+    
+    % 예측 가격 박스
+    \fill[applered, rounded corners=5pt] (10.6,4.0) rectangle (13.6,5.2);
+    \node[white] at (12.1,4.9) {\small 예측 가격};
+    \node[white, font=\bfseries\Large] at (12.1,4.4) {2,500원};
+    
+    % 추론 과정
+    \fill[lightgreen, rounded corners=3pt] (10.6,1.5) rectangle (13.6,3.7);
+    \node[applegreen, font=\bfseries] at (12.1,3.4) {\small 추론 과정};
+    \node[left] at (13.4,3.0) {\small 기본가격(b): 1,000원};
+    \node[left] at (13.4,2.5) {\small 품질기여: +1,500원};
+    \draw (10.8,2.2) -- (13.4,2.2);
+    \node[left, font=\bfseries] at (13.4,1.8) {\small 총: 2,500원};
+\end{tikzpicture}
+\end{center}
+
+% ========== 4. 수업 설계 ==========
+\section{\emoji{memo} 수업 설계 (2차시, 90분)}
+
+\subsection{\emoji{books} 1차시: 개념 이해 (45분)}
+
+\begin{center}
+\rowcolors{2}{white}{lightblue!30}
+\begin{tabular}{c>{\bfseries}cp{8cm}}
+\toprule
+\rowcolor{titleblue!20}
+시간 & 단계 & 활동 내용 \\
+\midrule
+5분 & 도입 & 
+\textbullet\ ``마트에서 사과 가격은 어떻게 정해질까요?''\\
+& & \textbullet\ 당도, 무게, 색상 등 가격 결정 요인 토론 \\
+\midrule
+10분 & 개념 설명 & 
+\textbullet\ 품질 점수 계산식 설명 (칠판에 예시)\\
+& & \textbullet\ 선형 회귀 원리: $y = wx + b$ 소개 \\
+\midrule
+15분 & 시뮬레이터 탐색 & 
+\textbullet\ 데이터 30개 생성 → 산점도 관찰\\
+& & \textbullet\ UI 버튼 위치 익히기 \\
+\midrule
+10분 & 첫 학습 체험 & 
+\textbullet\ 기본 설정(학습률 0.01, 500 에포크)으로 학습\\
+& & \textbullet\ 회귀선 형성 관찰, 회귀식 해석 \\
+\midrule
+5분 & 정리 & 
+\textbullet\ 핵심 개념 복습: ``품질이 높으면 가격도 높아진다''\\
+& & \textbullet\ 다음 차시 예고 (실험 활동) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{dialogbox}[title={\emoji{brain} 1차시 도입부 대화 예시}]
+\textbf{교사}: 여러분, 마트에서 사과를 살 때 어떤 사과가 더 비쌀까요?\\[3pt]
+\textbf{학생1}: 큰 사과요!\\
+\textbf{학생2}: 달콤한 사과요!\\[3pt]
+\textbf{교사}: 맞아요! 크기(무게)도 중요하고, 달콤함(당도)도 중요하죠. 그런데 AI는 이 두 가지를 어떻게 합쳐서 가격을 예측할까요? 오늘 우리가 직접 AI를 학습시켜볼 거예요!
+\end{dialogbox}
+
+\subsection{\emoji{microscope} 2차시: 실험과 탐구 (45분)}
+
+\begin{center}
+\rowcolors{2}{white}{lightgreen!30}
+\begin{tabular}{c>{\bfseries}cp{8cm}}
+\toprule
+\rowcolor{applegreen!20}
+시간 & 단계 & 활동 내용 \\
+\midrule
+5분 & 복습 & 
+\textbullet\ 1차시 핵심 개념 복습\\
+& & \textbullet\ ``오늘의 탐구 질문: 학습률을 바꾸면 어떻게 될까?'' \\
+\midrule
+20분 & 탐구 활동 & 
+\textbullet\ 활동 1: 학습률 실험 (0.001 vs 0.01 vs 0.1)\\
+& & \textbullet\ 활동 2: 오차선 분석 (왜 오차가 0이 안 될까?) \\
+\midrule
+10분 & 예측 실습 & 
+\textbullet\ 추론 모드에서 당도/무게 조절\\
+& & \textbullet\ 예측 가격 확인 및 비교 \\
+\midrule
+5분 & 토론 & 
+\textbullet\ ``AI가 틀릴 수 있을까요?''\\
+& & \textbullet\ 오차의 원인과 AI의 한계 토론 \\
+\midrule
+5분 & 정리 & 
+\textbullet\ 학습 내용 정리, 자기 평가\\
+& & \textbullet\ 실생활 적용 사례 소개 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ========== 5. 탐구 활동 상세 ==========
+\section{\emoji{magnify} 탐구 활동 상세 설계}
+
+\subsection{\emoji{bolt} 활동 1: 학습률 실험}
+
+\begin{tcolorbox}[colback=lightblue, colframe=titleblue, title={\emoji{target} 목표: 학습률이 학습 과정에 미치는 영향 이해}]
+
+\textbf{실험 절차:}
+\begin{enumerate}
+    \item 데이터 30개 생성 (노이즈 10\%)
+    \item 학습률 \textbf{0.001}로 설정 → 학습 실행 → 손실 그래프 관찰
+    \item \textbf{초기화} 후 학습률 \textbf{0.01}로 변경 → 학습 → 비교
+    \item \textbf{초기화} 후 학습률 \textbf{0.1}로 변경 → 학습 → 비교
+\end{enumerate}
+
+\textbf{기록표:}
+\begin{center}
+\begin{tabular}{cccp{5cm}}
+\toprule
+학습률 & 최종 손실 & R2 & 손실 그래프 특징 \\
+\midrule
+0.001 & \rule{2cm}{0.4pt} & \rule{1.5cm}{0.4pt} & \rule{4.5cm}{0.4pt} \\
+0.01 & \rule{2cm}{0.4pt} & \rule{1.5cm}{0.4pt} & \rule{4.5cm}{0.4pt} \\
+0.1 & \rule{2cm}{0.4pt} & \rule{1.5cm}{0.4pt} & \rule{4.5cm}{0.4pt} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{토론 질문:}
+\begin{itemize}
+    \item 학습률이 너무 작으면 어떤 문제가 생기나요?
+    \item 학습률이 너무 크면 손실 그래프가 어떻게 변하나요?
+    \item 가장 좋은 학습률은 무엇일까요? 왜 그렇게 생각하나요?
+\end{itemize}
+\end{tcolorbox}
+
+\begin{examplebox}[title={\emoji{bulb} 예상 결과}]
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+    % 학습률 0.001
+    \begin{scope}[shift={(0,0)}]
+        \draw[->] (0,0) -- (4,0) node[below] {\tiny 에포크};
+        \draw[->] (0,0) -- (0,3) node[left] {\tiny 손실};
+        \draw[titleblue, line width=1.5pt] (0,2.5) .. controls (2,2) and (3,1.8) .. (3.8,1.5);
+        \node[below] at (2,-0.5) {\small 0.001 (느림)};
+        \node[applered] at (2,-1) {\tiny 아직 안 끝남};
+    \end{scope}
+    
+    % 학습률 0.01
+    \begin{scope}[shift={(5,0)}]
+        \draw[->] (0,0) -- (4,0) node[below] {\tiny 에포크};
+        \draw[->] (0,0) -- (0,3) node[left] {\tiny 손실};
+        \draw[applegreen, line width=1.5pt] (0,2.5) .. controls (1,1) and (2,0.5) .. (3.8,0.3);
+        \node[below] at (2,-0.5) {\small 0.01 (적당)};
+        \node[applegreen] at (2,-1) {\tiny 최적};
+    \end{scope}
+    
+    % 학습률 0.1
+    \begin{scope}[shift={(10,0)}]
+        \draw[->] (0,0) -- (4,0) node[below] {\tiny 에포크};
+        \draw[->] (0,0) -- (0,3) node[left] {\tiny 손실};
+        \draw[applered, line width=1.5pt] (0,2.5) -- (0.5,0.5) -- (1,2) -- (1.5,0.8) -- (2,1.5) -- (2.5,1) -- (3,1.8) -- (3.5,0.9);
+        \node[below] at (2,-0.5) {\small 0.1 (발산)};
+        \node[applered] at (2,-1) {\tiny 불안정!};
+    \end{scope}
+\end{tikzpicture}
+\end{center}
+\end{examplebox}
+
+\subsection{\emoji{ruler} 활동 2: 오차선 분석}
+
+\begin{tcolorbox}[colback=lightgreen, colframe=applegreen, title={\emoji{target} 목표: ``AI는 완벽하지 않다'' 체험}]
+
+\textbf{실험 절차:}
+\begin{enumerate}
+    \item 학습 완료 후 하단 ``오차 분석'' 패널에서 \textbf{``오차선 표시''} 체크박스 ON
+    \item 산점도에 나타나는 점선(오차선) 관찰
+    \item 오차선 색상 의미 파악: \textcolor{applegreen}{녹색} = 작은 오차, \textcolor{applered}{빨강} = 큰 오차
+    \item 평균 오차, 최대 오차, MSE 값 확인
+\end{enumerate}
+
+\textbf{토론 질문:}
+\begin{itemize}
+    \item 모든 오차를 0으로 만들 수 있을까요? 왜 그럴까요?
+    \item 오차가 큰 데이터는 어떤 특징이 있나요?
+    \item 실제 세상에서 예측이 틀리는 이유는 무엇일까요?
+\end{itemize}
+\end{tcolorbox}
+
+\begin{dialogbox}[title={\emoji{brain} 오차선 분석 대화 예시}]
+\textbf{교사}: 오차선이 긴 점이 보이나요? 그 점은 무슨 의미일까요?\\[3pt]
+\textbf{학생}: AI가 예측을 많이 틀린 거요?\\[3pt]
+\textbf{교사}: 맞아요! 그런데 왜 AI가 그 점을 틀렸을까요?\\[3pt]
+\textbf{학생}: 음... 그 사과가 특이해서요? 품질은 높은데 가격이 싸거나...\\[3pt]
+\textbf{교사}: 정확해요! 실제 세상에서는 같은 품질이어도 가격이 다를 수 있어요. 세일 중이거나, 흠집이 있거나... 이런 것들이 ``노이즈''예요.
+\end{dialogbox}
+
+\subsection{\emoji{chartup} 활동 3: 노이즈 영향 실험}
+
+\begin{tcolorbox}[colback=lightyellow, colframe=orange, title={\emoji{target} 목표: 데이터 품질이 모델 성능에 미치는 영향 이해}]
+
+\textbf{실험 절차:}
+\begin{enumerate}
+    \item 노이즈 \textbf{5\%}로 설정 → 데이터 생성 → 학습 → R2 기록
+    \item 노이즈 \textbf{10\%}로 변경 → 데이터 생성 → 학습 → R2 기록
+    \item 노이즈 \textbf{20\%}로 변경 → 데이터 생성 → 학습 → R2 기록
+\end{enumerate}
+
+\textbf{기록표:}
+\begin{center}
+\begin{tabular}{ccp{6cm}}
+\toprule
+노이즈 수준 & R2 점수 & 산점도 특징 (점들의 분포) \\
+\midrule
+5\% (낮음) & \rule{2cm}{0.4pt} & \rule{5.5cm}{0.4pt} \\
+10\% (보통) & \rule{2cm}{0.4pt} & \rule{5.5cm}{0.4pt} \\
+20\% (높음) & \rule{2cm}{0.4pt} & \rule{5.5cm}{0.4pt} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{tcolorbox}
+
+\begin{examplebox}[title={\emoji{bulb} 예상 결과 시각화}]
+\begin{center}
+\begin{tikzpicture}[scale=0.55]
+    % 노이즈 5%
+    \begin{scope}[shift={(0,0)}]
+        \draw[->] (0,0) -- (4,0);
+        \draw[->] (0,0) -- (0,4);
+        \draw[applered, line width=1.5pt] (0.2,0.5) -- (3.8,3.5);
+        \foreach \x/\y in {0.5/0.7, 1/1.1, 1.5/1.4, 2/1.9, 2.5/2.3, 3/2.7, 3.5/3.2} {
+            \fill[applegreen] (\x,\y) circle (3pt);
+        }
+        \node[below] at (2,-0.3) {\small 노이즈 5\%};
+        \node[applegreen] at (2,-0.8) {\small R2 = 0.95};
+    \end{scope}
+    
+    % 노이즈 10%
+    \begin{scope}[shift={(5,0)}]
+        \draw[->] (0,0) -- (4,0);
+        \draw[->] (0,0) -- (0,4);
+        \draw[applered, line width=1.5pt] (0.2,0.5) -- (3.8,3.5);
+        \foreach \x/\y in {0.5/0.9, 1/0.8, 1.5/1.7, 2/1.6, 2.5/2.6, 3/2.5, 3.5/3.4} {
+            \fill[orange] (\x,\y) circle (3pt);
+        }
+        \node[below] at (2,-0.3) {\small 노이즈 10\%};
+        \node[orange] at (2,-0.8) {\small R2 = 0.85};
+    \end{scope}
+    
+    % 노이즈 20%
+    \begin{scope}[shift={(10,0)}]
+        \draw[->] (0,0) -- (4,0);
+        \draw[->] (0,0) -- (0,4);
+        \draw[applered, line width=1.5pt] (0.2,0.5) -- (3.8,3.5);
+        \foreach \x/\y in {0.5/1.2, 1/0.5, 1.5/2.0, 2/1.2, 2.5/3.0, 3/2.0, 3.5/3.8} {
+            \fill[applered] (\x,\y) circle (3pt);
+        }
+        \node[below] at (2,-0.3) {\small 노이즈 20\%};
+        \node[applered] at (2,-0.8) {\small R2 = 0.65};
+    \end{scope}
+\end{tikzpicture}
+\end{center}
+
+\textbf{결론}: 노이즈(불확실성)가 높을수록 점들이 회귀선에서 멀리 퍼지고, R2 점수가 낮아집니다.
+\end{examplebox}
+
+% ========== 6. 평가 방법 ==========
+\section{\emoji{checkmark} 평가 방법}
+
+\subsection{\emoji{star} 수행 평가 루브릭}
+
+\begin{center}
+\small
+\rowcolors{2}{white}{lightgray}
+\begin{tabular}{p{2.3cm}p{3.8cm}p{3.5cm}p{3cm}}
+\toprule
+\rowcolor{titleblue!20}
+\textbf{평가 항목} & \textbf{상 (10점)} & \textbf{중 (7점)} & \textbf{하 (4점)} \\
+\midrule
+품질점수 이해 & 
+당도+무게→품질 변환 과정을 예시와 함께 설명 가능 & 
+계산 과정은 이해하나 설명이 부족 & 
+부분적으로만 이해 \\
+\midrule
+회귀식 해석 & 
+$w$=기울기, $b$=절편의 의미를 실제 예시로 정확히 설명 & 
+기본적인 해석은 가능 & 
+해석이 미흡 \\
+\midrule
+실험 수행 & 
+학습률/노이즈 실험을 체계적으로 수행, 정확히 기록 & 
+실험을 수행하고 기록 & 
+실험이 불완전 \\
+\midrule
+결과 분석 & 
+오차, R2의 의미를 분석하고 한계점 토론 & 
+기본적인 결과 분석 & 
+분석이 미흡 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{\emoji{pencil} 형성 평가 예시 문제}
+
+\begin{tcolorbox}[colback=warmcream, colframe=applered]
+\textbf{문제 1.} 당도 16 Brix, 무게 300g인 사과의 품질 점수를 계산하시오.
+
+\vspace{3pt}
+\textbf{풀이:}
+\begin{itemize}
+    \item 당도점수 = $(16-10)/8 \times 50 = 6/8 \times 50 = 37.5$점
+    \item 무게점수 = $(300-150)/200 \times 50 = 150/200 \times 50 = 37.5$점
+    \item \textbf{총 품질 = 75점}
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=warmcream, colframe=applered]
+\textbf{문제 2.} 회귀식이 ``가격 = 25×품질 + 1200''일 때, 품질 80점 사과의 예측 가격은?
+
+\vspace{3pt}
+\textbf{풀이:} $25 \times 80 + 1200 = 2000 + 1200 = \textbf{3,200원}$
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=warmcream, colframe=applered]
+\textbf{문제 3.} 오차선이 긴 데이터 포인트는 무엇을 의미하나요?
+
+\vspace{3pt}
+\textbf{정답:} AI의 예측값과 실제값의 차이가 크다는 것을 의미합니다. 이 데이터는 다른 데이터들과 다른 특성을 가지고 있거나, 노이즈(불확실성)의 영향을 많이 받은 데이터입니다.
+\end{tcolorbox}
+
+% ========== 7. FAQ ==========
+\section{\emoji{question} 자주 묻는 질문 (FAQ)}
+
+\begin{tcolorbox}[colback=lightgray, colframe=gray, breakable]
+\textbf{Q. 학생들이 학습률 개념을 어려워하면?}\\[5pt]
+\emoji{bulb} \textbf{``걸음 크기'' 비유}를 사용하세요.
+
+``학습률은 AI가 정답을 찾아갈 때 한 번에 얼마나 움직이는지를 정해요.
+\begin{itemize}
+    \item 학습률 0.001 = 아주 작은 걸음 → 정확하지만 너무 느려요
+    \item 학습률 0.01 = 적당한 걸음 → 적절한 속도로 정답에 도착해요
+    \item 학습률 0.1 = 큰 걸음 → 빠르지만 정답을 지나칠 수 있어요
+\end{itemize}
+마치 눈을 감고 보물을 찾는 것처럼, 너무 크게 뛰면 보물을 지나치고, 너무 조금씩 가면 시간이 오래 걸려요!''
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightgray, colframe=gray, breakable]
+\textbf{Q. R2 점수를 초등학생 수준으로 설명하려면?}\\[5pt]
+\emoji{bulb} \textbf{``AI의 성적표''} 비유를 사용하세요.
+
+``R2 점수는 AI가 얼마나 잘 예측했는지 점수를 매긴 거예요.
+\begin{itemize}
+    \item R2 = 0.9 이상 → 90점 이상! 아주 잘했어요
+    \item R2 = 0.7~0.9 → 70~90점, 괜찮아요
+    \item R2 = 0.7 미만 → 70점 미만, 더 노력해야 해요
+\end{itemize}
+100점 만점 시험처럼 생각하면 돼요!''
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightgray, colframe=gray, breakable]
+\textbf{Q. 노이즈 개념을 쉽게 설명하려면?}\\[5pt]
+\emoji{bulb} \textbf{``실제 세상의 불확실성''} 으로 설명합니다.
+
+``같은 품질의 사과라도 가게마다 가격이 달라요. 왜 그럴까요?
+\begin{itemize}
+    \item 세일 중인 가게
+    \item 흠집이 살짝 있는 사과
+    \item 계절에 따른 가격 변동
+    \item 산지에서의 거리
+\end{itemize}
+이런 여러 가지 이유로 완벽한 예측은 어려워요. 이걸 `노이즈'라고 불러요.''
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightgray, colframe=gray, breakable]
+\textbf{Q. 시간이 부족할 때 어떤 활동을 생략할까요?}\\[5pt]
+\emoji{clock} \textbf{우선순위}에 따라 조절하세요.
+
+\textbf{필수 (절대 생략 불가):}
+\begin{enumerate}
+    \item 데이터 생성 → 산점도 관찰
+    \item 학습 실행 → 회귀선 형성
+    \item 추론 모드에서 예측 체험
+\end{enumerate}
+
+\textbf{권장 (시간 있으면):}
+\begin{itemize}
+    \item 학습률 실험 (최소 2가지 비교)
+    \item 오차선 분석
+\end{itemize}
+
+\textbf{선택 (시간 충분할 때):}
+\begin{itemize}
+    \item 노이즈 영향 실험
+    \item 학습 과정 재생
+\end{itemize}
+\end{tcolorbox}
+
+% ========== 8. 수업 시간 조절 ==========
+\section{\emoji{clock} 수업 시간 조절 팁}
+
+\subsection{\emoji{bolt} 40분 수업용 (축약 버전)}
+
+\begin{center}
+\rowcolors{2}{white}{lightyellow!50}
+\begin{tabular}{c>{\bfseries}lp{7cm}}
+\toprule
+\rowcolor{orange!20}
+시간 & 활동 & 주요 내용 \\
+\midrule
+5분 & 도입 & 
+사과 가격 결정 요인 간단 토론\\
+\midrule
+10분 & 데이터 + 학습 & 
+기본값으로 빠르게 진행, 회귀선 형성 확인\\
+\midrule
+15분 & 추론 체험 & 
+다양한 당도/무게로 가격 예측, 예측 비교\\
+\midrule
+10분 & 정리 & 
+AI 예측의 의미, 실생활 적용 토론\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{warningbox}
+\textbf{40분 수업에서 생략할 것:}
+\begin{itemize}
+    \item 학습률 실험 (기본값 0.01만 사용)
+    \item 오차선 분석 (시간 나면 간단히 언급)
+    \item 노이즈 영향 실험
+\end{itemize}
+\end{warningbox}
+
+\subsection{\emoji{microscope} 80분 수업용 (확장 버전, 블록 수업)}
+
+\begin{center}
+\rowcolors{2}{white}{lightgreen!30}
+\begin{tabular}{c>{\bfseries}lp{7cm}}
+\toprule
+\rowcolor{applegreen!20}
+시간 & 활동 & 주요 내용 \\
+\midrule
+10분 & 도입 & 
+선형 회귀 개념 설명, 품질 점수 계산 예시\\
+\midrule
+15분 & 데이터 + 학습 & 
+학습률/에포크 조절, 손실 그래프 관찰\\
+\midrule
+10분 & 학습 재생 + 오차선 & 
+회귀선 변화 애니메이션, 오차선 분석\\
+\midrule
+15분 & 추론 체험 & 
+다양한 입력으로 예측, 추론 과정 이해\\
+\midrule
+15분 & 노이즈 실험 & 
+노이즈 5\%/10\%/20\% 비교, R2 변화 관찰\\
+\midrule
+15분 & 심화 토론 & 
+AI 윤리, 한계, 다른 분야 적용 토론\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ========== 9. 확장 활동 ==========
+\section{\emoji{starfull} 확장 활동}
+
+\begin{itemize}
+    \item \textbf{품질 공식 변경}: 당도 70\% + 무게 30\%로 비율 조정하면 결과가 어떻게 달라질까?
+    \item \textbf{실제 데이터 활용}: 실제 마트에서 사과 데이터(당도, 무게, 가격) 수집하여 비교
+    \item \textbf{다른 과일 적용}: 귤, 배 등 다른 과일에도 유사한 모델 적용해보기
+    \item \textbf{한계 탐구}: 선형 회귀로 예측할 수 없는 사례 찾아보기 (비선형 관계)
+    \item \textbf{AI 윤리 토론}: ``AI가 가격을 결정해도 될까?'' 토론
+\end{itemize}
+
+% ========== 참고자료 ==========
+\section{\emoji{books} 참고자료}
+
+\begin{center}
+\begin{tabular}{clll}
+\toprule
+\# & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\midrule
+1 & 사과가격예측\_시뮬레이터\_v1.2.4.1.html & 파일 & 시뮬레이터 \\
+2 & 사과가격예측\_퀵가이드\_v1.2.4.1.md & 문서 & 빠른 시작 \\
+3 & 2022 개정 교육과정 (인공지능 기초) & 문서 & 교육과정 연계 \\
+4 & 사과가격예측\_활용가이드\_v1.2.0.2.docx & 문서 & 이전 버전 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ========== 생성/수정 이력 ==========
+\section{\emoji{memo} 생성/수정 이력}
+
+\begin{center}
+\small
+\begin{tabular}{llllll}
+\toprule
+버전 & 날짜 & 시간 & 변경 수준 & 변경 내용 & 작성자 \\
+\midrule
+v1.0.0.0 & 2026-01-31 & 14:00 & 최초 & 초안 작성 & Claude \\
+v1.2.0.2 & 2026-02-01 & 14:50 & 리비전 & FAQ, 시간 조절 팁 추가 & Claude \\
+v1.3.0.0 & 2026-02-02 & 13:00 & 마이너 & LaTeX 컬러 이모지 버전 & Claude \\
+\textbf{v1.3.1.0} & \textbf{2026-02-02} & \textbf{13:30} & \textbf{마이너} & \textbf{내용 보강: 예시, 다이어그램, 대화 추가} & \textbf{Claude} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vfill
+
+\begin{center}
+\emoji{apple} \textit{사과 가격 예측 시뮬레이터 활용가이드 (내용 보강판)}
+\end{center}
+
+\end{document}

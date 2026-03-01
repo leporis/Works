@@ -1,0 +1,2321 @@
+<!DOCTYPE html>
+<!--
+  파일명: microbit-sensor-simulator_v9_1_0_0_인코딩복원_2026-02-19.html
+  버전: v9.1.0.0
+  설명: 마이크로비트 + Grove I2C 센서 시뮬레이터 (848가지 조합)
+  작성자: Claude
+  소속: 청주교육대학교 컴퓨터교육과
+  원본 버전: v9.0.0.0
+  수정이력:
+    v9.0.0.0 - 원본 (센서 시뮬레이터 v9)
+    v9.1.0.0 (2026-02-19) - 이중 인코딩(Mojibake) 복원 (ftfy)
+-->
+
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마이크로비트 Grove I2C 센서 시뮬레이터 v8</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #fff;
+      user-select: none;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+      font-size: 1.6em;
+      color: #00d4ff;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 20px;
+      font-size: 0.9em;
+    }
+    
+    .simulator {
+      background: #0f0f23;
+      border-radius: 20px;
+      padding: 25px;
+    }
+    
+    /* ===== 툴팁 스타일 ===== */
+    .tooltip {
+      position: relative;
+    }
+    
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(145deg, #333, #222);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.8em;
+      font-weight: normal;
+      white-space: pre-line;
+      text-align: left;
+      min-width: 200px;
+      max-width: 280px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+      border: 1px solid #444;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      pointer-events: none;
+      line-height: 1.5;
+    }
+    
+    .tooltip::before {
+      content: '';
+      position: absolute;
+      bottom: calc(100% + 2px);
+      left: 50%;
+      transform: translateX(-50%);
+      border: 8px solid transparent;
+      border-top-color: #333;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1001;
+    }
+    
+    .tooltip:hover::after,
+    .tooltip:hover::before {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* ===== 메인 보드 섹션 ===== */
+    .main-boards {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+    
+    /* ===== 마이크로비트 + Grove Shield 통합 유닛 ===== */
+    .hardware-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    /* 내장 센서 (마이크로비트 위) */
+    .builtin-sensors-top {
+      background: linear-gradient(145deg, #1a2a1a, #0f1a0f);
+      border: 2px solid #4caf50;
+      border-radius: 12px 12px 0 0;
+      border-bottom: none;
+      padding: 10px 15px;
+      width: 220px;
+    }
+    
+    .builtin-label {
+      text-align: center;
+      font-size: 0.7em;
+      color: #4caf50;
+      padding: 4px;
+      background: rgba(76, 175, 80, 0.1);
+      border-radius: 5px;
+      margin-bottom: 8px;
+    }
+    
+    .builtin-sensors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    
+    .builtin-sensor {
+      background: rgba(76, 175, 80, 0.15);
+      border: 1px solid #4caf50;
+      border-radius: 6px;
+      padding: 6px 4px;
+      text-align: center;
+      cursor: help;
+      transition: all 0.3s;
+    }
+    
+    .builtin-sensor:hover {
+      background: rgba(76, 175, 80, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .builtin-sensor-icon {
+      font-size: 1em;
+    }
+    
+    .builtin-sensor-name {
+      font-size: 0.55em;
+      color: #81c784;
+      font-weight: bold;
+      margin-top: 2px;
+    }
+    
+    /* USB 케이블 */
+    .usb-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 0;
+      background: linear-gradient(145deg, #1a2a1a, #0f1a0f);
+      border-left: 2px solid #4caf50;
+      border-right: 2px solid #4caf50;
+      width: 220px;
+    }
+    
+    .usb-cable {
+      width: 60px;
+      height: 5px;
+      background: linear-gradient(180deg, #555, #333, #555);
+      border-radius: 3px;
+    }
+    
+    .usb-plug {
+      width: 24px;
+      height: 14px;
+      background: linear-gradient(180deg, #ddd, #aaa);
+      border-radius: 3px;
+      border: 1px solid #888;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .usb-plug-inner {
+      width: 12px;
+      height: 8px;
+      background: #333;
+      border-radius: 1px;
+    }
+    
+    .usb-label {
+      font-size: 0.6em;
+      color: #888;
+      margin-left: 8px;
+    }
+    
+    /* 결합된 보드 컨테이너 */
+    .combined-board {
+      position: relative;
+      width: 220px;
+    }
+    
+    /* 마이크로비트 본체 */
+    .microbit {
+      background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+      border: 2px solid #333;
+      border-radius: 0;
+      padding: 10px 15px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    
+    .microbit-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .microbit-btn {
+      width: 18px;
+      height: 18px;
+      background: linear-gradient(145deg, #222, #111);
+      border: 2px solid #444;
+      border-radius: 50%;
+      font-size: 0.5em;
+      color: #888;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: help;
+    }
+    
+    .microbit-usb {
+      width: 20px;
+      height: 10px;
+      background: linear-gradient(180deg, #888, #666);
+      border-radius: 2px;
+      border: 1px solid #555;
+    }
+    
+    .microbit-screen {
+      background: #000;
+      border: 2px solid #222;
+      border-radius: 4px;
+      padding: 8px;
+      margin-bottom: 6px;
+    }
+    
+    .led-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3px;
+      justify-items: center;
+    }
+    
+    .led {
+      width: 12px;
+      height: 12px;
+      background: #ff4444;
+      border-radius: 2px;
+      opacity: 0.2;
+    }
+    
+    .led.on {
+      opacity: 1;
+      box-shadow: 0 0 6px #ff4444;
+    }
+    
+    .board-label {
+      color: #00d4ff;
+      font-weight: bold;
+      font-size: 0.75em;
+      margin-top: 4px;
+    }
+    
+    /* 엣지 커넥터 (금색 핀) */
+    .edge-connector {
+      display: flex;
+      justify-content: center;
+      gap: 2px;
+      padding: 2px 10px;
+      background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
+      border-left: 2px solid #333;
+      border-right: 2px solid #333;
+    }
+    
+    .edge-pin {
+      width: 4px;
+      height: 10px;
+      background: linear-gradient(180deg, #ffd700, #b8860b);
+      border-radius: 0 0 2px 2px;
+    }
+    
+    .edge-pin.large {
+      width: 10px;
+    }
+    
+    .edge-pin.gnd {
+      background: linear-gradient(180deg, #ffd700, #8b7500);
+    }
+    
+    /* Grove Shield */
+    .grove-shield {
+      background: linear-gradient(180deg, #1b5e20, #0d3d12);
+      border: 2px solid #2e7d32;
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      padding: 6px 15px 12px;
+      position: relative;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+    
+    .shield-slot {
+      background: #0a0a0a;
+      height: 6px;
+      margin: 0 5px 8px;
+      border-radius: 2px;
+      display: flex;
+      justify-content: center;
+      gap: 2px;
+      padding: 1px 5px;
+    }
+    
+    .slot-contact {
+      width: 3px;
+      height: 4px;
+      background: #8b7500;
+      border-radius: 1px;
+    }
+    
+    .slot-contact.large {
+      width: 8px;
+    }
+    
+    .shield-label {
+      color: #81c784;
+      font-weight: bold;
+      font-size: 0.65em;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    
+    .shield-ports {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .shield-port-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    
+    .shield-port {
+      width: 24px;
+      height: 8px;
+      background: linear-gradient(90deg, #fff, #ddd);
+      border-radius: 2px;
+      border: 1px solid #999;
+    }
+    
+    .shield-port-label {
+      font-size: 0.45em;
+      color: #a5d6a7;
+    }
+    
+    /* I2C 버스 */
+    .i2c-bus {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+      padding: 10px;
+      background: rgba(0, 188, 212, 0.1);
+      border-radius: 10px;
+      cursor: help;
+    }
+    
+    .bus-line {
+      flex: 1;
+      max-width: 80%;
+      height: 8px;
+      background: linear-gradient(90deg, #2196f3, #00bcd4);
+      border-radius: 4px;
+      box-shadow: 0 0 15px rgba(33, 150, 243, 0.4);
+    }
+    
+    .bus-label {
+      color: #00bcd4;
+      font-size: 0.85em;
+      font-weight: bold;
+    }
+    
+    /* 포트 영역 */
+    .ports-section {
+      margin: 20px 0;
+    }
+    
+    .ports-title {
+      font-size: 0.9em;
+      color: #888;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    
+    .ports-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
+    
+    .port {
+      aspect-ratio: 1;
+      background: linear-gradient(145deg, #1a1a2e, #0f0f1a);
+      border: 2px dashed #444;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100px;
+      transition: all 0.3s;
+      position: relative;
+    }
+    
+    .port.datalogger {
+      border: 2px solid #ff9800;
+      background: linear-gradient(145deg, #2a1a0a, #1a0f05);
+      cursor: help;
+    }
+    
+    .port.empty-port {
+      cursor: help;
+    }
+    
+    .port.drag-over {
+      border-color: #00d4ff;
+      background: rgba(0, 212, 255, 0.1);
+      transform: scale(1.05);
+    }
+    
+    .port-number {
+      position: absolute;
+      top: 5px;
+      left: 8px;
+      font-size: 0.7em;
+      color: #555;
+    }
+    
+    .port-empty-text {
+      color: #444;
+      font-size: 0.75em;
+      text-align: center;
+    }
+    
+    /* 센서 카드 */
+    .sensor-card {
+      background: linear-gradient(145deg, #2a2a4a, #1a1a2e);
+      border-radius: 10px;
+      padding: 10px;
+      cursor: grab;
+      transition: all 0.3s;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid transparent;
+    }
+    
+    .sensor-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    
+    .sensor-card.dragging {
+      opacity: 0.5;
+      cursor: grabbing;
+    }
+    
+    .sensor-card.fixed {
+      cursor: help;
+      border-color: #ff9800;
+    }
+    
+    .sensor-card.environment { border-color: #4caf50; }
+    .sensor-card.display { border-color: #9c27b0; }
+    .sensor-card.time { border-color: #00bcd4; }
+    .sensor-card.motion { border-color: #ff9800; }
+    .sensor-card.light { border-color: #e91e63; }
+    .sensor-card.input { border-color: #ffeb3b; }
+    .sensor-card.distance { border-color: #03a9f4; }
+    
+    .sensor-icon {
+      font-size: 1.8em;
+      margin-bottom: 5px;
+    }
+    
+    .sensor-name {
+      font-size: 0.7em;
+      font-weight: bold;
+      text-align: center;
+      color: #fff;
+    }
+    
+    .sensor-address {
+      font-size: 0.6em;
+      color: #888;
+      font-family: monospace;
+      margin-top: 3px;
+    }
+    
+    /* 센서 목록 */
+    .sensors-section {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid #333;
+    }
+    
+    .sensors-title {
+      font-size: 0.95em;
+      color: #00d4ff;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    /* ===== 데이터 검색 섹션 ===== */
+    .search-section {
+      background: linear-gradient(145deg, #1a2a3a, #0f1a2a);
+      border: 2px solid #00d4ff;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .search-title {
+      font-size: 1em;
+      color: #00d4ff;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .search-input-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .search-input {
+      flex: 1;
+      padding: 12px 18px;
+      border: 2px solid #333;
+      border-radius: 10px;
+      background: #1a1a2e;
+      color: #fff;
+      font-size: 1em;
+      transition: all 0.3s;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: #00d4ff;
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    }
+    
+    .search-input::placeholder {
+      color: #666;
+    }
+    
+    .search-btn {
+      padding: 12px 25px;
+      background: linear-gradient(145deg, #00d4ff, #0099cc);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .search-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+    }
+    
+    .clear-btn {
+      padding: 12px 20px;
+      background: linear-gradient(145deg, #666, #444);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .clear-btn:hover {
+      background: linear-gradient(145deg, #888, #666);
+    }
+    
+    /* 드롭다운 버튼 스타일 */
+    .dropdown-container {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .dropdown-btn {
+      padding: 12px 18px;
+      background: linear-gradient(145deg, #4a4a6a, #3a3a5a);
+      border: 2px solid #555;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.95em;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    
+    .dropdown-btn:hover {
+      background: linear-gradient(145deg, #5a5a7a, #4a4a6a);
+      border-color: #00d4ff;
+    }
+    
+    .dropdown-arrow {
+      font-size: 0.8em;
+      transition: transform 0.3s;
+    }
+    
+    .dropdown-container.open .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+    
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      min-width: 200px;
+      background: #1a1a2e;
+      border: 2px solid #444;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+    
+    .dropdown-container.open .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .dropdown-category {
+      padding: 10px 15px 5px;
+      font-size: 0.8em;
+      font-weight: bold;
+      color: #00d4ff;
+      background: rgba(0, 212, 255, 0.1);
+      border-bottom: 1px solid #333;
+    }
+    
+    .dropdown-item {
+      padding: 10px 20px;
+      font-size: 0.9em;
+      color: #ccc;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .dropdown-item:hover {
+      background: rgba(0, 212, 255, 0.2);
+      color: #fff;
+      padding-left: 25px;
+    }
+    
+    .dropdown-item:last-child {
+      border-radius: 0 0 10px 10px;
+    }
+    
+    /* 스크롤바 스타일 */
+    .dropdown-menu::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .dropdown-menu::-webkit-scrollbar-track {
+      background: #1a1a2e;
+      border-radius: 3px;
+    }
+    
+    .dropdown-menu::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 3px;
+    }
+    
+    .dropdown-menu::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    
+    .search-result {
+      margin-top: 15px;
+      padding: 12px 15px;
+      background: rgba(0, 212, 255, 0.1);
+      border-radius: 10px;
+      font-size: 0.9em;
+      display: none;
+    }
+    
+    .search-result.show {
+      display: block;
+    }
+    
+    .search-result.success {
+      border-left: 4px solid #4caf50;
+    }
+    
+    .search-result.no-result {
+      border-left: 4px solid #ff9800;
+    }
+    
+    /* ===== 센서 하이라이트 스타일 ===== */
+    .sensor-item.highlighted {
+      animation: highlight-pulse 1s ease-in-out infinite;
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.8), inset 0 0 15px rgba(0, 212, 255, 0.3);
+      border-color: #00d4ff !important;
+      border-width: 3px !important;
+      transform: scale(1.08);
+      z-index: 10;
+      background: linear-gradient(145deg, #1a3a5a, #0a2a4a) !important;
+    }
+    
+    .sensor-item.highlighted::before {
+      content: '✓ 추천';
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      background: linear-gradient(145deg, #00d4ff, #0099cc);
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.7em;
+      font-weight: bold;
+      box-shadow: 0 3px 10px rgba(0, 212, 255, 0.5);
+      z-index: 11;
+    }
+    
+    .builtin-sensor.highlighted {
+      animation: highlight-pulse 1s ease-in-out infinite;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.8), inset 0 0 10px rgba(0, 212, 255, 0.3);
+      border-color: #00d4ff !important;
+      border-width: 2px !important;
+      transform: scale(1.1);
+      background: rgba(0, 212, 255, 0.2) !important;
+      z-index: 10;
+    }
+    
+    @keyframes highlight-pulse {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), inset 0 0 10px rgba(0, 212, 255, 0.2);
+      }
+      50% {
+        box-shadow: 0 0 35px rgba(0, 212, 255, 1), inset 0 0 20px rgba(0, 212, 255, 0.4);
+      }
+    }
+    
+    .sensors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+    }
+    
+    .sensor-item {
+      position: relative;
+      background: linear-gradient(145deg, #2a2a4a, #1a1a2e);
+      border-radius: 10px;
+      padding: 12px 8px;
+      cursor: grab;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border: 2px solid transparent;
+    }
+    
+    .sensor-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    
+    .sensor-item.dragging {
+      opacity: 0.5;
+    }
+    
+    .sensor-item.connected {
+      opacity: 0.3;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    
+    .sensor-item.environment { border-color: #4caf50; }
+    .sensor-item.display { border-color: #9c27b0; }
+    .sensor-item.time { border-color: #00bcd4; }
+    .sensor-item.motion { border-color: #ff9800; }
+    .sensor-item.light { border-color: #e91e63; }
+    .sensor-item.input { border-color: #ffeb3b; }
+    .sensor-item.distance { border-color: #03a9f4; }
+    
+    /* ===== 연결된 센서 설명 패널 (신규) ===== */
+    .connected-sensors-panel {
+      margin-top: 25px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid #333;
+    }
+    
+    .connected-sensors-title {
+      font-size: 1em;
+      color: #00d4ff;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .connected-sensors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 15px;
+    }
+    
+    .connected-sensor-card {
+      background: linear-gradient(145deg, #1a1a2e, #0f0f1a);
+      border-radius: 12px;
+      padding: 15px;
+      border-left: 4px solid;
+    }
+    
+    .connected-sensor-card.builtin { border-left-color: #4caf50; }
+    .connected-sensor-card.datalogger { border-left-color: #ff9800; }
+    .connected-sensor-card.external { border-left-color: #2196f3; }
+    
+    .connected-sensor-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .connected-sensor-icon {
+      font-size: 1.5em;
+    }
+    
+    .connected-sensor-info {
+      flex: 1;
+    }
+    
+    .connected-sensor-name {
+      font-weight: bold;
+      font-size: 0.95em;
+      color: #fff;
+    }
+    
+    .connected-sensor-type {
+      font-size: 0.75em;
+      color: #888;
+    }
+    
+    .connected-sensor-badge {
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 0.65em;
+      font-weight: bold;
+    }
+    
+    .badge-builtin {
+      background: rgba(76, 175, 80, 0.2);
+      color: #81c784;
+    }
+    
+    .badge-datalogger {
+      background: rgba(255, 152, 0, 0.2);
+      color: #ffb74d;
+    }
+    
+    .badge-external {
+      background: rgba(33, 150, 243, 0.2);
+      color: #64b5f6;
+    }
+    
+    .connected-sensor-desc {
+      font-size: 0.8em;
+      color: #aaa;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    
+    .connected-sensor-data {
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      padding: 10px;
+    }
+    
+    .connected-sensor-data-title {
+      font-size: 0.75em;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    
+    .connected-sensor-data-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    
+    .data-tag {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,0.1);
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.75em;
+    }
+    
+    .data-tag.builtin {
+      background: rgba(76, 175, 80, 0.2);
+      color: #a5d6a7;
+    }
+    
+    .data-tag.datalogger {
+      background: rgba(255, 152, 0, 0.2);
+      color: #ffcc80;
+    }
+    
+    .data-tag.external {
+      background: rgba(33, 150, 243, 0.2);
+      color: #90caf9;
+    }
+    
+    .data-tag-icon {
+      font-size: 0.9em;
+    }
+    
+    .data-tag-info {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .data-tag-name {
+      font-weight: bold;
+    }
+    
+    .data-tag-range {
+      font-size: 0.85em;
+      opacity: 0.7;
+    }
+    
+    /* 데이터 정보 패널 */
+    .data-panel {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 15px;
+      padding: 20px;
+    }
+    
+    .data-panel-title {
+      font-size: 1em;
+      color: #00d4ff;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .data-categories {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    
+    .data-category {
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    
+    .category-title {
+      font-size: 0.85em;
+      color: #888;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #333;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .category-title.builtin { color: #81c784; }
+    .category-title.external { color: #90caf9; }
+    
+    .data-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    
+    .data-item {
+      background: rgba(255,255,255,0.1);
+      padding: 4px 10px;
+      border-radius: 15px;
+      font-size: 0.75em;
+      color: #ccc;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: help;
+      transition: all 0.2s;
+    }
+    
+    .data-item:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .data-item.builtin {
+      background: rgba(76, 175, 80, 0.2);
+      color: #a5d6a7;
+    }
+    
+    .data-item.external {
+      background: rgba(33, 150, 243, 0.2);
+      color: #90caf9;
+    }
+    
+    .data-item-icon {
+      font-size: 0.9em;
+    }
+    
+    /* 통계 바 */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 15px;
+      padding: 15px;
+      background: linear-gradient(90deg, rgba(76,175,80,0.1), rgba(33,150,243,0.1));
+      border-radius: 10px;
+    }
+    
+    .stat-item {
+      text-align: center;
+      cursor: help;
+    }
+    
+    .stat-number {
+      font-size: 1.8em;
+      font-weight: bold;
+      background: linear-gradient(90deg, #4caf50, #2196f3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .stat-label {
+      font-size: 0.75em;
+      color: #888;
+    }
+    
+    /* 안내 메시지 */
+    .help-text {
+      text-align: center;
+      color: #666;
+      font-size: 0.8em;
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+    }
+    
+    .help-text span {
+      color: #00d4ff;
+    }
+    
+    /* 리셋 버튼 */
+    .reset-btn {
+      display: block;
+      margin: 20px auto 0;
+      padding: 10px 25px;
+      background: linear-gradient(145deg, #e53935, #c62828);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .reset-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(229, 57, 53, 0.4);
+    }
+    
+    /* 반응형 */
+    @media (max-width: 900px) {
+      .main-boards {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .ports-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      
+      .data-categories {
+        grid-template-columns: 1fr;
+      }
+      
+      .connected-sensors-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .tooltip::after {
+        min-width: 150px;
+        font-size: 0.75em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔌 마이크로비트 Grove I2C 센서 시뮬레이터</h1>
+    <p class="subtitle">센서를 드래그하여 포트에 연결하세요 (요소 위에 마우스를 올리면 설명이 나타납니다)</p>
+    
+    <div class="simulator">
+      <!-- 메인 보드 -->
+      <div class="main-boards">
+        <!-- 마이크로비트 + Grove Shield 결합 -->
+        <div class="hardware-unit">
+          <!-- 내장 센서 (마이크로비트 위) -->
+          <div class="builtin-sensors-top">
+            <div class="builtin-label">🔧 마이크로비트 내장 센서 (무료)</div>
+            <div class="builtin-sensors-grid">
+              <div class="builtin-sensor tooltip" data-tooltip="📐 가속도계
+
+기기의 움직임과 기울기를 감지합니다.
+
+• X축: 좌우 기울기
+• Y축: 앞뒤 기울기
+• Z축: 위아래 움직임">
+                <div class="builtin-sensor-icon">📐</div>
+                <div class="builtin-sensor-name">가속도계</div>
+              </div>
+              <div class="builtin-sensor tooltip" data-tooltip="🧭 나침반
+
+지구 자기장을 감지하여 방향을 측정합니다.
+
+• 0°~360° 방위각
+• 북쪽 기준 측정">
+                <div class="builtin-sensor-icon">🧭</div>
+                <div class="builtin-sensor-name">나침반</div>
+              </div>
+              <div class="builtin-sensor tooltip" data-tooltip="🌡️ 온도 센서
+
+CPU 칩의 온도를 측정합니다.
+
+⚠️ 실제 기온보다 5~10°C 높게 측정됩니다.">
+                <div class="builtin-sensor-icon">🌡️</div>
+                <div class="builtin-sensor-name">온도</div>
+              </div>
+              <div class="builtin-sensor tooltip" data-tooltip="💡 빛 센서
+
+LED를 역으로 사용하여 주변 밝기를 측정합니다.
+
+• 0~255 범위">
+                <div class="builtin-sensor-icon">💡</div>
+                <div class="builtin-sensor-name">빛</div>
+              </div>
+              <div class="builtin-sensor tooltip" data-tooltip="🎤 마이크 (V2 전용)
+
+주변 소리의 크기를 측정합니다.
+
+• 0~255 범위
+• 박수, 음성 감지 가능">
+                <div class="builtin-sensor-icon">🎤</div>
+                <div class="builtin-sensor-name">마이크</div>
+              </div>
+              <div class="builtin-sensor tooltip" data-tooltip="👆 터치 로고 (V2 전용)
+
+금색 로고를 터치하면 감지됩니다.
+
+• 정전식 터치 방식">
+                <div class="builtin-sensor-icon">👆</div>
+                <div class="builtin-sensor-name">터치</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- USB 케이블 -->
+          <div class="usb-section tooltip" data-tooltip="🔌 USB 케이블
+
+• 전원 공급 (5V)
+• 프로그램 업로드
+• PC와 시리얼 통신">
+            <div class="usb-plug">
+              <div class="usb-plug-inner"></div>
+            </div>
+            <div class="usb-cable"></div>
+            <span class="usb-label">← PC 연결</span>
+          </div>
+          
+          <!-- 결합된 보드 -->
+          <div class="combined-board">
+            <!-- 마이크로비트 -->
+            <div class="microbit tooltip" data-tooltip="📟 마이크로비트 V2
+
+영국 BBC에서 만든 교육용 마이크로컨트롤러입니다.
+
+• 5x5 LED 화면
+• 버튼 A, B
+• 블루투스 지원">
+              <div class="microbit-top">
+                <div class="microbit-btn tooltip" data-tooltip="🔘 버튼 A
+
+왼쪽 버튼입니다.">A</div>
+                <div class="microbit-usb"></div>
+                <div class="microbit-btn tooltip" data-tooltip="🔘 버튼 B
+
+오른쪽 버튼입니다.">B</div>
+              </div>
+              <div class="microbit-screen">
+                <div class="led-grid">
+                  <div class="led on"></div><div class="led"></div><div class="led on"></div><div class="led"></div><div class="led on"></div>
+                  <div class="led"></div><div class="led on"></div><div class="led"></div><div class="led on"></div><div class="led"></div>
+                  <div class="led on"></div><div class="led"></div><div class="led on"></div><div class="led"></div><div class="led on"></div>
+                  <div class="led"></div><div class="led on"></div><div class="led"></div><div class="led on"></div><div class="led"></div>
+                  <div class="led on"></div><div class="led"></div><div class="led on"></div><div class="led"></div><div class="led on"></div>
+                </div>
+              </div>
+              <div class="board-label">micro:bit V2</div>
+            </div>
+            
+            <!-- 엣지 커넥터 -->
+            <div class="edge-connector tooltip" data-tooltip="🔗 엣지 커넥터
+
+마이크로비트 하단의 금색 핀입니다.
+
+• 큰 핀: 0, 1, 2, 3V, GND
+• 작은 핀: GPIO, I2C, SPI">
+              <div class="edge-pin large"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin large"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin large"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin large gnd"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin large"></div>
+            </div>
+            
+            <!-- Grove Shield -->
+            <div class="grove-shield tooltip" data-tooltip="🛡️ Grove Shield for micro:bit
+
+마이크로비트 확장 보드입니다.
+
+• Grove 커넥터로 센서 연결
+• 납땜 없이 간편하게 사용">
+              <div class="shield-slot">
+                <div class="slot-contact large"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact large"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact large"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact large"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact large"></div>
+              </div>
+              
+              <div class="shield-label">Grove Shield</div>
+              
+              <div class="shield-ports">
+                <div class="shield-port-group">
+                  <div class="shield-port"></div>
+                  <div class="shield-port-label">I2C</div>
+                </div>
+                <div class="shield-port-group">
+                  <div class="shield-port"></div>
+                  <div class="shield-port-label">I2C</div>
+                </div>
+                <div class="shield-port-group">
+                  <div class="shield-port"></div>
+                  <div class="shield-port-label">UART</div>
+                </div>
+                <div class="shield-port-group">
+                  <div class="shield-port"></div>
+                  <div class="shield-port-label">A/D</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- I2C 버스 -->
+      <div class="i2c-bus tooltip" data-tooltip="🔗 I2C 버스
+
+여러 센서가 2개의 선을 공유하는 통신 방식입니다.
+
+• SDA: 데이터 전송 선
+• SCL: 타이밍 동기화 선
+• 각 센서는 고유 주소로 구분">
+        <span class="bus-label">SDA</span>
+        <div class="bus-line"></div>
+        <span class="bus-label">SCL</span>
+      </div>
+      
+      <!-- 포트 영역 -->
+      <div class="ports-section">
+        <div class="ports-title">📍 I2C 포트 (드래그하여 센서 연결)</div>
+        <div class="ports-grid" id="portsGrid">
+          <!-- 데이터로거 (고정) -->
+          <div class="port datalogger tooltip" id="port-datalogger" data-tooltip="💾 데이터로거 (고정)
+
+센서 데이터를 자동으로 기록합니다.
+
+• SD카드: 데이터 저장
+• RTC: 실시간 시계
+• CSV 파일로 저장">
+            <div class="sensor-card fixed time">
+              <div class="sensor-icon">💾</div>
+              <div class="sensor-name">데이터로거</div>
+              <div class="sensor-address">SD + RTC</div>
+            </div>
+          </div>
+          <!-- 빈 포트 6개 -->
+          <div class="port empty-port tooltip" id="port-1" data-tooltip="📍 빈 포트 #1
+
+아래 센서를 드래그하여 연결하세요." ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 1)">
+            <span class="port-number">#1</span>
+            <span class="port-empty-text">빈 포트</span>
+          </div>
+          <div class="port empty-port tooltip" id="port-2" data-tooltip="📍 빈 포트 #2
+
+아래 센서를 드래그하여 연결하세요." ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 2)">
+            <span class="port-number">#2</span>
+            <span class="port-empty-text">빈 포트</span>
+          </div>
+          <div class="port empty-port tooltip" id="port-3" data-tooltip="📍 빈 포트 #3
+
+아래 센서를 드래그하여 연결하세요." ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 3)">
+            <span class="port-number">#3</span>
+            <span class="port-empty-text">빈 포트</span>
+          </div>
+          <div class="port empty-port tooltip" id="port-4" data-tooltip="📍 빈 포트 #4
+
+아래 센서를 드래그하여 연결하세요." ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 4)">
+            <span class="port-number">#4</span>
+            <span class="port-empty-text">빈 포트</span>
+          </div>
+          <div class="port empty-port tooltip" id="port-5" data-tooltip="📍 빈 포트 #5
+
+아래 센서를 드래그하여 연결하세요." ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 5)">
+            <span class="port-number">#5</span>
+            <span class="port-empty-text">빈 포트</span>
+          </div>
+          <div class="port empty-port tooltip" id="port-6" data-tooltip="📍 빈 포트 #6
+
+아래 센서를 드래그하여 연결하세요." ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 6)">
+            <span class="port-number">#6</span>
+            <span class="port-empty-text">빈 포트</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 센서 목록 -->
+      <div class="sensors-section">
+        <div class="sensors-title">📌 사용 가능한 Grove I2C 센서 (드래그하여 연결)</div>
+        
+        <!-- ===== 데이터 검색 섹션 (신규) ===== -->
+        <div class="search-section">
+          <div class="search-title">🔍 측정하고 싶은 데이터 검색</div>
+          <div class="search-input-container">
+            <input type="text" class="search-input" id="searchInput" 
+                   placeholder="예: 온도, 습도, 공기질, 색깔, 거리..." 
+                   onkeypress="handleSearchKeypress(event)">
+            
+            <!-- 드롭다운 버튼 -->
+            <div class="dropdown-container">
+              <button class="dropdown-btn" onclick="toggleDropdown()">
+                📋 추천 키워드 <span class="dropdown-arrow">▼</span>
+              </button>
+              <div class="dropdown-menu" id="dropdownMenu">
+                <div class="dropdown-category">🌡️ 환경 측정</div>
+                <div class="dropdown-item" onclick="selectKeyword('온도 습도')">온도 · 습도</div>
+                <div class="dropdown-item" onclick="selectKeyword('공기질 CO2 환기')">공기질 · CO2</div>
+                <div class="dropdown-item" onclick="selectKeyword('기압 날씨 고도')">기압 · 날씨</div>
+                
+                <div class="dropdown-category">💡 빛 · 색상</div>
+                <div class="dropdown-item" onclick="selectKeyword('밝기 조도')">밝기 · 조도</div>
+                <div class="dropdown-item" onclick="selectKeyword('색깔 RGB 색상')">색상 · RGB</div>
+                
+                <div class="dropdown-category">📐 움직임 · 방향</div>
+                <div class="dropdown-item" onclick="selectKeyword('움직임 가속도 기울기')">움직임 · 가속도</div>
+                <div class="dropdown-item" onclick="selectKeyword('걸음 만보기 운동')">걸음 · 만보기</div>
+                <div class="dropdown-item" onclick="selectKeyword('방향 나침반')">방향 · 나침반</div>
+                
+                <div class="dropdown-category">✋ 입력 장치</div>
+                <div class="dropdown-item" onclick="selectKeyword('터치 피아노 버튼')">터치 · 피아노</div>
+                <div class="dropdown-item" onclick="selectKeyword('제스처 손동작')">제스처 · 손동작</div>
+                <div class="dropdown-item" onclick="selectKeyword('소리 박수 소음')">소리 · 박수</div>
+                
+                <div class="dropdown-category">📏 거리 · 출력</div>
+                <div class="dropdown-item" onclick="selectKeyword('거리 장애물')">거리 측정</div>
+                <div class="dropdown-item" onclick="selectKeyword('화면 디스플레이 표시')">화면 표시</div>
+              </div>
+            </div>
+            
+            <button class="search-btn" onclick="searchSensors()">검색</button>
+            <button class="clear-btn" onclick="clearSearch()">초기화</button>
+          </div>
+          <div class="search-result" id="searchResult"></div>
+        </div>
+        
+        <div class="sensors-grid" id="sensorsGrid">
+          <!-- JavaScript로 생성 -->
+        </div>
+      </div>
+      
+      <!-- ===== 연결된 센서 설명 패널 (신규) ===== -->
+      <div class="connected-sensors-panel">
+        <div class="connected-sensors-title">📋 연결된 센서 및 데이터 설명</div>
+        <div class="connected-sensors-grid" id="connectedSensorsGrid">
+          <!-- JavaScript로 생성 -->
+        </div>
+      </div>
+      
+      <!-- 데이터 정보 패널 -->
+      <div class="data-panel">
+        <div class="data-panel-title">📊 측정 가능한 데이터 요약</div>
+        <div class="data-categories">
+          <div class="data-category">
+            <div class="category-title builtin">🔧 마이크로비트 내장 센서 (7종)</div>
+            <div class="data-items" id="builtinData">
+              <!-- JavaScript로 생성 -->
+            </div>
+          </div>
+          <div class="data-category">
+            <div class="category-title external">📌 Grove 외장 센서</div>
+            <div class="data-items" id="externalData">
+              <!-- JavaScript로 생성 -->
+            </div>
+          </div>
+        </div>
+        
+        <div class="stats-bar">
+          <div class="stat-item tooltip" data-tooltip="마이크로비트 V2에 내장된 센서 개수입니다.">
+            <div class="stat-number" id="builtinCount">6</div>
+            <div class="stat-label">내장 센서</div>
+          </div>
+          <div class="stat-item tooltip" data-tooltip="포트에 연결된 Grove 센서 개수입니다.">
+            <div class="stat-number" id="externalCount">1</div>
+            <div class="stat-label">외장 센서</div>
+          </div>
+          <div class="stat-item tooltip" data-tooltip="측정할 수 있는 모든 데이터 종류입니다.">
+            <div class="stat-number" id="dataCount">10</div>
+            <div class="stat-label">총 데이터</div>
+          </div>
+          <div class="stat-item tooltip" data-tooltip="추가로 센서를 연결할 수 있는 포트입니다.">
+            <div class="stat-number" id="portRemaining">6</div>
+            <div class="stat-label">남은 포트</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="help-text">
+        💡 <span>센서를 드래그</span>하여 포트에 연결하세요. 연결된 센서를 <span>다시 드래그</span>하면 연결이 해제됩니다.
+      </div>
+      
+      <button class="reset-btn" onclick="resetAll()">🔄 모두 초기화</button>
+    </div>
+  </div>
+
+  <script>
+    // 센서 데이터베이스 (상세 설명 추가)
+    const sensors = [
+      { 
+        id: 'sht40', 
+        name: 'SHT40 온습도', 
+        icon: '🌡️', 
+        address: '0x44', 
+        type: 'environment', 
+        description: '스위스 Sensirion사의 고정밀 온습도 센서입니다. 내장 온도 센서보다 훨씬 정확한 환경 온도를 측정할 수 있습니다.',
+        data: [
+          { name: '정밀 온도', icon: '🌡️', range: '-40~125°C, ±0.2°C' },
+          { name: '습도', icon: '💧', range: '0~100%, ±1.8%' }
+        ],
+        tooltip: '🌡️ SHT40 온습도 센서\n\n정밀한 온도와 습도를 측정합니다.\n\n• 온도: ±0.2°C 정확도\n• 습도: ±1.8% 정확도'
+      },
+      { 
+        id: 'bmp280', 
+        name: 'BMP280 기압', 
+        icon: '🌤️', 
+        address: '0x76', 
+        type: 'environment', 
+        description: '대기압을 측정하여 날씨 변화를 예측하거나, 고도를 계산할 수 있습니다. 기압이 낮아지면 비가 올 가능성이 높습니다.',
+        data: [
+          { name: '기압', icon: '🌤️', range: '300~1100 hPa' },
+          { name: '고도', icon: '⛰️', range: '기압으로 계산' }
+        ],
+        tooltip: '🌤️ BMP280 기압 센서\n\n대기압과 고도를 측정합니다.\n\n• 기압: 300~1100 hPa\n• 고도: 기압으로 추정'
+      },
+      { 
+        id: 'oled', 
+        name: 'OLED 디스플레이', 
+        icon: '📺', 
+        address: '0x3C', 
+        type: 'display', 
+        description: '센서에서 측정한 값을 실시간으로 화면에 표시합니다. 텍스트, 숫자, 간단한 그래프를 그릴 수 있습니다.',
+        data: [
+          { name: '화면 출력', icon: '📺', range: '128×64 픽셀' }
+        ],
+        tooltip: '📺 OLED 디스플레이\n\n센서 값을 화면에 표시합니다.\n\n• 128x64 픽셀\n• 텍스트, 그래프 표시'
+      },
+      { 
+        id: 'lis3dh', 
+        name: 'LIS3DHTR 가속도', 
+        icon: '📐', 
+        address: '0x18', 
+        type: 'motion', 
+        description: '내장 가속도계보다 더 정밀한 측정이 가능합니다. 걸음 수 측정, 진동 감지, 자유낙하 감지 등에 활용됩니다.',
+        data: [
+          { name: '정밀 X축', icon: '📐', range: '±2/4/8/16g' },
+          { name: '정밀 Y축', icon: '📐', range: '±2/4/8/16g' },
+          { name: '정밀 Z축', icon: '📐', range: '±2/4/8/16g' }
+        ],
+        tooltip: '📐 LIS3DHTR 가속도계\n\n정밀한 가속도 측정이 가능합니다.\n\n• 고해상도 출력\n• 진동, 충격 감지'
+      },
+      { 
+        id: 'tcs34725', 
+        name: 'TCS34725 컬러', 
+        icon: '🎨', 
+        address: '0x29', 
+        type: 'light', 
+        description: '물체의 색상을 RGB 값으로 측정합니다. 과일의 익은 정도, 물체 분류, 색상 인식 프로젝트에 활용됩니다.',
+        data: [
+          { name: 'R값 (빨강)', icon: '🔴', range: '0~65535' },
+          { name: 'G값 (초록)', icon: '🟢', range: '0~65535' },
+          { name: 'B값 (파랑)', icon: '🔵', range: '0~65535' },
+          { name: '색상 밝기', icon: '⬜', range: '0~65535' }
+        ],
+        tooltip: '🎨 TCS34725 컬러 센서\n\n물체의 RGB 색상을 측정합니다.\n\n• R, G, B 각각 측정\n• 색상 분류 가능'
+      },
+      { 
+        id: 'tsl2561', 
+        name: 'TSL2561 조도', 
+        icon: '☀️', 
+        address: '0x39', 
+        type: 'light', 
+        description: '주변 밝기를 럭스(lux) 단위로 정밀하게 측정합니다. 내장 빛 센서보다 넓은 범위와 높은 정확도를 제공합니다.',
+        data: [
+          { name: '정밀 조도', icon: '☀️', range: '0.1~40,000 럭스' }
+        ],
+        tooltip: '☀️ TSL2561 조도 센서\n\n밝기를 럭스 단위로 측정합니다.\n\n• 0.1~40,000 럭스 범위'
+      },
+      { 
+        id: 'sgp30', 
+        name: 'SGP30 공기질', 
+        icon: '🌬️', 
+        address: '0x58', 
+        type: 'environment', 
+        description: '실내 공기질을 측정합니다. CO2 농도가 높거나 TVOC가 감지되면 환기가 필요하다는 신호입니다.',
+        data: [
+          { name: 'CO2 농도', icon: '🌬️', range: '400~60,000 ppm' },
+          { name: 'TVOC', icon: '💨', range: '0~60,000 ppb' }
+        ],
+        tooltip: '🌬️ SGP30 공기질 센서\n\n실내 공기 품질을 측정합니다.\n\n• CO2: 400~60000 ppm\n• TVOC: 휘발성 유기화합물'
+      },
+      { 
+        id: 'vl53l0x', 
+        name: 'VL53L0X 거리', 
+        icon: '📏', 
+        address: '0x29', 
+        type: 'distance', 
+        description: '레이저(ToF)를 이용해 물체까지의 거리를 밀리미터 단위로 정밀하게 측정합니다. 로봇의 장애물 감지에 활용됩니다.',
+        data: [
+          { name: '정밀 거리', icon: '📏', range: '30~2000 mm' }
+        ],
+        tooltip: '📏 VL53L0X 거리 센서\n\n레이저로 정밀 거리를 측정합니다.\n\n• 최대 2m 측정\n• mm 단위 정확도'
+      },
+      { 
+        id: 'mpr121', 
+        name: 'MPR121 터치', 
+        icon: '✋', 
+        address: '0x5A', 
+        type: 'input', 
+        description: '12개의 독립적인 터치 입력을 감지합니다. 과일 피아노, 터치 버튼 등 다양한 입력 장치를 만들 수 있습니다.',
+        data: [
+          { name: '12채널 터치', icon: '✋', range: '채널 0~11' }
+        ],
+        tooltip: '✋ MPR121 터치 센서\n\n12개의 터치 입력을 감지합니다.\n\n• 12개 독립 채널\n• 터치 피아노 제작 가능'
+      },
+      { 
+        id: 'paj7620', 
+        name: 'PAJ7620 제스처', 
+        icon: '🖐️', 
+        address: '0x73', 
+        type: 'input', 
+        description: '손동작을 인식합니다. 상하좌우 움직임, 시계/반시계 방향 회전 등을 감지하여 터치 없이 조작할 수 있습니다.',
+        data: [
+          { name: '제스처 인식', icon: '🖐️', range: '9가지 동작' }
+        ],
+        tooltip: '🖐️ PAJ7620 제스처 센서\n\n손동작을 인식합니다.\n\n• 상/하/좌/우 감지\n• 터치 없이 조작 가능'
+      },
+    ];
+    
+    // 내장 센서 정보 (상세)
+    const builtinSensors = [
+      {
+        id: 'accelerometer',
+        name: '가속도계',
+        icon: '📐',
+        description: '마이크로비트의 기울기와 움직임을 감지합니다. 흔들기, 떨어뜨리기, 기울이기 등의 동작을 인식할 수 있습니다.',
+        data: [
+          { name: 'X축 가속도', icon: '📐', range: '-1024~1024' },
+          { name: 'Y축 가속도', icon: '📐', range: '-1024~1024' },
+          { name: 'Z축 가속도', icon: '📐', range: '-1024~1024' }
+        ]
+      },
+      {
+        id: 'compass',
+        name: '나침반',
+        icon: '🧭',
+        description: '지구 자기장을 감지하여 방향을 측정합니다. 북쪽을 기준으로 0°~360° 사이의 방위각을 알려줍니다.',
+        data: [
+          { name: '방위각', icon: '🧭', range: '0°~360°' }
+        ]
+      },
+      {
+        id: 'temperature',
+        name: '온도 센서',
+        icon: '🌡️',
+        description: 'CPU 칩의 온도를 측정합니다. ⚠️ 주의: 실제 기온보다 5~10°C 높게 측정되므로 정확한 온도가 필요하면 외장 센서를 사용하세요.',
+        data: [
+          { name: '온도 (대략)', icon: '🌡️', range: '약 0~50°C (부정확)' }
+        ]
+      },
+      {
+        id: 'light',
+        name: '빛 센서',
+        icon: '💡',
+        description: 'LED를 역으로 사용하여 주변 밝기를 측정합니다. 정밀한 측정이 아닌 대략적인 밝기 변화를 감지하는 용도입니다.',
+        data: [
+          { name: '밝기', icon: '💡', range: '0~255' }
+        ]
+      },
+      {
+        id: 'microphone',
+        name: '마이크',
+        icon: '🎤',
+        description: 'V2 전용 기능입니다. 주변 소리의 크기를 측정합니다. 박수 감지, 소음 측정 등에 활용됩니다.',
+        data: [
+          { name: '소리 크기', icon: '🎤', range: '0~255' }
+        ]
+      },
+      {
+        id: 'touch',
+        name: '터치 로고',
+        icon: '👆',
+        description: 'V2 전용 기능입니다. 금색 로고를 터치하면 감지됩니다. 버튼처럼 사용할 수 있습니다.',
+        data: [
+          { name: '터치 감지', icon: '👆', range: '터치/미터치' }
+        ]
+      }
+    ];
+    
+    // 데이터로거 정보
+    const dataloggerInfo = {
+      id: 'datalogger',
+      name: '데이터로거',
+      icon: '💾',
+      description: '센서 데이터를 자동으로 기록하는 장치입니다. RTC(실시간 시계)로 측정 시간을 기록하고, SD카드에 CSV 파일로 저장합니다.',
+      data: [
+        { name: '날짜', icon: '📅', range: '연/월/일' },
+        { name: '시간', icon: '⏰', range: '시/분/초' },
+        { name: 'SD 저장', icon: '💾', range: 'CSV 파일' }
+      ]
+    };
+    
+    // 내장 센서 데이터 (간단 버전)
+    const builtinDataItems = [
+      { name: 'X축 가속도', icon: '📐', tooltip: '좌우 기울기. -1024~1024' },
+      { name: 'Y축 가속도', icon: '📐', tooltip: '앞뒤 기울기. -1024~1024' },
+      { name: 'Z축 가속도', icon: '📐', tooltip: '위아래 움직임. -1024~1024' },
+      { name: '방위각', icon: '🧭', tooltip: '북쪽 기준 방향. 0°~360°' },
+      { name: '온도 (대략)', icon: '🌡️', tooltip: 'CPU 온도. 실제보다 높음' },
+      { name: '밝기', icon: '💡', tooltip: 'LED로 측정. 0~255' },
+      { name: '소리 크기', icon: '🎤', tooltip: '마이크 측정. 0~255' },
+    ];
+    
+    // 데이터로거 기본 데이터
+    const dataloggerDataItems = [
+      { name: '날짜', icon: '📅', tooltip: 'RTC 제공. 연/월/일' },
+      { name: '시간', icon: '⏰', tooltip: 'RTC 제공. 시/분/초' },
+      { name: 'SD 저장', icon: '💾', tooltip: 'CSV 파일로 저장' },
+    ];
+    
+    // 상태 관리
+    let connectedSensors = {};
+    let draggedSensorId = null;
+    let draggedFromPort = null;
+    
+    // ===== 키워드 → 센서 매핑 데이터 =====
+    const keywordToSensorMap = {
+      // 온도/습도 관련
+      '온도': { builtin: ['temperature'], external: ['sht40'] },
+      '습도': { builtin: [], external: ['sht40'] },
+      '온습도': { builtin: ['temperature'], external: ['sht40'] },
+      '정밀온도': { builtin: [], external: ['sht40'] },
+      '환경': { builtin: ['temperature', 'light'], external: ['sht40', 'bmp280', 'sgp30'] },
+      '덥다': { builtin: ['temperature'], external: ['sht40'] },
+      '춥다': { builtin: ['temperature'], external: ['sht40'] },
+      '건조': { builtin: [], external: ['sht40'] },
+      
+      // 공기질 관련
+      '공기질': { builtin: [], external: ['sgp30'] },
+      '공기': { builtin: [], external: ['sgp30'] },
+      'co2': { builtin: [], external: ['sgp30'] },
+      '이산화탄소': { builtin: [], external: ['sgp30'] },
+      '환기': { builtin: [], external: ['sgp30'] },
+      '탁하다': { builtin: [], external: ['sgp30'] },
+      'tvoc': { builtin: [], external: ['sgp30'] },
+      '냄새': { builtin: [], external: ['sgp30'] },
+      
+      // 기압/날씨 관련
+      '기압': { builtin: [], external: ['bmp280'] },
+      '날씨': { builtin: [], external: ['bmp280', 'sht40'] },
+      '고도': { builtin: [], external: ['bmp280'] },
+      'ì'°': { builtin: [], external: ['bmp280'] },
+      '비': { builtin: [], external: ['bmp280'] },
+      
+      // 빛/색상 관련
+      '밝기': { builtin: ['light'], external: ['tsl2561', 'tcs34725'] },
+      '조도': { builtin: ['light'], external: ['tsl2561'] },
+      '럭스': { builtin: [], external: ['tsl2561'] },
+      '색깔': { builtin: [], external: ['tcs34725'] },
+      '색상': { builtin: [], external: ['tcs34725'] },
+      'rgb': { builtin: [], external: ['tcs34725'] },
+      '빨강': { builtin: [], external: ['tcs34725'] },
+      '초록': { builtin: [], external: ['tcs34725'] },
+      '파랑': { builtin: [], external: ['tcs34725'] },
+      '익다': { builtin: [], external: ['tcs34725'] },
+      '과일': { builtin: [], external: ['tcs34725'] },
+      '분류': { builtin: [], external: ['tcs34725'] },
+      '어둡다': { builtin: ['light'], external: ['tsl2561'] },
+      
+      // 거리 관련
+      '거리': { builtin: [], external: ['vl53l0x'] },
+      '가깝다': { builtin: [], external: ['vl53l0x'] },
+      '멀다': { builtin: [], external: ['vl53l0x'] },
+      '레이저': { builtin: [], external: ['vl53l0x'] },
+      '장애물': { builtin: [], external: ['vl53l0x'] },
+      
+      // 움직임/가속도 관련
+      '움직임': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      '가속도': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      '기울기': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      '흔들림': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      '걷다': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      '걸음': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      '만보기': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      '운동': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      '진동': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      '정밀가속도': { builtin: [], external: ['lis3dh'] },
+      
+      // 방향 관련
+      '방향': { builtin: ['compass'], external: [] },
+      '나침반': { builtin: ['compass'], external: [] },
+      '북쪽': { builtin: ['compass'], external: [] },
+      '동서남북': { builtin: ['compass'], external: [] },
+      
+      // 소리 관련
+      '소리': { builtin: ['microphone'], external: [] },
+      '박수': { builtin: ['microphone'], external: [] },
+      '시끄럽다': { builtin: ['microphone'], external: [] },
+      'ì¡°ìš©': { builtin: ['microphone'], external: [] },
+      '소음': { builtin: ['microphone'], external: [] },
+      
+      // 터치 관련
+      '터치': { builtin: ['touch'], external: ['mpr121'] },
+      '누르다': { builtin: ['touch'], external: ['mpr121'] },
+      '피아노': { builtin: [], external: ['mpr121'] },
+      '버튼': { builtin: ['touch'], external: ['mpr121'] },
+      '12채널': { builtin: [], external: ['mpr121'] },
+      
+      // 제스처 관련
+      '제스처': { builtin: [], external: ['paj7620'] },
+      '손동작': { builtin: [], external: ['paj7620'] },
+      '손': { builtin: [], external: ['paj7620'] },
+      '흔들기': { builtin: [], external: ['paj7620'] },
+      'ì¡°ìž'': { builtin: [], external: ['paj7620'] },
+      
+      // 디스플레이 관련
+      '화면': { builtin: [], external: ['oled'] },
+      '표시': { builtin: [], external: ['oled'] },
+      '디스플레이': { builtin: [], external: ['oled'] },
+      '출력': { builtin: [], external: ['oled'] },
+      '보여주다': { builtin: [], external: ['oled'] },
+      'oled': { builtin: [], external: ['oled'] },
+      
+      // 시간/기록 관련
+      '시간': { builtin: [], external: [] }, // 데이터로거
+      '기록': { builtin: [], external: [] }, // 데이터로거
+      '저장': { builtin: [], external: [] }, // 데이터로거
+    };
+    
+    // 내장 센서 ID → 인덱스 매핑
+    const builtinSensorIndexMap = {
+      'accelerometer': 0,
+      'compass': 1,
+      'temperature': 2,
+      'light': 3,
+      'microphone': 4,
+      'touch': 5
+    };
+    
+    // ===== 검색 함수 =====
+    function searchSensors() {
+      const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
+      if (!searchText) {
+        clearSearch();
+        return;
+      }
+      
+      // 모든 하이라이트 제거
+      clearHighlights();
+      
+      // 검색어 분리 (공백으로)
+      const keywords = searchText.split(/\s+/);
+      
+      let matchedBuiltin = new Set();
+      let matchedExternal = new Set();
+      
+      // 각 키워드에 대해 매칭되는 센서 찾기
+      keywords.forEach(keyword => {
+        // 정확한 매칭
+        if (keywordToSensorMap[keyword]) {
+          keywordToSensorMap[keyword].builtin.forEach(id => matchedBuiltin.add(id));
+          keywordToSensorMap[keyword].external.forEach(id => matchedExternal.add(id));
+        }
+        
+        // 부분 매칭
+        Object.keys(keywordToSensorMap).forEach(key => {
+          if (key.includes(keyword) || keyword.includes(key)) {
+            keywordToSensorMap[key].builtin.forEach(id => matchedBuiltin.add(id));
+            keywordToSensorMap[key].external.forEach(id => matchedExternal.add(id));
+          }
+        });
+      });
+      
+      // 하이라이트 적용
+      let highlightCount = 0;
+      
+      // 내장 센서 하이라이트
+      matchedBuiltin.forEach(sensorId => {
+        const index = builtinSensorIndexMap[sensorId];
+        if (index !== undefined) {
+          const builtinSensors = document.querySelectorAll('.builtin-sensor');
+          if (builtinSensors[index]) {
+            builtinSensors[index].classList.add('highlighted');
+            highlightCount++;
+          }
+        }
+      });
+      
+      // 외장 센서 하이라이트
+      matchedExternal.forEach(sensorId => {
+        const sensorElement = document.getElementById(`sensor-${sensorId}`);
+        if (sensorElement) {
+          sensorElement.classList.add('highlighted');
+          highlightCount++;
+        }
+      });
+      
+      // 검색 결과 표시
+      const resultDiv = document.getElementById('searchResult');
+      if (highlightCount > 0) {
+        const builtinNames = Array.from(matchedBuiltin).map(id => {
+          const sensor = builtinSensors.find(s => s.id === id);
+          return sensor ? sensor.name : id;
+        });
+        const externalNames = Array.from(matchedExternal).map(id => {
+          const sensor = sensors.find(s => s.id === id);
+          return sensor ? sensor.name : id;
+        });
+        
+        let resultHTML = `<strong>🎯 "${searchText}" 관련 센서 ${highlightCount}개 발견!</strong><br>`;
+        if (builtinNames.length > 0) {
+          resultHTML += `<br>🔧 내장 센서: ${builtinNames.join(', ')}`;
+        }
+        if (externalNames.length > 0) {
+          resultHTML += `<br>📌 외장 센서: ${externalNames.join(', ')}`;
+        }
+        resultHTML += `<br><br><small>💡 하이라이트된 센서를 드래그하여 연결하세요!</small>`;
+        
+        resultDiv.innerHTML = resultHTML;
+        resultDiv.className = 'search-result show success';
+        
+        // 첫 번째 하이라이트된 센서로 스크롤
+        setTimeout(() => {
+          const firstHighlighted = document.querySelector('.sensor-item.highlighted, .builtin-sensor.highlighted');
+          if (firstHighlighted) {
+            firstHighlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 100);
+      } else {
+        resultDiv.innerHTML = `<strong>⚠️ "${searchText}"와 관련된 센서를 찾지 못했습니다.</strong><br><br><small>다른 키워드로 검색해 보세요. (예: 온도, 습도, 밝기, 거리...)</small>`;
+        resultDiv.className = 'search-result show no-result';
+      }
+    }
+    
+    // 하이라이트 제거
+    function clearHighlights() {
+      document.querySelectorAll('.highlighted').forEach(el => {
+        el.classList.remove('highlighted');
+      });
+    }
+    
+    // 검색 초기화
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      clearHighlights();
+      const resultDiv = document.getElementById('searchResult');
+      resultDiv.className = 'search-result';
+      resultDiv.innerHTML = '';
+    }
+    
+    // 검색어 설정 (힌트 클릭 시)
+    function setSearchText(text) {
+      document.getElementById('searchInput').value = text;
+      searchSensors();
+    }
+    
+    // 드롭다운 토글
+    function toggleDropdown() {
+      const container = document.querySelector('.dropdown-container');
+      container.classList.toggle('open');
+    }
+    
+    // 드롭다운 키워드 선택
+    function selectKeyword(keyword) {
+      document.getElementById('searchInput').value = keyword;
+      document.querySelector('.dropdown-container').classList.remove('open');
+      searchSensors();
+    }
+    
+    // 드롭다운 외부 클릭 시 닫기
+    document.addEventListener('click', function(e) {
+      const container = document.querySelector('.dropdown-container');
+      if (container && !container.contains(e.target)) {
+        container.classList.remove('open');
+      }
+    });
+    
+    // 엔터키로 검색
+    function handleSearchKeypress(event) {
+      if (event.key === 'Enter') {
+        searchSensors();
+      }
+    }
+    
+    // 초기화
+    function init() {
+      renderBuiltinData();
+      renderSensors();
+      renderConnectedSensorsPanel();
+      updateDataPanel();
+    }
+    
+    // 내장 센서 데이터 렌더링
+    function renderBuiltinData() {
+      const container = document.getElementById('builtinData');
+      container.innerHTML = builtinDataItems.map(item => 
+        `<div class="data-item builtin tooltip" data-tooltip="${item.tooltip}">
+          <span class="data-item-icon">${item.icon}</span> ${item.name}
+        </div>`
+      ).join('');
+    }
+    
+    // 센서 목록 렌더링
+    function renderSensors() {
+      const grid = document.getElementById('sensorsGrid');
+      grid.innerHTML = '';
+      
+      sensors.forEach(sensor => {
+        const isConnected = Object.values(connectedSensors).includes(sensor.id);
+        
+        const item = document.createElement('div');
+        item.className = `sensor-item ${sensor.type} ${isConnected ? 'connected' : ''} tooltip`;
+        item.draggable = !isConnected;
+        item.id = `sensor-${sensor.id}`;
+        item.setAttribute('data-tooltip', sensor.tooltip);
+        item.innerHTML = `
+          <div class="sensor-icon">${sensor.icon}</div>
+          <div class="sensor-name">${sensor.name}</div>
+          <div class="sensor-address">${sensor.address}</div>
+        `;
+        
+        if (!isConnected) {
+          item.addEventListener('dragstart', (e) => handleDragStart(e, sensor.id));
+          item.addEventListener('dragend', handleDragEnd);
+        }
+        
+        grid.appendChild(item);
+      });
+    }
+    
+    // 포트 렌더링
+    function renderPorts() {
+      for (let i = 1; i <= 6; i++) {
+        const port = document.getElementById(`port-${i}`);
+        const sensorId = connectedSensors[i];
+        
+        if (sensorId) {
+          const sensor = sensors.find(s => s.id === sensorId);
+          port.className = 'port tooltip';
+          port.setAttribute('data-tooltip', sensor.tooltip);
+          port.innerHTML = `
+            <span class="port-number">#${i}</span>
+            <div class="sensor-card ${sensor.type}" draggable="true" 
+                 ondragstart="handlePortDragStart(event, ${i}, '${sensorId}')"
+                 ondragend="handleDragEnd(event)">
+              <div class="sensor-icon">${sensor.icon}</div>
+              <div class="sensor-name">${sensor.name}</div>
+              <div class="sensor-address">${sensor.address}</div>
+            </div>
+          `;
+        } else {
+          port.className = 'port empty-port tooltip';
+          port.setAttribute('data-tooltip', `📍 빈 포트 #${i}\n\n아래 센서를 드래그하여 연결하세요.`);
+          port.innerHTML = `
+            <span class="port-number">#${i}</span>
+            <span class="port-empty-text">빈 포트</span>
+          `;
+        }
+      }
+    }
+    
+    // ===== 연결된 센서 설명 패널 렌더링 (신규) =====
+    function renderConnectedSensorsPanel() {
+      const grid = document.getElementById('connectedSensorsGrid');
+      let html = '';
+      
+      // 1. 내장 센서 카드들
+      builtinSensors.forEach(sensor => {
+        html += `
+          <div class="connected-sensor-card builtin">
+            <div class="connected-sensor-header">
+              <div class="connected-sensor-icon">${sensor.icon}</div>
+              <div class="connected-sensor-info">
+                <div class="connected-sensor-name">${sensor.name}</div>
+                <div class="connected-sensor-type">마이크로비트 내장</div>
+              </div>
+              <span class="connected-sensor-badge badge-builtin">내장</span>
+            </div>
+            <div class="connected-sensor-desc">${sensor.description}</div>
+            <div class="connected-sensor-data">
+              <div class="connected-sensor-data-title">📊 측정 데이터</div>
+              <div class="connected-sensor-data-list">
+                ${sensor.data.map(d => `
+                  <div class="data-tag builtin">
+                    <span class="data-tag-icon">${d.icon}</span>
+                    <div class="data-tag-info">
+                      <span class="data-tag-name">${d.name}</span>
+                      <span class="data-tag-range">${d.range}</span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      // 2. 데이터로거 카드
+      html += `
+        <div class="connected-sensor-card datalogger">
+          <div class="connected-sensor-header">
+            <div class="connected-sensor-icon">${dataloggerInfo.icon}</div>
+            <div class="connected-sensor-info">
+              <div class="connected-sensor-name">${dataloggerInfo.name}</div>
+              <div class="connected-sensor-type">RTC + SD카드</div>
+            </div>
+            <span class="connected-sensor-badge badge-datalogger">고정</span>
+          </div>
+          <div class="connected-sensor-desc">${dataloggerInfo.description}</div>
+          <div class="connected-sensor-data">
+            <div class="connected-sensor-data-title">📊 제공 데이터</div>
+            <div class="connected-sensor-data-list">
+              ${dataloggerInfo.data.map(d => `
+                <div class="data-tag datalogger">
+                  <span class="data-tag-icon">${d.icon}</span>
+                  <div class="data-tag-info">
+                    <span class="data-tag-name">${d.name}</span>
+                    <span class="data-tag-range">${d.range}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // 3. 연결된 외장 센서 카드들
+      Object.values(connectedSensors).forEach(sensorId => {
+        const sensor = sensors.find(s => s.id === sensorId);
+        if (sensor) {
+          html += `
+            <div class="connected-sensor-card external">
+              <div class="connected-sensor-header">
+                <div class="connected-sensor-icon">${sensor.icon}</div>
+                <div class="connected-sensor-info">
+                  <div class="connected-sensor-name">${sensor.name}</div>
+                  <div class="connected-sensor-type">I2C 주소: ${sensor.address}</div>
+                </div>
+                <span class="connected-sensor-badge badge-external">외장</span>
+              </div>
+              <div class="connected-sensor-desc">${sensor.description}</div>
+              <div class="connected-sensor-data">
+                <div class="connected-sensor-data-title">📊 측정 데이터</div>
+                <div class="connected-sensor-data-list">
+                  ${sensor.data.map(d => `
+                    <div class="data-tag external">
+                      <span class="data-tag-icon">${d.icon}</span>
+                      <div class="data-tag-info">
+                        <span class="data-tag-name">${d.name}</span>
+                        <span class="data-tag-range">${d.range}</span>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      });
+      
+      grid.innerHTML = html;
+    }
+    
+    // 드래그 시작 (센서 목록에서)
+    function handleDragStart(e, sensorId) {
+      draggedSensorId = sensorId;
+      draggedFromPort = null;
+      e.target.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+    
+    // 드래그 시작 (포트에서)
+    function handlePortDragStart(e, portNumber, sensorId) {
+      draggedSensorId = sensorId;
+      draggedFromPort = portNumber;
+      e.target.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+    
+    // 드래그 끝
+    function handleDragEnd(e) {
+      e.target.classList.remove('dragging');
+      
+      if (draggedFromPort && draggedSensorId) {
+        const droppedOnPort = document.querySelector('.port.drag-over');
+        if (!droppedOnPort) {
+          delete connectedSensors[draggedFromPort];
+          renderPorts();
+          renderSensors();
+          renderConnectedSensorsPanel();
+          updateDataPanel();
+        }
+      }
+      
+      draggedSensorId = null;
+      draggedFromPort = null;
+    }
+    
+    // 드래그 오버
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    }
+    
+    // 드래그 떠남
+    function handleDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+    
+    // 드롭
+    function handleDrop(e, portNumber) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      
+      if (!draggedSensorId) return;
+      
+      if (connectedSensors[portNumber] && !draggedFromPort) return;
+      
+      if (draggedFromPort) {
+        delete connectedSensors[draggedFromPort];
+      }
+      
+      connectedSensors[portNumber] = draggedSensorId;
+      
+      renderPorts();
+      renderSensors();
+      renderConnectedSensorsPanel();
+      updateDataPanel();
+      
+      draggedSensorId = null;
+      draggedFromPort = null;
+    }
+    
+    // 데이터 패널 업데이트
+    function updateDataPanel() {
+      const externalDataDiv = document.getElementById('externalData');
+      
+      let externalItems = [...dataloggerDataItems];
+      
+      Object.values(connectedSensors).forEach(sensorId => {
+        const sensor = sensors.find(s => s.id === sensorId);
+        if (sensor) {
+          sensor.data.forEach(dataItem => {
+            externalItems.push({ 
+              name: dataItem.name, 
+              icon: dataItem.icon, 
+              tooltip: dataItem.range 
+            });
+          });
+        }
+      });
+      
+      externalDataDiv.innerHTML = externalItems.map(item => 
+        `<div class="data-item external tooltip" data-tooltip="${item.tooltip}">
+          <span class="data-item-icon">${item.icon}</span> ${item.name}
+        </div>`
+      ).join('');
+      
+      const externalSensorCount = Object.keys(connectedSensors).length + 1;
+      const totalDataCount = builtinDataItems.length + externalItems.length;
+      const portRemaining = 6 - Object.keys(connectedSensors).length;
+      
+      document.getElementById('builtinCount').textContent = 6;
+      document.getElementById('externalCount').textContent = externalSensorCount;
+      document.getElementById('dataCount').textContent = totalDataCount;
+      document.getElementById('portRemaining').textContent = portRemaining;
+    }
+    
+    // 모두 초기화
+    function resetAll() {
+      connectedSensors = {};
+      renderPorts();
+      renderSensors();
+      renderConnectedSensorsPanel();
+      updateDataPanel();
+    }
+    
+    // 페이지 로드 시 초기화
+    init();
+  </script>
+</body>
+</html>

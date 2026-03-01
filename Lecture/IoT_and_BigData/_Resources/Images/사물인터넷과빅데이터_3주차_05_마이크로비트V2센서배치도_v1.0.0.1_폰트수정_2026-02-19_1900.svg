@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 380" font-family="'Noto Sans CJK KR', sans-serif">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="380" rx="16" fill="#F5F5F5"/>
+  <text x="400" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#333">🔧 마이크로비트 V2 내장 센서 배치도</text>
+
+  <!-- ===== 앞면 ===== -->
+  <text x="200" y="55" text-anchor="middle" font-size="14" font-weight="bold" fill="#1976D2">[ 앞면 ]</text>
+
+  <!-- 보드 외곽 -->
+  <rect x="80" y="65" width="240" height="270" rx="20" fill="#1A1A1A" stroke="#333" stroke-width="3" filter="url(#shadow)"/>
+
+  <!-- 터치 로고 -->
+  <ellipse cx="200" cy="100" rx="22" ry="12" fill="none" stroke="#DAA520" stroke-width="3"/>
+  <circle cx="193" cy="100" r="4" fill="#DAA520"/>
+  <circle cx="207" cy="100" r="4" fill="#DAA520"/>
+
+  <!-- 마이크 LED 표시등 -->
+  <circle cx="230" cy="103" r="3" fill="#FF5252"/>
+  <text x="238" y="106" font-size="7" fill="#888">🎤</text>
+
+  <!-- 버튼 A -->
+  <rect x="97" y="158" width="30" height="30" rx="4" fill="#444" stroke="#555" stroke-width="1.5"/>
+  <circle cx="112" cy="173" r="8" fill="#222"/>
+  <text x="112" y="205" text-anchor="middle" font-size="10" font-weight="bold" fill="#42A5F5">A</text>
+
+  <!-- LED 5x5 매트릭스 -->
+  <g transform="translate(155,140)">
+    <rect x="0" y="0" width="90" height="90" rx="5" fill="#111"/>
+    <!-- LED dots (simplified 5x5) -->
+    <g fill="#FF4444">
+      <circle cx="9" cy="9" r="5" opacity="0.9"/><circle cx="27" cy="9" r="5" opacity="0.3"/><circle cx="45" cy="9" r="5" opacity="0.9"/><circle cx="63" cy="9" r="5" opacity="0.3"/><circle cx="81" cy="9" r="5" opacity="0.9"/>
+      <circle cx="9" cy="27" r="5" opacity="0.3"/><circle cx="27" cy="27" r="5" opacity="0.9"/><circle cx="45" cy="27" r="5" opacity="0.3"/><circle cx="63" cy="27" r="5" opacity="0.9"/><circle cx="81" cy="27" r="5" opacity="0.3"/>
+      <circle cx="9" cy="45" r="5" opacity="0.9"/><circle cx="27" cy="45" r="5" opacity="0.3"/><circle cx="45" cy="45" r="5" opacity="0.9"/><circle cx="63" cy="45" r="5" opacity="0.3"/><circle cx="81" cy="45" r="5" opacity="0.9"/>
+      <circle cx="9" cy="63" r="5" opacity="0.3"/><circle cx="27" cy="63" r="5" opacity="0.9"/><circle cx="45" cy="63" r="5" opacity="0.3"/><circle cx="63" cy="63" r="5" opacity="0.9"/><circle cx="81" cy="63" r="5" opacity="0.3"/>
+      <circle cx="9" cy="81" r="5" opacity="0.9"/><circle cx="27" cy="81" r="5" opacity="0.3"/><circle cx="45" cy="81" r="5" opacity="0.9"/><circle cx="63" cy="81" r="5" opacity="0.3"/><circle cx="81" cy="81" r="5" opacity="0.9"/>
+    </g>
+  </g>
+
+  <!-- 버튼 B -->
+  <rect x="273" y="158" width="30" height="30" rx="4" fill="#444" stroke="#555" stroke-width="1.5"/>
+  <circle cx="288" cy="173" r="8" fill="#222"/>
+  <text x="288" y="205" text-anchor="middle" font-size="10" font-weight="bold" fill="#42A5F5">B</text>
+
+  <!-- 엣지 커넥터 (하단) -->
+  <rect x="90" y="295" width="220" height="30" rx="4" fill="#DAA520"/>
+  <circle cx="115" cy="310" r="8" fill="#1A1A1A"/>
+  <circle cx="155" cy="310" r="8" fill="#1A1A1A"/>
+  <circle cx="195" cy="310" r="8" fill="#1A1A1A"/>
+  <text x="115" y="340" text-anchor="middle" font-size="8" fill="#888">0</text>
+  <text x="155" y="340" text-anchor="middle" font-size="8" fill="#888">1</text>
+  <text x="195" y="340" text-anchor="middle" font-size="8" fill="#888">2</text>
+  <text x="245" y="313" text-anchor="middle" font-size="8" fill="#1A1A1A">3V</text>
+  <text x="285" y="313" text-anchor="middle" font-size="8" fill="#1A1A1A">GND</text>
+
+  <!-- 앞면 라벨 화살표 -->
+  <!-- ① 터치 로고 -->
+  <line x1="200" y1="85" x2="200" y2="70" stroke="#1976D2" stroke-width="1.5"/>
+  <rect x="158" y="60" width="84" height="14" rx="7" fill="#1976D2"/>
+  <text x="200" y="71" text-anchor="middle" font-size="8" font-weight="bold" fill="white">① 터치 (감지)</text>
+
+  <!-- ② LED -->
+  <line x1="260" y1="185" x2="315" y2="185" stroke="#1976D2" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="310" y="175" width="75" height="20" rx="4" fill="white" stroke="#1976D2" stroke-width="1"/>
+  <text x="347" y="189" text-anchor="middle" font-size="8" fill="#1976D2">② LED=빛센서</text>
+
+  <!-- ③ 마이크 LED -->
+  <line x1="240" y1="103" x2="315" y2="103" stroke="#1976D2" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="310" y="93" width="78" height="20" rx="4" fill="white" stroke="#1976D2" stroke-width="1"/>
+  <text x="349" y="107" text-anchor="middle" font-size="8" fill="#1976D2">③ 마이크 표시등</text>
+
+  <!-- ===== 뒷면 ===== -->
+  <text x="600" y="55" text-anchor="middle" font-size="14" font-weight="bold" fill="#00897B">[ 뒷면 ]</text>
+
+  <!-- 보드 외곽 -->
+  <rect x="480" y="65" width="240" height="270" rx="20" fill="#1A1A1A" stroke="#333" stroke-width="3" filter="url(#shadow)"/>
+
+  <!-- USB 커넥터 -->
+  <rect x="575" y="65" width="50" height="12" rx="3" fill="#888"/>
+
+  <!-- 배터리 커넥터 -->
+  <rect x="660" y="72" width="30" height="20" rx="3" fill="#999" stroke="#777" stroke-width="1"/>
+
+  <!-- 마이크 (상단 좌측) -->
+  <circle cx="530" cy="110" r="10" fill="#333" stroke="#555" stroke-width="1"/>
+  <text x="530" y="114" text-anchor="middle" font-size="12">🎤</text>
+
+  <!-- 프로세서 (중앙 큰 칩) -->
+  <rect x="565" y="150" width="60" height="60" rx="3" fill="#2A2A2A" stroke="#444" stroke-width="1.5" transform="rotate(45,595,180)"/>
+
+  <!-- 가속도+나침반 (우측 칩) -->
+  <rect x="650" y="160" width="35" height="35" rx="2" fill="#2A2A2A" stroke="#444" stroke-width="1"/>
+
+  <!-- 스피커 (하단 중앙) -->
+  <circle cx="600" cy="265" r="18" fill="#333" stroke="#555" stroke-width="1.5"/>
+  <circle cx="600" cy="265" r="8" fill="#444"/>
+
+  <!-- 뒷면 라벨 화살표 -->
+  <!-- ④ 마이크 -->
+  <line x1="520" y1="110" x2="478" y2="110" stroke="#00897B" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="405" y="100" width="78" height="20" rx="4" fill="white" stroke="#00897B" stroke-width="1"/>
+  <text x="444" y="114" text-anchor="middle" font-size="8" fill="#00897B">④ 마이크 (소리)</text>
+
+  <!-- ⑤ 프로세서 = 온도 -->
+  <line x1="575" y1="175" x2="478" y2="145" stroke="#00897B" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="395" y="135" width="88" height="20" rx="4" fill="white" stroke="#00897B" stroke-width="1"/>
+  <text x="439" y="149" text-anchor="middle" font-size="8" fill="#00897B">⑤ CPU (온도 내장)</text>
+
+  <!-- ⑥ 가속도+나침반 -->
+  <line x1="667" y1="177" x2="730" y2="160" stroke="#00897B" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="717" y="148" width="78" height="28" rx="4" fill="white" stroke="#00897B" stroke-width="1"/>
+  <text x="756" y="160" text-anchor="middle" font-size="8" fill="#00897B">⑥ 가속도계</text>
+  <text x="756" y="172" text-anchor="middle" font-size="8" fill="#00897B">+ 나침반</text>
+
+  <!-- ⑦ 스피커 -->
+  <line x1="600" y1="285" x2="600" y2="310" stroke="#00897B" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="560" y="310" width="80" height="18" rx="4" fill="white" stroke="#00897B" stroke-width="1"/>
+  <text x="600" y="323" text-anchor="middle" font-size="8" fill="#00897B">⑦ 스피커 (출력)</text>
+
+  <!-- 하단 센서 요약 -->
+  <rect x="100" y="355" width="600" height="20" rx="10" fill="#E3F2FD"/>
+  <text x="400" y="369" text-anchor="middle" font-size="10" fill="#1565C0">내장 센서 5종: 🌡️온도 | 💡빛 | 🔊마이크 | 📐가속도 | 🧭나침반 — 추가 비용 없이 바로 사용</text>
+</svg>

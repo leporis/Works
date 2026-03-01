@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .title { font-family: 'Noto Sans KR', sans-serif; font-size: 18px; font-weight: 700; fill: #3E2723; }
+      .subtitle { font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 600; fill: #5D4037; }
+      .label { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; font-weight: 500; fill: #5D4037; }
+      .small { font-family: 'Noto Sans KR', sans-serif; font-size: 10px; fill: #5D4037; }
+      .hint { font-family: 'Noto Sans KR', sans-serif; font-size: 9px; fill: #8D6E63; }
+      .white { fill: #FFFFFF; }
+    </style>
+  </defs>
+  
+  <rect width="800" height="400" fill="url(#bgGrad)"/>
+  
+  <text x="400" y="30" text-anchor="middle" class="title">📁 데이터 입력 방법 3가지</text>
+  
+  <!-- 프리셋 탭 -->
+  <rect x="30" y="50" width="240" height="330" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="30" y="50" width="240" height="35" rx="12" fill="#E53935"/>
+  <rect x="30" y="73" width="240" height="12" fill="#E53935"/>
+  <text x="150" y="75" text-anchor="middle" class="label white">📦 프리셋</text>
+  
+  <text x="50" y="110" class="subtitle">시나리오 선택</text>
+  <rect x="45" y="120" width="100" height="35" rx="6" fill="#FFF3E0" stroke="#E53935" stroke-width="2"/>
+  <text x="95" y="142" text-anchor="middle" class="small">🏠 주택</text>
+  <rect x="155" y="120" width="100" height="35" rx="6" fill="#FFFFFF" stroke="#FFCCBC"/>
+  <text x="205" y="142" text-anchor="middle" class="small">📝 시험</text>
+  <rect x="45" y="165" width="100" height="35" rx="6" fill="#FFFFFF" stroke="#FFCCBC"/>
+  <text x="95" y="187" text-anchor="middle" class="small">💰 급여</text>
+  <rect x="155" y="165" width="100" height="35" rx="6" fill="#FFFFFF" stroke="#FFCCBC"/>
+  <text x="205" y="187" text-anchor="middle" class="small">🎲 랜덤</text>
+  
+  <text x="50" y="225" class="subtitle">파라미터 설정</text>
+  <text x="50" y="245" class="small">데이터 개수</text>
+  <rect x="50" y="252" width="180" height="8" rx="4" fill="#FFF3E0"/>
+  <rect x="50" y="252" width="100" height="8" rx="4" fill="#E53935"/>
+  <circle cx="150" cy="256" r="6" fill="#E53935"/>
+  <text x="240" y="260" text-anchor="end" class="hint" style="fill:#E53935;font-weight:600">30개</text>
+  
+  <text x="50" y="285" class="small">노이즈 수준</text>
+  <rect x="50" y="292" width="60" height="24" rx="4" fill="#FFFFFF" stroke="#FFCCBC"/>
+  <text x="80" y="308" text-anchor="middle" class="hint">5%</text>
+  <rect x="115" y="292" width="60" height="24" rx="4" fill="#E53935"/>
+  <text x="145" y="308" text-anchor="middle" class="hint white">10%</text>
+  <rect x="180" y="292" width="60" height="24" rx="4" fill="#FFFFFF" stroke="#FFCCBC"/>
+  <text x="210" y="308" text-anchor="middle" class="hint">20%</text>
+  
+  <rect x="50" y="330" width="190" height="35" rx="8" fill="#E53935"/>
+  <text x="145" y="352" text-anchor="middle" class="label white">✨ 데이터 생성</text>
+  
+  <!-- CSV 탭 -->
+  <rect x="280" y="50" width="240" height="330" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="280" y="50" width="240" height="35" rx="12" fill="#43A047"/>
+  <rect x="280" y="73" width="240" height="12" fill="#43A047"/>
+  <text x="400" y="75" text-anchor="middle" class="label white">📄 CSV</text>
+  
+  <text x="300" y="110" class="subtitle">파일 업로드</text>
+  <rect x="295" y="120" width="210" height="45" rx="6" fill="#E8F5E9" stroke="#43A047" stroke-dasharray="4,2"/>
+  <text x="400" y="145" text-anchor="middle" class="small" style="fill:#2E7D32">📂 CSV 파일을 드래그하거나</text>
+  <text x="400" y="160" text-anchor="middle" class="small" style="fill:#2E7D32">클릭하여 업로드</text>
+  
+  <text x="300" y="190" class="subtitle">내장 데이터셋 (v1.1.0+)</text>
+  <rect x="295" y="200" width="100" height="30" rx="5" fill="#FFFFFF" stroke="#FFCCBC"/>
+  <text x="345" y="220" text-anchor="middle" class="small">🐧 펭귄</text>
+  <rect x="405" y="200" width="100" height="30" rx="5" fill="#FFFFFF" stroke="#FFCCBC"/>
+  <text x="455" y="220" text-anchor="middle" class="small">🌸 아이리스</text>
+  <rect x="295" y="240" width="100" height="30" rx="5" fill="#FFFFFF" stroke="#FFCCBC"/>
+  <text x="345" y="260" text-anchor="middle" class="small">🚗 자동차</text>
+  <rect x="405" y="240" width="100" height="30" rx="5" fill="#FFFFFF" stroke="#FFCCBC"/>
+  <text x="455" y="260" text-anchor="middle" class="small">🏘️ 보스턴</text>
+  
+  <rect x="295" y="285" width="210" height="80" rx="6" fill="#FFF3E0"/>
+  <text x="400" y="305" text-anchor="middle" class="hint">💡 CSV/내장 데이터 로드 후</text>
+  <text x="400" y="320" text-anchor="middle" class="hint" style="font-weight:600">다중 변수 선택 가능!</text>
+  <text x="400" y="340" text-anchor="middle" class="hint">☑ 독립변수(X) 체크박스</text>
+  <text x="400" y="355" text-anchor="middle" class="hint">📊 종속변수(Y) 드롭다운</text>
+  
+  <!-- 직접 입력 탭 -->
+  <rect x="530" y="50" width="240" height="330" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="530" y="50" width="240" height="35" rx="12" fill="#1565C0"/>
+  <rect x="530" y="73" width="240" height="12" fill="#1565C0"/>
+  <text x="650" y="75" text-anchor="middle" class="label white">✏️ 직접 입력</text>
+  
+  <text x="550" y="110" class="subtitle">수동 입력</text>
+  <rect x="545" y="120" width="90" height="30" rx="4" fill="#FAFAFA" stroke="#FFCCBC"/>
+  <text x="550" y="140" class="hint">X:</text>
+  <text x="620" y="140" text-anchor="end" class="small">50</text>
+  <rect x="645" y="120" width="90" height="30" rx="4" fill="#FAFAFA" stroke="#FFCCBC"/>
+  <text x="650" y="140" class="hint">Y:</text>
+  <text x="720" y="140" text-anchor="end" class="small">1200</text>
+  <rect x="740" y="120" width="20" height="30" rx="4" fill="#1565C0"/>
+  <text x="750" y="140" text-anchor="middle" class="hint white">+</text>
+  
+  <text x="550" y="175" class="subtitle">차트 클릭</text>
+  <rect x="545" y="185" width="210" height="100" rx="6" fill="#E3F2FD"/>
+  <line x1="570" y1="200" x2="570" y2="270" stroke="#90CAF9" stroke-width="1"/>
+  <line x1="570" y1="270" x2="730" y2="270" stroke="#90CAF9" stroke-width="1"/>
+  <circle cx="600" cy="250" r="4" fill="#1565C0"/>
+  <circle cx="630" cy="235" r="4" fill="#1565C0"/>
+  <circle cx="660" cy="225" r="4" fill="#1565C0"/>
+  <circle cx="695" cy="210" r="8" fill="#FFC107" stroke="#FF9800" stroke-width="2"/>
+  <text x="695" y="200" text-anchor="middle" class="hint" style="fill:#FF9800">클릭!</text>
+  
+  <rect x="545" y="295" width="210" height="70" rx="6" fill="#FFF3E0"/>
+  <text x="650" y="315" text-anchor="middle" class="hint">⚠️ [직접] 탭 선택 상태에서만</text>
+  <text x="650" y="330" text-anchor="middle" class="hint">차트 클릭이 작동합니다</text>
+  <text x="650" y="350" text-anchor="middle" class="hint" style="fill:#E53935;font-weight:600">소량 데이터 입력에 적합</text>
+</svg>

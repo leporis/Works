@@ -1,0 +1,541 @@
+% 🍎 AI야, 사과 가격을 맞춰봐! 【초등학생용】
+% XeLaTeX로 컴파일: xelatex 파일명.tex (2회)
+
+\documentclass[12pt,a4paper]{article}
+
+% 한글 지원
+\usepackage{fontspec}
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+
+% 컬러 이모지
+\usepackage{twemojis}
+
+% 수학
+\usepackage{amsmath,amssymb}
+
+% 색상
+\usepackage{xcolor}
+\definecolor{applered}{RGB}{229,57,53}
+\definecolor{applegreen}{RGB}{67,160,71}
+\definecolor{teal}{RGB}{0,150,136}
+\definecolor{cyan}{RGB}{0,188,212}
+\definecolor{darkblue}{RGB}{21,101,192}
+\definecolor{orange}{RGB}{255,152,0}
+\definecolor{purple}{RGB}{156,39,176}
+\definecolor{lightcyan}{RGB}{224,247,250}
+\definecolor{lightblue}{RGB}{227,242,253}
+\definecolor{lightyellow}{RGB}{255,249,196}
+\definecolor{lightgreen}{RGB}{232,245,233}
+\definecolor{lightpurple}{RGB}{243,229,245}
+\definecolor{lightgray}{RGB}{245,245,245}
+\definecolor{warmcream}{RGB}{255,251,245}
+
+% 박스
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+% 표
+\usepackage{array,booktabs,longtable,multirow,makecell}
+
+% 페이지
+\usepackage[margin=2cm]{geometry}
+
+% 제목 스타일
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries\color{teal}}{\Roman{section}.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries\color{cyan}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{darkblue}}{\thesubsubsection}{0.5em}{}
+
+% 하이퍼링크
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=teal,urlcolor=darkblue}
+
+% 열거형
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=*,itemsep=3pt}
+\setlist[enumerate]{leftmargin=*,itemsep=3pt}
+
+% 머리글/바닥글
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{gray}AI야, 사과 가격을 맞춰봐! 【초등학생용】}
+\fancyhead[R]{\small\color{gray}v1.0.1.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+% 표지
+\begin{center}
+\vspace*{0.5cm}
+{\Huge\bfseries\color{teal} \texttwemoji{red apple} AI야, 사과 가격을 맞춰봐!}
+
+\vspace{0.5cm}
+{\Large 인공지능이 가격 규칙을 찾아가는 과정을 배워요}
+
+\vspace{0.8cm}
+\begin{tcolorbox}[colback=lightcyan,colframe=cyan,width=0.8\textwidth]
+\centering
+\large 시뮬레이터 v1.2.4.1 \quad | \quad 초등학생용 수업지도안
+
+문서 버전: v1.0.1.0
+\end{tcolorbox}
+\end{center}
+
+\vspace{0.5cm}
+\tableofcontents
+\newpage
+
+%=============================================
+\section{수업 개요}
+%=============================================
+
+\begin{center}
+\begin{tabular}{|>{\bfseries}p{2.5cm}|p{4.5cm}|>{\bfseries}p{2cm}|p{4.5cm}|}
+\hline
+단원명 & 인공지능과 친해지기 & 대상 & 초등학교 5\textasciitilde6학년 \\
+\hline
+차시 & 1\textasciitilde2차시 (총 80분) & 장소 & 컴퓨터실 \\
+\hline
+주제 & \multicolumn{3}{p{11cm}|}{AI가 사과 가격의 '규칙'을 찾아가는 과정 탐구} \\
+\hline
+학습 도구 & \multicolumn{3}{p{11cm}|}{사과 가격 예측 시뮬레이터 v1.2.4.1} \\
+\hline
+\end{tabular}
+\end{center}
+
+%=============================================
+\section{학습 목표}
+%=============================================
+
+\begin{center}
+\begin{tabular}{|>{\centering\arraybackslash}p{2.5cm}|p{11.5cm}|}
+\hline
+\texttwemoji{books} \textbf{알기} & 사과의 '달콤함'과 '무게'가 가격을 정하는 데 중요하다는 것을 알 수 있다. \\
+\hline
+\texttwemoji{hammer and wrench} \textbf{하기} & 시뮬레이터에서 AI를 학습시키고, 새 사과의 가격을 예측할 수 있다. \\
+\hline
+\texttwemoji{thought balloon} \textbf{느끼기} & AI도 완벽하지 않고 틀릴 수 있다는 것을 이해하고, 비판적으로 생각할 수 있다. \\
+\hline
+\end{tabular}
+\end{center}
+
+%=============================================
+\section{초등학생용 핵심 개념 (용어 재정의)}
+%=============================================
+
+\begin{tcolorbox}[colback=lightyellow,colframe=orange,title=\textbf{\texttwemoji{bullseye} 어려운 말을 쉬운 말로 바꾸기}]
+이 수업에서는 어려운 AI 용어를 초등학생이 이해할 수 있는 말로 바꿔서 사용합니다.
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{3.5cm}|p{7cm}|}
+\hline
+\textbf{어려운 말} & \textbf{쉬운 말} & \textbf{무슨 뜻이야?} \\
+\hline
+선형 회귀 & 가격 규칙선 찾기 & 점들 사이에 가장 잘 맞는 선을 찾는 것 \\
+\hline
+학습률 & 발걸음 크기 & AI가 규칙을 찾을 때 한 번에 얼마나 움직일지 \\
+\hline
+에포크 & 연습 횟수 & AI가 데이터를 몇 번 반복해서 볼지 \\
+\hline
+손실/오차 & 정답에서 떨어진 거리 & AI가 예측한 값이 실제 정답과 얼마나 다른지 \\
+\hline
+회귀선 & 가격 규칙선 & AI가 찾은 '가격을 정하는 규칙'을 보여주는 선 \\
+\hline
+품질 점수 & 사과 점수 & 달콤함과 무게를 합쳐서 매긴 총점 \\
+\hline
+노이즈 & 불확실한 부분 & 같은 품질이어도 가격이 조금씩 다른 이유 \\
+\hline
+\end{tabular}
+\end{center}
+
+%=============================================
+\section{사과 점수표 (계산 없이 바로 찾기)}
+%=============================================
+
+\begin{tcolorbox}[colback=lightblue,colframe=darkblue,title=\textbf{\texttwemoji{clipboard} 복잡한 계산 대신 '점수표'를 사용해요!}]
+아래 표에서 달콤함(당도)과 무게를 찾아 점수를 더하면 '사과 점수'예요.
+
+직접 계산하지 않아도 바로 알 수 있어요!
+\end{tcolorbox}
+
+\subsection{\texttwemoji{honey pot} 달콤함 점수표 (당도 → 점수)}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{달콤함 (Brix)} & 10\textasciitilde11 & 12\textasciitilde13 & 14\textasciitilde15 & 16\textasciitilde17 & 18 \\
+\hline
+\textbf{달콤함 점수} & 0\textasciitilde6점 & 12\textasciitilde19점 & 25\textasciitilde31점 & 37\textasciitilde44점 & 50점 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{\texttwemoji{balance scale} 무게 점수표 (무게 → 점수)}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{무게 (g)} & 150\textasciitilde190 & 200\textasciitilde240 & 250\textasciitilde290 & 300\textasciitilde340 & 350 \\
+\hline
+\textbf{무게 점수} & 0\textasciitilde10점 & 12\textasciitilde22점 & 25\textasciitilde35점 & 37\textasciitilde47점 & 50점 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=lightgreen,colframe=applegreen,title=\textbf{\texttwemoji{star} 사과 점수 = 달콤함 점수 + 무게 점수}]
+\textbf{예시:} 달콤함 14 Brix (25점) + 무게 250g (25점) = \textbf{사과 점수 50점!}
+
+\vspace{0.2cm}
+사과 점수가 높을수록 더 비싼 사과예요.
+\end{tcolorbox}
+
+%=============================================
+\section{교수-학습 지도안}
+%=============================================
+
+\subsection{1차시: AI와 가격 맞추기 대결! (40분)}
+
+\subsubsection{도입: 사과 경매사 놀이 (10분)}
+
+\begin{tcolorbox}[colback=lightgreen,colframe=applegreen,title=\textbf{【사과 경매사 활동】}]
+\texttwemoji{man teacher} \textbf{선생님:} 여러분, 오늘은 사과 가게 주인이 되어볼 거예요. 사과마다 가격이 다른데, 어떻게 가격을 정할까요?
+
+\vspace{0.2cm}
+\texttwemoji{raised hand} \textbf{학생:} 크기요! / 맛이요! / 색깔이요!
+
+\vspace{0.2cm}
+\texttwemoji{man teacher} \textbf{선생님:} 맞아요! 오늘은 '달콤함'과 '무게' 두 가지로 가격을 정해볼 거예요. 그런데 선생님 혼자 100개 사과 가격을 정하려면 너무 힘들죠? 그래서 AI한테 도움을 받을 거예요!
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightyellow,colframe=orange,title=\textbf{\texttwemoji{bullseye} 활동 포인트}]
+\begin{enumerate}
+    \item 선생님이 사과 카드 5장을 보여줌 (당도, 무게 정보만 있음)
+    \item 학생들이 각자 가격을 예상해서 활동지에 적음
+    \item 정답 공개 후 비교 → '규칙을 찾기 어렵다'는 것을 체험
+\end{enumerate}
+
+학생들이 '규칙 없이 가격을 맞추기 어렵다'는 것을 직접 느끼게 해주세요.
+\end{tcolorbox}
+
+\subsubsection{전개: AI에게 규칙 찾기를 시켜보자! (25분)}
+
+\begin{tcolorbox}[colback=lightgray,colframe=gray,title=\textbf{【활동 1: 시뮬레이터 탐험 - 10분】}]
+\texttwemoji{man teacher} \textbf{선생님:} 자, 이제 컴퓨터로 시뮬레이터를 열어봐요. 화면에 뭐가 보이나요?
+
+\vspace{0.2cm}
+\texttwemoji{raised hand} \textbf{학생:} 그래프요! / 버튼이요! / 사과 그림이요!
+
+\vspace{0.2cm}
+\texttwemoji{man teacher} \textbf{선생님:} 맞아요. 왼쪽에서 '데이터 생성' 버튼을 눌러볼까요? 30개로 해보세요.
+
+\vspace{0.2cm}
+\texttwemoji{raised hand} \textbf{학생:} 우와, 점들이 막 생겼어요!
+
+\vspace{0.2cm}
+\texttwemoji{man teacher} \textbf{선생님:} 이 점들이 바로 사과들이에요. 색깔이 다른 건 '사과 점수'가 다르기 때문이에요. 초록색은 점수가 낮은 사과, 빨간색은 점수가 높은 사과!
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightpurple,colframe=purple,title=\textbf{【활동 2: 나 vs AI 예측 대결! - 15분】 \texttwemoji{trophy}}]
+\textbf{\texttwemoji{trophy} 예측 대결 규칙}
+\begin{enumerate}
+    \item 학생이 먼저 '사과 점수 50점이면 가격이 얼마일까?' 예측
+    \item AI를 학습시킨 후 AI의 예측 확인
+    \item 실제 정답과 비교해서 누가 더 가까운지 대결!
+\end{enumerate}
+
+\vspace{0.3cm}
+\texttwemoji{man teacher} \textbf{선생님:} 자, 대결 시작! 사과 점수가 50점이면 가격이 얼마일 것 같아요? 활동지에 예상 가격을 적어보세요.
+
+\vspace{0.2cm}
+\texttwemoji{raised hand} \textbf{학생:} 2000원이요! / 3000원이요!
+
+\vspace{0.2cm}
+\texttwemoji{man teacher} \textbf{선생님:} 좋아요, 이제 AI한테 학습을 시켜봅시다. 오른쪽 '학습 실행' 버튼을 누르세요!
+
+\vspace{0.2cm}
+\texttwemoji{raised hand} \textbf{학생:} 우와! 선이 생겼어요!
+
+\vspace{0.2cm}
+\texttwemoji{man teacher} \textbf{선생님:} 이 선이 바로 AI가 찾은 \textbf{'가격 규칙선'}이에요. AI는 점들 사이에서 가장 좋은 규칙을 찾아낸 거예요!
+\end{tcolorbox}
+
+\subsubsection{정리 (5분)}
+
+\begin{tcolorbox}[colback=lightcyan,colframe=cyan]
+\texttwemoji{man teacher} \textbf{선생님:} 오늘 뭘 배웠나요?
+
+\vspace{0.2cm}
+\texttwemoji{raised hand} \textbf{학생:} AI가 규칙을 찾아줘요! / 선이 규칙이에요!
+
+\vspace{0.2cm}
+\texttwemoji{man teacher} \textbf{선생님:} 맞아요! AI는 많은 데이터를 보고 '규칙'을 찾아내요. 다음 시간에는 AI도 실수한다는 걸 알아볼 거예요!
+\end{tcolorbox}
+
+\subsection{2차시: AI도 틀릴 수 있어! (40분)}
+
+\subsubsection{도입: 복습 퀴즈 (5분)}
+
+\begin{tcolorbox}[colback=lightcyan,colframe=cyan]
+\texttwemoji{man teacher} \textbf{선생님:} 지난 시간에 AI가 찾은 건 뭐였죠?
+
+\texttwemoji{raised hand} \textbf{학생:} 가격 규칙선이요!
+
+\texttwemoji{man teacher} \textbf{선생님:} 맞아요! 그런데 오늘의 질문: \textbf{AI가 찾은 규칙은 100\% 정확할까요?}
+
+\texttwemoji{raised hand} \textbf{학생:} 아닐 것 같아요... / 맞을 것 같은데요?
+\end{tcolorbox}
+
+\subsubsection{전개: AI의 실수 찾기 (30분)}
+
+\begin{tcolorbox}[colback=lightgray,colframe=gray,title=\textbf{【활동 3: 오차선 탐정 놀이 - 10분】 \texttwemoji{magnifying glass tilted left}}]
+\texttwemoji{man teacher} \textbf{선생님:} 학습을 완료한 후, 아래 '오차 분석'에서 '오차선 표시'를 체크해보세요.
+
+\vspace{0.2cm}
+\texttwemoji{raised hand} \textbf{학생:} 점선들이 나타났어요! 색깔이 다 달라요!
+
+\vspace{0.2cm}
+\texttwemoji{man teacher} \textbf{선생님:} 이 점선이 '\textbf{AI가 틀린 거리}'예요. 초록색은 조금 틀린 것, 빨간색은 많이 틀린 것. 완전히 정확한 점이 있나요?
+
+\vspace{0.2cm}
+\texttwemoji{raised hand} \textbf{학생:} 없어요! 다 조금씩 빗나가있어요!
+
+\vspace{0.2cm}
+\texttwemoji{man teacher} \textbf{선생님:} 바로 그거예요! \textbf{AI도 완벽하지 않아요.} 이게 오늘 가장 중요한 교훈이에요.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightyellow,colframe=orange,title=\textbf{\texttwemoji{light bulb} 교육 포인트: AI의 한계}]
+\begin{itemize}
+    \item 같은 '사과 점수'여도 실제 가격이 다를 수 있어요 (흠집, 색깔 등)
+    \item AI는 '대략적인 규칙'만 찾을 수 있어요
+    \item 그래서 AI의 예측을 무조건 믿으면 안 돼요!
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightgray,colframe=gray,title=\textbf{【활동 4: 발걸음 크기 실험 - 10분】}]
+\texttwemoji{man teacher} \textbf{선생님:} '발걸음 크기'(학습률)를 바꿔보면 어떻게 될까요? 실험해봅시다!
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tabular}{|c|p{5.5cm}|c|}
+\hline
+\textbf{발걸음 크기} & \textbf{어떻게 되나요?} & \textbf{비유} \\
+\hline
+아주 작게 (0.001) & 규칙선이 천천히 움직여요 & \texttwemoji{turtle} 거북이처럼 느리게 \\
+\hline
+적당하게 (0.01) & 규칙선이 잘 맞춰져요! & \texttwemoji{person walking} 적당히 걷기 (추천!) \\
+\hline
+아주 크게 (0.1) & 규칙선이 왔다갔다 튀어요! & \texttwemoji{rabbit} 토끼처럼 너무 빨리 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\texttwemoji{man teacher} \textbf{선생님:} 발걸음이 너무 크면 왜 문제가 될까요?
+
+\texttwemoji{raised hand} \textbf{학생:} 정답을 지나쳐버려요! / 왔다갔다해요!
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightgray,colframe=gray,title=\textbf{【활동 5: 나쁜 데이터 토론 - 10분】}]
+\texttwemoji{man teacher} \textbf{선생님:} 자, 상상해봐요. 만약 사과에 벌레가 먹은 흠집이 있다면?
+
+\texttwemoji{raised hand} \textbf{학생:} 가격이 떨어져요!
+
+\texttwemoji{man teacher} \textbf{선생님:} 맞아요. 그런데 우리 AI는 '흠집' 데이터를 배운 적이 없어요. 그러면 AI 예측이 맞을까요?
+
+\texttwemoji{raised hand} \textbf{학생:} 틀릴 것 같아요!
+
+\vspace{0.3cm}
+\texttwemoji{man teacher} \textbf{선생님:} 또 다른 상황! 갑자기 태풍이 불어서 사과가 귀해지면?
+
+\texttwemoji{raised hand} \textbf{학생:} 가격이 올라가요!
+
+\texttwemoji{man teacher} \textbf{선생님:} 맞아요. 하지만 AI는 태풍 데이터가 없으니까 모르죠. \textbf{이게 AI의 한계예요.}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightpurple,colframe=purple,title=\textbf{\texttwemoji{thinking face} 토론 질문}]
+\begin{itemize}
+    \item AI가 처음 보는 상황에서 잘 맞출 수 있을까?
+    \item AI를 믿을 때와 믿지 말아야 할 때는 언제일까?
+    \item AI가 더 잘 예측하려면 어떤 데이터가 필요할까?
+\end{itemize}
+\end{tcolorbox}
+
+\subsubsection{정리 (5분)}
+
+\begin{tcolorbox}[colback=lightgreen,colframe=applegreen]
+\texttwemoji{man teacher} \textbf{선생님:} 오늘 배운 것을 정리해볼게요. AI는 규칙을 잘 찾지만, 완벽하지는 않아요. 왜 그럴까요?
+
+\vspace{0.2cm}
+\texttwemoji{raised hand} \textbf{학생:} 데이터에 없는 건 모르니까요! / 항상 조금씩 틀리니까요!
+
+\vspace{0.2cm}
+\texttwemoji{man teacher} \textbf{선생님:} 맞아요! 그래서 AI의 예측을 볼 때 '정말 맞을까?' 하고 한 번 더 생각해봐야 해요. 이게 바로 \textbf{'비판적 사고'}랍니다!
+\end{tcolorbox}
+
+%=============================================
+\section{평가 계획}
+%=============================================
+
+\begin{center}
+\begin{tabular}{|p{2.5cm}|p{4cm}|p{3.5cm}|p{3cm}|}
+\hline
+\textbf{평가 영역} & \textbf{잘함 \texttwemoji{star}\texttwemoji{star}\texttwemoji{star}} & \textbf{보통 \texttwemoji{star}\texttwemoji{star}} & \textbf{노력 필요 \texttwemoji{star}} \\
+\hline
+사과 점수 이해 & 달콤함+무게가 사과 점수가 되는 걸 설명 가능 & 점수표를 보고 찾을 수 있음 & 도움이 필요함 \\
+\hline
+시뮬레이터 활용 & 혼자서 학습시키고 예측까지 가능 & 버튼은 누르지만 의미 파악 부족 & 조작에 어려움 \\
+\hline
+AI 한계 인식 & AI가 틀리는 이유를 2가지 이상 말함 & AI가 완벽하지 않음을 알고 있음 & AI가 항상 맞다고 생각함 \\
+\hline
+\end{tabular}
+\end{center}
+
+%=============================================
+\section{지도상의 유의점}
+%=============================================
+
+\begin{itemize}
+    \item 복잡한 수식 계산 대신 '점수표'를 제공하여 인지 부담을 줄입니다.
+    \item '선형 회귀' 대신 '가격 규칙선 찾기' 등 초등학생 눈높이 용어를 사용합니다.
+    \item '나 vs AI 대결' 활동으로 AI의 가치를 직접 체감하게 합니다.
+    \item 오차선 관찰을 통해 'AI도 틀릴 수 있다'는 비판적 시각을 길러줍니다.
+    \item '나쁜 데이터' 토론으로 데이터의 중요성과 AI의 한계를 이해시킵니다.
+    \item 시뮬레이터 조작 시간을 충분히 확보하고, 순회 지도합니다.
+\end{itemize}
+
+%=============================================
+\section{【부록】 초등학생 활동지}
+%=============================================
+
+\begin{center}
+{\Large\bfseries \texttwemoji{red apple} AI와 함께하는 사과 가격 탐험!}
+
+\vspace{0.3cm}
+이름: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ \quad 날짜: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\end{center}
+
+\subsection{\texttwemoji{bullseye} 활동 1: 내가 경매사!}
+
+사과 점수만 보고 가격을 맞춰보세요! (힌트: 점수가 높으면 비싸요)
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{사과} & \textbf{달콤함/무게} & \textbf{사과 점수} & \textbf{내 예상 가격} \\
+\hline
+\texttwemoji{red apple} A & 14 Brix, 250g & 50점 & \hspace{2cm}원 \\
+\hline
+\texttwemoji{red apple} B & 16 Brix, 300g & 75점 & \hspace{2cm}원 \\
+\hline
+\texttwemoji{red apple} C & 12 Brix, 180g & 20점 & \hspace{2cm}원 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{\texttwemoji{trophy} 활동 2: 나 vs AI 대결!}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{사과 점수 50점} & \textbf{내 예상} & \textbf{AI 예측} \\
+\hline
+가격은? & \hspace{2cm}원 & \hspace{2cm}원 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\texttwemoji{backhand index pointing right} 승자는? ( 나 / AI / 비슷함 )
+
+\subsection{\texttwemoji{test tube} 활동 3: 발걸음 크기 실험}
+
+\begin{center}
+\begin{tabular}{|c|p{5cm}|c|}
+\hline
+\textbf{발걸음 크기} & \textbf{규칙선이 어떻게 움직였나요?} & \textbf{이모지 선택} \\
+\hline
+0.001 (작게) & & \texttwemoji{turtle} / \texttwemoji{person walking} / \texttwemoji{rabbit} \\
+\hline
+0.01 (적당) & & \texttwemoji{turtle} / \texttwemoji{person walking} / \texttwemoji{rabbit} \\
+\hline
+0.1 (크게) & & \texttwemoji{turtle} / \texttwemoji{person walking} / \texttwemoji{rabbit} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{\texttwemoji{magnifying glass tilted left} 활동 4: AI의 약점 찾기}
+
+AI가 잘 맞추지 못할 것 같은 상황을 생각해봐요!
+
+\begin{enumerate}
+    \item 사과에 벌레 먹은 흠집이 있다면? → AI 예측이 (맞을까 / 틀릴까)?
+    
+    이유: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    
+    \item 갑자기 태풍이 와서 사과가 귀해지면? → AI 예측이 (맞을까 / 틀릴까)?
+    
+    이유: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\end{enumerate}
+
+\subsection{\texttwemoji{sparkles} 활동 5: 오늘 배운 것 정리하기}
+
+빈칸을 채워보세요!
+
+\begin{itemize}
+    \item AI는 데이터를 보고 \_\_\_\_\_\_\_\_\_\_\_\_을(를) 찾아요.
+    \item AI가 찾은 규칙을 보여주는 선을 \_\_\_\_\_\_\_\_\_\_\_\_이라고 해요.
+    \item AI도 \_\_\_\_\_\_\_\_\_\_\_\_할 수 있어서, 무조건 믿으면 안 돼요!
+\end{itemize}
+
+\begin{tcolorbox}[colback=lightcyan,colframe=cyan,title=\textbf{\texttwemoji{thought balloon} 느낀 점 한 줄}]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\end{tcolorbox}
+
+%=============================================
+\section{참고자료}
+%=============================================
+
+\begin{center}
+\begin{tabular}{|c|p{6cm}|c|p{4cm}|}
+\hline
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & 사과가격예측\_시뮬레이터\_v1.2.4.1.html & 파일 & 실습용 시뮬레이터 \\
+\hline
+2 & 수업지도안\_예비교사용\_v1.2.1.0.docx & 문서 & 예비교사용 상세 지도안 \\
+\hline
+3 & 문서버전관리가이드\_v1.2.2.md & 문서 & 버전 관리 체계 \\
+\hline
+\end{tabular}
+\end{center}
+
+%=============================================
+\section{생성/수정 이력}
+%=============================================
+
+\begin{center}
+\small
+\begin{tabular}{|c|c|c|c|p{4.5cm}|c|}
+\hline
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경} & \textbf{변경 내용} & \textbf{작성자} \\
+\hline
+v1.0.0.0 & 2026-02-02 & 10:00 & 최초 & 초등학생용 신규 작성 & Claude \\
+\hline
+v1.0.1.0 & 2026-02-02 & 10:45 & 리비전 & 색상 청록계열로 변경, 이모지 폰트 적용 & Claude \\
+\hline
+\textbf{v1.0.1.0} & \textbf{2026-02-02} & \textbf{13:00} & \textbf{패치} & \textbf{LaTeX 변환, 컬러 이모지} & \textbf{Claude} \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+\begin{center}
+\large\itshape
+\texttwemoji{red apple} AI야, 사과 가격을 맞춰봐! - 초등학생용 수업지도안
+\end{center}
+
+\end{document}

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎹 가상 피아노 & 화음 연습</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --color-purple-600: #7c3aed;
+    --color-purple-100: #ede9fe;
+    --color-pink-500:   #ec4899;
+    --color-blue-500:   #3b82f6;
+    --color-green-500:  #10b981;
+    --color-amber-500:  #f59e0b;
+    --color-slate-800:  #1e293b;
+    --color-slate-100:  #f8fafc;
+    --color-white:      #ffffff;
+    --color-grad-a:     #7c3aed;
+    --color-grad-b:     #ec4899;
+
+    --primary:    var(--color-purple-600);
+    --success:    var(--color-green-500);
+    --accent:     var(--color-pink-500);
+    --bg-body:    var(--color-slate-100);
+    --bg-panel:   var(--color-white);
+    --text-dark:  var(--color-slate-800);
+
+    --btn-min-height: 48px;
+    --btn-min-width:  100px;
+    --btn-radius: 12px;
+    --font-primary: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
+    --font-size-sm:   14px;
+    --font-size-base: 16px;
+    --font-size-lg:   20px;
+    --font-size-xl:   24px;
+    --sp-sm: 8px; --sp-md: 16px; --sp-lg: 24px;
+}
+* { box-sizing: border-box; }
+body {
+    font-family: var(--font-primary);
+    background: linear-gradient(135deg, var(--color-grad-a), var(--color-grad-b));
+    margin: 0; padding: 20px; min-height: 100vh;
+    font-size: var(--font-size-base);
+}
+header { text-align: center; color: var(--color-white); margin-bottom: 20px; }
+h1 { margin: 0; font-size: var(--font-size-xl); text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+.subtitle { font-size: var(--font-size-base); margin-top: 8px; opacity: 0.9; }
+
+.layout {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 260px 1fr 260px; gap: 16px;
+}
+.panel {
+    background: var(--bg-panel); border-radius: 18px;
+    padding: var(--sp-lg); box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+h3 { margin: 0 0 14px 0; font-size: var(--font-size-lg); color: var(--text-dark); }
+
+/* ── 피아노 ── */
+.piano-wrap { background: #1e293b; border-radius: 16px; padding: 16px; }
+.piano {
+    position: relative; display: flex;
+    height: 200px; user-select: none;
+    gap: 3px;
+}
+.key-white {
+    flex: 1; background: linear-gradient(to bottom, #f8f8f8, #e8e8e8);
+    border: 1px solid #ccc; border-radius: 0 0 8px 8px;
+    cursor: pointer; display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 10px; font-size: 11px; color: #999; font-weight: 700;
+    transition: background 0.08s; min-width: 36px;
+}
+.key-white:hover, .key-white.active { background: linear-gradient(to bottom, #fffde7, #fff9c4); }
+.key-white.pressed { background: #fbbf24; color: #1e293b; }
+.key-black {
+    position: absolute; top: 0;
+    width: 26px; height: 120px;
+    background: linear-gradient(to bottom, #333, #111);
+    border-radius: 0 0 6px 6px; z-index: 2;
+    cursor: pointer; transition: background 0.08s;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 6px; font-size: 10px; color: #888;
+}
+.key-black:hover, .key-black.active { background: linear-gradient(to bottom, #555, #333); }
+.key-black.pressed { background: linear-gradient(to bottom, #f59e0b, #d97706); }
+
+/* ── 현재 음 표시 ── */
+.note-display {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    color: var(--color-white); border-radius: 12px;
+    padding: var(--sp-md); margin: var(--sp-md) 0;
+    text-align: center;
+}
+.note-name { font-size: 2rem; font-weight: 800; color: #fbbf24; }
+.note-korean { font-size: var(--font-size-base); opacity: 0.8; margin-top: 4px; }
+
+/* ── 버튼 ── */
+.btn-edu {
+    min-width: var(--btn-min-width); min-height: var(--btn-min-height);
+    padding: 10px 18px; border: none; border-radius: var(--btn-radius);
+    font-size: var(--font-size-base); font-weight: 700;
+    font-family: var(--font-primary); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-edu:hover  { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.btn-edu:active { transform: scale(0.96); }
+.btn-primary { background: var(--primary); color: var(--color-white); }
+.btn-success { background: var(--success); color: var(--color-white); }
+.btn-accent  { background: var(--accent);  color: var(--color-white); }
+.btn-dark    { background: var(--text-dark); color: var(--color-white); }
+
+/* ── 화음/음계 목록 ── */
+.chord-list, .scale-list { display: flex; flex-direction: column; gap: 8px; margin: 14px 0; }
+.chord-btn, .scale-btn {
+    min-height: var(--btn-min-height);
+    padding: 10px 14px; border: 2px solid #e2e8f0;
+    border-radius: 10px; background: var(--bg-body);
+    font-size: var(--font-size-base); font-weight: 700;
+    font-family: var(--font-primary); cursor: pointer;
+    text-align: left; transition: all 0.2s;
+}
+.chord-btn:hover, .scale-btn:hover {
+    border-color: var(--primary); background: var(--color-purple-100);
+    transform: translateX(3px);
+}
+.chord-btn.playing, .scale-btn.playing {
+    background: var(--primary); color: var(--color-white); border-color: var(--primary);
+}
+
+/* ── 화음 정보 ── */
+.chord-info {
+    background: #f0fdf4; border-radius: 10px; padding: var(--sp-md);
+    border-left: 4px solid var(--success); margin: var(--sp-md) 0;
+    font-size: var(--font-size-base); line-height: 1.7;
+    min-height: 70px;
+}
+.chord-info-title { font-weight: 800; margin-bottom: 6px; color: #065f46; }
+
+/* ── 키보드 안내 ── */
+.keyboard-guide {
+    background: #1e293b; color: var(--color-white);
+    border-radius: 10px; padding: var(--sp-md); margin: var(--sp-md) 0;
+    font-size: var(--font-size-sm); line-height: 1.8;
+}
+.key-tag {
+    display: inline-block; background: #334155;
+    padding: 2px 8px; border-radius: 5px; margin: 2px;
+    font-family: monospace; font-size: 13px;
+}
+
+/* ── 점수/배지 ── */
+.score-row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+.score-item { text-align: center; }
+.score-label { font-size: var(--font-size-sm); color: #64748b; }
+.score-value { font-size: var(--font-size-lg); font-weight: 800; color: var(--primary); }
+.badge-row { display: flex; gap: 8px; }
+.badge { font-size: 1.5rem; opacity: 0.2; transition: opacity 0.4s; }
+.badge.earned { opacity: 1; }
+
+/* ── 퀴즈 ── */
+.quiz-area { background: #fef3c7; border-radius: 12px; padding: var(--sp-md); border-left: 4px solid var(--color-amber-500); }
+.quiz-q { font-weight: 700; font-size: var(--font-size-base); margin-bottom: 10px; }
+.quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+.quiz-opt {
+    min-height: var(--btn-min-height);
+    padding: 10px 16px; border: 2px solid #fcd34d;
+    border-radius: 8px; background: var(--color-white);
+    font-size: var(--font-size-base); font-weight: 700;
+    font-family: var(--font-primary); cursor: pointer;
+    text-align: left; transition: all 0.2s;
+}
+.quiz-opt:hover    { background: #fef9c3; border-color: #f59e0b; }
+.quiz-opt.correct  { background: #dcfce7; border-color: var(--success); color: #15803d; }
+.quiz-opt.wrong    { background: #fee2e2; border-color: #ef4444; color: #dc2626; }
+.feedback-box { padding: 12px; border-radius: 8px; font-weight: 700; font-size: var(--font-size-base); margin-top: 8px; }
+.feedback-correct { background: #dcfce7; color: #15803d; }
+.feedback-wrong   { background: #fef2f2; color: #dc2626; }
+.hidden { display: none !important; }
+
+@media (max-width: 1000px) {
+    .layout { grid-template-columns: 1fr; }
+    .piano  { height: 160px; }
+    .key-black { height: 96px; }
+}
+</style>
+</head>
+<body>
+<header>
+    <h1>🎹 가상 피아노 & 화음 연습</h1>
+    <p class="subtitle">건반을 눌러 연주하고 화음의 원리를 배워보세요!</p>
+</header>
+
+<div class="layout">
+    <!-- 왼쪽: 화음 -->
+    <aside class="panel">
+        <h3>🎵 화음 연주</h3>
+        <div class="score-row">
+            <div class="score-item"><div class="score-label">퀴즈 정답</div><div class="score-value" id="scoreCorrect">0</div></div>
+            <div class="score-item"><div class="score-label">총 시도</div><div class="score-value" id="scoreTotal">0</div></div>
+            <div class="badge-row">
+                <span class="badge" id="badge_first" title="첫 화음">🌟</span>
+                <span class="badge" id="badge_play5" title="5번 연주">🎶</span>
+                <span class="badge" id="badge_quiz"  title="퀴즈 정답">🏆</span>
+            </div>
+        </div>
+
+        <div class="chord-list" id="chordList"></div>
+
+        <div class="chord-info" id="chordInfo">
+            <div class="chord-info-title">화음을 선택하면 설명이 나와요!</div>
+        </div>
+
+        <button class="btn-edu btn-dark" style="width:100%; margin-top:8px;" onclick="SimApp.stopAll()">⏹ 정지</button>
+    </aside>
+
+    <!-- 중앙: 피아노 -->
+    <main class="panel">
+        <h3>🎹 건반 연주</h3>
+        <div class="piano-wrap">
+            <div class="piano" id="piano"></div>
+        </div>
+
+        <div class="note-display" id="noteDisplay">
+            <div class="note-name" id="noteName">-</div>
+            <div class="note-korean" id="noteKorean">건반을 눌러보세요!</div>
+        </div>
+
+        <div class="keyboard-guide">
+            <strong>⌨️ 키보드 단축키</strong><br>
+            흰 건반: <span class="key-tag">A</span>도
+            <span class="key-tag">S</span>레
+            <span class="key-tag">D</span>미
+            <span class="key-tag">F</span>파
+            <span class="key-tag">G</span>솔
+            <span class="key-tag">H</span>라
+            <span class="key-tag">J</span>시
+            <span class="key-tag">K</span>도↑<br>
+            검은 건반: <span class="key-tag">W</span>
+            <span class="key-tag">E</span>
+            <span class="key-tag">T</span>
+            <span class="key-tag">Y</span>
+            <span class="key-tag">U</span>
+        </div>
+
+        <h3>🎼 음계 연습</h3>
+        <div class="scale-list" id="scaleList"></div>
+    </main>
+
+    <!-- 오른쪽: 퀴즈 + 이론 -->
+    <aside class="panel">
+        <h3>🧩 화음 퀴즈</h3>
+        <div class="quiz-area">
+            <div class="quiz-q"  id="quizQ"></div>
+            <div class="quiz-opts" id="quizOpts"></div>
+            <div class="feedback-box hidden" id="quizFeedback"></div>
+            <button class="btn-edu btn-success" style="width:100%;margin-top:10px;" onclick="SimApp.nextQuiz()">→ 다음 문제</button>
+        </div>
+
+        <div style="background:#f0f9ff;border-radius:12px;padding:var(--sp-md);margin-top:var(--sp-md);border-left:4px solid var(--color-blue-500);font-size:var(--font-size-base);line-height:1.8;">
+            <strong style="color:#1e40af;">📚 화음 원리</strong><br>
+            <strong>장조 화음:</strong> 밝고 활기찬 느낌<br>
+            &nbsp;&nbsp;→ 도 + 미 + 솔 (1·3·5음)<br>
+            <strong>단조 화음:</strong> 슬프고 차분한 느낌<br>
+            &nbsp;&nbsp;→ 라 + 도 + 미<br>
+            <strong>7화음:</strong> 긴장감 있는 느낌<br>
+            &nbsp;&nbsp;→ 장조 화음 + 7번째 음
+        </div>
+
+        <div style="background:#fef3c7;border-radius:12px;padding:var(--sp-md);margin-top:var(--sp-md);border-left:4px solid var(--color-amber-500);font-size:var(--font-size-base);line-height:1.8;">
+            <strong style="color:#92400e;">🎵 음계란?</strong><br>
+            <strong>장음계:</strong> 도레미파솔라시도<br>
+            &nbsp;&nbsp;밝고 활기참<br>
+            <strong>단음계:</strong> 라시도레미파솔라<br>
+            &nbsp;&nbsp;조용하고 차분함<br>
+            <strong>5음 음계:</strong> 도레미솔라<br>
+            &nbsp;&nbsp;동양·민요 분위기
+        </div>
+    </aside>
+</div>
+
+<script>
+/* ===== CONFIG ===== */
+const CONFIG = {
+    CURRICULUM: {
+        subject: '음악', grade: 4, semester: 1,
+        unit: '3. 악기 음색과 화음',
+        achievement: '[4음02-02] 바른 자세와 주법으로 악기를 연주하며 화음의 어울림을 경험한다.'
+    },
+    DIFFICULTY: { level: 'easy', grade_range: [3,5] },
+    ANIMATION:  { CHORD_STAGGER: 60, SCALE_INTERVAL: 450, NOTE_DURATION: 1.2, FEEDBACK_DURATION: 3000, TOAST_DURATION: 2500 }
+};
+
+const UI_TEXT = {
+    FEEDBACK_CORRECT: ['정답이에요! 👏', '잘 들었어요! ⭐', '맞았어요! 🎉', '훌륭해요! 💯'],
+    FEEDBACK_WRONG:   ['다시 들어봐요 🎵', '한 번 더 들어볼까요? 🤔', '힌트를 들어봐요 💡']
+};
+
+/* ===== 건반 데이터 ===== */
+const KEYS = [
+    {note:'C4',  korean:'도',  freq:261.63, type:'white', key:'a'},
+    {note:'C#4', korean:'도♯', freq:277.18, type:'black', key:'w', pos:1},
+    {note:'D4',  korean:'레',  freq:293.66, type:'white', key:'s'},
+    {note:'D#4', korean:'레♯', freq:311.13, type:'black', key:'e', pos:3},
+    {note:'E4',  korean:'미',  freq:329.63, type:'white', key:'d'},
+    {note:'F4',  korean:'파',  freq:349.23, type:'white', key:'f'},
+    {note:'F#4', korean:'파♯', freq:369.99, type:'black', key:'t', pos:6},
+    {note:'G4',  korean:'솔',  freq:392.00, type:'white', key:'g'},
+    {note:'G#4', korean:'솔♯', freq:415.30, type:'black', key:'y', pos:8},
+    {note:'A4',  korean:'라',  freq:440.00, type:'white', key:'h'},
+    {note:'A#4', korean:'라♯', freq:466.16, type:'black', key:'u', pos:10},
+    {note:'B4',  korean:'시',  freq:493.88, type:'white', key:'j'},
+    {note:'C5',  korean:'도↑', freq:523.25, type:'white', key:'k'}
+];
+
+const CHORDS = [
+    { name:'C 장조', symbol:'C',  notes:['C4','E4','G4'],       desc:'도·미·솔 — 가장 기본적인 밝은 화음!', feel:'밝고 활기참' },
+    { name:'D 단조', symbol:'Dm', notes:['D4','F4','A4'],       desc:'레·파·라 — 조금 슬픈 느낌의 화음', feel:'슬프고 차분함' },
+    { name:'E 단조', symbol:'Em', notes:['E4','G4','B4'],       desc:'미·솔·시 — 차분한 단조 화음', feel:'서늘하고 감성적' },
+    { name:'F 장조', symbol:'F',  notes:['F4','A4','C5'],       desc:'파·라·도 — 따뜻하고 포근한 화음', feel:'따뜻하고 포근함' },
+    { name:'G 장조', symbol:'G',  notes:['G4','B4','D4'],       desc:'솔·시·레 — 힘차고 활발한 화음', feel:'힘차고 활발함' },
+    { name:'A 단조', symbol:'Am', notes:['A4','C5','E4'],       desc:'라·도·미 — 감성적인 단조 화음', feel:'감성적이고 신비로움' },
+    { name:'G7',     symbol:'G7', notes:['G4','B4','D4','F4'],  desc:'솔·시·레·파 — 긴장감 있는 7화음', feel:'긴장감, 해결되고 싶음' },
+];
+
+const SCALES = [
+    { name:'C 장음계',  korean:'도레미파솔라시도', notes:['C4','D4','E4','F4','G4','A4','B4','C5'] },
+    { name:'A 단음계',  korean:'라시도레미파솔라', notes:['A4','B4','C5','D4','E4','F4','G4','A4'] },
+    { name:'5음 음계', korean:'도레미솔라도',      notes:['C4','D4','E4','G4','A4','C5'] },
+];
+
+const QUIZZES = [
+    { q:'도·미·솔로 이루어진 화음 이름은?', opts:['C 장조','D 단조','G 장조','A 단조'], ans:0 },
+    { q:'라·도·미로 이루어진 화음은 어떤 느낌인가요?', opts:['밝고 활기참','슬프고 차분함','힘차고 활발함','따뜻하고 포근함'], ans:1 },
+    { q:'가장 기본적인 장조 화음의 구성음 수는?', opts:['2개','3개','4개','5개'], ans:1 },
+    { q:'7화음은 몇 개의 음으로 이루어지나요?', opts:['2개','3개','4개','5개'], ans:2 },
+    { q:'G 장조 화음의 첫 번째 음은?', opts:['도(C)','파(F)','솔(G)','라(A)'], ans:2 },
+];
+
+let audioCtx = null, playCount = 0, quizIdx = 0;
+let scoreCorrect = 0, scoreTotal = 0;
+const earnedBadges = new Set();
+const keyMap = {};
+KEYS.forEach(k => { if(k.key) keyMap[k.key] = k; });
+
+function getAudioCtx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+}
+
+function playNote(freq, duration = CONFIG.ANIMATION.NOTE_DURATION, startTime = 0) {
+    const ctx  = getAudioCtx();
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime);
+    gain.gain.setValueAtTime(0, ctx.currentTime + startTime);
+    gain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + startTime + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + duration);
+    osc.start(ctx.currentTime + startTime);
+    osc.stop(ctx.currentTime + startTime + duration + 0.05);
+    return osc;
+}
+
+function showToast(msg) {
+    let c = document.getElementById('_tc');
+    if (!c) { c = document.createElement('div'); c.id = '_tc'; c.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;'; document.body.appendChild(c); }
+    const t = document.createElement('div'); t.textContent = msg;
+    t.style.cssText = 'background:#1e293b;color:#fff;padding:12px 20px;border-radius:10px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
+    c.appendChild(t); setTimeout(() => t.remove(), CONFIG.ANIMATION.TOAST_DURATION);
+}
+
+function earnBadge(id, icon, name) {
+    if (earnedBadges.has(id)) return; earnedBadges.add(id);
+    const el = document.getElementById('badge_' + id);
+    if (el) el.classList.add('earned');
+    showToast(icon + ' 배지 획득: ' + name);
+}
+
+function showFeedback(type) {
+    const pool = UI_TEXT['FEEDBACK_' + type.toUpperCase()];
+    const msg  = pool[Math.floor(Math.random() * pool.length)];
+    const el   = document.getElementById('quizFeedback');
+    el.textContent = msg; el.className = `feedback-box feedback-${type}`;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), CONFIG.ANIMATION.FEEDBACK_DURATION);
+}
+
+const SimApp = {
+    init() {
+        this.buildPiano();
+        this.buildChords();
+        this.buildScales();
+        this.renderQuiz();
+        this.setupKeyboard();
+    },
+
+    buildPiano() {
+        const piano    = document.getElementById('piano');
+        const whites   = KEYS.filter(k => k.type === 'white');
+        const whiteW   = 100 / whites.length;
+
+        piano.innerHTML = '';
+        let wi = 0;
+        KEYS.forEach(k => {
+            const el = document.createElement('div');
+            if (k.type === 'white') {
+                el.className = 'key-white';
+                el.textContent = k.key.toUpperCase();
+                el.dataset.note = k.note;
+                el.style.width = whiteW + '%';
+                piano.appendChild(el);
+                k._wi = wi++;
+            } else {
+                el.className = 'key-black';
+                el.dataset.note = k.note;
+                // 위치: 해당 흰건반 인덱스 사이
+                const leftPct = ((k._wi !== undefined ? k._wi : wi - 0.5) / whites.length * 100);
+                el.style.left  = `calc(${(k.pos / whites.length) * (100)}% - 13px + ${whiteW/2}%)`;
+            }
+            el.dataset.note = k.note;
+            el.addEventListener('mousedown',  () => this.pressKey(k, el));
+            el.addEventListener('mouseup',    () => el.classList.remove('pressed'));
+            el.addEventListener('touchstart', (e) => { e.preventDefault(); this.pressKey(k, el); }, { passive:false });
+            el.addEventListener('touchend',   () => el.classList.remove('pressed'));
+        });
+
+        // 검은 건반 위치 재계산 (공백 기반)
+        const allWhites = piano.querySelectorAll('.key-white');
+        const blackPos  = [0,1,3,4,5]; // C# D# F# G# A# 위치 (흰건반 사이 index)
+        const blacks    = piano.querySelectorAll('.key-black');
+        // 직접 위치 계산
+        const whiteKeys = [...allWhites];
+        let bi = 0;
+        whiteKeys.forEach((wk, i) => {
+            const noteBase = KEYS.filter(k=>k.type==='white')[i]?.note;
+            const blackKey = KEYS.find(k => k.type==='black' && k._wi === undefined);
+        });
+    },
+
+    pressKey(keyData, el) {
+        el.classList.add('pressed');
+        playNote(keyData.freq);
+        document.getElementById('noteName').textContent   = keyData.note;
+        document.getElementById('noteKorean').textContent = keyData.korean + ' (' + keyData.note + ')';
+        playCount++;
+        if (playCount === 1) earnBadge('first', '🌟', '첫 연주!');
+        if (playCount >= 5)  earnBadge('play5', '🎶', '5번 연주!');
+    },
+
+    buildChords() {
+        const list = document.getElementById('chordList');
+        list.innerHTML = CHORDS.map((c, i) =>
+            `<button class="chord-btn" onclick="SimApp.playChord(${i})">${c.symbol} — ${c.name}</button>`
+        ).join('');
+    },
+
+    playChord(idx) {
+        const chord = CHORDS[idx];
+        document.querySelectorAll('.chord-btn').forEach((b,i) => b.classList.toggle('playing', i===idx));
+        chord.notes.forEach((noteName, i) => {
+            const kd = KEYS.find(k => k.note === noteName);
+            if (!kd) return;
+            const t = i * CONFIG.ANIMATION.CHORD_STAGGER / 1000;
+            playNote(kd.freq, 1.5, t);
+            setTimeout(() => {
+                const el = document.querySelector(`[data-note="${noteName}"]`);
+                if (el) { el.classList.add('pressed'); setTimeout(() => el.classList.remove('pressed'), 500); }
+            }, i * CONFIG.ANIMATION.CHORD_STAGGER);
+        });
+        document.getElementById('chordInfo').innerHTML =
+            `<div class="chord-info-title">${chord.name} (${chord.symbol})</div>` +
+            `${chord.desc}<br>느낌: <strong>${chord.feel}</strong><br>구성음: <strong>${chord.notes.join(' · ')}</strong>`;
+        setTimeout(() => document.querySelectorAll('.chord-btn').forEach(b => b.classList.remove('playing')), 2000);
+    },
+
+    buildScales() {
+        const list = document.getElementById('scaleList');
+        list.innerHTML = SCALES.map((s, i) =>
+            `<button class="scale-btn" onclick="SimApp.playScale(${i})">${s.name} — ${s.korean}</button>`
+        ).join('');
+    },
+
+    playScale(idx) {
+        const scale = SCALES[idx];
+        document.querySelectorAll('.scale-btn').forEach((b,i) => b.classList.toggle('playing', i===idx));
+        scale.notes.forEach((noteName, i) => {
+            const kd = KEYS.find(k => k.note === noteName);
+            if (!kd) return;
+            const t = i * CONFIG.ANIMATION.SCALE_INTERVAL / 1000;
+            playNote(kd.freq, 0.4, t);
+            setTimeout(() => {
+                const el = document.querySelector(`[data-note="${noteName}"]`);
+                if (el) { el.classList.add('pressed'); setTimeout(() => el.classList.remove('pressed'), 300); }
+            }, i * CONFIG.ANIMATION.SCALE_INTERVAL);
+        });
+        const totalMs = scale.notes.length * CONFIG.ANIMATION.SCALE_INTERVAL + 500;
+        setTimeout(() => document.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('playing')), totalMs);
+    },
+
+    stopAll() {
+        if (audioCtx) { audioCtx.close(); audioCtx = null; }
+    },
+
+    setupKeyboard() {
+        document.addEventListener('keydown', e => {
+            if (e.repeat) return;
+            const kd = keyMap[e.key.toLowerCase()];
+            if (!kd) return;
+            const el = document.querySelector(`[data-note="${kd.note}"]`);
+            if (el) this.pressKey(kd, el);
+        });
+        document.addEventListener('keyup', e => {
+            const kd = keyMap[e.key.toLowerCase()];
+            if (!kd) return;
+            const el = document.querySelector(`[data-note="${kd.note}"]`);
+            if (el) el.classList.remove('pressed');
+        });
+    },
+
+    renderQuiz() {
+        const q = QUIZZES[quizIdx];
+        document.getElementById('quizQ').textContent = q.q;
+        document.getElementById('quizFeedback').classList.add('hidden');
+        const opts = document.getElementById('quizOpts');
+        opts.innerHTML = q.opts.map((opt, i) =>
+            `<button class="quiz-opt" onclick="SimApp.answerQuiz(${i})">${opt}</button>`
+        ).join('');
+    },
+
+    answerQuiz(chosen) {
+        const q = QUIZZES[quizIdx];
+        const correct = chosen === q.ans;
+        scoreTotal++;
+        if (correct) { scoreCorrect++; earnBadge('quiz', '🏆', '퀴즈 정답!'); }
+        document.getElementById('scoreCorrect').textContent = scoreCorrect;
+        document.getElementById('scoreTotal').textContent   = scoreTotal;
+        document.querySelectorAll('.quiz-opt').forEach((el, i) => {
+            el.disabled = true;
+            if (i === q.ans)   el.classList.add('correct');
+            if (i === chosen && !correct) el.classList.add('wrong');
+        });
+        showFeedback(correct ? 'correct' : 'wrong');
+    },
+
+    nextQuiz() { quizIdx = (quizIdx + 1) % QUIZZES.length; this.renderQuiz(); }
+};
+
+window.onload = () => SimApp.init();
+</script>
+</body>
+</html>

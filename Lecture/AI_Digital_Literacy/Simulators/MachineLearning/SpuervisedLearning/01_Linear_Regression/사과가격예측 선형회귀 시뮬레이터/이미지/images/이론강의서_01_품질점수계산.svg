@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="800" height="400" fill="url(#bgGrad)"/>
+  
+  <!-- 제목 -->
+  <text x="400" y="40" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="24" font-weight="700" fill="#E53935">⭐ 품질 점수 계산</text>
+  
+  <!-- 당도 박스: y=100, height=110, 하단=210, 마지막 텍스트 y=200 → 간격 10px -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="100" width="180" height="110" rx="16" fill="white" stroke="#FFCCBC" stroke-width="2"/>
+    <rect x="50" y="100" width="180" height="40" rx="16" fill="#FFC107"/>
+    <text x="140" y="128" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" font-weight="600" fill="#3E2723">🍯 당도 (Brix)</text>
+    <text x="140" y="160" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" fill="#5D4037">범위: 10 ~ 18</text>
+    <text x="140" y="200" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#8D6E63">(당도-10)/8 × 50</text>
+  </g>
+  
+  <!-- 무게 박스: y=240, height=110, 하단=350, 마지막 텍스트 y=340 → 간격 10px -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="240" width="180" height="110" rx="16" fill="white" stroke="#FFCCBC" stroke-width="2"/>
+    <rect x="50" y="240" width="180" height="40" rx="16" fill="#43A047"/>
+    <text x="140" y="268" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" font-weight="600" fill="white">⚖️ 무게 (g)</text>
+    <text x="140" y="300" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" fill="#5D4037">범위: 150 ~ 350</text>
+    <text x="140" y="340" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#8D6E63">(무게-150)/200 × 50</text>
+  </g>
+  
+  <!-- 화살표 1 (당도 → 합산) -->
+  <path d="M 230 155 L 290 195" fill="none" stroke="#E53935" stroke-width="3"/>
+  
+  <!-- 화살표 2 (무게 → 합산) -->
+  <path d="M 230 295 L 290 255" fill="none" stroke="#E53935" stroke-width="3"/>
+  
+  <!-- 합산 원 -->
+  <circle cx="340" cy="225" r="40" fill="#E53935" filter="url(#shadow)"/>
+  <text x="340" y="235" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="28" font-weight="700" fill="white">+</text>
+  
+  <!-- 화살표 3 (합산 → 품질) -->
+  <line x1="380" y1="225" x2="450" y2="225" stroke="#E53935" stroke-width="3"/>
+  <polygon points="450,225 440,218 440,232" fill="#E53935"/>
+  
+  <!-- 품질 점수 박스: y=140, height=170, 하단=310 -->
+  <g filter="url(#shadow)">
+    <rect x="470" y="140" width="280" height="170" rx="20" fill="white" stroke="#E53935" stroke-width="3"/>
+    <rect x="470" y="140" width="280" height="50" rx="20" fill="#E53935"/>
+    <text x="610" y="173" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="700" fill="white">⭐ 품질 점수</text>
+    
+    <!-- 점수 범위 -->
+    <text x="610" y="215" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" fill="#5D4037">범위: 0 ~ 100점</text>
+    
+    <!-- 예시 박스: y=235, height=65, 하단=300, 외부 상자 하단=310 → 간격 10px -->
+    <rect x="490" y="235" width="240" height="65" rx="8" fill="#FFF3E0"/>
+    <text x="610" y="260" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#8D6E63">예시: 당도 14 Brix, 무게 250g</text>
+    <text x="610" y="290" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#E53935">25점 + 25점 = 50점</text>
+  </g>
+  
+  <!-- 하단 공식 -->
+  <rect x="200" y="360" width="400" height="30" rx="8" fill="#E3F2FD"/>
+  <text x="400" y="380" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" font-weight="500" fill="#1976D2">품질 = 당도점수(50%) + 무게점수(50%)</text>
+</svg>

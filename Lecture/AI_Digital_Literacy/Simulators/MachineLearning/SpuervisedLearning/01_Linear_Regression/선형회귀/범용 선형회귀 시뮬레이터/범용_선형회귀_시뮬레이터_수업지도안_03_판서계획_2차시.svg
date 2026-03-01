@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <linearGradient id="boardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2E7D32"/>
+      <stop offset="100%" style="stop-color:#1B5E20"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .title { font-family: 'Noto Sans KR', sans-serif; font-size: 16px; font-weight: 700; fill: #3E2723; }
+      .board-title { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; font-weight: 700; fill: #FFFFFF; }
+      .board-subtitle { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; font-weight: 600; fill: #FFEB3B; }
+      .board-text { font-family: 'Noto Sans KR', sans-serif; font-size: 10px; fill: #FFFFFF; }
+      .board-small { font-family: 'Noto Sans KR', sans-serif; font-size: 9px; fill: #C8E6C9; }
+      .board-formula { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; fill: #FFEB3B; }
+      .board-example { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: #81C784; }
+      .chalk { fill: #FFFFFF; }
+      .yellow { fill: #FFEB3B; }
+      .hint { font-family: 'Noto Sans KR', sans-serif; font-size: 8px; fill: #8D6E63; }
+    </style>
+  </defs>
+  
+  <rect width="800" height="450" fill="url(#bgGrad)"/>
+  
+  <text x="400" y="28" text-anchor="middle" class="title">📋 2차시 판서 계획: 다중 변수와 예측</text>
+  
+  <!-- 칠판 프레임 -->
+  <rect x="30" y="45" width="740" height="360" rx="8" fill="#5D4037" filter="url(#shadow)"/>
+  <rect x="40" y="55" width="720" height="340" rx="4" fill="url(#boardGrad)"/>
+  
+  <!-- 제목 영역 -->
+  <text x="400" y="85" text-anchor="middle" class="board-title">📊 다중 변수와 예측</text>
+  <line x1="100" y1="95" x2="700" y2="95" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="4,4"/>
+  
+  <!-- 왼쪽: 다중 변수 조합 -->
+  <text x="60" y="120" class="board-subtitle">【다중 변수 조합】</text>
+  
+  <text x="60" y="148" class="board-text">조합점수(X) =</text>
+  <text x="75" y="168" class="board-formula">w₁×정규화(X₁)</text>
+  <text x="60" y="188" class="board-formula">+ w₂×정규화(X₂)</text>
+  <text x="60" y="208" class="board-formula">+ ...</text>
+  
+  <text x="60" y="240" class="board-subtitle">【정규화】</text>
+  <text x="60" y="265" class="board-formula">정규화 = (값-최소)/(최대-최소)</text>
+  <text x="60" y="285" class="board-formula">        × 100</text>
+  
+  <text x="60" y="315" class="board-small">→ 0~100 범위로 통일</text>
+  <text x="60" y="332" class="board-small">→ 단위가 달라도 비교 가능</text>
+  
+  <!-- 구분선 -->
+  <line x1="380" y1="105" x2="380" y2="340" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="4,4"/>
+  
+  <!-- 오른쪽: 가중치의 의미 -->
+  <text x="400" y="120" class="board-subtitle">【가중치의 의미】</text>
+  
+  <text x="400" y="148" class="board-text">가중치 = 변수의 중요도</text>
+  
+  <text x="400" y="175" class="board-small">예:</text>
+  <text x="400" y="195" class="board-example">70%×부리길이 + 30%×부리깊이</text>
+  <text x="400" y="215" class="board-small">→ 부리길이가 더 중요하게 반영</text>
+  
+  <rect x="400" y="230" width="180" height="25" rx="4" fill="rgba(255,235,59,0.2)" stroke="#FFEB3B"/>
+  <text x="490" y="247" text-anchor="middle" class="board-text" style="fill:#FFEB3B">⚖️ 가중치 합 = 항상 100%</text>
+  
+  <text x="400" y="280" class="board-subtitle">【추론 (예측)】</text>
+  
+  <circle cx="420" cy="305" r="10" fill="none" stroke="#FFEB3B" stroke-width="2"/>
+  <text x="420" y="309" text-anchor="middle" class="board-small" style="fill:#FFEB3B">1</text>
+  <text x="440" y="309" class="board-text">새로운 X값 입력</text>
+  
+  <circle cx="420" cy="328" r="10" fill="none" stroke="#FFEB3B" stroke-width="2"/>
+  <text x="420" y="332" text-anchor="middle" class="board-small" style="fill:#FFEB3B">2</text>
+  <text x="440" y="332" class="board-text">Y = wX + b 계산</text>
+  
+  <circle cx="420" cy="351" r="10" fill="none" stroke="#FFEB3B" stroke-width="2"/>
+  <text x="420" y="355" text-anchor="middle" class="board-small" style="fill:#FFEB3B">3</text>
+  <text x="440" y="355" class="board-text">예측값 출력</text>
+  
+  <!-- 하단 핵심 메시지 -->
+  <rect x="60" y="365" width="680" height="25" rx="4" fill="#FFC107"/>
+  <text x="400" y="382" text-anchor="middle" class="board-text" style="fill:#3E2723;font-weight:700">💡 오늘의 핵심: 여러 변수를 조합하면 더 정확한 예측이 가능하다!</text>
+  
+  <!-- 분필 아이콘 -->
+  <rect x="720" y="415" width="40" height="8" rx="2" fill="#FFFFFF"/>
+  <rect x="670" y="415" width="40" height="8" rx="2" fill="#FFEB3B"/>
+  <rect x="620" y="415" width="40" height="8" rx="2" fill="#81C784"/>
+  
+  <text x="700" y="440" text-anchor="middle" class="hint">분필 색상: 흰색(본문), 노랑(강조), 초록(예시)</text>
+</svg>

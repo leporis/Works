@@ -1,0 +1,1237 @@
+<!--
+  파일명: 수업집중도분석프로그램_v2_4_0_0_리팩토링완료_2026-02-19.html
+  버전: v2.4.0.0
+  설명: 수업 집중도 분석 프로그램 — 데이터수집·탐색분석·규칙모델·회귀모델·비교 (5탭)
+  작성자: Claude
+  소속: 청주교육대학교 컴퓨터교육과
+  생성일: 2026-01-26
+  수정이력:
+    v2.1.0.0 (2026-01-26) - 기존 버전
+    v2.2.0.0 (2026-02-19) - XSS 취약점 수정 (escapeHtml 도입, CSV→innerHTML 방어),
+                             BOM 잔여 제거, 문서 헤더 주석 추가
+    v2.3.0.0 (2026-02-19) - CSS :root 2-tier 변수 도입 (27색→변수화),
+                             switch(interval)·집중도분류 중복 제거, 인라인 style 정리
+    v2.4.0.0 (2026-02-19) - CONFIG 객체 도입 (매직넘버 50+개 상수화),
+                             generateRandomData→buildRandomData 순수함수 분리,
+                             인라인 style 추가 정리 (32→17개)
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>수업집중도 분석 프로그램 v2.4.0.0</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+    
+
+    :root {
+      /* ===== 1단계: 기본 팔레트 ===== */
+      --color-bg-900:     #1a1a2e;
+      --color-bg-800:     #16213e;
+      --color-bg-surface: #0f0f23;
+      --color-bg-deep:    #0f0f1a;
+      --color-bg-darkest: #0a0a15;
+      --color-accent-500: #00d4ff;
+      --color-accent-600: #0099cc;
+      --color-accent-100: #a0d4ff;
+      --color-success-500: #4caf50;
+      --color-success-700: #388e3c;
+      --color-warning-500: #ff9800;
+      --color-danger-500:  #f44336;
+      --color-danger-700:  #d32f2f;
+      --color-info-500:    #2196f3;
+      --color-border:      #333;
+      --color-border-light:#444;
+      --color-text-primary:#fff;
+      --color-text-muted:  #888;
+      --color-text-dim:    #aaa;
+      --color-text-footer: #666;
+      --color-code-keyword:#c586c0;
+      --color-code-number: #b5cea8;
+      --color-code-comment:#6a9955;
+
+      /* ===== 2단계: 의미적 별칭 ===== */
+      --primary:       var(--color-accent-500);
+      --primary-dark:  var(--color-accent-600);
+      --primary-light: var(--color-accent-100);
+      --success:       var(--color-success-500);
+      --success-dark:  var(--color-success-700);
+      --warning:       var(--color-warning-500);
+      --danger:        var(--color-danger-500);
+      --danger-dark:   var(--color-danger-700);
+      --info:          var(--color-info-500);
+      --bg-body:       var(--color-bg-900);
+      --bg-body-end:   var(--color-bg-800);
+      --bg-surface:    var(--color-bg-surface);
+      --bg-card:       var(--color-bg-900);
+      --bg-card-end:   var(--color-bg-deep);
+      --bg-deep:       var(--color-bg-deep);
+      --bg-darkest:    var(--color-bg-darkest);
+      --border:        var(--color-border);
+      --border-light:  var(--color-border-light);
+      --text:          var(--color-text-primary);
+      --text-muted:    var(--color-text-muted);
+      --text-dim:      var(--color-text-dim);
+
+
+      /* ===== gradient 의미적 배경색 ===== */
+      --grad-info-start:    #1a2a3e;
+      --grad-info-end:      #0f1a2e;
+      --grad-success-start: #1a2a1a;
+      --grad-success-end:   #0f1a0f;
+      --grad-warning-start: #2a2a1a;
+      --grad-warning-end:   #1a1a0f;
+      --grad-danger-start:  #3a1a1a;
+      --grad-danger-end:    #2f0f0f;
+      --grad-high-start:    #1a3a1a;
+      --grad-high-end:      #0f2f0f;
+      --grad-medium-start:  #3a3a1a;
+      --grad-medium-end:    #2f2f0f;
+
+      /* ===== 간격 ===== */
+      --radius-sm: 10px;
+      --radius-md: 12px;
+      --radius-lg: 15px;
+      --radius-xl: 20px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: linear-gradient(135deg, var(--bg-body) 0%, var(--bg-body-end) 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--text);
+    }
+    
+    .container { max-width: 1200px; margin: 0 auto; }
+    
+    header { text-align: center; margin-bottom: 20px; }
+    h1 { font-size: 1.8em; color: var(--primary); margin-bottom: 8px; }
+    .subtitle { color: var(--text-muted); font-size: 0.95em; }
+    .version-badge { display: inline-block; background: linear-gradient(145deg, var(--success), var(--success-dark)); color: var(--text); padding: 4px 12px; border-radius: 20px; font-size: 0.75em; margin-left: 10px; }
+    
+    .main-panel { background: var(--bg-surface); border-radius: 20px; padding: 25px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
+    
+    .tab-nav { display: flex; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; justify-content: center; }
+    .tab-btn { padding: 14px 24px; border: 2px solid var(--border); background: linear-gradient(145deg, var(--bg-body), var(--bg-deep)); border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 0.9em; color: var(--text-muted); transition: all 0.3s; font-family: inherit; }
+    .tab-btn:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); }
+    .tab-btn.active { background: linear-gradient(145deg, var(--primary), var(--primary-dark)); border-color: var(--primary); color: var(--text); box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4); }
+    
+    .tab-content { display: none; animation: fadeIn 0.3s ease; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .card { background: linear-gradient(145deg, var(--bg-body), var(--bg-deep)); border: 1px solid var(--border); border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+    .card-title { font-size: 1.05em; font-weight: 600; margin-bottom: 16px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+    
+    .alert { padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid; }
+    .alert-info { background: linear-gradient(145deg, var(--grad-info-start), var(--grad-info-end)); border-color: var(--primary); }
+    .alert-warning { background: linear-gradient(145deg, var(--grad-warning-start), var(--grad-warning-end)); border-color: var(--warning); }
+    .alert-success { background: linear-gradient(145deg, var(--grad-success-start), var(--grad-success-end)); border-color: var(--success); }
+    .alert strong { display: block; margin-bottom: 5px; }
+    
+    .key-message { background: linear-gradient(145deg, var(--bg-body), var(--bg-deep)); border: 2px solid var(--primary); border-radius: 15px; padding: 25px; text-align: center; margin: 20px 0; }
+    .key-message-icon { font-size: 2.5em; margin-bottom: 10px; }
+    .key-message-text { font-size: 1.2em; line-height: 1.8; color: var(--primary-light); }
+    
+    .btn { padding: 12px 24px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.9em; transition: all 0.3s; font-family: inherit; }
+    .btn-primary { background: linear-gradient(145deg, var(--primary), var(--primary-dark)); color: var(--text); box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(0, 212, 255, 0.5); }
+    .btn-secondary { background: linear-gradient(145deg, var(--bg-body), var(--bg-body)); color: var(--text-dim); border: 1px solid var(--border-light); }
+    .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-success { background: linear-gradient(145deg, var(--success), var(--success-dark)); color: var(--text); box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); }
+    .btn-success:hover { transform: translateY(-2px); }
+    .btn-danger { background: linear-gradient(145deg, var(--danger), var(--danger-dark)); color: var(--text); }
+    
+    input, select, textarea { width: 100%; padding: 12px 15px; border: 1px solid var(--border-light); border-radius: 10px; background: var(--bg-surface); color: var(--text); font-family: inherit; font-size: 0.95em; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 212, 255, 0.2); }
+    input[type="file"] { padding: 10px; background: var(--bg-body); border: 2px dashed var(--border-light); cursor: pointer; }
+    input[type="range"] { -webkit-appearance: none; height: 8px; border-radius: 4px; background: var(--border); margin: 10px 0; padding: 0; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); cursor: pointer; }
+    
+    .table-container { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px 15px; text-align: center; border-bottom: 1px solid var(--border); }
+    th { background: var(--bg-body); color: var(--primary); font-weight: 600; position: sticky; top: 0; }
+    tr:hover { background: rgba(0, 212, 255, 0.05); }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .stat-card { background: linear-gradient(145deg, var(--bg-body), var(--bg-deep)); border: 2px solid var(--border); border-radius: 15px; padding: 20px; text-align: center; }
+    .stat-card.primary { border-color: var(--primary); }
+    .stat-card.danger { border-color: var(--danger); }
+    .stat-card.info { border-color: var(--info); }
+    .stat-card.success { border-color: var(--success); }
+    .stat-card.warning { border-color: var(--warning); }
+    .stat-value { font-size: 1.8em; font-weight: 700; color: var(--primary); }
+    .stat-card.danger .stat-value { color: var(--danger); }
+    .stat-card.info .stat-value { color: var(--info); }
+    .stat-card.success .stat-value { color: var(--success); }
+    .stat-card.warning .stat-value { color: var(--warning); }
+    .stat-label { color: var(--text-muted); font-size: 0.85em; margin-top: 5px; }
+    
+    .prediction-box { padding: 30px; border-radius: 15px; text-align: center; margin: 15px 0; }
+    .prediction-box.high { background: linear-gradient(145deg, var(--grad-high-start), var(--grad-high-end)); border: 3px solid var(--success); }
+    .prediction-box.medium { background: linear-gradient(145deg, var(--grad-medium-start), var(--grad-medium-end)); border: 3px solid var(--warning); }
+    .prediction-box.low { background: linear-gradient(145deg, var(--grad-danger-start), var(--grad-danger-end)); border: 3px solid var(--danger); }
+    .prediction-level { font-size: 2.2em; font-weight: 700; }
+    .prediction-box.high .prediction-level { color: var(--success); }
+    .prediction-box.medium .prediction-level { color: var(--warning); }
+    .prediction-box.low .prediction-level { color: var(--danger); }
+    .prediction-desc { color: var(--text-muted); margin-top: 10px; }
+    
+    .code-box { background: var(--bg-darkest); border: 1px solid var(--border); border-radius: 10px; padding: 20px; font-family: 'Consolas', monospace; font-size: 0.9em; overflow-x: auto; }
+    .code-keyword { color: var(--color-code-keyword); }
+    .code-number { color: var(--color-code-number); }
+    .code-comment { color: var(--color-code-comment); }
+    
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .chart-container { background: var(--bg-deep); border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+    .chart-title { text-align: center; color: var(--primary); font-weight: 600; margin-bottom: 15px; }
+    
+    .compare-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .compare-card { padding: 25px; border-radius: 15px; text-align: center; }
+    .compare-card.student { background: linear-gradient(145deg, var(--grad-warning-start), var(--grad-warning-end)); border: 2px solid var(--warning); }
+    .compare-card.professor { background: linear-gradient(145deg, var(--grad-success-start), var(--grad-success-end)); border: 2px solid var(--success); }
+    .compare-title { font-size: 1.2em; font-weight: 600; margin-bottom: 15px; }
+    .compare-card.student .compare-title { color: var(--warning); }
+    .compare-card.professor .compare-title { color: var(--success); }
+    
+    .slider-group { margin-bottom: 15px; }
+    .slider-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+    .slider-value { color: var(--primary); font-weight: 700; font-size: 1.1em; }
+    
+    .hardware-diagram { background: var(--bg-darkest); border-radius: 15px; padding: 20px; text-align: center; }
+    
+    .flex { display: flex; }
+    .flex-wrap { flex-wrap: wrap; }
+    .gap-2 { gap: 10px; }
+    .gap-4 { gap: 20px; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+    .text-sm { font-size: 0.85em; }
+    .text-xs { font-size: 0.75em; }
+    .text-gray { color: var(--text-muted); }
+    .text-cyan { color: var(--primary); }
+    .hidden { display: none !important; }
+    /* 인라인 style 대체 클래스 */
+    .no-margin { margin: 0; }
+    .table-scroll-sm { max-height: 200px; overflow-y: auto; }
+    .table-scroll-md { max-height: 250px; overflow-y: auto; }
+    .text-center-compact { text-align: center; padding: 15px; }
+    .svg-responsive { max-width: 700px; width: 100%; }
+    .svg-responsive-sm { max-width: 600px; width: 100%; }
+    .input-half { width: 50%; }
+    .range-separator { line-height: 42px; }
+
+    .initially-hidden { display: none; }
+    .font-bold { font-weight: 700; }
+    .mb-2 { margin-bottom: 10px; }
+    .mb-4 { margin-bottom: 20px; }
+    .mt-2 { margin-top: 10px; }
+    .mt-4 { margin-top: 20px; }
+    
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .compare-panel { grid-template-columns: 1fr; }
+      .tab-btn { padding: 10px 16px; font-size: 0.85em; }
+      h1 { font-size: 1.4em; }
+    }
+    
+    footer { text-align: center; margin-top: 20px; color: var(--color-text-footer); font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📊 수업집중도 분석 프로그램 <span class="version-badge">v2.4</span></h1>
+      <p class="subtitle">사물인터넷과 빅데이터 | 바이브코딩 시연용 프로그램</p>
+    </header>
+    
+    <div class="main-panel">
+      <div class="tab-nav">
+        <button class="tab-btn active" data-tab="data">📥 데이터 수집</button>
+        <button class="tab-btn" data-tab="overview">📊 데이터 분석</button>
+        <button class="tab-btn" data-tab="student">👨‍🎓 학생 모델</button>
+        <button class="tab-btn" data-tab="professor">👨‍🏫 교수 모델</button>
+        <button class="tab-btn" data-tab="compare">⚖️ 모델 비교</button>
+      </div>
+      <!-- ========== 탭 1: 데이터 수집 ========== -->
+      <div id="tab-data" class="tab-content active">
+        <div class="hardware-diagram mb-4">
+          <svg viewBox="0 0 750 180" class="svg-responsive">
+            <defs>
+              <linearGradient id="mbGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#2a2a2a"/><stop offset="100%" style="stop-color:#1a1a1a"/></linearGradient>
+              <linearGradient id="groveGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#2e7d32"/><stop offset="100%" style="stop-color:#1b5e20"/></linearGradient>
+              <linearGradient id="loggerGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#ff9800"/><stop offset="100%" style="stop-color:#e65100"/></linearGradient>
+              <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#00d4ff"/></marker>
+            </defs>
+            <g transform="translate(20, 45)">
+              <rect x="0" y="0" width="110" height="80" rx="8" fill="url(#mbGrad)" stroke="#444" stroke-width="2"/>
+              <rect x="28" y="12" width="54" height="36" rx="4" fill="#000"/>
+              <g fill="#ff4444"><circle cx="42" cy="24" r="3"/><circle cx="52" cy="24" r="3"/><circle cx="62" cy="24" r="3" opacity="0.3"/><circle cx="72" cy="24" r="3"/><circle cx="42" cy="34" r="3" opacity="0.3"/><circle cx="52" cy="34" r="3"/><circle cx="62" cy="34" r="3" opacity="0.3"/><circle cx="72" cy="34" r="3" opacity="0.3"/><circle cx="42" cy="44" r="3"/><circle cx="52" cy="44" r="3"/><circle cx="62" cy="44" r="3"/><circle cx="72" cy="44" r="3"/></g>
+              <circle cx="14" cy="40" r="7" fill="#333" stroke="#555"/><circle cx="96" cy="40" r="7" fill="#333" stroke="#555"/>
+              <text x="55" y="-8" text-anchor="middle" fill="#00d4ff" font-size="10" font-weight="bold">마이크로비트</text>
+            </g>
+            <path d="M 140 85 L 175 85" stroke="#4caf50" stroke-width="3" stroke-dasharray="5,3"/>
+            <g transform="translate(185, 40)">
+              <rect x="0" y="0" width="120" height="90" rx="8" fill="url(#groveGrad)" stroke="#43a047" stroke-width="2"/>
+              <text x="60" y="16" text-anchor="middle" fill="#a5d6a7" font-size="9" font-weight="bold">Grove Shield</text>
+              <rect x="12" y="28" width="28" height="16" rx="2" fill="#fff" stroke="#333"/><rect x="46" y="28" width="28" height="16" rx="2" fill="#fff" stroke="#333"/><rect x="80" y="28" width="28" height="16" rx="2" fill="#fff" stroke="#333"/>
+              <text x="26" y="39" text-anchor="middle" fill="#333" font-size="6">I2C</text><text x="60" y="39" text-anchor="middle" fill="#333" font-size="6">I2C</text><text x="94" y="39" text-anchor="middle" fill="#333" font-size="6">I2C</text>
+              <text x="26" y="62" text-anchor="middle" font-size="14">🌡️</text><text x="60" y="62" text-anchor="middle" font-size="14">🔊</text><text x="94" y="62" text-anchor="middle" font-size="14">💡</text>
+              <text x="26" y="78" text-anchor="middle" fill="#a5d6a7" font-size="7">온도</text><text x="60" y="78" text-anchor="middle" fill="#a5d6a7" font-size="7">소음</text><text x="94" y="78" text-anchor="middle" fill="#a5d6a7" font-size="7">조도</text>
+            </g>
+            <path d="M 315 85 L 360 85" stroke="#ff9800" stroke-width="3" marker-end="url(#arrow)"/>
+            <g transform="translate(370, 40)">
+              <rect x="0" y="0" width="100" height="90" rx="8" fill="url(#loggerGrad)" stroke="#ef6c00" stroke-width="2"/>
+              <text x="50" y="16" text-anchor="middle" fill="#fff3e0" font-size="9" font-weight="bold">데이터로거</text>
+              <rect x="12" y="28" width="32" height="22" rx="3" fill="#333" stroke="#555"/><text x="28" y="43" text-anchor="middle" fill="#aaa" font-size="7">RTC</text>
+              <rect x="56" y="28" width="32" height="22" rx="3" fill="#333" stroke="#555"/><text x="72" y="43" text-anchor="middle" fill="#aaa" font-size="7">SD</text>
+              <rect x="58" y="58" width="28" height="20" rx="3" fill="#2196f3" stroke="#1976d2"/><text x="72" y="72" text-anchor="middle" fill="#fff" font-size="9">💾</text>
+            </g>
+            <path d="M 480 85 L 525 85" stroke="#00d4ff" stroke-width="3" marker-end="url(#arrow)"/>
+            <g transform="translate(535, 35)">
+              <rect x="0" y="0" width="75" height="100" rx="5" fill="#1a1a2e" stroke="#00d4ff" stroke-width="2"/>
+              <rect x="0" y="0" width="75" height="20" rx="5" fill="#00d4ff"/>
+              <text x="37" y="14" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">CSV 파일</text>
+              <text x="37" y="36" text-anchor="middle" fill="#888" font-size="6">날짜,온도,소음</text>
+              <text x="37" y="50" text-anchor="middle" fill="#aaa" font-size="6">1/27,24.5,55</text>
+              <text x="37" y="64" text-anchor="middle" fill="#aaa" font-size="6">1/27,25.2,68</text>
+              <text x="37" y="78" text-anchor="middle" fill="#aaa" font-size="6">1/28,23.8,48</text>
+              <text x="37" y="92" text-anchor="middle" fill="#666" font-size="6">...</text>
+            </g>
+            <path d="M 620 85 L 660 85" stroke="#4caf50" stroke-width="3" marker-end="url(#arrow)"/>
+            <g transform="translate(670, 50)">
+              <rect x="0" y="0" width="55" height="70" rx="8" fill="#1a2a1a" stroke="#4caf50" stroke-width="2"/>
+              <text x="27" y="28" text-anchor="middle" font-size="22">📊</text>
+              <text x="27" y="48" text-anchor="middle" fill="#4caf50" font-size="7" font-weight="bold">분석</text>
+              <text x="27" y="62" text-anchor="middle" fill="#81c784" font-size="6">바이브코딩</text>
+            </g>
+          </svg>
+        </div>
+        
+        <div class="alert alert-info mb-4">
+          <strong>📟 데이터 수집 방법</strong>
+          <strong>1순위:</strong> 마이크로비트 + Grove 센서 + 데이터로거 → SD카드에서 CSV 추출<br>
+          <strong>2순위:</strong> 아래에서 CSV 파일을 직접 불러오기
+        </div>
+        
+        <div class="grid-2">
+          <div class="card">
+            <h3 class="card-title">📁 CSV 파일 불러오기</h3>
+            <p class="text-sm text-gray mb-4">데이터로거에서 추출한 CSV 파일을 선택하세요.</p>
+            <input type="file" id="csvFile" accept=".csv" onchange="handleFileUpload(event)">
+            <p class="text-xs text-gray mt-2">형식: 날짜,시간대,온도,소음,집중도</p>
+          </div>
+          <div class="card">
+            <h3 class="card-title">✏️ CSV 텍스트 입력</h3>
+            <textarea id="csvInput" rows="4" placeholder="날짜,시간대,온도,소음,집중도&#10;1/27,1교시,24.5,55,4&#10;1/27,2교시,25.2,68,3"></textarea>
+            <button class="btn btn-primary mt-2" onclick="parseCSVInput()">📥 데이터 가져오기</button>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3 class="card-title">🎲 가상 데이터 생성기</h3>
+          <p class="text-sm text-gray mb-4">실제 데이터가 없을 때 프로그램 테스트용으로 가상 데이터를 생성합니다.</p>
+          
+          <div class="grid-2 mb-4">
+            <div>
+              <label class="text-sm text-gray">📅 수집 기간</label>
+              <div class="grid-2 gap-2 mt-2">
+                <div><label class="text-xs text-gray">시작일</label><input type="date" id="startDate" value="2026-01-27"></div>
+                <div><label class="text-xs text-gray">종료일</label><input type="date" id="endDate" value="2026-02-07"></div>
+              </div>
+            </div>
+            <div>
+              <label class="text-sm text-gray">⏱️ 수집 간격</label>
+              <select id="collectionInterval" class="mt-2">
+                <option value="period">매 교시 (하루 6회)</option>
+                <option value="hour">매 시간 (하루 8회, 9시~16시)</option>
+                <option value="30min">30분마다 (하루 16회)</option>
+                <option value="10min">10분마다 (하루 48회)</option>
+                <option value="custom">직접 지정</option>
+              </select>
+              <div id="customIntervalDiv" style="display:none; margin-top:10px;">
+                <label class="text-xs text-gray">하루 측정 횟수</label>
+                <input type="number" id="customInterval" value="6" min="1" max="100">
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid-3 mb-4">
+            <div>
+              <label class="text-sm text-gray">🌡️ 온도 범위 (℃)</label>
+              <div class="flex gap-2 mt-2">
+                <input type="number" id="tempMin" value="18" min="0" max="40" class="input-half">
+                <span class="text-gray range-separator">~</span>
+                <input type="number" id="tempMax" value="32" min="0" max="40" class="input-half">
+              </div>
+            </div>
+            <div>
+              <label class="text-sm text-gray">🔊 소음 범위 (dB)</label>
+              <div class="flex gap-2 mt-2">
+                <input type="number" id="noiseMin" value="30" min="0" max="120" class="input-half">
+                <span class="text-gray range-separator">~</span>
+                <input type="number" id="noiseMax" value="85" min="0" max="120" class="input-half">
+              </div>
+            </div>
+            <div>
+              <label class="text-sm text-gray">📊 집중도 설문 포함</label>
+              <select id="includeConcentration" class="mt-2">
+                <option value="yes">예 (1~5점 랜덤)</option>
+                <option value="no">아니오 (비워둠)</option>
+              </select>
+            </div>
+          </div>
+          
+          <div id="dataGeneratePreview" class="alert alert-info mb-4 initially-hidden">
+            <strong>📋 생성 예상</strong>
+            <span id="previewText">-</span>
+          </div>
+          
+          <div class="flex gap-2 flex-wrap">
+            <button class="btn btn-secondary" onclick="loadSampleData()">📊 샘플 12건</button>
+            <button class="btn btn-primary" onclick="generateRandomData()">🎲 가상 데이터 생성</button>
+          </div>
+        </div>
+        
+        <!-- 생성된 데이터 미리보기 -->
+        <div id="generatedDataPreview" class="card initially-hidden">
+          <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+            <h3 class="card-title no-margin">✅ 생성된 데이터</h3>
+            <button class="btn btn-primary" onclick="goToAnalysis()">📊 데이터 분석 탭에서 확인하기 →</button>
+          </div>
+          <div class="stats-grid mb-4">
+            <div class="stat-card primary"><div class="stat-value" id="genDataCount">0</div><div class="stat-label">총 데이터</div></div>
+            <div class="stat-card danger"><div class="stat-value" id="genAvgTemp">-</div><div class="stat-label">평균 온도</div></div>
+            <div class="stat-card info"><div class="stat-value" id="genAvgNoise">-</div><div class="stat-label">평균 소음</div></div>
+            <div class="stat-card success"><div class="stat-value" id="genAvgConc">-</div><div class="stat-label">평균 집중도</div></div>
+          </div>
+          <div class="table-container table-scroll-sm">
+            <table>
+              <thead><tr><th>#</th><th>날짜</th><th>시간</th><th>온도</th><th>소음</th><th>집중도</th></tr></thead>
+              <tbody id="genDataTableBody"></tbody>
+            </table>
+          </div>
+          <p id="genDataMoreInfo" class="text-sm text-gray mt-2"></p>
+        </div>
+        
+        <div class="alert alert-warning">
+          <strong>💡 집중도 데이터</strong>
+          센서로는 집중도를 직접 측정할 수 없습니다. 수업 후 설문조사(1~5점)로 수집하거나, 비워두면 모델로 예측합니다.
+        </div>
+      </div>
+      
+      <!-- ========== 탭 2: 데이터 분석 ========== -->
+      <div id="tab-overview" class="tab-content">
+        <div class="alert alert-info mb-4">
+          <strong>📊 바이브코딩으로 만든 데이터 분석 프로그램</strong>
+          이 화면은 Claude와 대화하여 만든 프로그램입니다. 수집한 데이터의 통계와 분포를 확인할 수 있습니다.
+        </div>
+        
+        <div id="dataStats" class="stats-grid mb-4">
+          <div class="stat-card primary"><div class="stat-value">0</div><div class="stat-label">총 데이터</div></div>
+          <div class="stat-card danger"><div class="stat-value">-</div><div class="stat-label">평균 온도</div></div>
+          <div class="stat-card info"><div class="stat-value">-</div><div class="stat-label">평균 소음</div></div>
+          <div class="stat-card success"><div class="stat-value">-</div><div class="stat-label">평균 집중도</div></div>
+        </div>
+        
+        <div class="grid-2 mb-4">
+          <div class="chart-container"><div class="chart-title">📊 온도-집중도 관계</div><canvas id="scatterTempChart"></canvas></div>
+          <div class="chart-container"><div class="chart-title">📊 소음-집중도 관계</div><canvas id="scatterNoiseChart"></canvas></div>
+        </div>
+        
+        <div class="grid-2 mb-4">
+          <div class="chart-container"><div class="chart-title">📈 집중도 분포</div><canvas id="concentrationDistChart"></canvas></div>
+          <div class="chart-container"><div class="chart-title">📈 온도/소음 분포</div><canvas id="histogramChart"></canvas></div>
+        </div>
+        
+        <div class="card">
+          <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+            <h3 class="card-title no-margin">📋 데이터 미리보기</h3>
+            <div class="flex gap-2">
+              <button class="btn btn-secondary" onclick="exportCSV()">💾 CSV 내보내기</button>
+              <button class="btn btn-danger" onclick="clearData()">🗑️ 초기화</button>
+            </div>
+          </div>
+          <div class="table-container table-scroll-md">
+            <table><thead><tr><th>#</th><th>날짜</th><th>시간대</th><th>온도(℃)</th><th>소음(dB)</th><th>집중도</th></tr></thead>
+            <tbody id="dataTableBody"><tr><td colspan="6" class="text-gray">데이터가 없습니다</td></tr></tbody></table>
+          </div>
+          <p id="dataMoreInfo" class="text-sm text-gray mt-2"></p>
+        </div>
+      </div>
+      
+      <!-- ========== 탭 3: 학생 모델 ========== -->
+      <div id="tab-student" class="tab-content">
+        <div class="alert alert-warning mb-4">
+          <strong>👨‍🎓 학생이 만드는 규칙 기반 AI</strong>
+          학생이 직접 "기준"을 정하고, 그 기준에 따라 집중도를 판단하는 프로그램입니다.
+        </div>
+        
+        <div class="card mb-4 text-center-compact">
+          <svg viewBox="0 0 650 140" class="svg-responsive-sm">
+            <defs><marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#888"/></marker></defs>
+            <g transform="translate(15, 30)">
+              <rect x="0" y="0" width="80" height="60" rx="8" fill="#1a1a2e" stroke="#00d4ff" stroke-width="2"/>
+              <text x="40" y="18" text-anchor="middle" fill="#00d4ff" font-size="9" font-weight="bold">📥 입력</text>
+              <text x="40" y="36" text-anchor="middle" fill="#f44336" font-size="10">🌡️ <tspan id="flowTemp">25</tspan>℃</text>
+              <text x="40" y="50" text-anchor="middle" fill="#2196f3" font-size="10">🔊 <tspan id="flowNoise">55</tspan>dB</text>
+            </g>
+            <path d="M 105 60 L 140 60" stroke="#888" stroke-width="2" marker-end="url(#arr)"/>
+            <g transform="translate(150, 10)">
+              <polygon points="70,0 140,50 70,100 0,50" fill="#2a2a1a" stroke="#ff9800" stroke-width="2"/>
+              <text x="70" y="45" text-anchor="middle" fill="#ffb74d" font-size="8">온도≥<tspan id="flowHighTemp">26</tspan>℃</text>
+              <text x="70" y="58" text-anchor="middle" fill="#ffb74d" font-size="8">OR 소음≥<tspan id="flowHighNoise">70</tspan>dB?</text>
+            </g>
+            <path d="M 300 60 L 340 60" stroke="#f44336" stroke-width="2"/><text x="320" y="52" fill="#f44336" font-size="8">Yes</text>
+            <g transform="translate(350, 30)"><rect x="0" y="0" width="60" height="55" rx="8" fill="#2a1a1a" stroke="#f44336" stroke-width="2"/><text x="30" y="30" text-anchor="middle" fill="#f44336" font-size="18">🔴</text><text x="30" y="46" text-anchor="middle" fill="#f44336" font-size="10" font-weight="bold">낮음</text></g>
+            <path d="M 220 110 L 220 125 L 460 125 L 460 85" stroke="#4caf50" stroke-width="2"/><text x="235" y="120" fill="#4caf50" font-size="8">No</text>
+            <g transform="translate(430, 30)"><rect x="0" y="0" width="60" height="55" rx="8" fill="#1a2a1a" stroke="#4caf50" stroke-width="2"/><text x="30" y="30" text-anchor="middle" fill="#4caf50" font-size="18">🟢</text><text x="30" y="46" text-anchor="middle" fill="#4caf50" font-size="10" font-weight="bold">높음</text></g>
+            <g transform="translate(510, 30)"><rect x="0" y="0" width="60" height="55" rx="8" fill="#2a2a1a" stroke="#ff9800" stroke-width="2"/><text x="30" y="30" text-anchor="middle" fill="#ff9800" font-size="18">🟡</text><text x="30" y="46" text-anchor="middle" fill="#ff9800" font-size="10" font-weight="bold">보통</text></g>
+            <text x="500" y="60" fill="#888" font-size="8">or</text>
+          </svg>
+        </div>
+        
+        <div class="key-message mb-4" style="border-color:#ff9800; background:linear-gradient(145deg, var(--grad-warning-start), var(--grad-warning-end));">
+          <div class="key-message-icon">📋</div>
+          <div class="key-message-text" style="color:#ffb74d;">"규칙의 기준은 <span style="color:#f44336;">누가</span> 정했나요?"<br>→ 바로 <span style="color:#4caf50; font-weight:bold;">여러분</span>입니다!</div>
+        </div>
+        
+        <div class="card">
+          <h3 class="card-title">⚙️ 규칙 설정</h3>
+          <div class="code-box mb-4">
+            <span class="code-comment">// 학생이 만든 집중도 판단 규칙</span><br>
+            <span class="code-keyword">if</span> (온도 >= <span class="code-number" id="ruleHighTemp">26</span>℃ <span class="code-keyword">||</span> 소음 >= <span class="code-number" id="ruleHighNoise">70</span>dB) {<br>
+            &nbsp;&nbsp;<span class="code-keyword">return</span> <span style="color:#f44336;">"🔴 낮음"</span>;<br>
+            } <span class="code-keyword">else if</span> (온도 &lt;= <span class="code-number" id="ruleLowTemp">24</span>℃ <span class="code-keyword">&&</span> 소음 &lt;= <span class="code-number" id="ruleLowNoise">50</span>dB) {<br>
+            &nbsp;&nbsp;<span class="code-keyword">return</span> <span style="color:#4caf50;">"🟢 높음"</span>;<br>
+            } <span class="code-keyword">else</span> {<br>
+            &nbsp;&nbsp;<span class="code-keyword">return</span> <span style="color:#ff9800;">"🟡 보통"</span>;<br>
+            }
+          </div>
+          <div class="grid-2">
+            <div class="slider-group"><div class="slider-label"><span>🔴 "낮음" 기준 온도 (이상)</span><span class="slider-value" id="highTempValue">26℃</span></div><input type="range" id="highTempThreshold" min="20" max="35" value="26" oninput="updateStudentRules()"></div>
+            <div class="slider-group"><div class="slider-label"><span>🔴 "낮음" 기준 소음 (이상)</span><span class="slider-value" id="highNoiseValue">70dB</span></div><input type="range" id="highNoiseThreshold" min="40" max="90" value="70" oninput="updateStudentRules()"></div>
+            <div class="slider-group"><div class="slider-label"><span>🟢 "높음" 기준 온도 (이하)</span><span class="slider-value" id="lowTempValue">24℃</span></div><input type="range" id="lowTempThreshold" min="15" max="30" value="24" oninput="updateStudentRules()"></div>
+            <div class="slider-group"><div class="slider-label"><span>🟢 "높음" 기준 소음 (이하)</span><span class="slider-value" id="lowNoiseValue">50dB</span></div><input type="range" id="lowNoiseThreshold" min="20" max="70" value="50" oninput="updateStudentRules()"></div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3 class="card-title">🧪 예측 테스트</h3>
+          <div class="grid-2 mb-4">
+            <div class="slider-group"><div class="slider-label"><span>🌡️ 온도</span><span class="slider-value" id="testTempStudentValue">25℃</span></div><input type="range" id="testTempStudent" min="18" max="32" step="0.5" value="25" oninput="updateStudentTest()"></div>
+            <div class="slider-group"><div class="slider-label"><span>🔊 소음</span><span class="slider-value" id="testNoiseStudentValue">55dB</span></div><input type="range" id="testNoiseStudent" min="30" max="85" value="55" oninput="updateStudentTest()"></div>
+          </div>
+          <div id="studentPredictionResult" class="prediction-box medium"><div class="prediction-level">🟡 보통</div><div class="prediction-desc">규칙에 따른 판단 결과</div></div>
+        </div>
+        
+        <div id="studentAccuracyCard" class="card initially-hidden">
+          <h3 class="card-title">📈 모델 정확도</h3>
+          <div class="stats-grid"><div class="stat-card warning"><div class="stat-value" id="studentAccuracy">-</div><div class="stat-label">실제 데이터 대비 정확도</div></div></div>
+        </div>
+      </div>
+      <!-- ========== 탭 4: 교수 모델 ========== -->
+      <div id="tab-professor" class="tab-content">
+        <div class="alert alert-success mb-4">
+          <strong>👨‍🏫 교수가 시연하는 머신러닝 모델</strong>
+          인공지능이 데이터에서 패턴을 "학습"하여 만든 모델입니다. 사람이 기준을 정하지 않습니다.
+        </div>
+        
+        <div class="card mb-4 text-center-compact">
+          <svg viewBox="0 0 650 130" class="svg-responsive-sm">
+            <defs><marker id="arr2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#4caf50"/></marker></defs>
+            <g transform="translate(15, 25)">
+              <rect x="0" y="0" width="95" height="80" rx="8" fill="#1a1a2e" stroke="#00d4ff" stroke-width="2"/>
+              <text x="47" y="16" text-anchor="middle" fill="#00d4ff" font-size="9" font-weight="bold">📊 훈련 데이터</text>
+              <text x="47" y="32" text-anchor="middle" fill="#888" font-size="7">온도 | 소음 | 집중도</text>
+              <text x="47" y="46" text-anchor="middle" fill="#aaa" font-size="7">24.5 | 55 | 4</text>
+              <text x="47" y="60" text-anchor="middle" fill="#aaa" font-size="7">27.0 | 72 | 2</text>
+              <text x="47" y="74" text-anchor="middle" fill="#666" font-size="7">... (<tspan id="trainDataCount">0</tspan>건)</text>
+            </g>
+            <path d="M 120 65 L 155 65" stroke="#4caf50" stroke-width="2" marker-end="url(#arr2)"/>
+            <g transform="translate(165, 25)">
+              <rect x="0" y="0" width="105" height="80" rx="10" fill="#1a2a1a" stroke="#4caf50" stroke-width="2"/>
+              <text x="52" y="16" text-anchor="middle" fill="#4caf50" font-size="9" font-weight="bold">🤖 선형 회귀</text>
+              <circle cx="25" cy="42" r="7" fill="#333" stroke="#4caf50"/><circle cx="25" cy="62" r="7" fill="#333" stroke="#4caf50"/>
+              <circle cx="52" cy="52" r="9" fill="#333" stroke="#81c784" stroke-width="2"/><circle cx="80" cy="52" r="7" fill="#333" stroke="#4caf50"/>
+              <line x1="32" y1="42" x2="43" y2="50" stroke="#4caf50"/><line x1="32" y1="62" x2="43" y2="54" stroke="#4caf50"/><line x1="61" y1="52" x2="73" y2="52" stroke="#4caf50"/>
+              <text x="25" y="45" text-anchor="middle" fill="#81c784" font-size="5">T</text><text x="25" y="65" text-anchor="middle" fill="#81c784" font-size="5">N</text><text x="52" y="55" text-anchor="middle" fill="#fff" font-size="7">Σ</text>
+            </g>
+            <path d="M 280 65 L 315 65" stroke="#4caf50" stroke-width="2" marker-end="url(#arr2)"/>
+            <g transform="translate(325, 15)">
+              <rect x="0" y="0" width="140" height="100" rx="8" fill="#0a1a0a" stroke="#4caf50" stroke-width="3"/>
+              <text x="70" y="18" text-anchor="middle" fill="#4caf50" font-size="9" font-weight="bold">📐 학습된 모델</text>
+              <text x="70" y="38" text-anchor="middle" fill="#81c784" font-size="8">Y = β₀ + β₁X₁ + β₂X₂</text>
+              <text x="70" y="55" text-anchor="middle" fill="#fff" font-size="7" id="modelFormula1">집중도 = 12.50</text>
+              <text x="70" y="70" text-anchor="middle" fill="#f44336" font-size="7" id="modelFormula2">+ 온도 × (-0.30)</text>
+              <text x="70" y="85" text-anchor="middle" fill="#2196f3" font-size="7" id="modelFormula3">+ 소음 × (-0.05)</text>
+            </g>
+            <g transform="translate(485, 25)">
+              <rect x="0" y="0" width="140" height="80" rx="10" fill="#1a1a2e" stroke="#00d4ff" stroke-width="1"/>
+              <text x="70" y="18" text-anchor="middle" fill="#00d4ff" font-size="9" font-weight="bold">💡 핵심</text>
+              <text x="70" y="38" text-anchor="middle" fill="#888" font-size="8">사람이 규칙을 정하지 않음</text>
+              <text x="70" y="55" text-anchor="middle" fill="#81c784" font-size="9" font-weight="bold">데이터가 규칙을 알려줌!</text>
+              <text x="70" y="72" text-anchor="middle" fill="#888" font-size="7">(계수 β는 학습으로 결정)</text>
+            </g>
+          </svg>
+        </div>
+        
+        <div class="key-message mb-4" style="border-color:#4caf50; background:linear-gradient(145deg, var(--grad-success-start), var(--grad-success-end));">
+          <div class="key-message-icon">🤖</div>
+          <div class="key-message-text" style="color:#81c784;">"이 계수는 <span style="color:#f44336;">누가</span> 정했나요?"<br>→ <span style="color:#00d4ff; font-weight:bold;">데이터</span>가 알려줬습니다!</div>
+        </div>
+        
+        <div class="card">
+          <h3 class="card-title">📐 학습된 모델</h3>
+          <div class="code-box mb-4" id="mlModelInfo">집중도 = 12.50 + (온도 × -0.30) + (소음 × -0.05)</div>
+          <div class="stats-grid mb-4">
+            <div class="stat-card danger"><div class="stat-value" id="tempCoef">-0.30</div><div class="stat-label">온도 계수 (β₁)</div></div>
+            <div class="stat-card info"><div class="stat-value" id="noiseCoef">-0.05</div><div class="stat-label">소음 계수 (β₂)</div></div>
+            <div class="stat-card success"><div class="stat-value" id="rSquared">-</div><div class="stat-label">R² (설명력)</div></div>
+          </div>
+          <div class="flex gap-2 items-center flex-wrap">
+            <button class="btn btn-success" onclick="trainMLModel()">🧠 데이터로 학습하기</button>
+            <span id="trainingTime" class="text-sm text-gray"></span>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3 class="card-title">📖 계수 해석 방법</h3>
+          <div class="table-container">
+            <table>
+              <tr><td style="width:25%; color:#f44336; font-weight:bold;">온도 계수 (β₁)</td><td class="text-left">음수 → 온도가 올라가면 집중도 감소<br><span class="text-gray">예: -0.15면 온도 1℃↑ → 집중도 0.15↓</span></td></tr>
+              <tr><td style="color:#2196f3; font-weight:bold;">소음 계수 (β₂)</td><td class="text-left">음수 → 소음이 커지면 집중도 감소<br><span class="text-gray">예: -0.03이면 소음 10dB↑ → 집중도 0.3↓</span></td></tr>
+              <tr><td style="color:#4caf50; font-weight:bold;">R² (설명력)</td><td class="text-left">0~100% 사이 값, 100%에 가까울수록 설명력 높음<br><span class="text-gray">67%면 "변동의 67%를 온도+소음으로 설명"</span></td></tr>
+            </table>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3 class="card-title">🧪 예측 테스트</h3>
+          <div class="grid-2 mb-4">
+            <div class="slider-group"><div class="slider-label"><span>🌡️ 온도</span><span class="slider-value" id="testTempProfValue">25℃</span></div><input type="range" id="testTempProf" min="18" max="32" step="0.5" value="25" oninput="updateProfTest()"></div>
+            <div class="slider-group"><div class="slider-label"><span>🔊 소음</span><span class="slider-value" id="testNoiseProfValue">55dB</span></div><input type="range" id="testNoiseProf" min="30" max="85" value="55" oninput="updateProfTest()"></div>
+          </div>
+          <div id="profPredictionResult" class="prediction-box medium"><div class="prediction-level">3.50점</div><div class="prediction-desc">🟡 보통 수준</div></div>
+        </div>
+      </div>
+      
+      <!-- ========== 탭 5: 모델 비교 ========== -->
+      <div id="tab-compare" class="tab-content">
+        <div class="key-message mb-4">
+          <div class="key-message-icon">💡</div>
+          <div class="key-message-text">"AI는 집중도를 <span style="color:#f44336;">판단</span>하지 않는다.<br>우리가 만든 기준을 <span style="color:#4caf50;">계산</span>할 뿐이다."</div>
+        </div>
+        
+        <div class="card mb-4">
+          <h3 class="card-title">🎛️ 테스트 조건 설정</h3>
+          <div class="grid-2">
+            <div class="slider-group"><div class="slider-label"><span>🌡️ 온도</span><span class="slider-value" id="compareTempValue">25℃</span></div><input type="range" id="compareTempSlider" min="18" max="32" step="0.5" value="25" oninput="updateCompare()"></div>
+            <div class="slider-group"><div class="slider-label"><span>🔊 소음</span><span class="slider-value" id="compareNoiseValue">55dB</span></div><input type="range" id="compareNoiseSlider" min="30" max="85" value="55" oninput="updateCompare()"></div>
+          </div>
+        </div>
+        
+        <div class="compare-panel mb-4">
+          <div class="compare-card student">
+            <div class="compare-title">👨‍🎓 학생 모델 (규칙 기반)</div>
+            <div id="compareStudentResult" class="prediction-box medium"><div class="prediction-level">🟡 보통</div></div>
+            <div class="stats-grid mt-4"><div class="stat-card warning"><div class="stat-value" id="compareStudentAcc">-</div><div class="stat-label">정확도</div></div></div>
+            <p class="text-sm text-gray mt-2">"내가 정한 기준"에 따른 판단</p>
+          </div>
+          <div class="compare-card professor">
+            <div class="compare-title">👨‍🏫 교수 모델 (머신러닝)</div>
+            <div id="compareProfResult" class="prediction-box medium"><div class="prediction-level">3.50점</div><div class="prediction-desc">🟡 보통</div></div>
+            <div class="stats-grid mt-4"><div class="stat-card success"><div class="stat-value" id="compareProfAcc">-</div><div class="stat-label">정확도</div></div></div>
+            <p class="text-sm text-gray mt-2">"데이터가 알려준 기준"에 따른 계산</p>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3 class="card-title">📊 온도별 예측 결과 비교 (소음 55dB 고정)</h3>
+          <div class="chart-container"><canvas id="compareChart"></canvas></div>
+        </div>
+        
+        <div class="card">
+          <h3 class="card-title">⚖️ 두 모델의 차이점</h3>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>구분</th><th style="color:#ff9800;">👨‍🎓 학생 모델</th><th style="color:#4caf50;">👨‍🏫 교수 모델</th></tr></thead>
+              <tbody>
+                <tr><td class="font-bold">방식</td><td>규칙 기반 (Rule-based)</td><td>머신러닝 (Machine Learning)</td></tr>
+                <tr><td class="font-bold">기준 설정</td><td style="color:#ff9800;">사람이 직접 정함</td><td style="color:#4caf50;">데이터에서 학습</td></tr>
+                <tr><td class="font-bold">출력</td><td>범주 (높음/보통/낮음)</td><td>연속값 (1.0~5.0점)</td></tr>
+                <tr><td class="font-bold">장점</td><td>직관적, 설명 가능</td><td>데이터 기반, 객관적</td></tr>
+                <tr><td class="font-bold">단점</td><td>주관적, 최적화 어려움</td><td>해석 어려움, 데이터 필요</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <footer>수업집중도 분석 프로그램 v2.4.0.0 | 사물인터넷과 빅데이터 | 청주교육대학교</footer>
+  </div>
+  <script>
+    // ===== CONFIG: 교육 시뮬레이터 설정값 =====
+    const CONFIG = {
+      ML_DEFAULT: {
+        INTERCEPT: 12.5,
+        TEMP_COEF: -0.30,
+        NOISE_COEF: -0.05,
+      },
+      CONCENTRATION: {
+        HIGH_THRESHOLD: 4,    // 이 값 이상 → '높음'
+        MID_THRESHOLD: 3,     // 이 값 이상 → '보통', 미만 → '낮음'
+        MIN: 1,
+        MAX: 5,
+      },
+      DATA_GEN: {
+        BASE_SCORE: 5,
+        TEMP_BASE: 20,        // 기준 온도 (℃)
+        TEMP_FACTOR: 0.15,    // 온도 1℃↑ → 집중도 감소량
+        NOISE_BASE: 40,       // 기준 소음 (dB)
+        NOISE_FACTOR: 0.03,   // 소음 1dB↑ → 집중도 감소량
+        RANDOM_RANGE: 1.5,    // 랜덤 노이즈 범위
+      },
+      CHART: {
+        GRID_COLOR: '#333',
+        TICK_COLOR: '#888',
+        POINT_RADIUS: 5,
+        TEMP_COLOR: 'rgba(244, 67, 54, 0.6)',
+        TEMP_BORDER: '#f44336',
+        NOISE_COLOR: 'rgba(33, 150, 243, 0.6)',
+        NOISE_BORDER: '#2196f3',
+        CONC_COLORS: ['#f44336', '#ff9800', '#ffc107', '#8bc34a', '#4caf50'],
+        STUDENT_COLOR: '#ff9800',
+        STUDENT_BG: 'rgba(255, 152, 0, 0.2)',
+        PROF_COLOR: '#4caf50',
+        PROF_BG: 'rgba(76, 175, 80, 0.2)',
+      },
+      HISTOGRAM: {
+        TEMP_START: 18,       // 온도 히스토그램 시작값
+        TEMP_BIN_SIZE: 3,     // bin 폭 (℃)
+        NOISE_START: 30,      // 소음 히스토그램 시작값
+        NOISE_BIN_SIZE: 10,   // bin 폭 (dB)
+        BIN_COUNT: 5,
+      },
+      PREVIEW: {
+        GEN_ROWS: 20,         // 생성 미리보기 테이블 행 수
+        ANALYSIS_ROWS: 50,    // 분석 탭 테이블 행 수
+      },
+      TRAINING: {
+        MIN_DATA: 3,          // 최소 학습 데이터 수
+        DET_EPSILON: 1e-10,   // 행렬식 최소값
+      },
+      COMPARE: {
+        TEMPS: [18, 20, 22, 24, 26, 28, 30, 32],
+        FIXED_NOISE: 55,
+      },
+    };
+
+    // ===== 전역 변수 =====
+    let data = [];
+    let mlModel = { intercept: CONFIG.ML_DEFAULT.INTERCEPT, tempCoef: CONFIG.ML_DEFAULT.TEMP_COEF, noiseCoef: CONFIG.ML_DEFAULT.NOISE_COEF, rSquared: 0, trained: false };
+    let scatterTempChart, scatterNoiseChart, concentrationDistChart, histogramChart, compareChart;
+    
+    // ===== 유틸리티 =====
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    
+
+    function getIntervalConfig(interval) {
+      switch(interval) {
+        case 'period': return { timesPerDay: 6, timeLabels: ['1교시', '2교시', '3교시', '4교시', '5교시', '6교시'] };
+        case 'hour': return { timesPerDay: 8, timeLabels: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'] };
+        case '30min': {
+          const labels = [];
+          for (let h = 9; h <= 16; h++) { labels.push(`${h.toString().padStart(2,'0')}:00`); if (h < 16) labels.push(`${h.toString().padStart(2,'0')}:30`); }
+          return { timesPerDay: 16, timeLabels: labels };
+        }
+        case '10min': {
+          const labels = [];
+          for (let h = 9; h <= 16; h++) { for (let m = 0; m < 60; m += 10) { if (h === 16 && m > 0) break; labels.push(`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`); } }
+          return { timesPerDay: 48, timeLabels: labels };
+        }
+        case 'custom': {
+          const n = parseInt(document.getElementById('customInterval').value) || 6;
+          return { timesPerDay: n, timeLabels: Array.from({length: n}, (_, i) => `측정${i+1}`) };
+        }
+        default: return { timesPerDay: 6, timeLabels: ['1교시', '2교시', '3교시', '4교시', '5교시', '6교시'] };
+      }
+    }
+
+
+    function classifyConcentration(concentration) {
+      if (concentration >= CONFIG.CONCENTRATION.HIGH_THRESHOLD) return '높음';
+      if (concentration >= CONFIG.CONCENTRATION.MID_THRESHOLD) return '보통';
+      return '낮음';
+    }
+
+    // ===== 탭 전환 =====
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        if (btn.dataset.tab === 'overview') updateCharts();
+        if (btn.dataset.tab === 'compare') updateCompareChart();
+      });
+    });
+    
+    // ===== 샘플 데이터 =====
+    function loadSampleData() {
+      data = [
+        { date: '1/27', period: '1교시', temp: 24.5, noise: 55, concentration: 4 },
+        { date: '1/27', period: '2교시', temp: 25.2, noise: 68, concentration: 3 },
+        { date: '1/27', period: '3교시', temp: 26.1, noise: 72, concentration: 2 },
+        { date: '1/28', period: '1교시', temp: 23.8, noise: 48, concentration: 5 },
+        { date: '1/28', period: '2교시', temp: 24.2, noise: 52, concentration: 4 },
+        { date: '1/28', period: '3교시', temp: 25.5, noise: 65, concentration: 3 },
+        { date: '1/29', period: '1교시', temp: 22.5, noise: 45, concentration: 5 },
+        { date: '1/29', period: '2교시', temp: 27.0, noise: 75, concentration: 2 },
+        { date: '1/29', period: '3교시', temp: 26.5, noise: 70, concentration: 2 },
+        { date: '1/30', period: '1교시', temp: 24.0, noise: 50, concentration: 4 },
+        { date: '1/30', period: '2교시', temp: 25.8, noise: 62, concentration: 3 },
+        { date: '1/30', period: '3교시', temp: 27.5, noise: 78, concentration: 1 }
+      ];
+      updateAll();
+      alert('✅ 샘플 데이터 12건을 로드했습니다.');
+    }
+    
+    // ===== 랜덤 데이터 생성 =====
+    // --- 데이터 생성 핵심 로직 (순수 함수) ---
+    function buildRandomData(startDate, endDate, timesPerDay, timeLabels, tempRange, noiseRange, includeConc) {
+      const result = [];
+      let currentDate = new Date(startDate);
+      while (currentDate <= endDate) {
+        const dateStr = `${currentDate.getMonth() + 1}/${currentDate.getDate()}`;
+        for (let t = 0; t < timesPerDay; t++) {
+          const temp = Math.round((tempRange[0] + Math.random() * (tempRange[1] - tempRange[0])) * 10) / 10;
+          const noise = Math.round(noiseRange[0] + Math.random() * (noiseRange[1] - noiseRange[0]));
+          let concentration = null;
+          if (includeConc) {
+            concentration = CONFIG.DATA_GEN.BASE_SCORE
+              - (temp - CONFIG.DATA_GEN.TEMP_BASE) * CONFIG.DATA_GEN.TEMP_FACTOR
+              - (noise - CONFIG.DATA_GEN.NOISE_BASE) * CONFIG.DATA_GEN.NOISE_FACTOR
+              + (Math.random() - 0.5) * CONFIG.DATA_GEN.RANDOM_RANGE;
+            concentration = Math.round(Math.max(CONFIG.CONCENTRATION.MIN, Math.min(CONFIG.CONCENTRATION.MAX, concentration)));
+          }
+          result.push({ date: dateStr, period: timeLabels[t % timeLabels.length], temp, noise, concentration });
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      return result;
+    }
+
+    // --- UI 이벤트 핸들러 ---
+    function generateRandomData() {
+      const startDate = new Date(document.getElementById('startDate').value);
+      const endDate = new Date(document.getElementById('endDate').value);
+      if (endDate < startDate) { alert('❌ 종료일이 시작일보다 빠릅니다.'); return; }
+
+      const interval = document.getElementById('collectionInterval').value;
+      const { timesPerDay, timeLabels } = getIntervalConfig(interval);
+      const tempRange = [parseFloat(document.getElementById('tempMin').value), parseFloat(document.getElementById('tempMax').value)];
+      const noiseRange = [parseFloat(document.getElementById('noiseMin').value), parseFloat(document.getElementById('noiseMax').value)];
+      const includeConc = document.getElementById('includeConcentration').value === 'yes';
+
+      const startTime = performance.now();
+      data = buildRandomData(startDate, endDate, timesPerDay, timeLabels, tempRange, noiseRange, includeConc);
+      const elapsed = performance.now() - startTime;
+
+      updateAll();
+      showGeneratedDataPreview();
+      const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+      alert(`✅ 가상 데이터 생성 완료!\n\n📅 기간: ${days}일\n⏱️ 간격: 하루 ${timesPerDay}회\n📊 총 데이터: ${data.length.toLocaleString()}건\n⏱️ 소요 시간: ${elapsed.toFixed(1)}ms`);
+    }
+    
+    // ===== 수집 간격 변경 이벤트 =====
+    document.getElementById('collectionInterval').addEventListener('change', (e) => {
+      document.getElementById('customIntervalDiv').style.display = e.target.value === 'custom' ? 'block' : 'none';
+      updateGeneratePreview();
+    });
+    
+    // 날짜 변경시 미리보기 업데이트
+    document.getElementById('startDate').addEventListener('change', updateGeneratePreview);
+    document.getElementById('endDate').addEventListener('change', updateGeneratePreview);
+    document.getElementById('customInterval').addEventListener('change', updateGeneratePreview);
+    
+    function updateGeneratePreview() {
+      const startDate = new Date(document.getElementById('startDate').value);
+      const endDate = new Date(document.getElementById('endDate').value);
+      const interval = document.getElementById('collectionInterval').value;
+      
+      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return;
+      
+      const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+      if (days <= 0) {
+        document.getElementById('dataGeneratePreview').style.display = 'none';
+        return;
+      }
+      
+      const { timesPerDay } = getIntervalConfig(interval);
+      
+      const total = days * timesPerDay;
+      document.getElementById('previewText').textContent = `${days}일 × 하루 ${timesPerDay}회 = 총 ${total.toLocaleString()}건 예상`;
+      document.getElementById('dataGeneratePreview').style.display = 'block';
+    }
+    
+    // ===== 생성된 데이터 미리보기 =====
+    function showGeneratedDataPreview() {
+      if (data.length === 0) {
+        document.getElementById('generatedDataPreview').style.display = 'none';
+        return;
+      }
+      
+      document.getElementById('generatedDataPreview').style.display = 'block';
+      document.getElementById('genDataCount').textContent = data.length.toLocaleString();
+      
+      const avgTemp = (data.reduce((s, d) => s + d.temp, 0) / data.length).toFixed(1);
+      const avgNoise = (data.reduce((s, d) => s + d.noise, 0) / data.length).toFixed(1);
+      document.getElementById('genAvgTemp').textContent = avgTemp + '℃';
+      document.getElementById('genAvgNoise').textContent = avgNoise + 'dB';
+      
+      const validConc = data.filter(d => d.concentration !== null);
+      const avgConc = validConc.length > 0 
+        ? (validConc.reduce((s, d) => s + d.concentration, 0) / validConc.length).toFixed(1) 
+        : '-';
+      document.getElementById('genAvgConc').textContent = avgConc;
+      
+      // 테이블 미리보기 (처음 20건)
+      const preview = data.slice(0, CONFIG.PREVIEW.GEN_ROWS);
+      document.getElementById('genDataTableBody').innerHTML = preview.map((d, i) => 
+        `<tr><td>${i + 1}</td><td>${escapeHtml(d.date)}</td><td>${escapeHtml(d.period)}</td><td>${d.temp}</td><td>${d.noise}</td><td>${d.concentration !== null ? d.concentration : '-'}</td></tr>`
+      ).join('');
+      
+      document.getElementById('genDataMoreInfo').textContent = data.length > CONFIG.PREVIEW.GEN_ROWS 
+        ? `... 외 ${(data.length - CONFIG.PREVIEW.GEN_ROWS).toLocaleString()}건 더 있음 (전체 데이터는 "데이터 분석" 탭에서 확인)` 
+        : '';
+    }
+    
+    // ===== 데이터 분석 탭으로 이동 =====
+    function goToAnalysis() {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelector('[data-tab="overview"]').classList.add('active');
+      document.getElementById('tab-overview').classList.add('active');
+      updateCharts();
+    }
+    
+    // ===== CSV 파일 업로드 =====
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => parseCSV(e.target.result);
+      reader.readAsText(file);
+    }
+    
+    function parseCSVInput() {
+      const text = document.getElementById('csvInput').value;
+      if (!text.trim()) { alert('CSV 텍스트를 입력해주세요.'); return; }
+      parseCSV(text);
+    }
+    
+    function parseCSV(text) {
+      const lines = text.trim().split('\n');
+      data = [];
+      const firstLine = lines[0].split(',');
+      const startIdx = isNaN(parseFloat(firstLine[2])) ? 1 : 0;
+      for (let i = startIdx; i < lines.length; i++) {
+        const cols = lines[i].split(',');
+        if (cols.length >= 4) {
+          data.push({
+            date: cols[0].trim(), period: cols[1].trim(),
+            temp: parseFloat(cols[2]), noise: parseFloat(cols[3]),
+            concentration: cols[4] ? parseInt(cols[4]) : null
+          });
+        }
+      }
+      updateAll();
+      alert(`✅ ${data.length}건 데이터를 가져왔습니다.`);
+    }
+    
+    // ===== 전체 업데이트 =====
+    function updateAll() {
+      updateDataDisplay();
+      updateCharts();
+      updateAccuracy();
+      document.getElementById('trainDataCount').textContent = data.length;
+    }
+    
+    // ===== 통계 및 테이블 업데이트 =====
+    function updateDataDisplay() {
+      const statsDiv = document.getElementById('dataStats');
+      if (data.length > 0) {
+        const avgTemp = (data.reduce((s, d) => s + d.temp, 0) / data.length).toFixed(1);
+        const avgNoise = (data.reduce((s, d) => s + d.noise, 0) / data.length).toFixed(1);
+        const validConc = data.filter(d => d.concentration !== null);
+        const avgConc = validConc.length > 0 ? (validConc.reduce((s, d) => s + d.concentration, 0) / validConc.length).toFixed(1) : '-';
+        statsDiv.innerHTML = `
+          <div class="stat-card primary"><div class="stat-value">${data.length.toLocaleString()}</div><div class="stat-label">총 데이터</div></div>
+          <div class="stat-card danger"><div class="stat-value">${avgTemp}℃</div><div class="stat-label">평균 온도</div></div>
+          <div class="stat-card info"><div class="stat-value">${avgNoise}dB</div><div class="stat-label">평균 소음</div></div>
+          <div class="stat-card success"><div class="stat-value">${avgConc}</div><div class="stat-label">평균 집중도</div></div>
+        `;
+        document.getElementById('studentAccuracyCard').style.display = validConc.length > 0 ? 'block' : 'none';
+      } else {
+        statsDiv.innerHTML = `
+          <div class="stat-card primary"><div class="stat-value">0</div><div class="stat-label">총 데이터</div></div>
+          <div class="stat-card danger"><div class="stat-value">-</div><div class="stat-label">평균 온도</div></div>
+          <div class="stat-card info"><div class="stat-value">-</div><div class="stat-label">평균 소음</div></div>
+          <div class="stat-card success"><div class="stat-value">-</div><div class="stat-label">평균 집중도</div></div>
+        `;
+        document.getElementById('studentAccuracyCard').style.display = 'none';
+      }
+      const tbody = document.getElementById('dataTableBody');
+      const preview = data.slice(0, CONFIG.PREVIEW.ANALYSIS_ROWS);
+      if (preview.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-gray">데이터가 없습니다</td></tr>';
+        document.getElementById('dataMoreInfo').textContent = '';
+      } else {
+        tbody.innerHTML = preview.map((d, i) => `<tr><td>${i + 1}</td><td>${escapeHtml(d.date)}</td><td>${escapeHtml(d.period)}</td><td>${d.temp}</td><td>${d.noise}</td><td>${d.concentration !== null ? d.concentration : '-'}</td></tr>`).join('');
+        document.getElementById('dataMoreInfo').textContent = data.length > CONFIG.PREVIEW.ANALYSIS_ROWS ? `... 외 ${(data.length - CONFIG.PREVIEW.ANALYSIS_ROWS).toLocaleString()}건 더 있음` : '';
+      }
+    }
+    
+    // ===== 차트 업데이트 =====
+    function updateCharts() {
+      const validData = data.filter(d => d.concentration !== null);
+      const chartOptions = { responsive: true, plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#333' }, ticks: { color: '#888' } }, y: { grid: { color: '#333' }, ticks: { color: '#888' }, min: 0, max: 5 } } };
+      
+      // 온도 산점도
+      const ctxTemp = document.getElementById('scatterTempChart').getContext('2d');
+      if (scatterTempChart) scatterTempChart.destroy();
+      scatterTempChart = new Chart(ctxTemp, {
+        type: 'scatter',
+        data: { datasets: [{ data: validData.map(d => ({ x: d.temp, y: d.concentration })), backgroundColor: CONFIG.CHART.TEMP_COLOR, borderColor: CONFIG.CHART.TEMP_BORDER, pointRadius: CONFIG.CHART.POINT_RADIUS }] },
+        options: { ...chartOptions, scales: { ...chartOptions.scales, x: { ...chartOptions.scales.x, title: { display: true, text: '온도 (℃)', color: '#888' } }, y: { ...chartOptions.scales.y, title: { display: true, text: '집중도', color: '#888' } } } }
+      });
+      
+      // 소음 산점도
+      const ctxNoise = document.getElementById('scatterNoiseChart').getContext('2d');
+      if (scatterNoiseChart) scatterNoiseChart.destroy();
+      scatterNoiseChart = new Chart(ctxNoise, {
+        type: 'scatter',
+        data: { datasets: [{ data: validData.map(d => ({ x: d.noise, y: d.concentration })), backgroundColor: CONFIG.CHART.NOISE_COLOR, borderColor: CONFIG.CHART.NOISE_BORDER, pointRadius: CONFIG.CHART.POINT_RADIUS }] },
+        options: { ...chartOptions, scales: { ...chartOptions.scales, x: { ...chartOptions.scales.x, title: { display: true, text: '소음 (dB)', color: '#888' } }, y: { ...chartOptions.scales.y, title: { display: true, text: '집중도', color: '#888' } } } }
+      });
+      
+      // 집중도 분포
+      const concCounts = new Array(CONFIG.CONCENTRATION.MAX).fill(0);
+      validData.forEach(d => { if (d.concentration >= CONFIG.CONCENTRATION.MIN && d.concentration <= CONFIG.CONCENTRATION.MAX) concCounts[d.concentration - CONFIG.CONCENTRATION.MIN]++; });
+      const ctxDist = document.getElementById('concentrationDistChart').getContext('2d');
+      if (concentrationDistChart) concentrationDistChart.destroy();
+      concentrationDistChart = new Chart(ctxDist, {
+        type: 'bar',
+        data: { labels: ['1점', '2점', '3점', '4점', '5점'], datasets: [{ data: concCounts, backgroundColor: CONFIG.CHART.CONC_COLORS }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#333' }, ticks: { color: '#888' } }, x: { grid: { color: '#333' }, ticks: { color: '#888' } } } }
+      });
+      
+      // 온도/소음 히스토그램
+      const tempBins = new Array(CONFIG.HISTOGRAM.BIN_COUNT).fill(0), noiseBins = new Array(CONFIG.HISTOGRAM.BIN_COUNT).fill(0);
+      data.forEach(d => {
+        tempBins[Math.min(CONFIG.HISTOGRAM.BIN_COUNT - 1, Math.max(0, Math.floor((d.temp - CONFIG.HISTOGRAM.TEMP_START) / CONFIG.HISTOGRAM.TEMP_BIN_SIZE)))]++;
+        noiseBins[Math.min(CONFIG.HISTOGRAM.BIN_COUNT - 1, Math.max(0, Math.floor((d.noise - CONFIG.HISTOGRAM.NOISE_START) / CONFIG.HISTOGRAM.NOISE_BIN_SIZE)))]++;
+      });
+      const ctxHist = document.getElementById('histogramChart').getContext('2d');
+      if (histogramChart) histogramChart.destroy();
+      histogramChart = new Chart(ctxHist, {
+        type: 'bar',
+        data: { labels: ['낮음', '약간낮음', '보통', '약간높음', '높음'], datasets: [{ label: '온도', data: tempBins, backgroundColor: CONFIG.CHART.TEMP_COLOR }, { label: '소음', data: noiseBins, backgroundColor: CONFIG.CHART.NOISE_COLOR }] },
+        options: { responsive: true, plugins: { legend: { labels: { color: '#888' } } }, scales: { y: { beginAtZero: true, grid: { color: '#333' }, ticks: { color: '#888' } }, x: { grid: { color: '#333' }, ticks: { color: '#888' } } } }
+      });
+    }
+    
+    function updateCompareChart() {
+      const temps = CONFIG.COMPARE.TEMPS;
+      const studentResults = temps.map(t => { const p = predictStudent(t, CONFIG.COMPARE.FIXED_NOISE); return p.level === '높음' ? CONFIG.CONCENTRATION.MAX : p.level === '보통' ? CONFIG.CONCENTRATION.MID_THRESHOLD : CONFIG.CONCENTRATION.MIN; });
+      const profResults = temps.map(t => parseFloat(predictProfessor(t, CONFIG.COMPARE.FIXED_NOISE).score));
+      const ctx = document.getElementById('compareChart').getContext('2d');
+      if (compareChart) compareChart.destroy();
+      compareChart = new Chart(ctx, {
+        type: 'line',
+        data: { labels: temps.map(t => t + '℃'), datasets: [{ label: '학생 모델', data: studentResults, borderColor: CONFIG.CHART.STUDENT_COLOR, backgroundColor: CONFIG.CHART.STUDENT_BG, tension: 0.1, fill: true }, { label: '교수 모델', data: profResults, borderColor: CONFIG.CHART.PROF_COLOR, backgroundColor: CONFIG.CHART.PROF_BG, tension: 0.3, fill: true }] },
+        options: { responsive: true, plugins: { legend: { labels: { color: '#888' } } }, scales: { y: { min: 0, max: 5, title: { display: true, text: '집중도', color: '#888' }, grid: { color: '#333' }, ticks: { color: '#888' } }, x: { title: { display: true, text: `온도 (소음 ${CONFIG.COMPARE.FIXED_NOISE}dB 고정)`, color: '#888' }, grid: { color: '#333' }, ticks: { color: '#888' } } } }
+      });
+    }
+    
+    function clearData() { if (confirm('모든 데이터를 삭제하시겠습니까?')) { data = []; mlModel.trained = false; updateAll(); } }
+    
+    function exportCSV() {
+      if (data.length === 0) { alert('내보낼 데이터가 없습니다.'); return; }
+      let csv = '날짜,시간대,온도,소음,집중도\n';
+      data.forEach(d => { csv += `${d.date},${d.period},${d.temp},${d.noise},${d.concentration !== null ? d.concentration : ''}\n`; });
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `수업집중도데이터_${new Date().toISOString().slice(0, 10)}.csv`;
+      link.click();
+    }
+    
+    // ===== 학생 모델 =====
+    function updateStudentRules() {
+      const highTemp = document.getElementById('highTempThreshold').value;
+      const highNoise = document.getElementById('highNoiseThreshold').value;
+      const lowTemp = document.getElementById('lowTempThreshold').value;
+      const lowNoise = document.getElementById('lowNoiseThreshold').value;
+      document.getElementById('highTempValue').textContent = highTemp + '℃';
+      document.getElementById('highNoiseValue').textContent = highNoise + 'dB';
+      document.getElementById('lowTempValue').textContent = lowTemp + '℃';
+      document.getElementById('lowNoiseValue').textContent = lowNoise + 'dB';
+      document.getElementById('ruleHighTemp').textContent = highTemp;
+      document.getElementById('ruleHighNoise').textContent = highNoise;
+      document.getElementById('ruleLowTemp').textContent = lowTemp;
+      document.getElementById('ruleLowNoise').textContent = lowNoise;
+      document.getElementById('flowHighTemp').textContent = highTemp;
+      document.getElementById('flowHighNoise').textContent = highNoise;
+      updateStudentTest();
+      updateAccuracy();
+      updateCompare();
+    }
+    
+    function predictStudent(temp, noise) {
+      const highTemp = parseInt(document.getElementById('highTempThreshold').value);
+      const highNoise = parseInt(document.getElementById('highNoiseThreshold').value);
+      const lowTemp = parseInt(document.getElementById('lowTempThreshold').value);
+      const lowNoise = parseInt(document.getElementById('lowNoiseThreshold').value);
+      if (temp >= highTemp || noise >= highNoise) return { level: '낮음', emoji: '🔴', class: 'low' };
+      if (temp <= lowTemp && noise <= lowNoise) return { level: '높음', emoji: '🟢', class: 'high' };
+      return { level: '보통', emoji: '🟡', class: 'medium' };
+    }
+    
+    function updateStudentTest() {
+      const temp = parseFloat(document.getElementById('testTempStudent').value);
+      const noise = parseInt(document.getElementById('testNoiseStudent').value);
+      document.getElementById('testTempStudentValue').textContent = temp + '℃';
+      document.getElementById('testNoiseStudentValue').textContent = noise + 'dB';
+      document.getElementById('flowTemp').textContent = temp;
+      document.getElementById('flowNoise').textContent = noise;
+      const result = predictStudent(temp, noise);
+      const box = document.getElementById('studentPredictionResult');
+      box.className = 'prediction-box ' + result.class;
+      box.innerHTML = `<div class="prediction-level">${result.emoji} ${result.level}</div><div class="prediction-desc">규칙에 따른 판단 결과</div>`;
+    }
+    
+    // ===== 교수 모델 =====
+    function predictProfessor(temp, noise) {
+      let score = mlModel.intercept + (temp * mlModel.tempCoef) + (noise * mlModel.noiseCoef);
+      score = Math.max(CONFIG.CONCENTRATION.MIN, Math.min(CONFIG.CONCENTRATION.MAX, score));
+      let level, emoji, cls;
+      if (score >= CONFIG.CONCENTRATION.HIGH_THRESHOLD) { level = '높음'; emoji = '🟢'; cls = 'high'; }
+      else if (score >= CONFIG.CONCENTRATION.MID_THRESHOLD) { level = '보통'; emoji = '🟡'; cls = 'medium'; }
+      else { level = '낮음'; emoji = '🔴'; cls = 'low'; }
+      return { score: score.toFixed(2), level, emoji, class: cls };
+    }
+    
+    function updateProfTest() {
+      const temp = parseFloat(document.getElementById('testTempProf').value);
+      const noise = parseInt(document.getElementById('testNoiseProf').value);
+      document.getElementById('testTempProfValue').textContent = temp + '℃';
+      document.getElementById('testNoiseProfValue').textContent = noise + 'dB';
+      const result = predictProfessor(temp, noise);
+      const box = document.getElementById('profPredictionResult');
+      box.className = 'prediction-box ' + result.class;
+      box.innerHTML = `<div class="prediction-level">${result.score}점</div><div class="prediction-desc">${result.emoji} ${result.level} 수준</div>`;
+    }
+    
+    function trainMLModel() {
+      const validData = data.filter(d => d.concentration !== null);
+      if (validData.length < CONFIG.TRAINING.MIN_DATA) { alert(`학습에 필요한 데이터가 부족합니다. (최소 ${CONFIG.TRAINING.MIN_DATA}건 필요)`); return; }
+      const startTime = performance.now();
+      const n = validData.length;
+      let sumX1 = 0, sumX2 = 0, sumY = 0;
+      validData.forEach(d => { sumX1 += d.temp; sumX2 += d.noise; sumY += d.concentration; });
+      const meanX1 = sumX1 / n, meanX2 = sumX2 / n, meanY = sumY / n;
+      let cov11 = 0, cov12 = 0, cov22 = 0, covY1 = 0, covY2 = 0;
+      validData.forEach(d => {
+        const dx1 = d.temp - meanX1, dx2 = d.noise - meanX2, dy = d.concentration - meanY;
+        cov11 += dx1 * dx1; cov12 += dx1 * dx2; cov22 += dx2 * dx2; covY1 += dy * dx1; covY2 += dy * dx2;
+      });
+      const det = cov11 * cov22 - cov12 * cov12;
+      if (Math.abs(det) < CONFIG.TRAINING.DET_EPSILON) { alert('데이터의 변동이 너무 작아 학습할 수 없습니다.'); return; }
+      mlModel.tempCoef = (cov22 * covY1 - cov12 * covY2) / det;
+      mlModel.noiseCoef = (cov11 * covY2 - cov12 * covY1) / det;
+      mlModel.intercept = meanY - mlModel.tempCoef * meanX1 - mlModel.noiseCoef * meanX2;
+      let ssRes = 0, ssTot = 0;
+      validData.forEach(d => {
+        const pred = mlModel.intercept + mlModel.tempCoef * d.temp + mlModel.noiseCoef * d.noise;
+        ssRes += Math.pow(d.concentration - pred, 2);
+        ssTot += Math.pow(d.concentration - meanY, 2);
+      });
+      mlModel.rSquared = 1 - (ssRes / ssTot);
+      mlModel.trained = true;
+      const elapsed = performance.now() - startTime;
+      document.getElementById('mlModelInfo').textContent = `집중도 = ${mlModel.intercept.toFixed(2)} + (온도 × ${mlModel.tempCoef.toFixed(4)}) + (소음 × ${mlModel.noiseCoef.toFixed(4)})`;
+      document.getElementById('tempCoef').textContent = mlModel.tempCoef.toFixed(4);
+      document.getElementById('noiseCoef').textContent = mlModel.noiseCoef.toFixed(4);
+      document.getElementById('rSquared').textContent = (mlModel.rSquared * 100).toFixed(1) + '%';
+      document.getElementById('trainingTime').textContent = `⏱️ ${elapsed.toFixed(2)}ms | 📊 ${n.toLocaleString()}건`;
+      document.getElementById('modelFormula1').textContent = `집중도 = ${mlModel.intercept.toFixed(2)}`;
+      document.getElementById('modelFormula2').textContent = `+ 온도 × (${mlModel.tempCoef.toFixed(2)})`;
+      document.getElementById('modelFormula3').textContent = `+ 소음 × (${mlModel.noiseCoef.toFixed(4)})`;
+      updateProfTest();
+      updateAccuracy();
+      updateCompare();
+      alert(`✅ 학습 완료!\n- 데이터: ${n.toLocaleString()}건\n- 학습 시간: ${elapsed.toFixed(2)}ms\n- R²: ${(mlModel.rSquared * 100).toFixed(1)}%`);
+    }
+    
+    function updateAccuracy() {
+      const validData = data.filter(d => d.concentration !== null);
+      if (validData.length === 0) return;
+      let studentCorrect = 0;
+      validData.forEach(d => {
+        const pred = predictStudent(d.temp, d.noise);
+        const actual = classifyConcentration(d.concentration);
+        if (pred.level === actual) studentCorrect++;
+      });
+      const studentAcc = Math.round((studentCorrect / validData.length) * 100);
+      document.getElementById('studentAccuracy').textContent = studentAcc + '%';
+      document.getElementById('compareStudentAcc').textContent = studentAcc + '%';
+      if (mlModel.trained) {
+        let profCorrect = 0;
+        validData.forEach(d => {
+          const pred = predictProfessor(d.temp, d.noise);
+          const actual = classifyConcentration(d.concentration);
+          if (pred.level === actual) profCorrect++;
+        });
+        const profAcc = Math.round((profCorrect / validData.length) * 100);
+        document.getElementById('compareProfAcc').textContent = profAcc + '%';
+      }
+    }
+    
+    function updateCompare() {
+      const temp = parseFloat(document.getElementById('compareTempSlider').value);
+      const noise = parseInt(document.getElementById('compareNoiseSlider').value);
+      document.getElementById('compareTempValue').textContent = temp + '℃';
+      document.getElementById('compareNoiseValue').textContent = noise + 'dB';
+      const studentResult = predictStudent(temp, noise);
+      const studentBox = document.getElementById('compareStudentResult');
+      studentBox.className = 'prediction-box ' + studentResult.class;
+      studentBox.innerHTML = `<div class="prediction-level">${studentResult.emoji} ${studentResult.level}</div>`;
+      const profResult = predictProfessor(temp, noise);
+      const profBox = document.getElementById('compareProfResult');
+      profBox.className = 'prediction-box ' + profResult.class;
+      profBox.innerHTML = `<div class="prediction-level">${profResult.score}점</div><div class="prediction-desc">${profResult.emoji} ${profResult.level}</div>`;
+    }
+    
+    // ===== 초기화 =====
+    updateStudentRules();
+    updateProfTest();
+    updateCompare();
+    updateGeneratePreview();
+  </script>
+</body>
+</html>

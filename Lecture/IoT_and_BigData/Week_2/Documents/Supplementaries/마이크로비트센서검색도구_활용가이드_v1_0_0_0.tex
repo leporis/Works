@@ -1,0 +1,195 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}마이크로비트 센서 검색 도구 활용가이드 v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{magnifying-glass-tilted-left} 마이크로비트 센서 검색 도구}\\[0.5cm]
+{\Huge\bfseries\color{primary} 활용가이드}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v1.0.3.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 활용가이드는 마이크로비트 센서 검색 도구의 수업 적용 방법을 안내합니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{1. 수업 개요}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.8cm}|p{12.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{내용} \\
+\hline
+강좌 & 사물인터넷과 빅데이터 \\
+\hline
+적용 주차 & 2\textasciitilde{}3주차 \\
+\hline
+자료 역할 & 참고자료 \\
+\hline
+대상 & 4학년 (프로그래밍 비전공, 초등 예비교사) \\
+\hline
+수업 시간 & 45분 (1차시) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{1.1 학습 목표}
+
+$\bullet$ 연구 질문을 '측정 가능한 질문'으로 변환할 수 있다
+
+$\bullet$ 프로젝트에 필요한 센서 조합을 검색 도구로 탐색할 수 있다
+
+$\bullet$ 내장 센서와 외장 센서의 선택 기준을 설명할 수 있다
+
+
+
+\section*{2. 수업 시나리오 (45분)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{1.5cm}|p{8.9cm}|p{3.1cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{시간} & \textbf{활동} & \textbf{시뮬레이터 활용} \\
+\hline
+도입 & 5분 & "여러분의 프로젝트에는 어떤 센서가 필요할까요?" & — \\
+\hline
+탐색 & 10분 & 텍스트 검색으로 다양한 키워드 입력해보기 & \emoji{speech-balloon} 텍스트 검색 \\
+\hline
+실습 & 15분 & 프로젝트 주제에 맞는 데이터 항목 선택 \textrightarrow{} 조합 확인 & \emoji{bar-chart} 데이터 검색 \\
+\hline
+기획 & 10분 & 추천된 센서 조합을 프로젝트 기획서에 기록 & 결과 패널 \\
+\hline
+정리 & 5분 & 내장 충분 vs Grove 필요 판단 기준 정리 & — \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{3. 학습 질문}
+
+\subsection*{초급 (이해)}
+
+$\bullet$ Q: 텍스트 검색과 데이터 검색의 차이는 무엇인가요?
+
+$\bullet$ Q: '내장 센서로 충분'이라는 결과는 무엇을 의미하나요?
+
+
+\subsection*{중급 (적용)}
+
+$\bullet$ Q: '교실 소음 측정' 프로젝트에 필요한 센서를 검색해보세요.
+
+$\bullet$ Q: 검색 결과에서 추천된 센서 조합의 장단점을 비교해보세요.
+
+
+\subsection*{고급 (분석)}
+
+$\bullet$ Q: '학생들의 집중도를 측정하고 싶다'는 질문이 왜 직접 검색이 안 되나요?
+
+$\bullet$ Q: 측정 가능한 질문으로 어떻게 변환할 수 있나요?
+
+
+\subsection*{확장 (창의)}
+
+$\bullet$ Q: 여러분의 프로젝트 주제에 맞는 최적의 센서 조합을 찾아 발표해보세요.
+
+$\bullet$ Q: 센서 검색 도구가 없다면 어떻게 적합한 센서를 찾을 수 있을까요?
+
+
+
+\section*{4. 학생 활동지}
+
+\subsection*{활동: 내용 탐색하기}
+
+\textbf{목표}: 848가지 센서 조합에서 프로젝트에 필요한 조합을 찾는 검색 도구
+
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{5.6cm}|p{7.9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{활동} & \textbf{기록} \\
+\hline
+1 & 화면 전체 구조 파악 & 주요 영역: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ \\
+\hline
+2 & 핵심 기능 탐색 & 발견한 것: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ \\
+\hline
+3 & 프로젝트와 연결 & 활용 방안: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{5. 평가 관찰 체크리스트}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.0cm}|p{6.3cm}|p{3.4cm}|p{2.3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{평가 항목} & \textbf{상} & \textbf{중} & \textbf{하} \\
+\hline
+핵심 개념 이해 & 관련 원리를 정확히 설명 & 대략적으로 이해 & 이해 부족 \\
+\hline
+실습 참여도 & 적극적으로 탐색·기록 & 지시에 따라 수행 & 소극적 참여 \\
+\hline
+프로젝트 연결 & 자기 프로젝트에 적용 방안 제시 & 일부 연결 시도 & 연결 미시도 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{6. 수업 팁}
+
+$\bullet$ \emoji{light-bulb} 먼저 텍스트 검색으로 감을 잡은 뒤 데이터 검색으로 구체화하세요
+
+$\bullet$ \emoji{light-bulb} "측정 불가능한 질문"을 일부러 검색하게 해서 '측정 가능한 질문 만들기'를 체험하게 하세요
+
+$\bullet$ \emoji{light-bulb} 검색 결과를 프로젝트 기획서에 바로 옮겨 적도록 활동지를 준비하세요
+
+
+
+\section*{7. 관련 자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{7.1cm}|p{6.4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{비고} \\
+\hline
+1 & 마이크로비트센서검색도구\_퀵가이드 & 소프트웨어 사용 중 빠른 참조 \\
+\hline
+2 & 마이크로비트센서검색도구\_사용설명서 & 전체 기능 상세 \\
+\hline
+3 & 마이크로비트센서검색도구\_이론해설서 & 배경 이론 \\
+\hline
+4 & 마이크로비트센서검색도구\_개발참조 & 기술 사양 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{마이크로비트 센서 검색 도구 활용가이드}
+\end{center}
+\end{document}

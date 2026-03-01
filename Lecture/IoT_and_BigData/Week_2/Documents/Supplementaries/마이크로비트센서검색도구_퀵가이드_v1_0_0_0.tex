@@ -1,0 +1,196 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}마이크로비트 센서 검색 도구 퀵가이드 v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{magnifying-glass-tilted-left} 마이크로비트 센서 검색 도구}\\[0.5cm]
+{\Huge\bfseries\color{primary} 퀵가이드}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v1.0.3.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 퀵가이드는 마이크로비트 센서 검색 도구와 함께 보는 내비게이션입니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{\emoji{open-book} 이 문서 사용법}
+
+\begin{tcolorbox}[tipbox]
+\textbf{이 퀵가이드는 센서 검색 도구와 함께 보는 내비게이션입니다.}
+
+\end{tcolorbox}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{9.6cm}|p{5.4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{상황} & \textbf{참조 섹션} \\
+\hline
+처음 시작 & \emoji{high-voltage} 초속성 실습 \\
+\hline
+검색 방법이 헷갈림 & \emoji{rocket} 빠른 시작 \\
+\hline
+결과를 어떻게 읽는지 모름 & \emoji{magnifying-glass-tilted-left} 관찰 포인트 \\
+\hline
+문제 발생 & \emoji{sos} 트러블슈팅 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{high-voltage} 1분 초속성 실습}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{8.3cm}|p{5.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{행동} & \textbf{확인} \\
+\hline
+1 & \textbf{\emoji{speech-balloon} 텍스트로 검색} 탭에서 검색창에 \textbf{"온도"} 입력 &  \\
+\hline
+2 & \textbf{검색} 버튼 클릭 & 결과에 센서 목록이 나타났나요? \\
+\hline
+3 & "내장 센서로 충분" 또는 "Grove 센서 추천" 메시지 확인 & 추천 결과가 보이면 \emoji{party-popper} \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{rocket} 빠른 시작 (2가지 방법)}
+
+\subsection*{방법 1: \emoji{speech-balloon} 텍스트로 검색}
+
+\textbf{"무엇을 하고 싶은지"} 키워드로 검색합니다.
+
+
+1. 검색창에 키워드 입력 (예: "온도", "거리", "색깔")
+
+2. \textbf{검색} 클릭 또는 Enter
+
+3. 결과: 해당 키워드와 관련된 센서 목록 + 추천
+
+
+\begin{tcolorbox}[tipbox, title={\emoji{light-bulb} 팁}]
+\emoji{light-bulb} 추천 키워드 버튼을 활용하면 더 빠릅니다!
+
+\end{tcolorbox}
+
+\subsection*{방법 2: \emoji{bar-chart} 데이터로 검색}
+
+\textbf{"어떤 데이터가 필요한지"} 체크박스로 선택합니다.
+
+
+1. \textbf{\emoji{bar-chart} 데이터로 검색} 탭 클릭
+
+2. 필요한 데이터 항목에 체크 (예: \emoji{check-mark-button} 온도, \emoji{check-mark-button} 습도)
+
+3. 자동으로 필요한 센서 조합 추천
+
+
+\begin{tcolorbox}[tipbox, title={\emoji{light-bulb} 팁}]
+\emoji{light-bulb} 내장 센서로 충분한 항목은 별도로 알려줍니다. 불필요한 외장 센서를 아낄 수 있어요!
+
+\end{tcolorbox}
+
+
+\section*{\emoji{desktop-computer} 화면 구성}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{images/S5_SensorSearch_screen.png}
+\end{center}
+
+
+\section*{\emoji{magnifying-glass-tilted-left} 관찰 포인트}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{4.2cm}|p{5.1cm}|p{5.7cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{관찰 대상} & \textbf{찾아볼 장면} & \textbf{의미} \\
+\hline
+"내장 센서로 충분" 메시지 & \emoji{green-circle} 배지 표시 & 추가 센서 없이 프로젝트 가능 \\
+\hline
+"Grove 센서 추천" & \emoji{blue-circle} 카드 목록 & 내장으로 부족해서 외장 필요 \\
+\hline
+데이터 항목 수 & 체크 개수 증가 \textrightarrow{} 센서 수 증가 & "많이 측정하려면 센서도 많이 필요" \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{sos} 도와주세요!}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{4.7cm}|p{3.6cm}|p{6.7cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{증상} & \textbf{원인} & \textbf{해결책} \\
+\hline
+검색 결과가 없어요 & 키워드가 너무 구체적 & 더 일반적인 단어 사용 (예: "습기" \textrightarrow{} "습도") \\
+\hline
+데이터 탭에서 아무 것도 안 돼요 & 체크박스를 선택하지 않음 & 최소 1개 이상 데이터 항목 체크 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{key} 핵심 용어}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.2cm}|p{6.7cm}|p{6.0cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{용어} & \textbf{의미} & \textbf{쉬운 설명} \\
+\hline
+센서 조합 & 여러 센서를 함께 사용하는 구성 & 프로젝트에 필요한 센서 세트 \\
+\hline
+내장 센서 & 마이크로비트 기본 탑재 & 무료, 추가 장비 불필요 \\
+\hline
+Grove 센서 & I2C로 추가 연결하는 외장 센서 & 더 정밀·다양한 측정 가능 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{참고자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{9.1cm}|p{2.1cm}|p{2.3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & 마이크로비트센서검색도구\_v1.0.3.0 & HTML 파일 & 시뮬레이터 \\
+\hline
+2 & 마이크로비트센서검색도구\_개발참조\_v1.0.0.0 & 문서 & 기술 상세 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{마이크로비트 센서 검색 도구 퀵가이드}
+\end{center}
+\end{document}

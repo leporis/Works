@@ -1,0 +1,2290 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마이크로비트 Grove I2C 센서 시뮬레이터 v9.2</title>
+  <style>
+    /* ===== 相색 변수 체계 (L3-IoT §3 다크 테마) ===== */
+    :root {
+      /* 1단계: 패렛 */
+      --color-bg-900:         #1a1a2e;
+      --color-bg-800:         #16213e;
+      --color-bg-surface:     #0f0f23;
+      --color-accent-500:     #00d4ff;
+      --color-builtin-500:    #4caf50;
+      --color-datalogger-500: #9c27b0;
+      --color-external-500:   #2196f3;
+      /* 2단계: 의미적 별칭 */
+      --primary:          var(--color-accent-500);
+      --bg-body:          var(--color-bg-900);
+      --bg-card:          var(--color-bg-800);
+      --bg-surface:       var(--color-bg-surface);
+      --text-primary:     #e0e0e0;
+      --text-secondary:   #888;
+      --border-builtin:   var(--color-builtin-500);
+      --border-datalogger: var(--color-datalogger-500);
+      --border-external:  var(--color-external-500);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--bg-body) 0%, var(--bg-card) 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #fff;
+      user-select: none;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+      font-size: 1.6em;
+      color: var(--primary);
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 20px;
+      font-size: 0.9em;
+    }
+    
+    .simulator {
+      background: var(--bg-surface);
+      border-radius: 20px;
+      padding: 25px;
+    }
+    
+    /* ===== íˆ´íŒ ìŠ¤íƒ€ì¼ ===== */
+    .tooltip {
+      position: relative;
+    }
+    
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(145deg, #333, #222);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.8em;
+      font-weight: normal;
+      white-space: pre-line;
+      text-align: left;
+      min-width: 200px;
+      max-width: 280px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+      border: 1px solid #444;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      pointer-events: none;
+      line-height: 1.5;
+    }
+    
+    .tooltip::before {
+      content: '';
+      position: absolute;
+      bottom: calc(100% + 2px);
+      left: 50%;
+      transform: translateX(-50%);
+      border: 8px solid transparent;
+      border-top-color: #333;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1001;
+    }
+    
+    .tooltip:hover::after,
+    .tooltip:hover::before {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* ===== ë©”ì¸ ë³´ë“œ ì„¹ì…˜ ===== */
+    .main-boards {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+    
+    /* ===== ë§ˆì´í¬ë¡œë¹„íŠ¸ + Grove Shield í†µí•© ìœ ë‹› ===== */
+    .hardware-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    /* ë‚´ìž¥ ì„¼ì„œ (ë§ˆì´í¬ë¡œë¹„íŠ¸ ìœ„) */
+    .builtin-sensors-top {
+      background: linear-gradient(145deg, #1a2a1a, #0f1a0f);
+      border: 2px solid var(--border-builtin);
+      border-radius: 12px 12px 0 0;
+      border-bottom: none;
+      padding: 10px 15px;
+      width: 220px;
+    }
+    
+    .builtin-label {
+      text-align: center;
+      font-size: 0.7em;
+      color: var(--border-builtin);
+      padding: 4px;
+      background: rgba(76, 175, 80, 0.1);
+      border-radius: 5px;
+      margin-bottom: 8px;
+    }
+    
+    .builtin-sensors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    
+    .builtin-sensor {
+      background: rgba(76, 175, 80, 0.15);
+      border: 1px solid var(--border-builtin);
+      border-radius: 6px;
+      padding: 6px 4px;
+      text-align: center;
+      cursor: help;
+      transition: all 0.3s;
+    }
+    
+    .builtin-sensor:hover {
+      background: rgba(76, 175, 80, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .builtin-sensor-icon {
+      font-size: 1em;
+    }
+    
+    .builtin-sensor-name {
+      font-size: 0.55em;
+      color: #81c784;
+      font-weight: bold;
+      margin-top: 2px;
+    }
+    
+    /* USB ì¼€ì´ë¸” */
+    .usb-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 0;
+      background: linear-gradient(145deg, #1a2a1a, #0f1a0f);
+      border-left: 2px solid var(--border-builtin);
+      border-right: 2px solid var(--border-builtin);
+      width: 220px;
+    }
+    
+    .usb-cable {
+      width: 60px;
+      height: 5px;
+      background: linear-gradient(180deg, #555, #333, #555);
+      border-radius: 3px;
+    }
+    
+    .usb-plug {
+      width: 24px;
+      height: 14px;
+      background: linear-gradient(180deg, #ddd, #aaa);
+      border-radius: 3px;
+      border: 1px solid #888;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .usb-plug-inner {
+      width: 12px;
+      height: 8px;
+      background: #333;
+      border-radius: 1px;
+    }
+    
+    .usb-label {
+      font-size: 0.6em;
+      color: #888;
+      margin-left: 8px;
+    }
+    
+    /* ê²°í•©ëœ ë³´ë“œ ì»¨í…Œì´ë„ˆ */
+    .combined-board {
+      position: relative;
+      width: 220px;
+    }
+    
+    /* ë§ˆì´í¬ë¡œë¹„íŠ¸ ë³¸ì²´ */
+    .microbit {
+      background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+      border: 2px solid #333;
+      border-radius: 0;
+      padding: 10px 15px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    
+    .microbit-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .microbit-btn {
+      width: 18px;
+      height: 18px;
+      background: linear-gradient(145deg, #222, #111);
+      border: 2px solid #444;
+      border-radius: 50%;
+      font-size: 0.5em;
+      color: #888;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: help;
+    }
+    
+    .microbit-usb {
+      width: 20px;
+      height: 10px;
+      background: linear-gradient(180deg, #888, #666);
+      border-radius: 2px;
+      border: 1px solid #555;
+    }
+    
+    .microbit-screen {
+      background: #000;
+      border: 2px solid #222;
+      border-radius: 4px;
+      padding: 8px;
+      margin-bottom: 6px;
+    }
+    
+    .led-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3px;
+      justify-items: center;
+    }
+    
+    .led {
+      width: 12px;
+      height: 12px;
+      background: #ff4444;
+      border-radius: 2px;
+      opacity: 0.2;
+    }
+    
+    .led.on {
+      opacity: 1;
+      box-shadow: 0 0 6px #ff4444;
+    }
+    
+    .board-label {
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 0.75em;
+      margin-top: 4px;
+    }
+    
+    /* ì—£ì§€ ì»¤ë„¥í„° (ê¸ˆìƒ‰ í•€) */
+    .edge-connector {
+      display: flex;
+      justify-content: center;
+      gap: 2px;
+      padding: 2px 10px;
+      background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
+      border-left: 2px solid #333;
+      border-right: 2px solid #333;
+    }
+    
+    .edge-pin {
+      width: 4px;
+      height: 10px;
+      background: linear-gradient(180deg, #ffd700, #b8860b);
+      border-radius: 0 0 2px 2px;
+    }
+    
+    .edge-pin.large {
+      width: 10px;
+    }
+    
+    .edge-pin.gnd {
+      background: linear-gradient(180deg, #ffd700, #8b7500);
+    }
+    
+    /* Grove Shield */
+    .grove-shield {
+      background: linear-gradient(180deg, #1b5e20, #0d3d12);
+      border: 2px solid #2e7d32;
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      padding: 6px 15px 12px;
+      position: relative;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+    
+    .shield-slot {
+      background: #0a0a0a;
+      height: 6px;
+      margin: 0 5px 8px;
+      border-radius: 2px;
+      display: flex;
+      justify-content: center;
+      gap: 2px;
+      padding: 1px 5px;
+    }
+    
+    .slot-contact {
+      width: 3px;
+      height: 4px;
+      background: #8b7500;
+      border-radius: 1px;
+    }
+    
+    .slot-contact.large {
+      width: 8px;
+    }
+    
+    .shield-label {
+      color: #81c784;
+      font-weight: bold;
+      font-size: 0.65em;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    
+    .shield-ports {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .shield-port-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    
+    .shield-port {
+      width: 24px;
+      height: 8px;
+      background: linear-gradient(90deg, #fff, #ddd);
+      border-radius: 2px;
+      border: 1px solid #999;
+    }
+    
+    .shield-port-label {
+      font-size: 0.45em;
+      color: #a5d6a7;
+    }
+    
+    /* I2C ë²„ìŠ¤ */
+    .i2c-bus {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+      padding: 10px;
+      background: rgba(0, 188, 212, 0.1);
+      border-radius: 10px;
+      cursor: help;
+    }
+    
+    .bus-line {
+      flex: 1;
+      max-width: 80%;
+      height: 8px;
+      background: linear-gradient(90deg, var(--border-external), #00bcd4);
+      border-radius: 4px;
+      box-shadow: 0 0 15px rgba(33, 150, 243, 0.4);
+    }
+    
+    .bus-label {
+      color: #00bcd4;
+      font-size: 0.85em;
+      font-weight: bold;
+    }
+    
+    /* í¬íŠ¸ ì˜ì—­ */
+    .ports-section {
+      margin: 20px 0;
+    }
+    
+    .ports-title {
+      font-size: 0.9em;
+      color: #888;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    
+    .ports-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
+    
+    .port {
+      aspect-ratio: 1;
+      background: linear-gradient(145deg, var(--bg-body), #0f0f1a);
+      border: 2px dashed #444;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100px;
+      transition: all 0.3s;
+      position: relative;
+    }
+    
+    .port.datalogger {
+      border: 2px solid #ff9800;
+      background: linear-gradient(145deg, #2a1a0a, #1a0f05);
+      cursor: help;
+    }
+    
+    .port.empty-port {
+      cursor: help;
+    }
+    
+    .port.drag-over {
+      border-color: var(--primary);
+      background: rgba(0, 212, 255, 0.1);
+      transform: scale(1.05);
+    }
+    
+    .port-number {
+      position: absolute;
+      top: 5px;
+      left: 8px;
+      font-size: 0.7em;
+      color: #555;
+    }
+    
+    .port-empty-text {
+      color: #444;
+      font-size: 0.75em;
+      text-align: center;
+    }
+    
+    /* ì„¼ì„œ ì¹´ë“œ */
+    .sensor-card {
+      background: linear-gradient(145deg, #2a2a4a, var(--bg-body));
+      border-radius: 10px;
+      padding: 10px;
+      cursor: grab;
+      transition: all 0.3s;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid transparent;
+    }
+    
+    .sensor-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    
+    .sensor-card.dragging {
+      opacity: 0.5;
+      cursor: grabbing;
+    }
+    
+    .sensor-card.fixed {
+      cursor: help;
+      border-color: #ff9800;
+    }
+    
+    .sensor-card.environment { border-color: var(--border-builtin); }
+    .sensor-card.display { border-color: var(--border-datalogger); }
+    .sensor-card.time { border-color: #00bcd4; }
+    .sensor-card.motion { border-color: #ff9800; }
+    .sensor-card.light { border-color: #e91e63; }
+    .sensor-card.input { border-color: #ffeb3b; }
+    .sensor-card.distance { border-color: #03a9f4; }
+    
+    .sensor-icon {
+      font-size: 1.8em;
+      margin-bottom: 5px;
+    }
+    
+    .sensor-name {
+      font-size: 0.7em;
+      font-weight: bold;
+      text-align: center;
+      color: #fff;
+    }
+    
+    .sensor-address {
+      font-size: 0.6em;
+      color: #888;
+      font-family: monospace;
+      margin-top: 3px;
+    }
+    
+    /* ì„¼ì„œ ëª©ë¡ */
+    .sensors-section {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid #333;
+    }
+    
+    .sensors-title {
+      font-size: 0.95em;
+      color: var(--primary);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    /* ===== ë°ì´í„° ê²€ìƒ‰ ì„¹ì…˜ ===== */
+    .search-section {
+      background: linear-gradient(145deg, #1a2a3a, #0f1a2a);
+      border: 2px solid var(--primary);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .search-title {
+      font-size: 1em;
+      color: var(--primary);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .search-input-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .search-input {
+      flex: 1;
+      padding: 12px 18px;
+      border: 2px solid #333;
+      border-radius: 10px;
+      background: var(--bg-body);
+      color: #fff;
+      font-size: 1em;
+      transition: all 0.3s;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    }
+    
+    .search-input::placeholder {
+      color: #666;
+    }
+    
+    .search-btn {
+      padding: 12px 25px;
+      background: linear-gradient(145deg, var(--primary), #0099cc);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .search-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+    }
+    
+    .clear-btn {
+      padding: 12px 20px;
+      background: linear-gradient(145deg, #666, #444);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .clear-btn:hover {
+      background: linear-gradient(145deg, #888, #666);
+    }
+    
+    /* ë“œë¡­ë‹¤ìš´ ë²„íŠ¼ ìŠ¤íƒ€ì¼ */
+    .dropdown-container {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .dropdown-btn {
+      padding: 12px 18px;
+      background: linear-gradient(145deg, #4a4a6a, #3a3a5a);
+      border: 2px solid #555;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.95em;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    
+    .dropdown-btn:hover {
+      background: linear-gradient(145deg, #5a5a7a, #4a4a6a);
+      border-color: var(--primary);
+    }
+    
+    .dropdown-arrow {
+      font-size: 0.8em;
+      transition: transform 0.3s;
+    }
+    
+    .dropdown-container.open .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+    
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      min-width: 200px;
+      background: var(--bg-body);
+      border: 2px solid #444;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+    
+    .dropdown-container.open .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .dropdown-category {
+      padding: 10px 15px 5px;
+      font-size: 0.8em;
+      font-weight: bold;
+      color: var(--primary);
+      background: rgba(0, 212, 255, 0.1);
+      border-bottom: 1px solid #333;
+    }
+    
+    .dropdown-item {
+      padding: 10px 20px;
+      font-size: 0.9em;
+      color: #ccc;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .dropdown-item:hover {
+      background: rgba(0, 212, 255, 0.2);
+      color: #fff;
+      padding-left: 25px;
+    }
+    
+    .dropdown-item:last-child {
+      border-radius: 0 0 10px 10px;
+    }
+    
+    /* ìŠ¤í¬ë¡¤ë°” ìŠ¤íƒ€ì¼ */
+    .dropdown-menu::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .dropdown-menu::-webkit-scrollbar-track {
+      background: var(--bg-body);
+      border-radius: 3px;
+    }
+    
+    .dropdown-menu::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 3px;
+    }
+    
+    .dropdown-menu::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    
+    .search-result {
+      margin-top: 15px;
+      padding: 12px 15px;
+      background: rgba(0, 212, 255, 0.1);
+      border-radius: 10px;
+      font-size: 0.9em;
+      display: none;
+    }
+    
+    .search-result.show {
+      display: block;
+    }
+    
+    .search-result.success {
+      border-left: 4px solid var(--border-builtin);
+    }
+    
+    .search-result.no-result {
+      border-left: 4px solid #ff9800;
+    }
+    
+    /* ===== ì„¼ì„œ í•˜ì´ë¼ì´íŠ¸ ìŠ¤íƒ€ì¼ ===== */
+    .sensor-item.highlighted {
+      animation: highlight-pulse 1s ease-in-out infinite;
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.8), inset 0 0 15px rgba(0, 212, 255, 0.3);
+      border-color: var(--primary) !important;
+      border-width: 3px !important;
+      transform: scale(1.08);
+      z-index: 10;
+      background: linear-gradient(145deg, #1a3a5a, #0a2a4a) !important;
+    }
+    
+    .sensor-item.highlighted::before {
+      content: 'âœ“ ì¶”ì²œ';
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      background: linear-gradient(145deg, var(--primary), #0099cc);
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.7em;
+      font-weight: bold;
+      box-shadow: 0 3px 10px rgba(0, 212, 255, 0.5);
+      z-index: 11;
+    }
+    
+    .builtin-sensor.highlighted {
+      animation: highlight-pulse 1s ease-in-out infinite;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.8), inset 0 0 10px rgba(0, 212, 255, 0.3);
+      border-color: var(--primary) !important;
+      border-width: 2px !important;
+      transform: scale(1.1);
+      background: rgba(0, 212, 255, 0.2) !important;
+      z-index: 10;
+    }
+    
+    @keyframes highlight-pulse {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), inset 0 0 10px rgba(0, 212, 255, 0.2);
+      }
+      50% {
+        box-shadow: 0 0 35px rgba(0, 212, 255, 1), inset 0 0 20px rgba(0, 212, 255, 0.4);
+      }
+    }
+    
+    .sensors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+    }
+    
+    .sensor-item {
+      position: relative;
+      background: linear-gradient(145deg, #2a2a4a, var(--bg-body));
+      border-radius: 10px;
+      padding: 12px 8px;
+      cursor: grab;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border: 2px solid transparent;
+    }
+    
+    .sensor-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    
+    .sensor-item.dragging {
+      opacity: 0.5;
+    }
+    
+    .sensor-item.connected {
+      opacity: 0.3;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    
+    .sensor-item.environment { border-color: var(--border-builtin); }
+    .sensor-item.display { border-color: var(--border-datalogger); }
+    .sensor-item.time { border-color: #00bcd4; }
+    .sensor-item.motion { border-color: #ff9800; }
+    .sensor-item.light { border-color: #e91e63; }
+    .sensor-item.input { border-color: #ffeb3b; }
+    .sensor-item.distance { border-color: #03a9f4; }
+    
+    /* ===== ì—°ê²°ëœ ì„¼ì„œ ì„¤ëª… íŒ¨ë„ (ì‹ ê·œ) ===== */
+    .connected-sensors-panel {
+      margin-top: 25px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid #333;
+    }
+    
+    .connected-sensors-title {
+      font-size: 1em;
+      color: var(--primary);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .connected-sensors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 15px;
+    }
+    
+    .connected-sensor-card {
+      background: linear-gradient(145deg, var(--bg-body), #0f0f1a);
+      border-radius: 12px;
+      padding: 15px;
+      border-left: 4px solid;
+    }
+    
+    .connected-sensor-card.builtin { border-left-color: var(--border-builtin); }
+    .connected-sensor-card.datalogger { border-left-color: #ff9800; }
+    .connected-sensor-card.external { border-left-color: var(--border-external); }
+    
+    .connected-sensor-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .connected-sensor-icon {
+      font-size: 1.5em;
+    }
+    
+    .connected-sensor-info {
+      flex: 1;
+    }
+    
+    .connected-sensor-name {
+      font-weight: bold;
+      font-size: 0.95em;
+      color: #fff;
+    }
+    
+    .connected-sensor-type {
+      font-size: 0.75em;
+      color: #888;
+    }
+    
+    .connected-sensor-badge {
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 0.65em;
+      font-weight: bold;
+    }
+    
+    .badge-builtin {
+      background: rgba(76, 175, 80, 0.2);
+      color: #81c784;
+    }
+    
+    .badge-datalogger {
+      background: rgba(255, 152, 0, 0.2);
+      color: #ffb74d;
+    }
+    
+    .badge-external {
+      background: rgba(33, 150, 243, 0.2);
+      color: #64b5f6;
+    }
+    
+    .connected-sensor-desc {
+      font-size: 0.8em;
+      color: #aaa;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    
+    .connected-sensor-data {
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      padding: 10px;
+    }
+    
+    .connected-sensor-data-title {
+      font-size: 0.75em;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    
+    .connected-sensor-data-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    
+    .data-tag {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,0.1);
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.75em;
+    }
+    
+    .data-tag.builtin {
+      background: rgba(76, 175, 80, 0.2);
+      color: #a5d6a7;
+    }
+    
+    .data-tag.datalogger {
+      background: rgba(255, 152, 0, 0.2);
+      color: #ffcc80;
+    }
+    
+    .data-tag.external {
+      background: rgba(33, 150, 243, 0.2);
+      color: #90caf9;
+    }
+    
+    .data-tag-icon {
+      font-size: 0.9em;
+    }
+    
+    .data-tag-info {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .data-tag-name {
+      font-weight: bold;
+    }
+    
+    .data-tag-range {
+      font-size: 0.85em;
+      opacity: 0.7;
+    }
+    
+    /* ë°ì´í„° ì •ë³´ íŒ¨ë„ */
+    .data-panel {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 15px;
+      padding: 20px;
+    }
+    
+    .data-panel-title {
+      font-size: 1em;
+      color: var(--primary);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .data-categories {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    
+    .data-category {
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    
+    .category-title {
+      font-size: 0.85em;
+      color: #888;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #333;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .category-title.builtin { color: #81c784; }
+    .category-title.external { color: #90caf9; }
+    
+    .data-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    
+    .data-item {
+      background: rgba(255,255,255,0.1);
+      padding: 4px 10px;
+      border-radius: 15px;
+      font-size: 0.75em;
+      color: #ccc;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: help;
+      transition: all 0.2s;
+    }
+    
+    .data-item:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .data-item.builtin {
+      background: rgba(76, 175, 80, 0.2);
+      color: #a5d6a7;
+    }
+    
+    .data-item.external {
+      background: rgba(33, 150, 243, 0.2);
+      color: #90caf9;
+    }
+    
+    .data-item-icon {
+      font-size: 0.9em;
+    }
+    
+    /* í†µê³„ ë°” */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 15px;
+      padding: 15px;
+      background: linear-gradient(90deg, rgba(76,175,80,0.1), rgba(33,150,243,0.1));
+      border-radius: 10px;
+    }
+    
+    .stat-item {
+      text-align: center;
+      cursor: help;
+    }
+    
+    .stat-number {
+      font-size: 1.8em;
+      font-weight: bold;
+      background: linear-gradient(90deg, var(--border-builtin), var(--border-external));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .stat-label {
+      font-size: 0.75em;
+      color: #888;
+    }
+    
+    /* ì•ˆë‚´ ë©”ì‹œì§€ */
+    .help-text {
+      text-align: center;
+      color: #666;
+      font-size: 0.8em;
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+    }
+    
+    .help-text span {
+      color: var(--primary);
+    }
+    
+    /* ë¦¬ì…‹ ë²„íŠ¼ */
+    .reset-btn {
+      display: block;
+      margin: 20px auto 0;
+      padding: 10px 25px;
+      background: linear-gradient(145deg, #e53935, #c62828);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .reset-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(229, 57, 53, 0.4);
+    }
+    
+    /* ë°˜ì‘í˜• */
+    @media (max-width: 900px) {
+      .main-boards {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .ports-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      
+      .data-categories {
+        grid-template-columns: 1fr;
+      }
+      
+      .connected-sensors-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .tooltip::after {
+        min-width: 150px;
+        font-size: 0.75em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔌 마이크로비트 Grove I2C 센서 시뮬레이터</h1>
+    <p class="subtitle">센서를 드래그하여 포트에 연결하세요 (요소 위에 마우스를 올리면 설명이 나타납니다)</p>
+    
+    <div class="simulator">
+      <!-- ë©”ì¸ ë³´ë“œ -->
+      <div class="main-boards">
+        <!-- ë§ˆì´í¬ë¡œë¹„íŠ¸ + Grove Shield ê²°í•© -->
+        <div class="hardware-unit">
+          <!-- ë‚´ìž¥ ì„¼ì„œ (ë§ˆì´í¬ë¡œë¹„íŠ¸ ìœ„) -->
+          <div class="builtin-sensors-top">
+            <div class="builtin-label">🔧 마이크로비트 내장 센서 (무료)</div>
+            <div class="builtin-sensors-grid">
+              <div class="builtin-sensor tooltip" data-tooltip="ðŸ“ ê°€ì†ë„ê³„
+
+ê¸°ê¸°ì˜ ì›€ì§ìž„ê³¼ ê¸°ìš¸ê¸°ë¥¼ ê°ì§€í•©ë‹ˆë‹¤.
+
+â€¢ Xì¶•: ì¢Œìš° ê¸°ìš¸ê¸°
+â€¢ Yì¶•: ì•žë’¤ ê¸°ìš¸ê¸°
+â€¢ Zì¶•: ìœ„ì•„ëž˜ ì›€ì§ìž„">
+                <div class="builtin-sensor-icon">ðŸ“</div>
+                <div class="builtin-sensor-name">ê°€ì†ë„ê³„</div>
+              </div>
+              <div class="builtin-sensor tooltip" data-tooltip="ðŸ§­ ë‚˜ì¹¨ë°˜
+
+ì§€êµ¬ ìžê¸°ìž¥ì„ ê°ì§€í•˜ì—¬ ë°©í–¥ì„ ì¸¡ì •í•©ë‹ˆë‹¤.
+
+â€¢ 0Â°~360Â° ë°©ìœ„ê°
+â€¢ ë¶ìª½ ê¸°ì¤€ ì¸¡ì •">
+                <div class="builtin-sensor-icon">ðŸ§­</div>
+                <div class="builtin-sensor-name">ë‚˜ì¹¨ë°˜</div>
+              </div>
+              <div class="builtin-sensor tooltip" data-tooltip="ðŸŒ¡ï¸ ì˜¨ë„ ì„¼ì„œ
+
+CPU ì¹©ì˜ ì˜¨ë„ë¥¼ ì¸¡ì •í•©ë‹ˆë‹¤.
+
+âš ï¸ ì‹¤ì œ ê¸°ì˜¨ë³´ë‹¤ 5~10Â°C ë†’ê²Œ ì¸¡ì •ë©ë‹ˆë‹¤.">
+                <div class="builtin-sensor-icon">ðŸŒ¡ï¸</div>
+                <div class="builtin-sensor-name">ì˜¨ë„</div>
+              </div>
+              <div class="builtin-sensor tooltip" data-tooltip="ðŸ’¡ ë¹› ì„¼ì„œ
+
+LEDë¥¼ ì—­ìœ¼ë¡œ ì‚¬ìš©í•˜ì—¬ ì£¼ë³€ ë°ê¸°ë¥¼ ì¸¡ì •í•©ë‹ˆë‹¤.
+
+â€¢ 0~255 ë²”ìœ„">
+                <div class="builtin-sensor-icon">ðŸ’¡</div>
+                <div class="builtin-sensor-name">ë¹›</div>
+              </div>
+              <div class="builtin-sensor tooltip" data-tooltip="ðŸŽ¤ ë§ˆì´í¬ (V2 ì „ìš©)
+
+ì£¼ë³€ ì†Œë¦¬ì˜ í¬ê¸°ë¥¼ ì¸¡ì •í•©ë‹ˆë‹¤.
+
+â€¢ 0~255 ë²”ìœ„
+â€¢ ë°•ìˆ˜, ìŒì„± ê°ì§€ ê°€ëŠ¥">
+                <div class="builtin-sensor-icon">ðŸŽ¤</div>
+                <div class="builtin-sensor-name">ë§ˆì´í¬</div>
+              </div>
+              <div class="builtin-sensor tooltip" data-tooltip="ðŸ‘† í„°ì¹˜ ë¡œê³  (V2 ì „ìš©)
+
+ê¸ˆìƒ‰ ë¡œê³ ë¥¼ í„°ì¹˜í•˜ë©´ ê°ì§€ë©ë‹ˆë‹¤.
+
+â€¢ ì •ì „ì‹ í„°ì¹˜ ë°©ì‹">
+                <div class="builtin-sensor-icon">ðŸ‘†</div>
+                <div class="builtin-sensor-name">í„°ì¹˜</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- USB ì¼€ì´ë¸” -->
+          <div class="usb-section tooltip" data-tooltip="ðŸ”Œ USB ì¼€ì´ë¸”
+
+â€¢ ì „ì› ê³µê¸‰ (5V)
+â€¢ í”„ë¡œê·¸ëž¨ ì—…ë¡œë“œ
+â€¢ PCì™€ ì‹œë¦¬ì–¼ í†µì‹ ">
+            <div class="usb-plug">
+              <div class="usb-plug-inner"></div>
+            </div>
+            <div class="usb-cable"></div>
+            <span class="usb-label">← PC 연결</span>
+          </div>
+          
+          <!-- ê²°í•©ëœ ë³´ë“œ -->
+          <div class="combined-board">
+            <!-- ë§ˆì´í¬ë¡œë¹„íŠ¸ -->
+            <div class="microbit tooltip" data-tooltip="ðŸ“Ÿ ë§ˆì´í¬ë¡œë¹„íŠ¸ V2
+
+ì˜êµ­ BBCì—ì„œ ë§Œë“  êµìœ¡ìš© ë§ˆì´í¬ë¡œì»¨íŠ¸ë¡¤ëŸ¬ìž…ë‹ˆë‹¤.
+
+â€¢ 5x5 LED í™”ë©´
+â€¢ ë²„íŠ¼ A, B
+â€¢ ë¸”ë£¨íˆ¬ìŠ¤ ì§€ì›">
+              <div class="microbit-top">
+                <div class="microbit-btn tooltip" data-tooltip="ðŸ”˜ ë²„íŠ¼ A
+
+ì™¼ìª½ ë²„íŠ¼ìž…ë‹ˆë‹¤.">A</div>
+                <div class="microbit-usb"></div>
+                <div class="microbit-btn tooltip" data-tooltip="ðŸ”˜ ë²„íŠ¼ B
+
+ì˜¤ë¥¸ìª½ ë²„íŠ¼ìž…ë‹ˆë‹¤.">B</div>
+              </div>
+              <div class="microbit-screen">
+                <div class="led-grid">
+                  <div class="led on"></div><div class="led"></div><div class="led on"></div><div class="led"></div><div class="led on"></div>
+                  <div class="led"></div><div class="led on"></div><div class="led"></div><div class="led on"></div><div class="led"></div>
+                  <div class="led on"></div><div class="led"></div><div class="led on"></div><div class="led"></div><div class="led on"></div>
+                  <div class="led"></div><div class="led on"></div><div class="led"></div><div class="led on"></div><div class="led"></div>
+                  <div class="led on"></div><div class="led"></div><div class="led on"></div><div class="led"></div><div class="led on"></div>
+                </div>
+              </div>
+              <div class="board-label">micro:bit V2</div>
+            </div>
+            
+            <!-- ì—£ì§€ ì»¤ë„¥í„° -->
+            <div class="edge-connector tooltip" data-tooltip="ðŸ”— ì—£ì§€ ì»¤ë„¥í„°
+
+ë§ˆì´í¬ë¡œë¹„íŠ¸ í•˜ë‹¨ì˜ ê¸ˆìƒ‰ í•€ìž…ë‹ˆë‹¤.
+
+â€¢ í° í•€: 0, 1, 2, 3V, GND
+â€¢ ìž‘ì€ í•€: GPIO, I2C, SPI">
+              <div class="edge-pin large"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin large"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin large"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin large gnd"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin"></div>
+              <div class="edge-pin large"></div>
+            </div>
+            
+            <!-- Grove Shield -->
+            <div class="grove-shield tooltip" data-tooltip="ðŸ›¡ï¸ Grove Shield for micro:bit
+
+ë§ˆì´í¬ë¡œë¹„íŠ¸ í™•ìž¥ ë³´ë“œìž…ë‹ˆë‹¤.
+
+â€¢ Grove ì»¤ë„¥í„°ë¡œ ì„¼ì„œ ì—°ê²°
+â€¢ ë‚©ë•œ ì—†ì´ ê°„íŽ¸í•˜ê²Œ ì‚¬ìš©">
+              <div class="shield-slot">
+                <div class="slot-contact large"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact large"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact large"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact large"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact"></div>
+                <div class="slot-contact large"></div>
+              </div>
+              
+              <div class="shield-label">Grove Shield</div>
+              
+              <div class="shield-ports">
+                <div class="shield-port-group">
+                  <div class="shield-port"></div>
+                  <div class="shield-port-label">I2C</div>
+                </div>
+                <div class="shield-port-group">
+                  <div class="shield-port"></div>
+                  <div class="shield-port-label">I2C</div>
+                </div>
+                <div class="shield-port-group">
+                  <div class="shield-port"></div>
+                  <div class="shield-port-label">UART</div>
+                </div>
+                <div class="shield-port-group">
+                  <div class="shield-port"></div>
+                  <div class="shield-port-label">A/D</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- I2C ë²„ìŠ¤ -->
+      <div class="i2c-bus tooltip" data-tooltip="ðŸ”— I2C ë²„ìŠ¤
+
+ì—¬ëŸ¬ ì„¼ì„œê°€ 2ê°œì˜ ì„ ì„ ê³µìœ í•˜ëŠ” í†µì‹  ë°©ì‹ìž…ë‹ˆë‹¤.
+
+â€¢ SDA: ë°ì´í„° ì „ì†¡ ì„ 
+â€¢ SCL: íƒ€ì´ë° ë™ê¸°í™” ì„ 
+â€¢ ê° ì„¼ì„œëŠ” ê³ ìœ  ì£¼ì†Œë¡œ êµ¬ë¶„">
+        <span class="bus-label">SDA</span>
+        <div class="bus-line"></div>
+        <span class="bus-label">SCL</span>
+      </div>
+      
+      <!-- í¬íŠ¸ ì˜ì—­ -->
+      <div class="ports-section">
+        <div class="ports-title">🔗 I2C 포트 (드래그하여 센서 연결)</div>
+        <div class="ports-grid" id="portsGrid">
+          <!-- ë°ì´í„°ë¡œê±° (ê³ ì •) -->
+          <div class="port datalogger tooltip" id="port-datalogger" data-tooltip="ðŸ’¾ ë°ì´í„°ë¡œê±° (ê³ ì •)
+
+ì„¼ì„œ ë°ì´í„°ë¥¼ ìžë™ìœ¼ë¡œ ê¸°ë¡í•©ë‹ˆë‹¤.
+
+â€¢ SDì¹´ë“œ: ë°ì´í„° ì €ìž¥
+â€¢ RTC: ì‹¤ì‹œê°„ ì‹œê³„
+â€¢ CSV íŒŒì¼ë¡œ ì €ìž¥">
+            <div class="sensor-card fixed time">
+              <div class="sensor-icon">ðŸ’¾</div>
+              <div class="sensor-name">ë°ì´í„°ë¡œê±°</div>
+              <div class="sensor-address">SD + RTC</div>
+            </div>
+          </div>
+          <!-- ë¹ˆ í¬íŠ¸ 6ê°œ -->
+          <div class="port empty-port tooltip" id="port-1" data-tooltip="ðŸ“ ë¹ˆ í¬íŠ¸ #1
+
+ì•„ëž˜ ì„¼ì„œë¥¼ ë“œëž˜ê·¸í•˜ì—¬ ì—°ê²°í•˜ì„¸ìš”." ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 1)">
+            <span class="port-number">#1</span>
+            <span class="port-empty-text">ë¹ˆ í¬íŠ¸</span>
+          </div>
+          <div class="port empty-port tooltip" id="port-2" data-tooltip="ðŸ“ ë¹ˆ í¬íŠ¸ #2
+
+ì•„ëž˜ ì„¼ì„œë¥¼ ë“œëž˜ê·¸í•˜ì—¬ ì—°ê²°í•˜ì„¸ìš”." ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 2)">
+            <span class="port-number">#2</span>
+            <span class="port-empty-text">ë¹ˆ í¬íŠ¸</span>
+          </div>
+          <div class="port empty-port tooltip" id="port-3" data-tooltip="ðŸ“ ë¹ˆ í¬íŠ¸ #3
+
+ì•„ëž˜ ì„¼ì„œë¥¼ ë“œëž˜ê·¸í•˜ì—¬ ì—°ê²°í•˜ì„¸ìš”." ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 3)">
+            <span class="port-number">#3</span>
+            <span class="port-empty-text">ë¹ˆ í¬íŠ¸</span>
+          </div>
+          <div class="port empty-port tooltip" id="port-4" data-tooltip="ðŸ“ ë¹ˆ í¬íŠ¸ #4
+
+ì•„ëž˜ ì„¼ì„œë¥¼ ë“œëž˜ê·¸í•˜ì—¬ ì—°ê²°í•˜ì„¸ìš”." ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 4)">
+            <span class="port-number">#4</span>
+            <span class="port-empty-text">ë¹ˆ í¬íŠ¸</span>
+          </div>
+          <div class="port empty-port tooltip" id="port-5" data-tooltip="ðŸ“ ë¹ˆ í¬íŠ¸ #5
+
+ì•„ëž˜ ì„¼ì„œë¥¼ ë“œëž˜ê·¸í•˜ì—¬ ì—°ê²°í•˜ì„¸ìš”." ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 5)">
+            <span class="port-number">#5</span>
+            <span class="port-empty-text">ë¹ˆ í¬íŠ¸</span>
+          </div>
+          <div class="port empty-port tooltip" id="port-6" data-tooltip="ðŸ“ ë¹ˆ í¬íŠ¸ #6
+
+ì•„ëž˜ ì„¼ì„œë¥¼ ë“œëž˜ê·¸í•˜ì—¬ ì—°ê²°í•˜ì„¸ìš”." ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 6)">
+            <span class="port-number">#6</span>
+            <span class="port-empty-text">ë¹ˆ í¬íŠ¸</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- ì„¼ì„œ ëª©ë¡ -->
+      <div class="sensors-section">
+        <div class="sensors-title">🔌 사용 가능한 Grove I2C 센서 (드래그하여 연결)</div>
+        
+        <!-- ===== ë°ì´í„° ê²€ìƒ‰ ì„¹ì…˜ (ì‹ ê·œ) ===== -->
+        <div class="search-section">
+          <div class="search-title">🔍 측정하고 싶은 데이터 검색</div>
+          <div class="search-input-container">
+            <input type="text" class="search-input" id="searchInput" 
+                   placeholder="ì˜ˆ: ì˜¨ë„, ìŠµë„, ê³µê¸°ì§ˆ, ìƒ‰ê¹”, ê±°ë¦¬..." 
+                   onkeypress="handleSearchKeypress(event)">
+            
+            <!-- ë“œë¡­ë‹¤ìš´ ë²„íŠ¼ -->
+            <div class="dropdown-container">
+              <button class="dropdown-btn" onclick="toggleDropdown()">
+                ðŸ“‹ ì¶”ì²œ í‚¤ì›Œë“œ <span class="dropdown-arrow">â–¼</span>
+              </button>
+              <div class="dropdown-menu" id="dropdownMenu">
+                <div class="dropdown-category">ðŸŒ¡ï¸ í™˜ê²½ ì¸¡ì •</div>
+                <div class="dropdown-item" onclick="selectKeyword('ì˜¨ë„ ìŠµë„')">ì˜¨ë„ Â· ìŠµë„</div>
+                <div class="dropdown-item" onclick="selectKeyword('ê³µê¸°ì§ˆ CO2 í™˜ê¸°')">ê³µê¸°ì§ˆ Â· CO2</div>
+                <div class="dropdown-item" onclick="selectKeyword('ê¸°ì•• ë‚ ì”¨ ê³ ë„')">ê¸°ì•• Â· ë‚ ì”¨</div>
+                
+                <div class="dropdown-category">ðŸ’¡ ë¹› Â· ìƒ‰ìƒ</div>
+                <div class="dropdown-item" onclick="selectKeyword('ë°ê¸° ì¡°ë„')">ë°ê¸° Â· ì¡°ë„</div>
+                <div class="dropdown-item" onclick="selectKeyword('ìƒ‰ê¹” RGB ìƒ‰ìƒ')">ìƒ‰ìƒ Â· RGB</div>
+                
+                <div class="dropdown-category">ðŸ“ ì›€ì§ìž„ Â· ë°©í–¥</div>
+                <div class="dropdown-item" onclick="selectKeyword('ì›€ì§ìž„ ê°€ì†ë„ ê¸°ìš¸ê¸°')">ì›€ì§ìž„ Â· ê°€ì†ë„</div>
+                <div class="dropdown-item" onclick="selectKeyword('ê±¸ìŒ ë§Œë³´ê¸° ìš´ë™')">ê±¸ìŒ Â· ë§Œë³´ê¸°</div>
+                <div class="dropdown-item" onclick="selectKeyword('ë°©í–¥ ë‚˜ì¹¨ë°˜')">ë°©í–¥ Â· ë‚˜ì¹¨ë°˜</div>
+                
+                <div class="dropdown-category">âœ‹ ìž…ë ¥ ìž¥ì¹˜</div>
+                <div class="dropdown-item" onclick="selectKeyword('í„°ì¹˜ í”¼ì•„ë…¸ ë²„íŠ¼')">í„°ì¹˜ Â· í”¼ì•„ë…¸</div>
+                <div class="dropdown-item" onclick="selectKeyword('ì œìŠ¤ì²˜ ì†ë™ìž‘')">ì œìŠ¤ì²˜ Â· ì†ë™ìž‘</div>
+                <div class="dropdown-item" onclick="selectKeyword('ì†Œë¦¬ ë°•ìˆ˜ ì†ŒìŒ')">ì†Œë¦¬ Â· ë°•ìˆ˜</div>
+                
+                <div class="dropdown-category">ðŸ“ ê±°ë¦¬ Â· ì¶œë ¥</div>
+                <div class="dropdown-item" onclick="selectKeyword('ê±°ë¦¬ ìž¥ì• ë¬¼')">ê±°ë¦¬ ì¸¡ì •</div>
+                <div class="dropdown-item" onclick="selectKeyword('í™”ë©´ ë””ìŠ¤í”Œë ˆì´ í‘œì‹œ')">í™”ë©´ í‘œì‹œ</div>
+              </div>
+            </div>
+            
+            <button class="search-btn" onclick="searchSensors()">검색</button>
+            <button class="clear-btn" onclick="clearSearch()">초기화</button>
+          </div>
+          <div class="search-result" id="searchResult"></div>
+        </div>
+        
+        <div class="sensors-grid" id="sensorsGrid">
+          <!-- JavaScriptë¡œ ìƒì„± -->
+        </div>
+      </div>
+      
+      <!-- ===== ì—°ê²°ëœ ì„¼ì„œ ì„¤ëª… íŒ¨ë„ (ì‹ ê·œ) ===== -->
+      <div class="connected-sensors-panel">
+        <div class="connected-sensors-title">📋 연결된 센서 및 데이터 설명</div>
+        <div class="connected-sensors-grid" id="connectedSensorsGrid">
+          <!-- JavaScriptë¡œ ìƒì„± -->
+        </div>
+      </div>
+      
+      <!-- ë°ì´í„° ì •ë³´ íŒ¨ë„ -->
+      <div class="data-panel">
+        <div class="data-panel-title">📊 측정 가능한 데이터 요약</div>
+        <div class="data-categories">
+          <div class="data-category">
+            <div class="category-title builtin">🔧 마이크로비트 내장 센서 (7종)</div>
+            <div class="data-items" id="builtinData">
+              <!-- JavaScriptë¡œ ìƒì„± -->
+            </div>
+          </div>
+          <div class="data-category">
+            <div class="category-title external">🔌 Grove 외장 센서</div>
+            <div class="data-items" id="externalData">
+              <!-- JavaScriptë¡œ ìƒì„± -->
+            </div>
+          </div>
+        </div>
+        
+        <div class="stats-bar">
+          <div class="stat-item tooltip" data-tooltip="ë§ˆì´í¬ë¡œë¹„íŠ¸ V2ì— ë‚´ìž¥ëœ ì„¼ì„œ ê°œìˆ˜ìž…ë‹ˆë‹¤.">
+            <div class="stat-number" id="builtinCount">6</div>
+            <div class="stat-label">ë‚´ìž¥ ì„¼ì„œ</div>
+          </div>
+          <div class="stat-item tooltip" data-tooltip="í¬íŠ¸ì— ì—°ê²°ëœ Grove ì„¼ì„œ ê°œìˆ˜ìž…ë‹ˆë‹¤.">
+            <div class="stat-number" id="externalCount">1</div>
+            <div class="stat-label">ì™¸ìž¥ ì„¼ì„œ</div>
+          </div>
+          <div class="stat-item tooltip" data-tooltip="ì¸¡ì •í•  ìˆ˜ ìžˆëŠ” ëª¨ë“  ë°ì´í„° ì¢…ë¥˜ìž…ë‹ˆë‹¤.">
+            <div class="stat-number" id="dataCount">10</div>
+            <div class="stat-label">ì´ ë°ì´í„°</div>
+          </div>
+          <div class="stat-item tooltip" data-tooltip="ì¶”ê°€ë¡œ ì„¼ì„œë¥¼ ì—°ê²°í•  ìˆ˜ ìžˆëŠ” í¬íŠ¸ìž…ë‹ˆë‹¤.">
+            <div class="stat-number" id="portRemaining">6</div>
+            <div class="stat-label">ë‚¨ì€ í¬íŠ¸</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="help-text">
+        ðŸ’¡ <span>ì„¼ì„œë¥¼ ë“œëž˜ê·¸</span>í•˜ì—¬ í¬íŠ¸ì— ì—°ê²°í•˜ì„¸ìš”. ì—°ê²°ëœ ì„¼ì„œë¥¼ <span>ë‹¤ì‹œ ë“œëž˜ê·¸</span>í•˜ë©´ ì—°ê²°ì´ í•´ì œë©ë‹ˆë‹¤.
+      </div>
+      
+      <button class="reset-btn" onclick="resetAll()">🔄 모두 초기화</button>
+    </div>
+  </div>
+
+  <script>
+    // ì„¼ì„œ ë°ì´í„°ë² ì´ìŠ¤ (ìƒì„¸ ì„¤ëª… ì¶”ê°€)
+
+    // ===== 설정 상수 (L1 원칙2 설정 중심 설계, L2 §3 CONFIG/UI_TEXT 분리) =====
+    const CONFIG = {
+      PORT_COUNT:   6,    // Grove Shield I2C 포트 수
+      SCROLL_DELAY: 100,  // 검색 결과 스크롤 딜레이(ms)
+    };
+
+    const UI_TEXT = {
+      BADGE_BUILTIN:     '내장',
+      BADGE_EXTERNAL:    '외장',
+      BADGE_DATALOGGER:  '고정',
+      TYPE_BUILTIN:      '마이크로비트 내장',
+      TYPE_DATALOGGER:   'RTC + SD카드',
+      DATA_SECTION:      '📊 측정 데이터',
+      SEARCH_FOUND:      '관련 센세',
+      SEARCH_FOUND_UNIT: '개 발견!',
+      SEARCH_BUILTIN:    '🔧 내장 센세',
+      SEARCH_EXTERNAL:   '🔌 외장 센세',
+      SEARCH_HINT:       '💡 하이라이트된 센세를 드래그하여 연결하세요!',
+      SEARCH_EMPTY:      '추첫� 센세를 찾지 못했습니다.',
+      SEARCH_EMPTY_HINT: '다른 키워드로 검색해 보세요. (예: 온도, 습도, 밝기, 거리...)',
+    };
+
+    const sensors = [
+      { 
+        id: 'sht40', 
+        name: 'SHT40 ì˜¨ìŠµë„', 
+        icon: 'ðŸŒ¡ï¸', 
+        address: '0x44', 
+        type: 'environment', 
+        description: 'ìŠ¤ìœ„ìŠ¤ Sensirionì‚¬ì˜ ê³ ì •ë°€ ì˜¨ìŠµë„ ì„¼ì„œìž…ë‹ˆë‹¤. ë‚´ìž¥ ì˜¨ë„ ì„¼ì„œë³´ë‹¤ í›¨ì”¬ ì •í™•í•œ í™˜ê²½ ì˜¨ë„ë¥¼ ì¸¡ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤.',
+        data: [
+          { name: 'ì •ë°€ ì˜¨ë„', icon: 'ðŸŒ¡ï¸', range: '-40~125Â°C, Â±0.2Â°C' },
+          { name: 'ìŠµë„', icon: 'ðŸ’§', range: '0~100%, Â±1.8%' }
+        ],
+        tooltip: 'ðŸŒ¡ï¸ SHT40 ì˜¨ìŠµë„ ì„¼ì„œ\n\nì •ë°€í•œ ì˜¨ë„ì™€ ìŠµë„ë¥¼ ì¸¡ì •í•©ë‹ˆë‹¤.\n\nâ€¢ ì˜¨ë„: Â±0.2Â°C ì •í™•ë„\nâ€¢ ìŠµë„: Â±1.8% ì •í™•ë„'
+      },
+      { 
+        id: 'bmp280', 
+        name: 'BMP280 ê¸°ì••', 
+        icon: 'ðŸŒ¤ï¸', 
+        address: '0x76', 
+        type: 'environment', 
+        description: 'ëŒ€ê¸°ì••ì„ ì¸¡ì •í•˜ì—¬ ë‚ ì”¨ ë³€í™”ë¥¼ ì˜ˆì¸¡í•˜ê±°ë‚˜, ê³ ë„ë¥¼ ê³„ì‚°í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤. ê¸°ì••ì´ ë‚®ì•„ì§€ë©´ ë¹„ê°€ ì˜¬ ê°€ëŠ¥ì„±ì´ ë†’ìŠµë‹ˆë‹¤.',
+        data: [
+          { name: 'ê¸°ì••', icon: 'ðŸŒ¤ï¸', range: '300~1100 hPa' },
+          { name: 'ê³ ë„', icon: 'â›°ï¸', range: 'ê¸°ì••ìœ¼ë¡œ ê³„ì‚°' }
+        ],
+        tooltip: 'ðŸŒ¤ï¸ BMP280 ê¸°ì•• ì„¼ì„œ\n\nëŒ€ê¸°ì••ê³¼ ê³ ë„ë¥¼ ì¸¡ì •í•©ë‹ˆë‹¤.\n\nâ€¢ ê¸°ì••: 300~1100 hPa\nâ€¢ ê³ ë„: ê¸°ì••ìœ¼ë¡œ ì¶”ì •'
+      },
+      { 
+        id: 'oled', 
+        name: 'OLED ë””ìŠ¤í”Œë ˆì´', 
+        icon: 'ðŸ“º', 
+        address: '0x3C', 
+        type: 'display', 
+        description: 'ì„¼ì„œì—ì„œ ì¸¡ì •í•œ ê°’ì„ ì‹¤ì‹œê°„ìœ¼ë¡œ í™”ë©´ì— í‘œì‹œí•©ë‹ˆë‹¤. í…ìŠ¤íŠ¸, ìˆ«ìž, ê°„ë‹¨í•œ ê·¸ëž˜í”„ë¥¼ ê·¸ë¦´ ìˆ˜ ìžˆìŠµë‹ˆë‹¤.',
+        data: [
+          { name: 'í™”ë©´ ì¶œë ¥', icon: 'ðŸ“º', range: '128Ã—64 í”½ì…€' }
+        ],
+        tooltip: 'ðŸ“º OLED ë””ìŠ¤í”Œë ˆì´\n\nì„¼ì„œ ê°’ì„ í™”ë©´ì— í‘œì‹œí•©ë‹ˆë‹¤.\n\nâ€¢ 128x64 í”½ì…€\nâ€¢ í…ìŠ¤íŠ¸, ê·¸ëž˜í”„ í‘œì‹œ'
+      },
+      { 
+        id: 'lis3dh', 
+        name: 'LIS3DHTR ê°€ì†ë„', 
+        icon: 'ðŸ“', 
+        address: '0x18', 
+        type: 'motion', 
+        description: 'ë‚´ìž¥ ê°€ì†ë„ê³„ë³´ë‹¤ ë” ì •ë°€í•œ ì¸¡ì •ì´ ê°€ëŠ¥í•©ë‹ˆë‹¤. ê±¸ìŒ ìˆ˜ ì¸¡ì •, ì§„ë™ ê°ì§€, ìžìœ ë‚™í•˜ ê°ì§€ ë“±ì— í™œìš©ë©ë‹ˆë‹¤.',
+        data: [
+          { name: 'ì •ë°€ Xì¶•', icon: 'ðŸ“', range: 'Â±2/4/8/16g' },
+          { name: 'ì •ë°€ Yì¶•', icon: 'ðŸ“', range: 'Â±2/4/8/16g' },
+          { name: 'ì •ë°€ Zì¶•', icon: 'ðŸ“', range: 'Â±2/4/8/16g' }
+        ],
+        tooltip: 'ðŸ“ LIS3DHTR ê°€ì†ë„ê³„\n\nì •ë°€í•œ ê°€ì†ë„ ì¸¡ì •ì´ ê°€ëŠ¥í•©ë‹ˆë‹¤.\n\nâ€¢ ê³ í•´ìƒë„ ì¶œë ¥\nâ€¢ ì§„ë™, ì¶©ê²© ê°ì§€'
+      },
+      { 
+        id: 'tcs34725', 
+        name: 'TCS34725 ì»¬ëŸ¬', 
+        icon: 'ðŸŽ¨', 
+        address: '0x29', 
+        type: 'light', 
+        description: 'ë¬¼ì²´ì˜ ìƒ‰ìƒì„ RGB ê°’ìœ¼ë¡œ ì¸¡ì •í•©ë‹ˆë‹¤. ê³¼ì¼ì˜ ìµì€ ì •ë„, ë¬¼ì²´ ë¶„ë¥˜, ìƒ‰ìƒ ì¸ì‹ í”„ë¡œì íŠ¸ì— í™œìš©ë©ë‹ˆë‹¤.',
+        data: [
+          { name: 'Rê°’ (ë¹¨ê°•)', icon: 'ðŸ”´', range: '0~65535' },
+          { name: 'Gê°’ (ì´ˆë¡)', icon: 'ðŸŸ¢', range: '0~65535' },
+          { name: 'Bê°’ (íŒŒëž‘)', icon: 'ðŸ”µ', range: '0~65535' },
+          { name: 'ìƒ‰ìƒ ë°ê¸°', icon: 'â¬œ', range: '0~65535' }
+        ],
+        tooltip: 'ðŸŽ¨ TCS34725 ì»¬ëŸ¬ ì„¼ì„œ\n\në¬¼ì²´ì˜ RGB ìƒ‰ìƒì„ ì¸¡ì •í•©ë‹ˆë‹¤.\n\nâ€¢ R, G, B ê°ê° ì¸¡ì •\nâ€¢ ìƒ‰ìƒ ë¶„ë¥˜ ê°€ëŠ¥'
+      },
+      { 
+        id: 'tsl2561', 
+        name: 'TSL2561 ì¡°ë„', 
+        icon: 'â˜€ï¸', 
+        address: '0x39', 
+        type: 'light', 
+        description: 'ì£¼ë³€ ë°ê¸°ë¥¼ ëŸ­ìŠ¤(lux) ë‹¨ìœ„ë¡œ ì •ë°€í•˜ê²Œ ì¸¡ì •í•©ë‹ˆë‹¤. ë‚´ìž¥ ë¹› ì„¼ì„œë³´ë‹¤ ë„“ì€ ë²”ìœ„ì™€ ë†’ì€ ì •í™•ë„ë¥¼ ì œê³µí•©ë‹ˆë‹¤.',
+        data: [
+          { name: 'ì •ë°€ ì¡°ë„', icon: 'â˜€ï¸', range: '0.1~40,000 ëŸ­ìŠ¤' }
+        ],
+        tooltip: 'â˜€ï¸ TSL2561 ì¡°ë„ ì„¼ì„œ\n\në°ê¸°ë¥¼ ëŸ­ìŠ¤ ë‹¨ìœ„ë¡œ ì¸¡ì •í•©ë‹ˆë‹¤.\n\nâ€¢ 0.1~40,000 ëŸ­ìŠ¤ ë²”ìœ„'
+      },
+      { 
+        id: 'sgp30', 
+        name: 'SGP30 ê³µê¸°ì§ˆ', 
+        icon: 'ðŸŒ¬ï¸', 
+        address: '0x58', 
+        type: 'environment', 
+        description: 'ì‹¤ë‚´ ê³µê¸°ì§ˆì„ ì¸¡ì •í•©ë‹ˆë‹¤. CO2 ë†ë„ê°€ ë†’ê±°ë‚˜ TVOCê°€ ê°ì§€ë˜ë©´ í™˜ê¸°ê°€ í•„ìš”í•˜ë‹¤ëŠ” ì‹ í˜¸ìž…ë‹ˆë‹¤.',
+        data: [
+          { name: 'CO2 ë†ë„', icon: 'ðŸŒ¬ï¸', range: '400~60,000 ppm' },
+          { name: 'TVOC', icon: 'ðŸ’¨', range: '0~60,000 ppb' }
+        ],
+        tooltip: 'ðŸŒ¬ï¸ SGP30 ê³µê¸°ì§ˆ ì„¼ì„œ\n\nì‹¤ë‚´ ê³µê¸° í’ˆì§ˆì„ ì¸¡ì •í•©ë‹ˆë‹¤.\n\nâ€¢ CO2: 400~60000 ppm\nâ€¢ TVOC: íœ˜ë°œì„± ìœ ê¸°í™”í•©ë¬¼'
+      },
+      { 
+        id: 'vl53l0x', 
+        name: 'VL53L0X ê±°ë¦¬', 
+        icon: 'ðŸ“', 
+        address: '0x29', 
+        type: 'distance', 
+        description: 'ë ˆì´ì €(ToF)ë¥¼ ì´ìš©í•´ ë¬¼ì²´ê¹Œì§€ì˜ ê±°ë¦¬ë¥¼ ë°€ë¦¬ë¯¸í„° ë‹¨ìœ„ë¡œ ì •ë°€í•˜ê²Œ ì¸¡ì •í•©ë‹ˆë‹¤. ë¡œë´‡ì˜ ìž¥ì• ë¬¼ ê°ì§€ì— í™œìš©ë©ë‹ˆë‹¤.',
+        data: [
+          { name: 'ì •ë°€ ê±°ë¦¬', icon: 'ðŸ“', range: '30~2000 mm' }
+        ],
+        tooltip: 'ðŸ“ VL53L0X ê±°ë¦¬ ì„¼ì„œ\n\në ˆì´ì €ë¡œ ì •ë°€ ê±°ë¦¬ë¥¼ ì¸¡ì •í•©ë‹ˆë‹¤.\n\nâ€¢ ìµœëŒ€ 2m ì¸¡ì •\nâ€¢ mm ë‹¨ìœ„ ì •í™•ë„'
+      },
+      { 
+        id: 'mpr121', 
+        name: 'MPR121 í„°ì¹˜', 
+        icon: 'âœ‹', 
+        address: '0x5A', 
+        type: 'input', 
+        description: '12ê°œì˜ ë…ë¦½ì ì¸ í„°ì¹˜ ìž…ë ¥ì„ ê°ì§€í•©ë‹ˆë‹¤. ê³¼ì¼ í”¼ì•„ë…¸, í„°ì¹˜ ë²„íŠ¼ ë“± ë‹¤ì–‘í•œ ìž…ë ¥ ìž¥ì¹˜ë¥¼ ë§Œë“¤ ìˆ˜ ìžˆìŠµë‹ˆë‹¤.',
+        data: [
+          { name: '12ì±„ë„ í„°ì¹˜', icon: 'âœ‹', range: 'ì±„ë„ 0~11' }
+        ],
+        tooltip: 'âœ‹ MPR121 í„°ì¹˜ ì„¼ì„œ\n\n12ê°œì˜ í„°ì¹˜ ìž…ë ¥ì„ ê°ì§€í•©ë‹ˆë‹¤.\n\nâ€¢ 12ê°œ ë…ë¦½ ì±„ë„\nâ€¢ í„°ì¹˜ í”¼ì•„ë…¸ ì œìž‘ ê°€ëŠ¥'
+      },
+      { 
+        id: 'paj7620', 
+        name: 'PAJ7620 ì œìŠ¤ì²˜', 
+        icon: 'ðŸ–ï¸', 
+        address: '0x73', 
+        type: 'input', 
+        description: 'ì†ë™ìž‘ì„ ì¸ì‹í•©ë‹ˆë‹¤. ìƒí•˜ì¢Œìš° ì›€ì§ìž„, ì‹œê³„/ë°˜ì‹œê³„ ë°©í–¥ íšŒì „ ë“±ì„ ê°ì§€í•˜ì—¬ í„°ì¹˜ ì—†ì´ ì¡°ìž‘í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤.',
+        data: [
+          { name: 'ì œìŠ¤ì²˜ ì¸ì‹', icon: 'ðŸ–ï¸', range: '9ê°€ì§€ ë™ìž‘' }
+        ],
+        tooltip: 'ðŸ–ï¸ PAJ7620 ì œìŠ¤ì²˜ ì„¼ì„œ\n\nì†ë™ìž‘ì„ ì¸ì‹í•©ë‹ˆë‹¤.\n\nâ€¢ ìƒ/í•˜/ì¢Œ/ìš° ê°ì§€\nâ€¢ í„°ì¹˜ ì—†ì´ ì¡°ìž‘ ê°€ëŠ¥'
+      },
+    ];
+    
+    // ë‚´ìž¥ ì„¼ì„œ ì •ë³´ (ìƒì„¸)
+    const builtinSensors = [
+      {
+        id: 'accelerometer',
+        name: 'ê°€ì†ë„ê³„',
+        icon: 'ðŸ“',
+        description: 'ë§ˆì´í¬ë¡œë¹„íŠ¸ì˜ ê¸°ìš¸ê¸°ì™€ ì›€ì§ìž„ì„ ê°ì§€í•©ë‹ˆë‹¤. í”ë“¤ê¸°, ë–¨ì–´ëœ¨ë¦¬ê¸°, ê¸°ìš¸ì´ê¸° ë“±ì˜ ë™ìž‘ì„ ì¸ì‹í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤.',
+        data: [
+          { name: 'Xì¶• ê°€ì†ë„', icon: 'ðŸ“', range: '-1024~1024' },
+          { name: 'Yì¶• ê°€ì†ë„', icon: 'ðŸ“', range: '-1024~1024' },
+          { name: 'Zì¶• ê°€ì†ë„', icon: 'ðŸ“', range: '-1024~1024' }
+        ]
+      },
+      {
+        id: 'compass',
+        name: 'ë‚˜ì¹¨ë°˜',
+        icon: 'ðŸ§­',
+        description: 'ì§€êµ¬ ìžê¸°ìž¥ì„ ê°ì§€í•˜ì—¬ ë°©í–¥ì„ ì¸¡ì •í•©ë‹ˆë‹¤. ë¶ìª½ì„ ê¸°ì¤€ìœ¼ë¡œ 0Â°~360Â° ì‚¬ì´ì˜ ë°©ìœ„ê°ì„ ì•Œë ¤ì¤ë‹ˆë‹¤.',
+        data: [
+          { name: 'ë°©ìœ„ê°', icon: 'ðŸ§­', range: '0Â°~360Â°' }
+        ]
+      },
+      {
+        id: 'temperature',
+        name: 'ì˜¨ë„ ì„¼ì„œ',
+        icon: 'ðŸŒ¡ï¸',
+        description: 'CPU ì¹©ì˜ ì˜¨ë„ë¥¼ ì¸¡ì •í•©ë‹ˆë‹¤. âš ï¸ ì£¼ì˜: ì‹¤ì œ ê¸°ì˜¨ë³´ë‹¤ 5~10Â°C ë†’ê²Œ ì¸¡ì •ë˜ë¯€ë¡œ ì •í™•í•œ ì˜¨ë„ê°€ í•„ìš”í•˜ë©´ ì™¸ìž¥ ì„¼ì„œë¥¼ ì‚¬ìš©í•˜ì„¸ìš”.',
+        data: [
+          { name: 'ì˜¨ë„ (ëŒ€ëžµ)', icon: 'ðŸŒ¡ï¸', range: 'ì•½ 0~50Â°C (ë¶€ì •í™•)' }
+        ]
+      },
+      {
+        id: 'light',
+        name: 'ë¹› ì„¼ì„œ',
+        icon: 'ðŸ’¡',
+        description: 'LEDë¥¼ ì—­ìœ¼ë¡œ ì‚¬ìš©í•˜ì—¬ ì£¼ë³€ ë°ê¸°ë¥¼ ì¸¡ì •í•©ë‹ˆë‹¤. ì •ë°€í•œ ì¸¡ì •ì´ ì•„ë‹Œ ëŒ€ëžµì ì¸ ë°ê¸° ë³€í™”ë¥¼ ê°ì§€í•˜ëŠ” ìš©ë„ìž…ë‹ˆë‹¤.',
+        data: [
+          { name: 'ë°ê¸°', icon: 'ðŸ’¡', range: '0~255' }
+        ]
+      },
+      {
+        id: 'microphone',
+        name: 'ë§ˆì´í¬',
+        icon: 'ðŸŽ¤',
+        description: 'V2 ì „ìš© ê¸°ëŠ¥ìž…ë‹ˆë‹¤. ì£¼ë³€ ì†Œë¦¬ì˜ í¬ê¸°ë¥¼ ì¸¡ì •í•©ë‹ˆë‹¤. ë°•ìˆ˜ ê°ì§€, ì†ŒìŒ ì¸¡ì • ë“±ì— í™œìš©ë©ë‹ˆë‹¤.',
+        data: [
+          { name: 'ì†Œë¦¬ í¬ê¸°', icon: 'ðŸŽ¤', range: '0~255' }
+        ]
+      },
+      {
+        id: 'touch',
+        name: 'í„°ì¹˜ ë¡œê³ ',
+        icon: 'ðŸ‘†',
+        description: 'V2 ì „ìš© ê¸°ëŠ¥ìž…ë‹ˆë‹¤. ê¸ˆìƒ‰ ë¡œê³ ë¥¼ í„°ì¹˜í•˜ë©´ ê°ì§€ë©ë‹ˆë‹¤. ë²„íŠ¼ì²˜ëŸ¼ ì‚¬ìš©í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤.',
+        data: [
+          { name: 'í„°ì¹˜ ê°ì§€', icon: 'ðŸ‘†', range: 'í„°ì¹˜/ë¯¸í„°ì¹˜' }
+        ]
+      }
+    ];
+    
+    // ë°ì´í„°ë¡œê±° ì •ë³´
+    const dataloggerInfo = {
+      id: 'datalogger',
+      name: 'ë°ì´í„°ë¡œê±°',
+      icon: 'ðŸ’¾',
+      description: 'ì„¼ì„œ ë°ì´í„°ë¥¼ ìžë™ìœ¼ë¡œ ê¸°ë¡í•˜ëŠ” ìž¥ì¹˜ìž…ë‹ˆë‹¤. RTC(ì‹¤ì‹œê°„ ì‹œê³„)ë¡œ ì¸¡ì • ì‹œê°„ì„ ê¸°ë¡í•˜ê³ , SDì¹´ë“œì— CSV íŒŒì¼ë¡œ ì €ìž¥í•©ë‹ˆë‹¤.',
+      data: [
+        { name: 'ë‚ ì§œ', icon: 'ðŸ“…', range: 'ì—°/ì›”/ì¼' },
+        { name: 'ì‹œê°„', icon: 'â°', range: 'ì‹œ/ë¶„/ì´ˆ' },
+        { name: 'SD ì €ìž¥', icon: 'ðŸ’¾', range: 'CSV íŒŒì¼' }
+      ]
+    };
+    
+    // ë‚´ìž¥ ì„¼ì„œ ë°ì´í„° (ê°„ë‹¨ ë²„ì „)
+    const builtinDataItems = [
+      { name: 'Xì¶• ê°€ì†ë„', icon: 'ðŸ“', tooltip: 'ì¢Œìš° ê¸°ìš¸ê¸°. -1024~1024' },
+      { name: 'Yì¶• ê°€ì†ë„', icon: 'ðŸ“', tooltip: 'ì•žë’¤ ê¸°ìš¸ê¸°. -1024~1024' },
+      { name: 'Zì¶• ê°€ì†ë„', icon: 'ðŸ“', tooltip: 'ìœ„ì•„ëž˜ ì›€ì§ìž„. -1024~1024' },
+      { name: 'ë°©ìœ„ê°', icon: 'ðŸ§­', tooltip: 'ë¶ìª½ ê¸°ì¤€ ë°©í–¥. 0Â°~360Â°' },
+      { name: 'ì˜¨ë„ (ëŒ€ëžµ)', icon: 'ðŸŒ¡ï¸', tooltip: 'CPU ì˜¨ë„. ì‹¤ì œë³´ë‹¤ ë†’ìŒ' },
+      { name: 'ë°ê¸°', icon: 'ðŸ’¡', tooltip: 'LEDë¡œ ì¸¡ì •. 0~255' },
+      { name: 'ì†Œë¦¬ í¬ê¸°', icon: 'ðŸŽ¤', tooltip: 'ë§ˆì´í¬ ì¸¡ì •. 0~255' },
+    ];
+    
+    // ë°ì´í„°ë¡œê±° ê¸°ë³¸ ë°ì´í„°
+    const dataloggerDataItems = [
+      { name: 'ë‚ ì§œ', icon: 'ðŸ“…', tooltip: 'RTC ì œê³µ. ì—°/ì›”/ì¼' },
+      { name: 'ì‹œê°„', icon: 'â°', tooltip: 'RTC ì œê³µ. ì‹œ/ë¶„/ì´ˆ' },
+      { name: 'SD ì €ìž¥', icon: 'ðŸ’¾', tooltip: 'CSV íŒŒì¼ë¡œ ì €ìž¥' },
+    ];
+    
+    // ìƒíƒœ ê´€ë¦¬
+    let connectedSensors = {};
+    let draggedSensorId = null;
+    let draggedFromPort = null;
+    
+    // ===== í‚¤ì›Œë“œ â†’ ì„¼ì„œ ë§¤í•‘ ë°ì´í„° =====
+    const keywordToSensorMap = {
+      // ì˜¨ë„/ìŠµë„ ê´€ë ¨
+      'ì˜¨ë„': { builtin: ['temperature'], external: ['sht40'] },
+      'ìŠµë„': { builtin: [], external: ['sht40'] },
+      'ì˜¨ìŠµë„': { builtin: ['temperature'], external: ['sht40'] },
+      'ì •ë°€ì˜¨ë„': { builtin: [], external: ['sht40'] },
+      'í™˜ê²½': { builtin: ['temperature', 'light'], external: ['sht40', 'bmp280', 'sgp30'] },
+      'ë¥ë‹¤': { builtin: ['temperature'], external: ['sht40'] },
+      'ì¶¥ë‹¤': { builtin: ['temperature'], external: ['sht40'] },
+      'ê±´ì¡°': { builtin: [], external: ['sht40'] },
+      
+      // ê³µê¸°ì§ˆ ê´€ë ¨
+      'ê³µê¸°ì§ˆ': { builtin: [], external: ['sgp30'] },
+      'ê³µê¸°': { builtin: [], external: ['sgp30'] },
+      'co2': { builtin: [], external: ['sgp30'] },
+      'ì´ì‚°í™”íƒ„ì†Œ': { builtin: [], external: ['sgp30'] },
+      'í™˜ê¸°': { builtin: [], external: ['sgp30'] },
+      'íƒí•˜ë‹¤': { builtin: [], external: ['sgp30'] },
+      'tvoc': { builtin: [], external: ['sgp30'] },
+      'ëƒ„ìƒˆ': { builtin: [], external: ['sgp30'] },
+      
+      // ê¸°ì••/ë‚ ì”¨ ê´€ë ¨
+      'ê¸°ì••': { builtin: [], external: ['bmp280'] },
+      'ë‚ ì”¨': { builtin: [], external: ['bmp280', 'sht40'] },
+      'ê³ ë„': { builtin: [], external: ['bmp280'] },
+      'ì‚°': { builtin: [], external: ['bmp280'] },
+      'ë¹„': { builtin: [], external: ['bmp280'] },
+      
+      // ë¹›/ìƒ‰ìƒ ê´€ë ¨
+      'ë°ê¸°': { builtin: ['light'], external: ['tsl2561', 'tcs34725'] },
+      'ì¡°ë„': { builtin: ['light'], external: ['tsl2561'] },
+      'ëŸ­ìŠ¤': { builtin: [], external: ['tsl2561'] },
+      'ìƒ‰ê¹”': { builtin: [], external: ['tcs34725'] },
+      'ìƒ‰ìƒ': { builtin: [], external: ['tcs34725'] },
+      'rgb': { builtin: [], external: ['tcs34725'] },
+      'ë¹¨ê°•': { builtin: [], external: ['tcs34725'] },
+      'ì´ˆë¡': { builtin: [], external: ['tcs34725'] },
+      'íŒŒëž‘': { builtin: [], external: ['tcs34725'] },
+      'ìµë‹¤': { builtin: [], external: ['tcs34725'] },
+      'ê³¼ì¼': { builtin: [], external: ['tcs34725'] },
+      'ë¶„ë¥˜': { builtin: [], external: ['tcs34725'] },
+      'ì–´ë‘¡ë‹¤': { builtin: ['light'], external: ['tsl2561'] },
+      
+      // ê±°ë¦¬ ê´€ë ¨
+      'ê±°ë¦¬': { builtin: [], external: ['vl53l0x'] },
+      'ê°€ê¹ë‹¤': { builtin: [], external: ['vl53l0x'] },
+      'ë©€ë‹¤': { builtin: [], external: ['vl53l0x'] },
+      'ë ˆì´ì €': { builtin: [], external: ['vl53l0x'] },
+      'ìž¥ì• ë¬¼': { builtin: [], external: ['vl53l0x'] },
+      
+      // ì›€ì§ìž„/ê°€ì†ë„ ê´€ë ¨
+      'ì›€ì§ìž„': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      'ê°€ì†ë„': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      'ê¸°ìš¸ê¸°': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      'í”ë“¤ë¦¼': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      'ê±·ë‹¤': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      'ê±¸ìŒ': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      'ë§Œë³´ê¸°': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      'ìš´ë™': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      'ì§„ë™': { builtin: ['accelerometer'], external: ['lis3dh'] },
+      'ì •ë°€ê°€ì†ë„': { builtin: [], external: ['lis3dh'] },
+      
+      // ë°©í–¥ ê´€ë ¨
+      'ë°©í–¥': { builtin: ['compass'], external: [] },
+      'ë‚˜ì¹¨ë°˜': { builtin: ['compass'], external: [] },
+      'ë¶ìª½': { builtin: ['compass'], external: [] },
+      'ë™ì„œë‚¨ë¶': { builtin: ['compass'], external: [] },
+      
+      // ì†Œë¦¬ ê´€ë ¨
+      'ì†Œë¦¬': { builtin: ['microphone'], external: [] },
+      'ë°•ìˆ˜': { builtin: ['microphone'], external: [] },
+      'ì‹œë„ëŸ½ë‹¤': { builtin: ['microphone'], external: [] },
+      'ì¡°ìš©': { builtin: ['microphone'], external: [] },
+      'ì†ŒìŒ': { builtin: ['microphone'], external: [] },
+      
+      // í„°ì¹˜ ê´€ë ¨
+      'í„°ì¹˜': { builtin: ['touch'], external: ['mpr121'] },
+      'ëˆ„ë¥´ë‹¤': { builtin: ['touch'], external: ['mpr121'] },
+      'í”¼ì•„ë…¸': { builtin: [], external: ['mpr121'] },
+      'ë²„íŠ¼': { builtin: ['touch'], external: ['mpr121'] },
+      '12ì±„ë„': { builtin: [], external: ['mpr121'] },
+      
+      // ì œìŠ¤ì²˜ ê´€ë ¨
+      'ì œìŠ¤ì²˜': { builtin: [], external: ['paj7620'] },
+      'ì†ë™ìž‘': { builtin: [], external: ['paj7620'] },
+      'ì†': { builtin: [], external: ['paj7620'] },
+      'í”ë“¤ê¸°': { builtin: [], external: ['paj7620'] },
+      'ì¡°ìž‘': { builtin: [], external: ['paj7620'] },
+      
+      // ë””ìŠ¤í”Œë ˆì´ ê´€ë ¨
+      'í™”ë©´': { builtin: [], external: ['oled'] },
+      'í‘œì‹œ': { builtin: [], external: ['oled'] },
+      'ë””ìŠ¤í”Œë ˆì´': { builtin: [], external: ['oled'] },
+      'ì¶œë ¥': { builtin: [], external: ['oled'] },
+      'ë³´ì—¬ì£¼ë‹¤': { builtin: [], external: ['oled'] },
+      'oled': { builtin: [], external: ['oled'] },
+      
+      // ì‹œê°„/ê¸°ë¡ ê´€ë ¨
+      'ì‹œê°„': { builtin: [], external: [] }, // ë°ì´í„°ë¡œê±°
+      'ê¸°ë¡': { builtin: [], external: [] }, // ë°ì´í„°ë¡œê±°
+      'ì €ìž¥': { builtin: [], external: [] }, // ë°ì´í„°ë¡œê±°
+    };
+    
+    // ë‚´ìž¥ ì„¼ì„œ ID â†’ ì¸ë±ìŠ¤ ë§¤í•‘
+    const builtinSensorIndexMap = {
+      'accelerometer': 0,
+      'compass': 1,
+      'temperature': 2,
+      'light': 3,
+      'microphone': 4,
+      'touch': 5
+    };
+    
+    // ===== ê²€ìƒ‰ í•¨ìˆ˜ =====
+    function searchSensors() {
+      const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
+      if (!searchText) {
+        clearSearch();
+        return;
+      }
+      
+      // ëª¨ë“  í•˜ì´ë¼ì´íŠ¸ ì œê±°
+      clearHighlights();
+      
+      // ê²€ìƒ‰ì–´ ë¶„ë¦¬ (ê³µë°±ìœ¼ë¡œ)
+      const keywords = searchText.split(/\s+/);
+      
+      let matchedBuiltin = new Set();
+      let matchedExternal = new Set();
+      
+      // ê° í‚¤ì›Œë“œì— ëŒ€í•´ ë§¤ì¹­ë˜ëŠ” ì„¼ì„œ ì°¾ê¸°
+      keywords.forEach(keyword => {
+        // ì •í™•í•œ ë§¤ì¹­
+        if (keywordToSensorMap[keyword]) {
+          keywordToSensorMap[keyword].builtin.forEach(id => matchedBuiltin.add(id));
+          keywordToSensorMap[keyword].external.forEach(id => matchedExternal.add(id));
+        }
+        
+        // ë¶€ë¶„ ë§¤ì¹­
+        Object.keys(keywordToSensorMap).forEach(key => {
+          if (key.includes(keyword) || keyword.includes(key)) {
+            keywordToSensorMap[key].builtin.forEach(id => matchedBuiltin.add(id));
+            keywordToSensorMap[key].external.forEach(id => matchedExternal.add(id));
+          }
+        });
+      });
+      
+      // í•˜ì´ë¼ì´íŠ¸ ì ìš©
+      let highlightCount = 0;
+      
+      // ë‚´ìž¥ ì„¼ì„œ í•˜ì´ë¼ì´íŠ¸
+      // DOM 쿼리는 루프 밖에서 한 번만 실행 (성능 + 변수명 충돌 방지)
+      const builtinDomElements = document.querySelectorAll('.builtin-sensor');
+      matchedBuiltin.forEach(sensorId => {
+        const index = builtinSensorIndexMap[sensorId];
+        if (index !== undefined && builtinDomElements[index]) {
+          builtinDomElements[index].classList.add('highlighted');
+          highlightCount++;
+        }
+      });
+      
+      // ì™¸ìž¥ ì„¼ì„œ í•˜ì´ë¼ì´íŠ¸
+      matchedExternal.forEach(sensorId => {
+        const sensorElement = document.getElementById(`sensor-${sensorId}`);
+        if (sensorElement) {
+          sensorElement.classList.add('highlighted');
+          highlightCount++;
+        }
+      });
+      
+      // ê²€ìƒ‰ ê²°ê³¼ í‘œì‹œ
+      const resultDiv = document.getElementById('searchResult');
+      if (highlightCount > 0) {
+        const builtinNames = Array.from(matchedBuiltin).map(id => {
+          const sensor = builtinSensors.find(s => s.id === id);
+          return sensor ? sensor.name : id;
+        });
+        const externalNames = Array.from(matchedExternal).map(id => {
+          const sensor = sensors.find(s => s.id === id);
+          return sensor ? sensor.name : id;
+        });
+        
+        let resultHTML = `<strong>🯏 "${searchText}" ${UI_TEXT.SEARCH_FOUND} ${highlightCount}${UI_TEXT.SEARCH_FOUND_UNIT}</strong><br>`;
+        if (builtinNames.length > 0) resultHTML += `<br>${UI_TEXT.SEARCH_BUILTIN}: ${builtinNames.join(', ')}`;
+        if (externalNames.length > 0) resultHTML += `<br>${UI_TEXT.SEARCH_EXTERNAL}: ${externalNames.join(', ')}`;
+        resultHTML += `<br><br><small>${UI_TEXT.SEARCH_HINT}</small>`;
+        
+        resultDiv.innerHTML = resultHTML;
+        resultDiv.className = 'search-result show success';
+        
+        setTimeout(() => {
+          const firstHighlighted = document.querySelector('.sensor-item.highlighted, .builtin-sensor.highlighted');
+          if (firstHighlighted) firstHighlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, CONFIG.SCROLL_DELAY);
+      } else {
+        resultDiv.innerHTML = `<strong>⚠️ "${searchText}"${UI_TEXT.SEARCH_EMPTY}</strong><br><br><small>${UI_TEXT.SEARCH_EMPTY_HINT}</small>`;
+        resultDiv.className = 'search-result show no-result';
+      }
+    }
+    
+    // í•˜ì´ë¼ì´íŠ¸ ì œê±°
+    function clearHighlights() {
+      document.querySelectorAll('.highlighted').forEach(el => {
+        el.classList.remove('highlighted');
+      });
+    }
+    
+    // ê²€ìƒ‰ ì´ˆê¸°í™”
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      clearHighlights();
+      const resultDiv = document.getElementById('searchResult');
+      resultDiv.className = 'search-result';
+      resultDiv.innerHTML = '';
+    }
+    
+    // ê²€ìƒ‰ì–´ ì„¤ì • (ížŒíŠ¸ í´ë¦­ ì‹œ)
+    function setSearchText(text) {
+      document.getElementById('searchInput').value = text;
+      searchSensors();
+    }
+    
+    // ë“œë¡­ë‹¤ìš´ í† ê¸€
+    function toggleDropdown() {
+      const container = document.querySelector('.dropdown-container');
+      container.classList.toggle('open');
+    }
+    
+    // ë“œë¡­ë‹¤ìš´ í‚¤ì›Œë“œ ì„ íƒ
+    function selectKeyword(keyword) {
+      document.getElementById('searchInput').value = keyword;
+      document.querySelector('.dropdown-container').classList.remove('open');
+      searchSensors();
+    }
+    
+    // ë“œë¡­ë‹¤ìš´ ì™¸ë¶€ í´ë¦­ ì‹œ ë‹«ê¸°
+    document.addEventListener('click', function(e) {
+      const container = document.querySelector('.dropdown-container');
+      if (container && !container.contains(e.target)) {
+        container.classList.remove('open');
+      }
+    });
+    
+    // ì—”í„°í‚¤ë¡œ ê²€ìƒ‰
+    function handleSearchKeypress(event) {
+      if (event.key === 'Enter') {
+        searchSensors();
+      }
+    }
+    
+    // ì´ˆê¸°í™”
+    function init() {
+      renderBuiltinData();
+      renderSensors();
+      renderConnectedSensorsPanel();
+      updateDataPanel();
+    }
+    
+    // ë‚´ìž¥ ì„¼ì„œ ë°ì´í„° ë Œë”ë§
+    function renderBuiltinData() {
+      const container = document.getElementById('builtinData');
+      container.innerHTML = builtinDataItems.map(item => 
+        `<div class="data-item builtin tooltip" data-tooltip="${item.tooltip}">
+          <span class="data-item-icon">${item.icon}</span> ${item.name}
+        </div>`
+      ).join('');
+    }
+    
+    // ì„¼ì„œ ëª©ë¡ ë Œë”ë§
+    function renderSensors() {
+      const grid = document.getElementById('sensorsGrid');
+      grid.innerHTML = '';
+      // Set 찐싱: O(n²) → O(n) (루프마다 includes 호출 제거)
+      const connectedSet = new Set(Object.values(connectedSensors));
+      sensors.forEach(sensor => {
+        const isConnected = connectedSet.has(sensor.id);
+        
+        const item = document.createElement('div');
+        item.className = `sensor-item ${sensor.type} ${isConnected ? 'connected' : ''} tooltip`;
+        item.draggable = !isConnected;
+        item.id = `sensor-${sensor.id}`;
+        item.setAttribute('data-tooltip', sensor.tooltip);
+        item.innerHTML = `
+          <div class="sensor-icon">${sensor.icon}</div>
+          <div class="sensor-name">${sensor.name}</div>
+          <div class="sensor-address">${sensor.address}</div>
+        `;
+        
+        if (!isConnected) {
+          item.addEventListener('dragstart', (e) => handleDragStart(e, sensor.id));
+          item.addEventListener('dragend', handleDragEnd);
+        }
+        
+        grid.appendChild(item);
+      });
+    }
+    
+    // í¬íŠ¸ ë Œë”ë§
+    function renderPorts() {
+      for (let i = 1; i <= 6; i++) {
+        const port = document.getElementById(`port-${i}`);
+        const sensorId = connectedSensors[i];
+        
+        if (sensorId) {
+          const sensor = sensors.find(s => s.id === sensorId);
+          port.className = 'port tooltip';
+          port.setAttribute('data-tooltip', sensor.tooltip);
+          port.innerHTML = `
+            <span class="port-number">#${i}</span>
+            <div class="sensor-card ${sensor.type}" draggable="true" 
+                 ondragstart="handlePortDragStart(event, ${i}, '${sensorId}')"
+                 ondragend="handleDragEnd(event)">
+              <div class="sensor-icon">${sensor.icon}</div>
+              <div class="sensor-name">${sensor.name}</div>
+              <div class="sensor-address">${sensor.address}</div>
+            </div>
+          `;
+        } else {
+          port.className = 'port empty-port tooltip';
+          port.setAttribute('data-tooltip', `ðŸ“ ë¹ˆ í¬íŠ¸ #${i}\n\nì•„ëž˜ ì„¼ì„œë¥¼ ë“œëž˜ê·¸í•˜ì—¬ ì—°ê²°í•˜ì„¸ìš”.`);
+          port.innerHTML = `
+            <span class="port-number">#${i}</span>
+            <span class="port-empty-text">ë¹ˆ í¬íŠ¸</span>
+          `;
+        }
+      }
+    }
+    
+    // ===== ì—°ê²°ëœ ì„¼ì„œ ì„¤ëª… íŒ¨ë„ ë Œë”ë§ (ì‹ ê·œ) =====
+    // 센세 카드 HTML 생성 헬퍼 (최복 제거, L1 원칙 DRY)
+    function buildSensorCard(sensor, cardType, badgeText, subTitle) {
+      const dataTags = sensor.data.map(d => `
+        <div class="data-tag ${cardType}">
+          <span class="data-tag-icon">${d.icon}</span>
+          <div class="data-tag-info">
+            <span class="data-tag-name">${d.name}</span>
+            <span class="data-tag-range">${d.range}</span>
+          </div>
+        </div>`).join('');
+      return `
+        <div class="connected-sensor-card ${cardType}">
+          <div class="connected-sensor-header">
+            <div class="connected-sensor-icon">${sensor.icon}</div>
+            <div class="connected-sensor-info">
+              <div class="connected-sensor-name">${sensor.name}</div>
+              <div class="connected-sensor-type">${subTitle}</div>
+            </div>
+            <span class="connected-sensor-badge badge-${cardType}">${badgeText}</span>
+          </div>
+          <div class="connected-sensor-desc">${sensor.description}</div>
+          <div class="connected-sensor-data">
+            <div class="connected-sensor-data-title">${UI_TEXT.DATA_SECTION}</div>
+            <div class="connected-sensor-data-list">${dataTags}</div>
+          </div>
+        </div>`;
+    }
+
+    function renderConnectedSensorsPanel() {
+      let html = '';
+      // 1. 내장 센세 카드들
+      builtinSensors.forEach(sensor => {
+        html += buildSensorCard(sensor, 'builtin', UI_TEXT.BADGE_BUILTIN, UI_TEXT.TYPE_BUILTIN);
+      });
+      // 2. 데이터로거 카드
+      html += buildSensorCard(dataloggerInfo, 'datalogger', UI_TEXT.BADGE_DATALOGGER, UI_TEXT.TYPE_DATALOGGER);
+      // 3. 연결된 외장 센세 카드들
+      Object.values(connectedSensors).forEach(sensorId => {
+        const sensor = sensors.find(s => s.id === sensorId);
+        if (sensor) {
+          html += buildSensorCard(sensor, 'external', UI_TEXT.BADGE_EXTERNAL, `I2C 주소: ${sensor.address}`);
+        }
+      });
+      document.getElementById('connectedSensorsGrid').innerHTML = html;
+    }
+    
+    // ë“œëž˜ê·¸ ì‹œìž‘ (ì„¼ì„œ ëª©ë¡ì—ì„œ)
+    function handleDragStart(e, sensorId) {
+      draggedSensorId = sensorId;
+      draggedFromPort = null;
+      e.target.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+    
+    // ë“œëž˜ê·¸ ì‹œìž‘ (í¬íŠ¸ì—ì„œ)
+    function handlePortDragStart(e, portNumber, sensorId) {
+      draggedSensorId = sensorId;
+      draggedFromPort = portNumber;
+      e.target.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+    
+    // ë“œëž˜ê·¸ ë
+    function handleDragEnd(e) {
+      e.target.classList.remove('dragging');
+      
+      if (draggedFromPort && draggedSensorId) {
+        const droppedOnPort = document.querySelector('.port.drag-over');
+        if (!droppedOnPort) {
+          delete connectedSensors[draggedFromPort];
+          renderPorts();
+          renderSensors();
+          renderConnectedSensorsPanel();
+          updateDataPanel();
+        }
+      }
+      
+      draggedSensorId = null;
+      draggedFromPort = null;
+    }
+    
+    // ë“œëž˜ê·¸ ì˜¤ë²„
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    }
+    
+    // ë“œëž˜ê·¸ ë– ë‚¨
+    function handleDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+    
+    // ë“œë¡­
+    function handleDrop(e, portNumber) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      
+      if (!draggedSensorId) return;
+      
+      if (connectedSensors[portNumber] && !draggedFromPort) return;
+      
+      if (draggedFromPort) {
+        delete connectedSensors[draggedFromPort];
+      }
+      
+      connectedSensors[portNumber] = draggedSensorId;
+      
+      renderPorts();
+      renderSensors();
+      renderConnectedSensorsPanel();
+      updateDataPanel();
+      
+      draggedSensorId = null;
+      draggedFromPort = null;
+    }
+    
+    // ë°ì´í„° íŒ¨ë„ ì—…ë°ì´íŠ¸
+    function updateDataPanel() {
+      const externalDataDiv = document.getElementById('externalData');
+      
+      let externalItems = [...dataloggerDataItems];
+      
+      Object.values(connectedSensors).forEach(sensorId => {
+        const sensor = sensors.find(s => s.id === sensorId);
+        if (sensor) {
+          sensor.data.forEach(dataItem => {
+            externalItems.push({ 
+              name: dataItem.name, 
+              icon: dataItem.icon, 
+              tooltip: dataItem.range 
+            });
+          });
+        }
+      });
+      
+      externalDataDiv.innerHTML = externalItems.map(item => 
+        `<div class="data-item external tooltip" data-tooltip="${item.tooltip}">
+          <span class="data-item-icon">${item.icon}</span> ${item.name}
+        </div>`
+      ).join('');
+      
+      // connectedCount �˜수 한 번만 계산 (영 σ 동일 표현살 3회 반복 제거)
+      const connectedCount = Object.keys(connectedSensors).length;
+      document.getElementById('builtinCount').textContent = builtinSensors.length;
+      document.getElementById('externalCount').textContent = connectedCount + 1;
+      document.getElementById('dataCount').textContent = builtinDataItems.length + externalItems.length;
+      document.getElementById('portRemaining').textContent = CONFIG.PORT_COUNT - connectedCount;
+    }
+    
+    // ëª¨ë‘ ì´ˆê¸°í™”
+    function resetAll() {
+      connectedSensors = {};
+      renderPorts();
+      renderSensors();
+      renderConnectedSensorsPanel();
+      updateDataPanel();
+    }
+    
+    // íŽ˜ì´ì§€ ë¡œë“œ ì‹œ ì´ˆê¸°í™”
+    init();
+  </script>
+</body>
+</ht

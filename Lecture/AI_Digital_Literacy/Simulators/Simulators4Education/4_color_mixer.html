@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎨 색상 혼합 & 배색 시뮬레이터</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --color-red-500:    #ef4444;
+    --color-green-500:  #10b981;
+    --color-blue-500:   #3b82f6;
+    --color-amber-500:  #f59e0b;
+    --color-slate-800:  #1e293b;
+    --color-slate-100:  #f8fafc;
+    --color-white:      #ffffff;
+    --color-grad-a:     #f43f5e;
+    --color-grad-b:     #8b5cf6;
+
+    --primary:   var(--color-blue-500);
+    --success:   var(--color-green-500);
+    --bg-body:   var(--color-slate-100);
+    --bg-panel:  var(--color-white);
+    --text-dark: var(--color-slate-800);
+
+    --btn-min-height: 48px;
+    --btn-min-width:  100px;
+    --btn-radius: 12px;
+    --font-primary: 'Nanum Gothic','Malgun Gothic',sans-serif;
+    --font-size-sm:   14px;
+    --font-size-base: 16px;
+    --font-size-lg:   20px;
+    --font-size-xl:   24px;
+    --sp-sm:8px;--sp-md:16px;--sp-lg:24px;
+}
+*{box-sizing:border-box;}
+body{font-family:var(--font-primary);background:linear-gradient(135deg,var(--color-grad-a),var(--color-grad-b));margin:0;padding:20px;min-height:100vh;font-size:var(--font-size-base);}
+header{text-align:center;color:var(--color-white);margin-bottom:20px;}
+h1{margin:0;font-size:var(--font-size-xl);text-shadow:2px 2px 4px rgba(0,0,0,0.3);}
+.subtitle{font-size:var(--font-size-base);margin-top:8px;opacity:.9;}
+.layout{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:280px 1fr 280px;gap:16px;}
+.panel{background:var(--bg-panel);border-radius:18px;padding:var(--sp-lg);box-shadow:0 8px 24px rgba(0,0,0,.15);}
+h3{margin:0 0 14px 0;font-size:var(--font-size-lg);color:var(--text-dark);}
+
+/* 슬라이더 */
+.slider-group{margin:14px 0;}
+.slider-label{font-weight:700;font-size:var(--font-size-base);margin-bottom:6px;display:flex;justify-content:space-between;}
+.slider-val{color:var(--primary);font-weight:800;}
+input[type=range]{width:100%;height:10px;border-radius:5px;outline:none;cursor:pointer;margin:6px 0;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--color-white);border:3px solid #333;cursor:pointer;}
+.slider-r{background:linear-gradient(to right,#000,#ef4444);}
+.slider-g{background:linear-gradient(to right,#000,#10b981);}
+.slider-b{background:linear-gradient(to right,#000,#3b82f6);}
+
+/* 색상 미리보기 */
+.color-preview{width:100%;height:90px;border-radius:14px;border:3px solid #e2e8f0;margin:14px 0;box-shadow:0 4px 10px rgba(0,0,0,.1);transition:background .1s;}
+.color-code{background:var(--color-slate-800);color:var(--color-white);border-radius:10px;padding:12px var(--sp-md);font-family:monospace;font-size:var(--font-size-base);margin:8px 0;text-align:center;}
+
+/* 프리셋 */
+.preset-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:14px 0;}
+.preset-swatch{width:100%;aspect-ratio:1;border-radius:8px;cursor:pointer;border:3px solid transparent;transition:all .2s;}
+.preset-swatch:hover{transform:scale(1.15);border-color:#333;}
+
+/* 물감 */
+.paint-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0;}
+.paint-btn{min-height:var(--btn-min-height);border:3px solid transparent;border-radius:12px;cursor:pointer;font-size:var(--font-size-base);font-weight:700;font-family:var(--font-primary);transition:all .2s;}
+.paint-btn:hover{transform:translateY(-3px);box-shadow:0 4px 10px rgba(0,0,0,.2);}
+.paint-btn.selected{border-color:#333;transform:scale(1.05);}
+
+/* 캔버스 */
+#colorCanvas{width:100%;height:520px;border-radius:14px;background:var(--bg-body);border:3px solid #e2e8f0;display:block;}
+
+/* 배색 버튼 */
+.harmony-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;}
+.harmony-btn{min-height:var(--btn-min-height);border:2px solid #e2e8f0;border-radius:10px;background:var(--bg-body);font-size:var(--font-size-base);font-weight:700;font-family:var(--font-primary);cursor:pointer;transition:all .2s;}
+.harmony-btn:hover{border-color:var(--primary);background:#eff6ff;}
+.harmony-swatches{display:flex;gap:10px;margin:14px 0;}
+.harmony-swatch{flex:1;height:60px;border-radius:10px;border:2px solid #e2e8f0;transition:background .3s;}
+
+/* 퀴즈 */
+.quiz-box{background:#fef3c7;border-radius:12px;padding:var(--sp-md);border-left:4px solid var(--color-amber-500);margin-top:var(--sp-md);}
+.quiz-q{font-weight:700;font-size:var(--font-size-base);margin-bottom:10px;}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{min-height:var(--btn-min-height);padding:10px 16px;border:2px solid #fcd34d;border-radius:8px;background:var(--color-white);font-size:var(--font-size-base);font-weight:700;font-family:var(--font-primary);cursor:pointer;text-align:left;transition:all .2s;}
+.quiz-opt:hover{background:#fef9c3;}
+.quiz-opt.correct{background:#dcfce7;border-color:var(--success);color:#15803d;}
+.quiz-opt.wrong{background:#fee2e2;border-color:var(--color-red-500);color:#dc2626;}
+
+/* 점수/배지 */
+.score-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.score-item{text-align:center;}
+.score-label{font-size:var(--font-size-sm);color:#64748b;}
+.score-value{font-size:var(--font-size-lg);font-weight:800;color:var(--primary);}
+.badge-row{display:flex;gap:8px;}
+.badge{font-size:1.5rem;opacity:.2;transition:opacity .4s;}
+.badge.earned{opacity:1;}
+.feedback-box{padding:10px;border-radius:8px;font-weight:700;font-size:var(--font-size-base);margin-top:8px;}
+.feedback-correct{background:#dcfce7;color:#15803d;}
+.feedback-wrong{background:#fee2e2;color:#dc2626;}
+.btn-edu{min-width:var(--btn-min-width);min-height:var(--btn-min-height);padding:10px 18px;border:none;border-radius:var(--btn-radius);font-size:var(--font-size-base);font-weight:700;font-family:var(--font-primary);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:transform .15s,box-shadow .15s;width:100%;justify-content:center;margin:6px 0;}
+.btn-edu:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.2);}
+.btn-primary{background:var(--primary);color:var(--color-white);}
+.btn-success{background:var(--success);color:var(--color-white);}
+.info-box{padding:var(--sp-md);border-radius:10px;font-size:var(--font-size-base);line-height:1.8;margin:12px 0;}
+.info-blue{background:#eff6ff;border-left:4px solid var(--primary);}
+.info-amber{background:#fffbeb;border-left:4px solid var(--color-amber-500);}
+.hidden{display:none!important;}
+@media(max-width:1000px){.layout{grid-template-columns:1fr;}#colorCanvas{height:320px;}}
+</style>
+</head>
+<body>
+<header>
+    <h1>🎨 색상 혼합 & 배색 시뮬레이터</h1>
+    <p class="subtitle">색을 섞고 조화로운 배색을 찾아보세요!</p>
+</header>
+<div class="layout">
+<!-- 왼쪽 -->
+<aside class="panel">
+    <h3>🖌️ 색상 만들기</h3>
+    <div class="score-row">
+        <div class="score-item"><div class="score-label">퀴즈 정답</div><div class="score-value" id="sc">0</div></div>
+        <div class="score-item"><div class="score-label">시도</div><div class="score-value" id="st">0</div></div>
+        <div class="badge-row">
+            <span class="badge" id="b_mix"  title="첫 혼합">🎨</span>
+            <span class="badge" id="b_harm" title="배색 탐험">🌈</span>
+            <span class="badge" id="b_quiz" title="퀴즈 정답">🏆</span>
+        </div>
+    </div>
+    <div class="slider-group">
+        <div class="slider-label">🔴 빨강 (R) <span class="slider-val" id="rv">255</span></div>
+        <input type="range" class="slider-r" id="rs" min="0" max="255" value="255" oninput="App.update()">
+    </div>
+    <div class="slider-group">
+        <div class="slider-label">🟢 초록 (G) <span class="slider-val" id="gv">0</span></div>
+        <input type="range" class="slider-g" id="gs" min="0" max="255" value="0" oninput="App.update()">
+    </div>
+    <div class="slider-group">
+        <div class="slider-label">🔵 파랑 (B) <span class="slider-val" id="bv">0</span></div>
+        <input type="range" class="slider-b" id="bs" min="0" max="255" value="0" oninput="App.update()">
+    </div>
+    <div class="color-preview" id="preview"></div>
+    <div class="color-code" id="codeBox">HEX: #FF0000 | RGB: 255, 0, 0</div>
+
+    <h3>🖍️ 프리셋</h3>
+    <div class="preset-grid" id="presetGrid"></div>
+
+    <h3>🎨 물감 혼합</h3>
+    <p style="font-size:var(--font-size-sm);color:#64748b;">물감 2~3가지를 선택하고 혼합하세요</p>
+    <div class="paint-grid" id="paintGrid"></div>
+    <button class="btn-edu btn-primary" onclick="App.mixPaints()">🎨 혼합하기</button>
+    <button class="btn-edu btn-success" onclick="App.clearPaints()" style="background:#64748b;">🔄 초기화</button>
+</aside>
+
+<!-- 중앙: 색상환 -->
+<main class="panel" style="padding:16px;">
+    <h3>🌈 색상환 & 현재 색상</h3>
+    <canvas id="colorCanvas"></canvas>
+</main>
+
+<!-- 오른쪽: 배색 + 퀴즈 -->
+<aside class="panel">
+    <h3>🎭 조화로운 배색</h3>
+    <div class="harmony-grid">
+        <button class="harmony-btn" onclick="App.harmony('comp')">보색</button>
+        <button class="harmony-btn" onclick="App.harmony('analog')">유사색</button>
+        <button class="harmony-btn" onclick="App.harmony('triad')">삼각 배색</button>
+        <button class="harmony-btn" onclick="App.harmony('mono')">단색 배색</button>
+    </div>
+    <div class="harmony-swatches" id="harmonySwatches">
+        <div class="harmony-swatch"></div>
+        <div class="harmony-swatch"></div>
+        <div class="harmony-swatch"></div>
+    </div>
+    <div id="harmonyDesc" style="font-size:var(--font-size-sm);color:#64748b;text-align:center;margin-bottom:8px;">배색 방법을 선택하세요</div>
+
+    <button class="btn-edu btn-primary" onclick="App.random()">🎲 랜덤 색상</button>
+
+    <div class="info-box info-blue">
+        <strong>💡 색의 3원색</strong><br>
+        <strong>빛 (RGB):</strong> 빨+초+파 = 흰색<br>
+        <strong>물감 (CMY):</strong> 빨+노+파 = 검정
+    </div>
+    <div class="info-box info-amber">
+        <strong>📚 배색 원리</strong><br>
+        <strong>보색:</strong> 강한 대비, 시선 집중<br>
+        <strong>유사색:</strong> 부드럽고 조화로움<br>
+        <strong>삼각:</strong> 균형잡힌 조화<br>
+        <strong>단색:</strong> 통일감 있음
+    </div>
+
+    <h3>🧩 색상 퀴즈</h3>
+    <div class="quiz-box">
+        <div class="quiz-q" id="quizQ"></div>
+        <div class="quiz-opts" id="quizOpts"></div>
+        <div class="feedback-box hidden" id="quizFb"></div>
+        <button class="btn-edu btn-success" style="margin-top:10px;" onclick="App.nextQuiz()">→ 다음 문제</button>
+    </div>
+</aside>
+</div>
+
+<script>
+const CONFIG = {
+    CURRICULUM:{ subject:'미술', grade:4, semester:1, unit:'2. 색의 세계', achievement:'[4미01-03] 색의 혼합 원리를 이해하고 표현에 활용한다.' },
+    ANIMATION:{ FEEDBACK_DURATION:3000, TOAST_DURATION:2500 }
+};
+const UI_TEXT = {
+    FEEDBACK_CORRECT:['정답이에요! 👏','잘했어요! ⭐','맞았어요! 🎉','훌륭해요! 💯'],
+    FEEDBACK_WRONG:  ['다시 생각해봐요 🤔','거의 다 왔어요! 💪','힌트를 확인해봐요 💡']
+};
+
+const PRESETS=[
+    {r:239,g:68,b:68},{r:249,g:115,b:22},{r:234,g:179,b:8},{r:132,g:204,b:22},
+    {r:16,g:185,b:129},{r:6,g:182,b:212},{r:59,g:130,b:246},{r:139,g:92,b:246},
+    {r:236,g:72,b:153},{r:244,g:63,b:94},{r:255,g:255,b:255},{r:0,g:0,b:0}
+];
+const PAINTS=[
+    {name:'빨강',r:220,g:20,b:20},
+    {name:'노랑',r:255,g:220,b:0},
+    {name:'파랑',r:20,g:50,b:220},
+    {name:'초록',r:20,g:180,b:50}
+];
+const QUIZZES=[
+    {q:'빛의 3원색(RGB)을 모두 섞으면?',opts:['검정','흰색','회색','노랑'],ans:1},
+    {q:'물감에서 빨강+파랑을 섞으면?',opts:['초록','주황','보라','노랑'],ans:2},
+    {q:'보색이란 무엇인가요?',opts:['비슷한 색','반대편의 색','밝은 색','어두운 색'],ans:1},
+    {q:'파랑+노랑 물감을 섞으면?',opts:['보라','초록','주황','갈색'],ans:1},
+    {q:'빛의 3원색이 아닌 것은?',opts:['빨강','초록','파랑','노랑'],ans:3}
+];
+let r=255,g=0,b=0,selectedPaints=[],quizIdx=0,scoreC=0,scoreT=0,harmonyUsed=false;
+const earnedBadges=new Set();
+
+function toHex(v){return v.toString(16).padStart(2,'0').toUpperCase();}
+function rgbToHsl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h,s,l=(mx+mn)/2;if(mx===mn){h=s=0;}else{const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;default:h=((r-g)/d+4)/6;}}return{h:h*360,s:s*100,l:l*100};}
+function hslToRgb(h,s,l){h/=360;s/=100;l/=100;const hue2rgb=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;};let rv,gv,bv;if(s===0){rv=gv=bv=l;}else{const q=l<.5?l*(1+s):l+s-l*s,p=2*l-q;rv=hue2rgb(p,q,h+1/3);gv=hue2rgb(p,q,h);bv=hue2rgb(p,q,h-1/3);}return{r:Math.round(rv*255),g:Math.round(gv*255),b:Math.round(bv*255)};}
+
+function showToast(msg){let c=document.getElementById('_tc');if(!c){c=document.createElement('div');c.id='_tc';c.style.cssText='position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;';document.body.appendChild(c);}const t=document.createElement('div');t.textContent=msg;t.style.cssText='background:#1e293b;color:#fff;padding:12px 20px;border-radius:10px;font-size:15px;font-weight:700;';c.appendChild(t);setTimeout(()=>t.remove(),CONFIG.ANIMATION.TOAST_DURATION);}
+function earnBadge(id,icon,name){if(earnedBadges.has(id))return;earnedBadges.add(id);const el=document.getElementById('b_'+id);if(el)el.classList.add('earned');showToast(icon+' 배지 획득: '+name);}
+function showFeedback(type){const pool=UI_TEXT['FEEDBACK_'+type.toUpperCase()];const msg=pool[Math.floor(Math.random()*pool.length)];const el=document.getElementById('quizFb');el.textContent=msg;el.className='feedback-box feedback-'+type;el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),CONFIG.ANIMATION.FEEDBACK_DURATION);}
+
+const App={
+    init(){
+        this.buildPresets();this.buildPaints();this.initCanvas();this.update();this.renderQuiz();
+    },
+    buildPresets(){
+        const g=document.getElementById('presetGrid');
+        g.innerHTML=PRESETS.map(p=>`<div class="preset-swatch" style="background:rgb(${p.r},${p.g},${p.b});" onclick="App.setRGB(${p.r},${p.g},${p.b})"></div>`).join('');
+    },
+    buildPaints(){
+        const g=document.getElementById('paintGrid');
+        g.innerHTML=PAINTS.map((p,i)=>`<button class="paint-btn" id="paint_${i}" style="background:rgb(${p.r},${p.g},${p.b});color:#fff;" onclick="App.togglePaint(${i})">${p.name}</button>`).join('');
+    },
+    togglePaint(i){
+        const idx=selectedPaints.indexOf(i);
+        if(idx>=0)selectedPaints.splice(idx,1);
+        else if(selectedPaints.length<3)selectedPaints.push(i);
+        PAINTS.forEach((_,j)=>{document.getElementById('paint_'+j).classList.toggle('selected',selectedPaints.includes(j));});
+    },
+    mixPaints(){
+        if(!selectedPaints.length){alert('물감을 선택해주세요!');return;}
+        let mr=0,mg=0,mb=0;
+        selectedPaints.forEach(i=>{const p=PAINTS[i];mr+=p.r;mg+=p.g;mb+=p.b;});
+        const n=selectedPaints.length;
+        r=Math.round(mr/n*0.65);g=Math.round(mg/n*0.65);b=Math.round(mb/n*0.65);
+        document.getElementById('rs').value=r;document.getElementById('gs').value=g;document.getElementById('bs').value=b;
+        earnBadge('mix','🎨','첫 물감 혼합!');
+        this.update();
+    },
+    clearPaints(){selectedPaints=[];PAINTS.forEach((_,j)=>document.getElementById('paint_'+j).classList.remove('selected'));},
+    setRGB(rv,gv,bv){r=rv;g=gv;b=bv;document.getElementById('rs').value=r;document.getElementById('gs').value=g;document.getElementById('bs').value=b;this.update();},
+    update(){
+        r=+document.getElementById('rs').value;g=+document.getElementById('gs').value;b=+document.getElementById('bs').value;
+        const hex='#'+toHex(r)+toHex(g)+toHex(b);
+        document.getElementById('rv').textContent=r;document.getElementById('gv').textContent=g;document.getElementById('bv').textContent=b;
+        document.getElementById('preview').style.background=`rgb(${r},${g},${b})`;
+        document.getElementById('codeBox').textContent=`HEX: ${hex} | RGB: ${r}, ${g}, ${b}`;
+        this.drawCanvas();
+    },
+    random(){r=Math.random()*256|0;g=Math.random()*256|0;b=Math.random()*256|0;document.getElementById('rs').value=r;document.getElementById('gs').value=g;document.getElementById('bs').value=b;this.update();},
+    harmony(type){
+        const hsl=rgbToHsl(r,g,b);let colors;
+        if(type==='comp'){colors=[{r,g,b},hslToRgb((hsl.h+180)%360,hsl.s,hsl.l),hslToRgb((hsl.h+180)%360,hsl.s,Math.min(hsl.l+15,100))];}
+        else if(type==='analog'){colors=[hslToRgb((hsl.h-30+360)%360,hsl.s,hsl.l),{r,g,b},hslToRgb((hsl.h+30)%360,hsl.s,hsl.l)];}
+        else if(type==='triad'){colors=[{r,g,b},hslToRgb((hsl.h+120)%360,hsl.s,hsl.l),hslToRgb((hsl.h+240)%360,hsl.s,hsl.l)];}
+        else{colors=[hslToRgb(hsl.h,hsl.s,Math.min(hsl.l+20,95)),{r,g,b},hslToRgb(hsl.h,hsl.s,Math.max(hsl.l-20,5))];}
+        const descs={comp:'보색: 반대편 색으로 강한 대비',analog:'유사색: 인접한 색으로 부드러운 조화',triad:'삼각 배색: 120° 간격의 균형 잡힌 조화',mono:'단색 배색: 명도만 다른 통일감 있는 색'};
+        document.getElementById('harmonyDesc').textContent=descs[type];
+        document.querySelectorAll('.harmony-swatch').forEach((el,i)=>{const c=colors[i];el.style.background=`rgb(${c.r},${c.g},${c.b})`;});
+        if(!harmonyUsed){harmonyUsed=true;earnBadge('harm','🌈','배색 탐험!');}
+    },
+    initCanvas(){
+        const canvas=document.getElementById('colorCanvas');
+        const resize=()=>{const p=canvas.parentElement;canvas.width=(p.clientWidth-32);canvas.height=520;this.drawCanvas();};
+        resize();window.addEventListener('resize',resize);
+    },
+    drawCanvas(){
+        const canvas=document.getElementById('colorCanvas');const ctx=canvas.getContext('2d');const W=canvas.width,H=canvas.height;
+        ctx.clearRect(0,0,W,H);ctx.fillStyle='#f8fafc';ctx.fillRect(0,0,W,H);
+        // 색상환
+        const cx=W/2,cy=H/2-50,rad=Math.min(W,H)*0.32;
+        for(let a=0;a<360;a++){const sa=(a-90)*Math.PI/180,ea=(a+1-90)*Math.PI/180;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,rad,sa,ea);ctx.closePath();ctx.fillStyle=`hsl(${a},100%,50%)`;ctx.fill();}
+        ctx.fillStyle='white';ctx.beginPath();ctx.arc(cx,cy,rad*0.3,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='#1e293b';ctx.font='bold 15px Nanum Gothic';ctx.textAlign='center';ctx.fillText('색상환',cx,cy+6);
+        // 현재 색상 원
+        const hsl=rgbToHsl(r,g,b),ang=(hsl.h-90)*Math.PI/180,dist=rad*(hsl.s/100)*0.7;
+        const px=cx+Math.cos(ang)*dist,py=cy+Math.sin(ang)*dist;
+        ctx.beginPath();ctx.arc(px,py,10,0,Math.PI*2);ctx.fillStyle='white';ctx.fill();ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.stroke();
+        // 현재 색상 큰 원
+        const luma=0.299*r+0.587*g+0.114*b;
+        ctx.fillStyle=`rgb(${r},${g},${b})`;ctx.beginPath();ctx.arc(W/2,H-100,70,0,Math.PI*2);ctx.fill();
+        ctx.strokeStyle='#1e293b';ctx.lineWidth=4;ctx.stroke();
+        ctx.fillStyle=luma>128?'#1e293b':'#fff';ctx.font='bold 14px Nanum Gothic';ctx.textAlign='center';ctx.fillText('현재 색',W/2,H-96);ctx.fillText(`rgb(${r},${g},${b})`,W/2,H-78);
+    },
+    renderQuiz(){
+        const q=QUIZZES[quizIdx];
+        document.getElementById('quizQ').textContent=q.q;
+        document.getElementById('quizFb').classList.add('hidden');
+        document.getElementById('quizOpts').innerHTML=q.opts.map((o,i)=>`<button class="quiz-opt" onclick="App.answerQuiz(${i})">${o}</button>`).join('');
+    },
+    answerQuiz(chosen){
+        const q=QUIZZES[quizIdx];const ok=chosen===q.ans;
+        scoreT++;if(ok)scoreC++;
+        document.getElementById('sc').textContent=scoreC;document.getElementById('st').textContent=scoreT;
+        document.querySelectorAll('.quiz-opt').forEach((el,i)=>{el.disabled=true;if(i===q.ans)el.classList.add('correct');if(i===chosen&&!ok)el.classList.add('wrong');});
+        if(ok)earnBadge('quiz','🏆','퀴즈 정답!');
+        showFeedback(ok?'correct':'wrong');
+    },
+    nextQuiz(){quizIdx=(quizIdx+1)%QUIZZES.length;this.renderQuiz();}
+};
+window.onload=()=>App.init();
+</script>
+</body>
+</html>

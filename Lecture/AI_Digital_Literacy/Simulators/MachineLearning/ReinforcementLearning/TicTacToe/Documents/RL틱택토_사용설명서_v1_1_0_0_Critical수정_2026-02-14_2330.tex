@@ -1,0 +1,944 @@
+% LuaLaTeX 컴파일 필요 (컬러 이모지 + 한글 지원)
+\documentclass[11pt,a4paper]{article}
+
+% === 필수 패키지 ===
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{emoji}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{tabularx}
+
+% === 페이지 설정 ===
+\geometry{left=25mm, right=25mm, top=30mm, bottom=30mm}
+
+% === 폰트 설정 ===
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setmonofont{Noto Sans CJK KR}
+\setemojifont{Noto Color Emoji}
+
+% === 색상 정의 ===
+\definecolor{mainblue}{HTML}{1976D2}
+\definecolor{darknav}{HTML}{1a1a2e}
+\definecolor{darkbrown}{HTML}{5D4037}
+\definecolor{lightbrown}{HTML}{8D6E63}
+\definecolor{tableheader}{HTML}{E3F2FD}
+\definecolor{tipbg}{HTML}{E0F2F1}
+\definecolor{tipborder}{HTML}{00897B}
+\definecolor{warnbg}{HTML}{FFF8E1}
+\definecolor{warnborder}{HTML}{FFA000}
+\definecolor{lightgray}{HTML}{F5F5F5}
+\definecolor{stageRed}{HTML}{E74C3C}
+\definecolor{stageOrange}{HTML}{E67E22}
+\definecolor{stageYellow}{HTML}{F1C40F}
+\definecolor{stageGreen}{HTML}{2ECC71}
+\definecolor{stageBlue}{HTML}{00C8FF}
+\definecolor{gradeS}{HTML}{F39C12}
+\definecolor{gradeA}{HTML}{27AE60}
+\definecolor{gradeB}{HTML}{2980B9}
+\definecolor{gradeC}{HTML}{F1C40F}
+\definecolor{gradeD}{HTML}{E67E22}
+\definecolor{gradeF}{HTML}{E74C3C}
+
+% === tcolorbox 스타일 ===
+\tcbuselibrary{skins,breakable}
+
+\newtcolorbox{tipbox}[1][]{
+  enhanced, breakable,
+  colback=tipbg, colframe=tipborder,
+  fonttitle=\bfseries, title={#1},
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  boxrule=0.8pt, arc=4pt
+}
+
+\newtcolorbox{warnbox}[1][]{
+  enhanced, breakable,
+  colback=warnbg, colframe=warnborder,
+  fonttitle=\bfseries, title={#1},
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  boxrule=0.8pt, arc=4pt
+}
+
+\newtcolorbox{infobox}[1][]{
+  enhanced, breakable,
+  colback=tableheader, colframe=mainblue,
+  fonttitle=\bfseries, title={#1},
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  boxrule=0.8pt, arc=4pt
+}
+
+% === 섹션 스타일 ===
+\titleformat{\section}
+  {\Large\bfseries\color{mainblue}}
+  {\thesection}{0.5em}{}
+
+\titleformat{\subsection}
+  {\large\bfseries\color{darkbrown}}
+  {\thesubsection}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{lightbrown}}
+  {\thesubsubsection}{0.5em}{}
+
+% === 머리글/바닥글 ===
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{lightbrown}\emoji{robot} RL 틱택토 사용설명서}
+\fancyhead[R]{\small\color{lightbrown}v1.1.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% === 하이퍼링크 ===
+\hypersetup{
+  colorlinks=true,
+  linkcolor=mainblue,
+  urlcolor=mainblue,
+  citecolor=mainblue
+}
+
+% === 목차 한글화 ===
+\renewcommand{\contentsname}{목차}
+
+% === 문서 시작 ===
+\begin{document}
+
+% === 타이틀 페이지 ===
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+
+{\fontsize{48pt}{50pt}\selectfont \emoji{robot}}
+
+\vspace{1cm}
+
+{\Huge\bfseries\color{mainblue} RL 틱택토}
+
+\vspace{0.3cm}
+
+{\LARGE\color{darkbrown} 사용설명서}
+
+\vspace{1.5cm}
+
+{\large Q-Learning 강화학습 시뮬레이터}
+
+\vspace{0.5cm}
+
+{\large 전체 기능 상세 안내}
+
+\vspace{3cm}
+
+\begin{tabular}{rl}
+\textbf{문서 버전} & v1.1.0.0 \\
+\textbf{대상 시뮬레이터} & rl-tictactoe-v3.html (v3) \\
+\textbf{작성일} & 2026-02-14 \\
+\end{tabular}
+
+\vfill
+
+{\small\color{lightbrown} RL 틱택토 AI 강화학습 시뮬레이터 — 청주교육대학교}
+
+\end{titlepage}
+
+% === 목차 ===
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{시뮬레이터 소개}
+% ============================================================
+
+\subsection{목적}
+
+RL 틱택토는 \textbf{Q-Learning 강화학습} 알고리즘이 틱택토 게임을 스스로 학습하는 과정을 실시간으로 관찰하고, 직접 AI와 대국할 수 있는 교육용 시뮬레이터입니다.
+
+\subsection{주요 특징}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|>{\bfseries}l|p{9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{특징} & \textbf{설명} \\
+\hline
+실시간 학습 관찰 & 그래프와 지표로 AI의 성장 과정을 눈으로 확인 \\
+\hline
+대칭성 정규화 & 8가지 보드 대칭 변환으로 학습 효율 8배 향상 \\
+\hline
+6가지 모드 & 자기대국, X 단독, O 단독, AI 대전, 사람 대전, 유휴 \\
+\hline
+Q-값 히트맵 & AI의 판단 근거를 색상으로 시각화 \\
+\hline
+다크/라이트 테마 & 환경에 따라 즉시 전환 \\
+\hline
+저장/불러오기 & 학습 데이터를 보존하고 공유 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{문서 안내}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{문서} & \textbf{목적} & \textbf{참조 시점} \\
+\hline
+\textbf{사용설명서 (본 문서)} & 전체 기능 상세 설명 & 사용 전/후 \\
+\hline
+퀵가이드 & 즉시 실행, 빠른 참조 & 사용 중 \\
+\hline
+이론해설서 & Q-Learning 원리 학습 & 별도 학습 \\
+\hline
+활용가이드 & 수업 적용 방법 & 수업 준비 \\
+\hline
+개발일지 & 기술 설계, 아키텍처 & 개발 참고 \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{실행 환경}
+% ============================================================
+
+\subsection{요구 사항}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{요구} \\
+\hline
+브라우저 & Chrome 90+, Edge 90+, Firefox 90+, Safari 15+ \\
+\hline
+인터넷 & \emoji{check-mark-button} 필요 (React, Babel CDN 로딩) \\
+\hline
+화면 크기 & 1024px 이상 권장 \\
+\hline
+별도 설치 & 없음 (단일 HTML 파일) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{실행 방법}
+
+\texttt{rl-tictactoe-v3.html} 파일을 브라우저에서 열면 즉시 실행됩니다. 처음 실행 시 \textbf{도움말 모달}이 자동으로 표시됩니다. 이전 학습 데이터가 브라우저에 저장되어 있다면 자동으로 불러옵니다.
+
+% ============================================================
+\section{화면 구성 — 대시보드}
+% ============================================================
+
+대시보드는 시뮬레이터의 메인 화면으로, 좌측 컨트롤 패널과 우측 모니터링 영역으로 나뉩니다.
+
+\subsection{헤더 영역}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{요소} & \textbf{기능} \\
+\hline
+\emoji{robot} RL 틱택토 & 시뮬레이터 제목 (파랑\(\to\)빨강 그라데이션) \\
+\hline
+\emoji{sun}/\emoji{crescent-moon} & 다크/라이트 테마 토글 \\
+\hline
+\emoji{red-question-mark} 도움말 & 사용 가이드 모달 표시 \\
+\hline
+\emoji{clipboard} 보고서 & Markdown 학습 보고서 다운로드 (100판 이상 시 활성화) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{좌측 컨트롤 패널 (160px)}
+
+\subsubsection{미니 보드}
+
+현재 게임 보드 상태를 소형(14px 셀)으로 표시합니다. 학습 중에는 실시간으로 갱신되지 않으며, 마지막 게임의 결과를 보여줍니다.
+
+\subsubsection{속도 슬라이더}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|p{7cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{설정값} & \textbf{배치 크기} & \textbf{체감 속도} \\
+\hline
+1ms & 500판/틱 & 가장 빠름 — 초당 \(\sim\)10,000판 이상 \\
+\hline
+5ms & 200판/틱 & 빠름 \\
+\hline
+20ms & 50판/틱 & 보통 \\
+\hline
+100ms & 10판/틱 & 느림 — 그래프 변화 세밀 관찰 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tipbox}[\emoji{light-bulb} 팁]
+빠르게 학습시키려면 \textbf{1ms}, 그래프 변화를 자세히 보려면 \textbf{50\textasciitilde100ms}가 적당합니다.
+\end{tipbox}
+
+\subsubsection{학습 방식 (\emoji{clipboard})}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|c|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{방식} & \textbf{X 에이전트} & \textbf{O 에이전트} & \textbf{용도} \\
+\hline
+\emoji{counterclockwise-arrows-button} 자기대국 & 학습 & 학습 & 양쪽 AI가 서로 배우며 함께 성장 \\
+\hline
+\emoji{blue-circle} X 단독 & 학습 & 랜덤 & X만 집중 학습 (선공 전략 특화) \\
+\hline
+\emoji{red-circle} O 단독 & 랜덤 & 학습 & O만 집중 학습 (후공 전략 특화) \\
+\hline
+\end{tabular}
+\end{center}
+
+자기대국이 기본이며 가장 균형 잡힌 학습 결과를 제공합니다.
+
+\subsubsection{파라미터 (\emoji{gear})}
+
+세 가지 핵심 파라미터를 슬라이더로 조절합니다. \textbf{\emoji{link} 동기} 모드에서는 X와 O가 같은 값을 사용하고, \textbf{\emoji{unlocked} 별도} 모드에서는 각각 다른 값을 설정할 수 있습니다.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|c|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{파라미터} & \textbf{범위} & \textbf{기본값} & \textbf{의미} \\
+\hline
+학습률 \(\alpha\) & 0.01\textasciitilde1.0 & 0.30 & 한 번의 경험에서 얼마나 배울지 \\
+\hline
+할인율 \(\gamma\) & 0.1\textasciitilde1.0 & 0.90 & 미래 보상을 얼마나 중요하게 볼지 \\
+\hline
+\(\varepsilon\) 감소율 & 0.99\textasciitilde1.0 & 0.9995 & 탐험을 줄이는 속도 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{액션 버튼}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|p{7cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{버튼} & \textbf{색상} & \textbf{기능} \\
+\hline
+\emoji{play-button} 학습 시작 / \emoji{stop-button} 정지 & \emoji{green-circle}/\emoji{red-circle} & 학습 루프 시작/정지 \\
+\hline
+\emoji{crossed-swords} AI 대전 & \emoji{orange-circle} & 학습된 두 AI의 대국 관전 \\
+\hline
+\emoji{bust-in-silhouette} 사람 대전 & \emoji{purple-circle} & 사용자가 AI와 직접 대국 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{저장/불러오기 버튼}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|p{9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{아이콘} & \textbf{기능} \\
+\hline
+\emoji{floppy-disk} & 브라우저 localStorage에 저장 \\
+\hline
+\emoji{outbox-tray} & JSON 파일로 내보내기 \\
+\hline
+\emoji{open-file-folder} & localStorage에서 불러오기 \\
+\hline
+\emoji{inbox-tray} & JSON 파일 가져오기 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{초기화 (\emoji{wastebasket})}
+
+모든 학습 데이터를 삭제합니다. \textbf{확인 모달}이 표시되어 실수로 삭제하는 것을 방지합니다. 1판 이상 학습해야 활성화됩니다.
+
+\subsection{우측 대시보드}
+
+\subsubsection{학습 단계 진행바}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|c|c|p{4.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{아이콘} & \textbf{에피소드 범위} & \textbf{색상} & \textbf{의미} \\
+\hline
+초기 & \emoji{seedling} & 0 \textasciitilde{} 499 & \textcolor{stageRed}{\(\bullet\)} 빨강 & Q-테이블 초기화, 대부분 랜덤 행동 \\
+\hline
+탐색 & \emoji{magnifying-glass-tilted-left} & 500 \textasciitilde{} 4,999 & \textcolor{stageOrange}{\(\bullet\)} 주황 & 탐험과 활용의 균형기 \\
+\hline
+학습 & \emoji{books} & 5,000 \textasciitilde{} 19,999 & \textcolor{stageYellow}{\(\bullet\)} 노랑 & 전략이 구체화되는 시기 \\
+\hline
+응용 & \emoji{bullseye} & 20,000 \textasciitilde{} 49,999 & \textcolor{stageGreen}{\(\bullet\)} 초록 & 안정적인 전략 형성 \\
+\hline
+숙련 & \emoji{trophy} & 50,000+ & \textcolor{stageBlue}{\(\bullet\)} 파랑 & 최적에 가까운 플레이 \\
+\hline
+\end{tabular}
+\end{center}
+
+진행바 위에는 현재 단계 이름, 학습 중 여부(\(\bullet\) 학습 중), 에피소드 수, 초당 학습 속도가 표시됩니다.
+
+\subsubsection{지표 카드 (6개)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|p{7cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{카드} & \textbf{아이콘} & \textbf{표시 내용} \\
+\hline
+X 승률 & \emoji{blue-circle} & 최근 배치의 X 평균 승률 (\%) \\
+\hline
+O 승률 & \emoji{red-circle} & 최근 배치의 O 평균 승률 (\%) \\
+\hline
+무승부 & \emoji{handshake} & 최근 배치의 무승부율 (\%) \\
+\hline
+\(\varepsilon\) & \emoji{game-die} & 현재 탐험률 (\%) \\
+\hline
+강도 & \emoji{star} & X 에이전트의 대(對) 랜덤 승률 \\
+\hline
+등급 & \emoji{military-medal} & 강도 기반 등급 (F\textasciitilde S) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{그래프 (4종)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|l|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{위치} & \textbf{그래프} & \textbf{색상} & \textbf{좋은 방향} \\
+\hline
+좌상 & X/O 승률 추이 & \textcolor{mainblue}{\(\bullet\)}/\textcolor{stageRed}{\(\bullet\)} & \(\uparrow\) \\
+\hline
+우상 & 무승부율/탐험률 추이 & \textcolor{stageYellow}{\(\bullet\)}/\textcolor{purple}{\(\bullet\)} & \(\uparrow\)/\(\downarrow\) \\
+\hline
+좌하 & 강도/Q-상태 수 추이 & \textcolor{stageGreen}{\(\bullet\)}/\textcolor{mainblue}{\(\bullet\)} & \(\uparrow\)/\(\uparrow\) \\
+\hline
+우하 & 인사이트 + 학습 통계 & — & — \\
+\hline
+\end{tabular}
+\end{center}
+
+각 그래프는 메모리에 최근 500개 데이터 포인트를 유지하며, 이 중 최근 60개를 바 형태로 시각화합니다.
+
+\subsubsection{인사이트 패널}
+
+\textbf{첫수 선호도}: X 에이전트가 빈 보드에서 각 위치 유형(중앙/모서리/변)에 부여한 평균 Q-값을 막대 그래프로 표시합니다. 최적 학습 시 \emoji{bullseye} 중앙 > \emoji{triangular-ruler} 모서리 > \emoji{minus} 변 순서가 됩니다.
+
+\textbf{학습 통계 테이블}:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{내용} \\
+\hline
+X/O Q-상태 & 각 에이전트가 학습한 고유 상태 수 \\
+\hline
+X/O \(\varepsilon\) & 각 에이전트의 현재 탐험률 \\
+\hline
+학습 속도 & 초당 처리 에피소드 수 \\
+\hline
+Step 패널티 & 매 수마다 부과되는 패널티 (\(-0.01\)) \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{화면 구성 — 사람 대전}
+% ============================================================
+
+\textbf{[\emoji{bust-in-silhouette} 사람 대전]} 버튼을 클릭하면 전환됩니다.
+
+\subsection{좌측: 게임 보드}
+
+\(3 \times 3\) 보드(셀 크기 75px)가 화면 중앙에 표시됩니다.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{요소} & \textbf{의미} \\
+\hline
+빈 칸 & 클릭하여 돌을 놓을 수 있는 위치 \\
+\hline
+빈 칸의 숫자 & Q-값 — AI가 해당 위치에 대해 평가한 가치 \\
+\hline
+파란 배경 칸 & X가 놓인 위치 \\
+\hline
+붉은 배경 칸 & O가 놓인 위치 \\
+\hline
+시안 테두리 칸 & AI가 마지막으로 둔 위치 \\
+\hline
+노란 테두리/빛 & 승리 라인 (3목 완성) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{차례 및 결과 표시}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{상태} & \textbf{표시} \\
+\hline
+내 차례 & \emoji{green-circle} 당신의 차례 \\
+\hline
+AI 차례 & \emoji{thinking-face} AI 생각 중... \\
+\hline
+승리 & \emoji{party-popper} 승리! (초록색) \\
+\hline
+무승부 & \emoji{handshake} 무승부! (노란색) \\
+\hline
+패배 & \emoji{pensive-face} 패배... (빨간색) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{컨트롤}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{버튼} & \textbf{기능} \\
+\hline
+\emoji{counterclockwise-arrows-button} 새 게임 & 보드 초기화, 새 게임 시작 \\
+\hline
+\emoji{shuffle-tracks-button} O로/X로 변경 & 선공/후공 전환 (게임도 리셋) \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tipbox}[\emoji{light-bulb} 팁]
+AI는 항상 학습된 정책(최적수)을 사용합니다. 충분히 학습된 AI(S등급)와 대국하면 무승부가 최선입니다.
+\end{tipbox}
+
+\subsection{우측: 정보 패널}
+
+\textbf{학습 단계 + 지표}: 현재 학습 단계(아이콘, 이름, 에피소드), 강도, 등급, \(\varepsilon\), Q-상태 수를 \(2 \times 2\) 카드로 표시합니다.
+
+\textbf{\emoji{brain} AI 판단 근거 (Q-값 히트맵)}: \(3 \times 3\) 그리드에서 AI가 각 빈 칸에 대해 평가한 Q-값을 색상과 숫자로 표시합니다.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{표시} & \textbf{의미} \\
+\hline
+\emoji{green-circle} 높은 값 (초록) & AI가 유리하다고 판단하는 위치 \\
+\hline
+\emoji{red-circle} 낮은 값 (빨강) & AI가 불리하다고 판단하는 위치 \\
+\hline
+\emoji{star} 최선 + 노란 테두리 & AI가 가장 좋다고 판단하는 위치 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{승/무/패 기록}
+
+현재 세션의 대국 기록이 하단에 표시됩니다. 새 게임을 시작해도 누적되며, 대시보드로 돌아가면 초기화됩니다.
+
+% ============================================================
+\section{화면 구성 — AI 대전}
+% ============================================================
+
+\textbf{[\emoji{crossed-swords} AI 대전]} 버튼을 클릭하면 전환됩니다.
+
+\subsection{좌측: 게임 보드}
+
+학습된 Agent X와 Agent O가 자동으로 대국합니다. 셀 크기 70px, AI의 마지막 수가 시안 테두리로 강조됩니다.
+
+\subsection{대국 속도 슬라이더}
+
+1\textasciitilde20 범위로 조절합니다. 값이 작을수록 한 수를 빨리 둡니다 (실제 대기 시간 = 최소 300ms, 또는 speed \(\times\) 100ms 중 큰 값).
+
+\subsection{우측: 에이전트 정보}
+
+각 에이전트(\emoji{blue-circle} Agent X, \emoji{red-circle} Agent O)의 Q-상태 수와 \(\varepsilon\)을 카드로 표시합니다.
+
+\subsection{우측: Q-값 히트맵}
+
+현재 차례인 에이전트의 판단 근거를 실시간으로 표시합니다. AI가 둘 때마다 히트맵이 갱신됩니다.
+
+\subsection{게임 결과}
+
+한 판이 끝나면 결과(X 승리/O 승리/무승부)가 표시된 후 2초 뒤 자동으로 다음 판이 시작됩니다.
+
+% ============================================================
+\section{학습 기능 상세}
+% ============================================================
+
+\subsection{Q-Learning 알고리즘}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{내용} \\
+\hline
+갱신 식 & \(Q(s,a) \leftarrow Q(s,a) + \alpha \times (r - Q(s,a))\) \\
+\hline
+행동 선택 & \(\varepsilon\)-greedy: \(\varepsilon\) 확률로 랜덤, \((1-\varepsilon)\) 확률로 최적 \\
+\hline
+\(\varepsilon\) 감소 & 매 배치마다: \(\varepsilon \leftarrow \max(0.01, \varepsilon \times \text{감소율})\) \\
+\hline
+이력 갱신 & 에피소드 종료 후 역방향(마지막 수\(\to\)첫 수) 순회 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{대칭성 정규화}
+
+보드의 8가지 대칭 변환(항등, 90°, 180°, 270° 회전 \(\times\) 좌우 반사)을 적용하여 동일 모양의 보드를 하나의 정규 상태로 통합합니다. 행동을 선택할 때는 정규 좌표계에서 선택한 뒤 역변환하여 원본 좌표로 반환합니다.
+
+\subsection{보상 체계}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|p{6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{결과} & \textbf{보상} & \textbf{비고} \\
+\hline
+승리 & \(+1.0\) & 게임에서 이긴 에이전트 \\
+\hline
+패배 & \(-1.0\) & 진 에이전트 \\
+\hline
+무승부 & \(+0.3\) & 양쪽 모두 \\
+\hline
+매 수 & \(-0.01\) & 단계 패널티 — 빠른 승리 유도 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{강도 측정}
+
+2,000판마다 X 에이전트가 완전 랜덤 상대와 100판을 치러 승률을 측정합니다. 이 값이 \emoji{star} 강도이며, 등급 산정의 기준입니다.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|p{6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{등급} & \textbf{강도 범위} & \textbf{의미} \\
+\hline
+\textcolor{gradeF}{\textbf{F}} & 0\textasciitilde39 & 랜덤 수준, 학습 필요 \\
+\hline
+\textcolor{gradeD}{\textbf{D}} & 40\textasciitilde59 & 기초 전략 형성 \\
+\hline
+\textcolor{gradeC}{\textbf{C}} & 60\textasciitilde74 & 중급 수준 \\
+\hline
+\textcolor{gradeB}{\textbf{B}} & 75\textasciitilde84 & 고급 수준 \\
+\hline
+\textcolor{gradeA}{\textbf{A}} & 85\textasciitilde94 & 거의 최적 \\
+\hline
+\textcolor{gradeS}{\textbf{S}} & 95\textasciitilde100 & 최적 근접, 완벽! \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{파라미터 상세}
+% ============================================================
+
+\subsection{학습률 \(\alpha\) (Alpha)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|p{9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{값} & \textbf{효과} \\
+\hline
+0.01\textasciitilde0.1 & 안정적이지만 느린 학습. 그래프가 부드럽게 변함 \\
+\hline
+0.1\textasciitilde0.5 & 적당한 속도와 안정성의 균형 \\
+\hline
+0.5\textasciitilde1.0 & 매우 빠르지만 불안정. 그래프가 요동칠 수 있음 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{할인율 \(\gamma\) (Gamma)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|p{9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{값} & \textbf{효과} \\
+\hline
+0.1\textasciitilde0.3 & 눈앞의 보상만 중시 — 단기적 플레이 \\
+\hline
+0.5\textasciitilde0.8 & 균형 잡힌 전략 \\
+\hline
+0.9\textasciitilde1.0 & 미래 보상을 크게 반영 — 장기적 전략 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{\(\varepsilon\) 감소율 (Epsilon Decay)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|p{9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{값} & \textbf{효과} \\
+\hline
+0.99\textasciitilde0.995 & 빠르게 탐험 종료 — 일찍 활용 전환 \\
+\hline
+0.9995 (기본) & 적당한 탐험 기간 \\
+\hline
+0.9999\textasciitilde1.0 & 오래 탐험 — 더 많은 상태 탐색, 느린 수렴 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{동기/별도 모드}
+
+\textbf{\emoji{link} 동기}: X와 O가 같은 파라미터를 사용합니다 (기본).
+
+\textbf{\emoji{unlocked} 별도}: X와 O에 서로 다른 파라미터를 설정할 수 있습니다. 예를 들어 X는 \(\alpha=0.5\)로 공격적으로, O는 \(\alpha=0.1\)로 신중하게 학습시킬 수 있습니다.
+
+% ============================================================
+\section{저장과 불러오기}
+% ============================================================
+
+\subsection{저장 방식}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|l|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{방식} & \textbf{저장 위치} & \textbf{특징} \\
+\hline
+\emoji{floppy-disk} 브라우저 저장 & localStorage & 같은 브라우저에서만 접근 가능, 데이터 삭제 시 소실 \\
+\hline
+\emoji{outbox-tray} 파일 내보내기 & JSON 파일 & 다른 컴퓨터로 이동 가능, 영구 보존 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{자동 저장}
+
+5,000판마다 localStorage에 자동 저장됩니다. 브라우저를 닫았다가 다시 열면 자동으로 불러옵니다.
+
+\subsection{저장 데이터 내용}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{포함} \\
+\hline
+X/O Q-테이블 & \emoji{check-mark-button} \\
+\hline
+X/O 파라미터 (\(\alpha\), \(\gamma\), \(\varepsilon\)) & \emoji{check-mark-button} \\
+\hline
+에피소드 수 & \emoji{check-mark-button} \\
+\hline
+승률/무승부/\(\varepsilon\)/강도 히스토리 & \emoji{check-mark-button} (최근 200개) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{JSON 파일 이름}
+
+\texttt{rl-tictactoe-[에피소드수]games.json} 형식으로 자동 지정됩니다.
+
+% ============================================================
+\section{학습 보고서}
+% ============================================================
+
+\textbf{\emoji{clipboard} 보고서} 버튼을 클릭하면 Markdown 형식의 학습 보고서가 다운로드됩니다.
+
+\subsection*{보고서 포함 내용}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{섹션} & \textbf{내용} \\
+\hline
+학습 요약 & 에피소드 수, 학습 방식, 소요 시간 \\
+\hline
+에이전트 정보 & \(\alpha\), \(\gamma\), \(\varepsilon\), Q-상태 수 \\
+\hline
+성능 지표 & 최근 승률, 무승부율, 강도, 등급 \\
+\hline
+보상 설정 & 승리/패배/무승부/단계 패널티 값 \\
+\hline
+분석 & 첫수 선호도, 학습 추이 요약 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tipbox}[\emoji{light-bulb} 팁]
+100판 이상 학습해야 보고서 버튼이 활성화됩니다.
+\end{tipbox}
+
+% ============================================================
+\section{테마 전환}
+% ============================================================
+
+헤더의 \textbf{\emoji{sun} 밝게} / \textbf{\emoji{crescent-moon} 어둡게} 버튼으로 전환합니다.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{테마} & \textbf{배경} & \textbf{텍스트} & \textbf{강조색} & \textbf{적합 환경} \\
+\hline
+다크 (기본) & 진한 남색 & 밝은 회색 & 시안 & 개인 학습, 어두운 환경 \\
+\hline
+라이트 & 밝은 회색 & 진한 남색 & 파랑 & 프로젝터, 밝은 교실 \\
+\hline
+\end{tabular}
+\end{center}
+
+설정은 localStorage에 저장되어 다음 방문 시에도 유지됩니다.
+
+% ============================================================
+\section{도움말 모달}
+% ============================================================
+
+\textbf{\emoji{red-question-mark} 도움말} 버튼 또는 첫 실행 시 표시됩니다. 4개 섹션으로 구성됩니다.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{섹션} & \textbf{내용} \\
+\hline
+\emoji{brain} Q-Learning이란? & Q-값의 의미, 갱신 과정 \\
+\hline
+\emoji{counterclockwise-arrows-button} 대칭성 정규화 & 보드 회전·반사 대칭 활용, 학습 효율 향상 \\
+\hline
+\emoji{video-game} 4가지 모드 & 자기대국, 단독 학습, AI 대전, 사람 대전 \\
+\hline
+\emoji{light-bulb} 팁 & 5,000판/20,000판 기준, 최적 플레이 시 무승부 \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{자주 묻는 질문}
+% ============================================================
+
+\subsection*{Q. AI를 절대 이길 수 없어요.}
+
+충분히 학습한 AI(S등급)는 이론적으로 무승부가 최선입니다. 학습 초기(초기·탐색 단계)의 AI와 대전하면 이길 수 있으며, 학습을 초기화(\emoji{wastebasket})하면 처음부터 다시 학습시킬 수 있습니다.
+
+\subsection*{Q. 그래프가 심하게 흔들려요.}
+
+학습률(\(\alpha\))이 너무 높으면 그래프가 요동칩니다. \(\alpha\)를 0.1 이하로 낮춰 보세요.
+
+\subsection*{Q. 학습 속도가 너무 느려요.}
+
+속도를 1ms로 설정하세요. 초당 10,000판 이상 처리됩니다.
+
+\subsection*{Q. AI를 여러 컴퓨터에서 공유하고 싶어요.}
+
+\emoji{outbox-tray} 파일 내보내기로 JSON 파일을 저장하고, 다른 컴퓨터에서 \emoji{inbox-tray} 파일 가져오기로 불러오세요.
+
+\subsection*{Q. 학습 데이터가 사라졌어요.}
+
+브라우저의 ``사이트 데이터 삭제'' 기능을 사용하면 localStorage가 함께 삭제됩니다. 중요한 학습 데이터는 반드시 \emoji{outbox-tray} 파일 내보내기로 별도 보존하세요.
+
+\subsection*{Q. 왜 X가 O보다 항상 유리한가요?}
+
+틱택토에서 선공(X)이 후공(O)보다 구조적으로 유리합니다. 자기대국 학습 시 X 승률이 O보다 높은 것은 정상입니다. 양쪽 모두 최적 학습 후에는 100\% 무승부가 됩니다.
+
+% ============================================================
+\newpage
+\section*{참고자료}
+% ============================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|l|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & RL틱택토\_개발일지\_v1.0.0.0 & 프로젝트 문서 & 기술 설계, 아키텍처 \\
+\hline
+2 & RL틱택토\_퀵가이드\_v1.0.0.0 & 프로젝트 문서 & 빠른 참조용 \\
+\hline
+3 & RL틱택토\_이론해설서\_v1.0.0.0 & 프로젝트 문서 & Q-Learning 원리 학습 \\
+\hline
+4 & RL틱택토\_활용가이드\_v1.0.0.0 & 프로젝트 문서 & 수업 적용 방법 \\
+\hline
+5 & 코딩관리지침\_v3.0.0.0 & 프로젝트 지침 & 문서 작성 기준 \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section*{생성/수정 이력}
+% ============================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{|l|l|l|l|p{6cm}|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경 수준} & \textbf{변경 내용} & \textbf{작성자} \\
+\hline
+v1.0.0.0 & 2026-02-14 & 21:00 & 최초 & 초안 작성 — v3 기준 전체 기능 상세 & Claude \\
+\hline
+\textbf{v1.1.0.0} & \textbf{2026-02-14} & \textbf{23:30} & \textbf{마이너} & \textbf{Critical 14건 수정 — 난이도 슬라이더 삭제, 학습 단계 범위 교정, 등급 체계 전면 교체, 도움말 모달 섹션명 교정. Warning 3건 추가 수정. 참고자료 갱신} & \textbf{Claude} \\
+\hline
+\end{tabular}
+\end{center}
+
+\vfill
+
+\begin{center}
+\small\color{lightbrown}
+\emph{RL 틱택토 AI 강화학습 시뮬레이터 사용설명서 — 전체 기능 상세 안내}
+\end{center}
+
+\end{document}

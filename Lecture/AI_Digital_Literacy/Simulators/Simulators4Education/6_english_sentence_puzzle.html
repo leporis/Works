@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔤 영어 문장 만들기 퍼즐</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Nanum Gothic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0; padding: 20px; min-height: 100vh;
+        }
+        header { text-align: center; color: white; margin-bottom: 20px; }
+        h1 { margin: 0; font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .container {
+            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: 280px 1fr; gap: 20px;
+        }
+        .panel { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .level-btn {
+            width: 100%; padding: 12px; margin: 6px 0;
+            border: 2px solid #e2e8f0; border-radius: 10px;
+            background: white; font-size: 1rem; font-weight: bold;
+            cursor: pointer; transition: all 0.2s; text-align: left;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+        .level-btn:hover { background: #f0f9ff; border-color: #3b82f6; }
+        .level-btn.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+        .question-box {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white; padding: 30px; border-radius: 16px; margin-bottom: 20px;
+        }
+        .question-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .question-level { background: #3b82f6; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; }
+        .question-score { font-size: 1.1rem; color: #fbbf24; font-weight: bold; }
+        .korean-sentence { font-size: 1.5rem; font-weight: bold; text-align: center; margin: 10px 0 5px 0; }
+        .sentence-hint { font-size: 0.95rem; color: #94a3b8; text-align: center; }
+        .word-pool {
+            display: flex; flex-wrap: wrap; gap: 10px; padding: 20px;
+            background: #f8fafc; border-radius: 14px; min-height: 80px;
+            margin-bottom: 15px; border: 2px dashed #cbd5e1;
+        }
+        .word-card {
+            padding: 10px 18px; background: white; border: 2px solid #cbd5e1;
+            border-radius: 10px; font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; transition: all 0.2s; user-select: none; color: #1e293b;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+        .word-card:hover { transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); border-color: #3b82f6; }
+        .word-card.used { opacity: 0.3; cursor: not-allowed; pointer-events: none; background: #f1f5f9; }
+        .word-card.subject   { border-color: #ef4444; }
+        .word-card.verb      { border-color: #10b981; }
+        .word-card.object    { border-color: #3b82f6; }
+        .word-card.adjective { border-color: #f59e0b; }
+        .word-card.adverb    { border-color: #8b5cf6; }
+        .word-card.preposition { border-color: #ec4899; }
+        .answer-zone {
+            display: flex; flex-wrap: wrap; gap: 10px; padding: 20px;
+            background: white; border-radius: 14px; min-height: 80px;
+            border: 3px solid #3b82f6; margin-bottom: 20px; align-items: center;
+        }
+        .answer-zone-label { font-weight: bold; color: #64748b; font-size: 0.9rem; margin-bottom: 8px; }
+        .placed-card {
+            padding: 10px 18px; border-radius: 10px; font-size: 1.1rem;
+            font-weight: bold; cursor: pointer; transition: all 0.2s; color: white;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+        .placed-card.subject   { background: #ef4444; }
+        .placed-card.verb      { background: #10b981; }
+        .placed-card.object    { background: #3b82f6; }
+        .placed-card.adjective { background: #f59e0b; }
+        .placed-card.adverb    { background: #8b5cf6; }
+        .placed-card.preposition { background: #ec4899; }
+        .placed-card.other     { background: #64748b; }
+        .placed-card:hover { opacity: 0.8; transform: translateY(-2px); }
+        .answer-placeholder { color: #94a3b8; font-style: italic; padding: 5px; }
+        .btn-row { display: flex; gap: 10px; margin: 15px 0; }
+        .btn {
+            flex: 1; padding: 14px; border: none; border-radius: 10px;
+            font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.3s;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn-check  { background: #10b981; color: white; }
+        .btn-reset  { background: #f59e0b; color: white; }
+        .btn-next   { background: #3b82f6; color: white; }
+        .btn-hint   { background: #8b5cf6; color: white; }
+        .result-box {
+            padding: 20px; border-radius: 12px; text-align: center;
+            font-size: 1.1rem; font-weight: bold; display: none; margin: 15px 0; line-height: 1.8;
+        }
+        .result-box.correct { background: #d1fae5; border: 2px solid #10b981; color: #065f46; }
+        .result-box.wrong   { background: #fee2e2; border: 2px solid #ef4444; color: #991b1b; }
+        .grammar-box { background: #f0f9ff; padding: 18px; border-radius: 12px; border-left: 4px solid #3b82f6; margin: 15px 0; }
+        .grammar-box h4 { margin: 0 0 10px 0; color: #1e40af; }
+        .pattern-box {
+            background: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 10px;
+            font-family: 'Courier New', monospace; margin: 10px 0; line-height: 1.8; font-size: 0.95rem;
+            white-space: pre-line;
+        }
+        .legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; padding: 12px; background: #f8fafc; border-radius: 10px; }
+        .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.85rem; }
+        .legend-dot { width: 14px; height: 14px; border-radius: 3px; }
+        .score-board { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+        .score-item { background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center; border: 2px solid #e2e8f0; }
+        .score-label { font-size: 0.85rem; color: #64748b; }
+        .score-value { font-size: 1.4rem; font-weight: bold; color: #3b82f6; margin-top: 4px; }
+        .info-box { background: #fef3c7; padding: 15px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #f59e0b; }
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🔤 영어 문장 만들기 퍼즐</h1>
+    <p style="font-size:1.1rem; margin-top:10px;">단어 카드를 올바른 순서로 배열하여 영어 문장을 만들어보세요!</p>
+</header>
+
+<div class="container">
+    <aside class="panel">
+        <h3 style="margin-top:0;">📚 단계 선택</h3>
+        <button class="level-btn active" onclick="SimApp.setLevel('beginner', this)">🌱 초급 - 기본 문장<br><small style="font-weight:normal;">주어 + 동사 기초</small></button>
+        <button class="level-btn" onclick="SimApp.setLevel('elementary', this)">📗 초등 - 확장 문장<br><small style="font-weight:normal;">목적어, 부사구 포함</small></button>
+        <button class="level-btn" onclick="SimApp.setLevel('middle', this)">📘 중급 - 4·5형식<br><small style="font-weight:normal;">간접목적어, 목적보어</small></button>
+        <button class="level-btn" onclick="SimApp.setLevel('question', this)">❓ 의문문 만들기<br><small style="font-weight:normal;">Yes/No, WH 의문문</small></button>
+        <button class="level-btn" onclick="SimApp.setLevel('tense', this)">🕐 시제 연습<br><small style="font-weight:normal;">과거·미래·진행형</small></button>
+
+        <hr style="margin:20px 0; border:none; border-top:2px solid #e2e8f0;">
+
+        <h3>🏆 점수</h3>
+        <div class="score-board">
+            <div class="score-item"><div class="score-label">맞힌 문제</div><div class="score-value" id="correctCount">0</div></div>
+            <div class="score-item"><div class="score-label">총 문제</div><div class="score-value" id="totalCount">0</div></div>
+        </div>
+
+        <div class="legend">
+            <h4 style="width:100%; margin:0 0 8px 0; font-size:0.9rem;">품사 색깔 범례</h4>
+            <div class="legend-item"><div class="legend-dot" style="background:#ef4444;"></div>주어(S)</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#10b981;"></div>동사(V)</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#3b82f6;"></div>목적어(O)</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div>형용사</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6;"></div>부사</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ec4899;"></div>전치사</div>
+        </div>
+
+        <div class="info-box">
+            <h4 style="margin:0 0 8px 0; color:#92400e;">💡 영어 어순 기본</h4>
+            <p style="margin:0; font-size:0.9rem; line-height:1.8;">
+                한국어: 나는 사과를 먹는다<br>
+                영어: I eat an apple<br><br>
+                <strong>S + V + O 순서!</strong>
+            </p>
+        </div>
+    </aside>
+
+    <div>
+        <div class="panel">
+            <div class="question-box">
+                <div class="question-meta">
+                    <span class="question-level" id="questionLevel">초급</span>
+                    <span class="question-score">⭐ <span id="questionNum">1</span> / <span id="questionTotal">5</span></span>
+                </div>
+                <div class="sentence-hint">다음 한국어 문장을 영어로 만들어보세요!</div>
+                <div class="korean-sentence" id="koreanSentence"></div>
+            </div>
+
+            <div class="answer-zone-label">📦 단어 카드 (클릭하여 배치)</div>
+            <div class="word-pool" id="wordPool"></div>
+
+            <div class="answer-zone-label">✏️ 내 답 (카드를 클릭하면 돌아감)</div>
+            <div class="answer-zone" id="answerZone">
+                <span class="answer-placeholder">여기에 단어를 순서대로 배치하세요...</span>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-check" onclick="SimApp.checkAnswer()">✓ 정답 확인</button>
+                <button class="btn btn-hint"  onclick="SimApp.showHint()">💡 힌트</button>
+                <button class="btn btn-reset" onclick="SimApp.resetAnswer()">↩️ 다시</button>
+                <button class="btn btn-next"  onclick="SimApp.nextQuestion()">→ 다음</button>
+            </div>
+
+            <div class="result-box" id="resultBox"></div>
+
+            <div class="grammar-box" id="grammarBox" style="display:none;">
+                <h4 id="grammarTitle">📐 문법 설명</h4>
+                <div id="grammarContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const SimApp = {
+    level: 'beginner',
+    currentQ: 0,
+    correctCount: 0,
+    totalAnswered: 0,
+    placedWords: [],
+
+    questions: {
+        beginner: [
+            { korean:'나는 학교에 간다.', words:[{w:'I',t:'subject'},{w:'go',t:'verb'},{w:'to',t:'preposition'},{w:'school',t:'object'},{w:'play',t:'verb'},{w:'the',t:'other'}], answer:['I','go','to','school'], grammar:'1형식: S + V + 부사구\nI(주어) + go(동사) + to school(부사구)', pattern:'S + V + to + 장소' },
+            { korean:'그는 사과를 먹는다.', words:[{w:'He',t:'subject'},{w:'eats',t:'verb'},{w:'an',t:'other'},{w:'apple',t:'object'},{w:'she',t:'subject'},{w:'drinks',t:'verb'}], answer:['He','eats','an','apple'], grammar:'3형식: S + V + O\nHe(주어) + eats(동사) + an apple(목적어)', pattern:'S + V + O' },
+            { korean:'그녀는 아름답다.', words:[{w:'She',t:'subject'},{w:'is',t:'verb'},{w:'beautiful',t:'adjective'},{w:'he',t:'subject'},{w:'ugly',t:'adjective'},{w:'are',t:'verb'}], answer:['She','is','beautiful'], grammar:'2형식: S + V + C\nShe(주어) + is(동사) + beautiful(보어)', pattern:'S + be동사 + 형용사' },
+            { korean:'개들이 빠르게 달린다.', words:[{w:'Dogs',t:'subject'},{w:'run',t:'verb'},{w:'fast',t:'adverb'},{w:'cats',t:'subject'},{w:'walk',t:'verb'},{w:'slowly',t:'adverb'}], answer:['Dogs','run','fast'], grammar:'1형식: S + V + 부사\nDogs(주어) + run(동사) + fast(부사)', pattern:'S + V + 부사' },
+            { korean:'나는 책을 읽는다.', words:[{w:'I',t:'subject'},{w:'read',t:'verb'},{w:'a',t:'other'},{w:'book',t:'object'},{w:'write',t:'verb'},{w:'pen',t:'object'}], answer:['I','read','a','book'], grammar:'3형식: S + V + O\nI(주어) + read(동사) + a book(목적어)', pattern:'S + V + O' }
+        ],
+        elementary: [
+            { korean:'나는 매일 아침 우유를 마신다.', words:[{w:'I',t:'subject'},{w:'drink',t:'verb'},{w:'milk',t:'object'},{w:'every',t:'adverb'},{w:'morning',t:'adverb'},{w:'juice',t:'object'}], answer:['I','drink','milk','every','morning'], grammar:'S + V + O + 빈도부사\n목적어 뒤에 시간/빈도 부사를 붙입니다.', pattern:'S + V + O + every + 시간' },
+            { korean:'그 고양이는 소파 위에 있다.', words:[{w:'The',t:'other'},{w:'cat',t:'subject'},{w:'is',t:'verb'},{w:'on',t:'preposition'},{w:'the',t:'other'},{w:'sofa',t:'object'},{w:'under',t:'preposition'}], answer:['The','cat','is','on','the','sofa'], grammar:'S + be + 전치사구\non(위에) / under(아래) / in(안에)', pattern:'S + be + 전치사 + 장소' },
+            { korean:'그들은 공원에서 축구를 한다.', words:[{w:'They',t:'subject'},{w:'play',t:'verb'},{w:'soccer',t:'object'},{w:'in',t:'preposition'},{w:'the',t:'other'},{w:'park',t:'object'},{w:'basketball',t:'object'}], answer:['They','play','soccer','in','the','park'], grammar:'S + V + O + 장소부사구\n행동 + 목적어 + 장소 순서입니다.', pattern:'S + V + O + in + 장소' }
+        ],
+        middle: [
+            { korean:'엄마가 나에게 케이크를 주었다.', words:[{w:'Mom',t:'subject'},{w:'gave',t:'verb'},{w:'me',t:'object'},{w:'a',t:'other'},{w:'cake',t:'object'},{w:'cookie',t:'object'},{w:'bought',t:'verb'}], answer:['Mom','gave','me','a','cake'], grammar:'4형식: S + V + IO + DO\ngave(주다) + me(간접목적어) + a cake(직접목적어)\nIO = 사람, DO = 사물', pattern:'S + V + 사람 + 사물' },
+            { korean:'우리는 그를 반장으로 뽑았다.', words:[{w:'We',t:'subject'},{w:'elected',t:'verb'},{w:'him',t:'object'},{w:'class',t:'other'},{w:'president',t:'adjective'},{w:'teacher',t:'adjective'}], answer:['We','elected','him','class','president'], grammar:'5형식: S + V + O + OC\nelected(선출하다) + him(목적어) + class president(목적보어)', pattern:'S + V + O + 목적보어' }
+        ],
+        question: [
+            { korean:'너는 사과를 좋아하니?', words:[{w:'Do',t:'verb'},{w:'you',t:'subject'},{w:'like',t:'verb'},{w:'apples',t:'object'},{w:'?',t:'other'},{w:'eat',t:'verb'}], answer:['Do','you','like','apples','?'], grammar:'Yes/No 의문문: Do/Does + S + V + O?\n일반동사 의문문은 Do/Does로 시작합니다.', pattern:'Do + S + V + O?' },
+            { korean:'그녀는 어디에 사니?', words:[{w:'Where',t:'adverb'},{w:'does',t:'verb'},{w:'she',t:'subject'},{w:'live',t:'verb'},{w:'?',t:'other'},{w:'work',t:'verb'}], answer:['Where','does','she','live','?'], grammar:'WH 의문문: WH + does + S + V?\nWhere(어디), What(무엇), When(언제)', pattern:'WH + does + S + V?' },
+            { korean:'네가 좋아하는 음식이 뭐니?', words:[{w:'What',t:'adverb'},{w:'is',t:'verb'},{w:'your',t:'subject'},{w:'favorite',t:'adjective'},{w:'food',t:'object'},{w:'?',t:'other'}], answer:['What','is','your','favorite','food','?'], grammar:'WH + be동사 + 주어?\nbe동사는 주어 앞에 옵니다.', pattern:'What + is + S + ?' }
+        ],
+        tense: [
+            { korean:'나는 어제 영화를 봤다. (과거)', words:[{w:'I',t:'subject'},{w:'watched',t:'verb'},{w:'a',t:'other'},{w:'movie',t:'object'},{w:'yesterday',t:'adverb'},{w:'watch',t:'verb'}], answer:['I','watched','a','movie','yesterday'], grammar:'과거 시제: 동사 + -ed\nwatch → watched\n과거 부사: yesterday, last~, ago', pattern:'S + V-ed + O + yesterday' },
+            { korean:'나는 내일 도서관에 갈 것이다. (미래)', words:[{w:'I',t:'subject'},{w:'will',t:'verb'},{w:'go',t:'verb'},{w:'to',t:'preposition'},{w:'the',t:'other'},{w:'library',t:'object'},{w:'tomorrow',t:'adverb'}], answer:['I','will','go','to','the','library','tomorrow'], grammar:'미래 시제: will + 동사원형\nwill go (갈 것이다)\n미래 부사: tomorrow, next~', pattern:'S + will + V + tomorrow' },
+            { korean:'그는 지금 공부하고 있다. (진행)', words:[{w:'He',t:'subject'},{w:'is',t:'verb'},{w:'studying',t:'verb'},{w:'now',t:'adverb'},{w:'study',t:'verb'},{w:'are',t:'verb'}], answer:['He','is','studying','now'], grammar:'현재진행 시제: be + V-ing\nis studying (공부하고 있다)\n진행 부사: now, at the moment', pattern:'S + is/are + V-ing + now' }
+        ]
+    },
+
+    levelLabels: { beginner:'초급', elementary:'초등', middle:'중급', question:'의문문', tense:'시제' },
+
+    init() { this.loadQuestion(); },
+
+    setLevel(level, btn) {
+        this.level = level;
+        this.currentQ = 0;
+        document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.loadQuestion();
+    },
+
+    loadQuestion() {
+        const qList = this.questions[this.level];
+        if (this.currentQ >= qList.length) this.currentQ = 0;
+        const q = qList[this.currentQ];
+
+        document.getElementById('questionLevel').textContent = this.levelLabels[this.level];
+        document.getElementById('questionNum').textContent = this.currentQ + 1;
+        document.getElementById('questionTotal').textContent = qList.length;
+        document.getElementById('koreanSentence').textContent = q.korean;
+        document.getElementById('resultBox').style.display = 'none';
+        document.getElementById('grammarBox').style.display = 'none';
+
+        this.placedWords = [];
+        this.renderPool(q.words);
+        this.renderAnswer();
+    },
+
+    renderPool(words) {
+        const pool = document.getElementById('wordPool');
+        pool.innerHTML = '';
+        const shuffled = [...words].sort(() => Math.random() - 0.5);
+        shuffled.forEach(wordObj => {
+            const card = document.createElement('div');
+            card.className = 'word-card ' + wordObj.t;
+            card.textContent = wordObj.w;
+            card.dataset.word = wordObj.w;
+            card.dataset.type = wordObj.t;
+            card.onclick = () => {
+                if (card.classList.contains('used')) return;
+                card.classList.add('used');
+                this.placedWords.push({ w: wordObj.w, t: wordObj.t });
+                this.renderAnswer();
+            };
+            pool.appendChild(card);
+        });
+    },
+
+    renderAnswer() {
+        const zone = document.getElementById('answerZone');
+        zone.innerHTML = '';
+        if (this.placedWords.length === 0) {
+            zone.innerHTML = '<span class="answer-placeholder">여기에 단어를 순서대로 배치하세요...</span>';
+            return;
+        }
+        this.placedWords.forEach((wordObj, i) => {
+            const card = document.createElement('div');
+            card.className = 'placed-card ' + (wordObj.t || 'other');
+            card.textContent = wordObj.w;
+            card.title = '클릭하면 돌아갑니다';
+            card.onclick = () => {
+                const removed = this.placedWords.splice(i, 1)[0];
+                const poolCards = document.querySelectorAll('.word-pool .word-card');
+                for (const c of poolCards) {
+                    if (c.dataset.word === removed.w && c.classList.contains('used')) {
+                        c.classList.remove('used'); break;
+                    }
+                }
+                this.renderAnswer();
+            };
+            zone.appendChild(card);
+        });
+    },
+
+    checkAnswer() {
+        const q = this.questions[this.level][this.currentQ];
+        const userAnswer = this.placedWords.map(w => w.w);
+        if (userAnswer.length === 0) { alert('먼저 단어를 배치해주세요!'); return; }
+
+        const correct = JSON.stringify(userAnswer) === JSON.stringify(q.answer);
+        const resultBox = document.getElementById('resultBox');
+        resultBox.style.display = 'block';
+
+        if (correct) {
+            this.correctCount++;
+            resultBox.className = 'result-box correct';
+            resultBox.innerHTML = '🎉 정답입니다!<br><strong>' + q.answer.join(' ') + '</strong>';
+        } else {
+            resultBox.className = 'result-box wrong';
+            resultBox.innerHTML = '❌ 틀렸습니다!<br>내 답: <strong>' + userAnswer.join(' ') + '</strong><br>정답: <strong style="color:#10b981;">' + q.answer.join(' ') + '</strong>';
+        }
+
+        this.totalAnswered++;
+        document.getElementById('correctCount').textContent = this.correctCount;
+        document.getElementById('totalCount').textContent = this.totalAnswered;
+
+        const grammarBox = document.getElementById('grammarBox');
+        grammarBox.style.display = 'block';
+        document.getElementById('grammarContent').innerHTML =
+            '<div class="pattern-box">' + q.grammar + '</div>' +
+            '<p style="margin:8px 0 0 0; font-size:0.9rem;">패턴: <strong>' + q.pattern + '</strong></p>';
+    },
+
+    showHint() {
+        const q = this.questions[this.level][this.currentQ];
+        alert('💡 힌트\n\n첫 번째 단어: "' + q.answer[0] + '"\n정답 단어 수: ' + q.answer.length + '개');
+    },
+
+    resetAnswer() {
+        this.placedWords = [];
+        document.querySelectorAll('.word-pool .word-card').forEach(c => c.classList.remove('used'));
+        this.renderAnswer();
+        document.getElementById('resultBox').style.display = 'none';
+        document.getElementById('grammarBox').style.display = 'none';
+    },
+
+    nextQuestion() {
+        this.currentQ = (this.currentQ + 1) % this.questions[this.level].length;
+        this.loadQuestion();
+    }
+};
+
+window.onload = () => SimApp.init();
+</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 310">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadowSm">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.5" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="310" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="28" text-anchor="middle" font-family="Noto Sans KR" font-size="17" font-weight="700" fill="#1a1a2e">보상 체계와 위치별 전략적 가치</text>
+  <text x="400" y="44" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#888">Reward Design &amp; Positional Value</text>
+
+  <!-- ===== LEFT: Reward Number Line ===== -->
+  <text x="195" y="66" text-anchor="middle" font-family="Noto Sans KR" font-size="12" font-weight="600" fill="#555">보상 체계</text>
+
+  <g transform="translate(40, 80)">
+    <rect width="310" height="180" rx="8" fill="white" stroke="#ddd" stroke-width="1" filter="url(#shadowSm)"/>
+
+    <!-- Number line -->
+    <line x1="30" y1="65" x2="280" y2="65" stroke="#555" stroke-width="2"/>
+
+    <!-- Tick marks and dots -->
+    <!-- Lose: -1.0 -->
+    <circle cx="50" cy="65" r="10" fill="#e74c3c"/>
+    <text x="50" y="69" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="white">-1</text>
+    <text x="50" y="50" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#e74c3c">패배</text>
+    <text x="50" y="90" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="600" fill="#e74c3c">-1.0</text>
+    <text x="50" y="103" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">피해야 할 결과</text>
+
+    <!-- Zero reference -->
+    <line x1="130" y1="58" x2="130" y2="72" stroke="#aaa" stroke-width="1"/>
+    <text x="130" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#aaa">0</text>
+
+    <!-- Draw: +0.3 -->
+    <circle cx="167" cy="65" r="10" fill="#f39c12"/>
+    <text x="167" y="69" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="700" fill="white">+.3</text>
+    <text x="167" y="50" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#f39c12">무승부</text>
+    <text x="167" y="90" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="600" fill="#f39c12">+0.3</text>
+    <text x="167" y="103" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">방어 학습 유도</text>
+
+    <!-- Win: +1.0 -->
+    <circle cx="260" cy="65" r="10" fill="#27ae60"/>
+    <text x="260" y="69" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="700" fill="white">+1</text>
+    <text x="260" y="50" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#27ae60">승리</text>
+    <text x="260" y="90" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="600" fill="#27ae60">+1.0</text>
+    <text x="260" y="103" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">최선의 결과</text>
+
+    <!-- Arrow heads on number line -->
+    <polygon points="27,65 33,61 33,69" fill="#555"/>
+    <polygon points="283,65 277,61 277,69" fill="#555"/>
+
+    <!-- Step penalty box -->
+    <rect x="50" y="118" width="210" height="48" rx="8" fill="#fef9e7" stroke="#f39c12" stroke-width="1"/>
+    <text x="155" y="138" text-anchor="middle" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#b7950b">⚡ 단계 패널티: 매 수마다 -0.01</text>
+    <text x="155" y="155" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#888">"같은 승리라면, 더 빠르게 이기는 것이 좋다!"</text>
+    <!-- Small arrows showing penalty -->
+    <text x="80" y="132" font-family="Noto Sans KR" font-size="8" fill="#e67e22">-0.01</text>
+  </g>
+
+  <!-- ===== RIGHT: Positional Value Board ===== -->
+  <text x="590" y="66" text-anchor="middle" font-family="Noto Sans KR" font-size="12" font-weight="600" fill="#555">위치별 전략적 가치</text>
+
+  <g transform="translate(440, 80)">
+    <rect width="310" height="180" rx="8" fill="white" stroke="#ddd" stroke-width="1" filter="url(#shadowSm)"/>
+
+    <!-- 3x3 Board with win line counts -->
+    <g transform="translate(30, 15)">
+      <!-- Row 0 -->
+      <rect x="0" y="0" width="50" height="50" rx="4" fill="#A9DFBF" stroke="#27ae60" stroke-width="1.2"/>
+      <rect x="55" y="0" width="50" height="50" rx="4" fill="#D5F5E3" stroke="#27ae60" stroke-width="0.8"/>
+      <rect x="110" y="0" width="50" height="50" rx="4" fill="#A9DFBF" stroke="#27ae60" stroke-width="1.2"/>
+      <!-- Row 1 -->
+      <rect x="0" y="55" width="50" height="50" rx="4" fill="#D5F5E3" stroke="#27ae60" stroke-width="0.8"/>
+      <rect x="55" y="55" width="50" height="50" rx="4" fill="#196F3D" stroke="#196F3D" stroke-width="1.5"/>
+      <rect x="110" y="55" width="50" height="50" rx="4" fill="#D5F5E3" stroke="#27ae60" stroke-width="0.8"/>
+      <!-- Row 2 -->
+      <rect x="0" y="110" width="50" height="50" rx="4" fill="#A9DFBF" stroke="#27ae60" stroke-width="1.2"/>
+      <rect x="55" y="110" width="50" height="50" rx="4" fill="#D5F5E3" stroke="#27ae60" stroke-width="0.8"/>
+      <rect x="110" y="110" width="50" height="50" rx="4" fill="#A9DFBF" stroke="#27ae60" stroke-width="1.2"/>
+
+      <!-- Numbers -->
+      <text x="25" y="30" text-anchor="middle" font-family="JetBrains Mono" font-size="20" font-weight="700" fill="#1e8449">3</text>
+      <text x="80" y="30" text-anchor="middle" font-family="JetBrains Mono" font-size="20" font-weight="700" fill="#27ae60">2</text>
+      <text x="135" y="30" text-anchor="middle" font-family="JetBrains Mono" font-size="20" font-weight="700" fill="#1e8449">3</text>
+      <text x="25" y="85" text-anchor="middle" font-family="JetBrains Mono" font-size="20" font-weight="700" fill="#27ae60">2</text>
+      <text x="80" y="85" text-anchor="middle" font-family="JetBrains Mono" font-size="22" font-weight="700" fill="white">4</text>
+      <text x="135" y="85" text-anchor="middle" font-family="JetBrains Mono" font-size="20" font-weight="700" fill="#27ae60">2</text>
+      <text x="25" y="140" text-anchor="middle" font-family="JetBrains Mono" font-size="20" font-weight="700" fill="#1e8449">3</text>
+      <text x="80" y="140" text-anchor="middle" font-family="JetBrains Mono" font-size="20" font-weight="700" fill="#27ae60">2</text>
+      <text x="135" y="140" text-anchor="middle" font-family="JetBrains Mono" font-size="20" font-weight="700" fill="#1e8449">3</text>
+
+      <!-- Small labels -->
+      <text x="25" y="45" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#888">모서리</text>
+      <text x="80" y="45" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#888">변</text>
+      <text x="135" y="45" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#888">모서리</text>
+      <text x="25" y="100" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#888">변</text>
+      <text x="80" y="100" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="rgba(255,255,255,0.7)">중앙</text>
+      <text x="135" y="100" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#888">변</text>
+    </g>
+
+    <!-- Legend -->
+    <g transform="translate(200, 20)">
+      <text x="0" y="0" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#555">승리선 수</text>
+
+      <rect x="0" y="10" width="14" height="14" rx="2" fill="#196F3D"/>
+      <text x="20" y="22" font-family="Noto Sans KR" font-size="9" fill="#555">4개 (중앙)</text>
+
+      <rect x="0" y="30" width="14" height="14" rx="2" fill="#A9DFBF" stroke="#27ae60" stroke-width="0.8"/>
+      <text x="20" y="42" font-family="Noto Sans KR" font-size="9" fill="#555">3개 (모서리)</text>
+
+      <rect x="0" y="50" width="14" height="14" rx="2" fill="#D5F5E3" stroke="#27ae60" stroke-width="0.8"/>
+      <text x="20" y="62" font-family="Noto Sans KR" font-size="9" fill="#555">2개 (변)</text>
+    </g>
+
+    <!-- Ranking -->
+    <g transform="translate(200, 105)">
+      <rect width="95" height="60" rx="6" fill="#eaf2f8" stroke="#2980b9" stroke-width="1"/>
+      <text x="48" y="16" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#2980b9">최적 첫수 순서</text>
+      <text x="48" y="32" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#555">🎯 중앙 (4)</text>
+      <text x="48" y="44" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#555">📐 모서리 (3)</text>
+      <text x="48" y="56" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#555">➖ 변 (2)</text>
+    </g>
+  </g>
+
+  <!-- Bottom caption -->
+  <text x="400" y="300" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#999">그림 5. 보상 체계(좌)와 보드 위치별 전략적 가치(우) — 숫자는 관여하는 승리선의 수</text>
+</svg>

@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFF8E1"/>
+      <stop offset="100%" style="stop-color:#FFECB3"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <filter id="shadowLight" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.06"/>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="400" rx="12" fill="url(#bgGrad)"/>
+
+  <rect x="16" y="12" width="768" height="52" rx="10" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <text x="360" y="34" text-anchor="middle" font-size="15" font-weight="700" fill="#1565C0">🐧 펭귄 의사결정트리 시뮬레이터</text>
+  <rect x="570" y="23" width="62" height="20" rx="10" fill="#1565C0"/>
+  <text x="601" y="37" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">v1.3.0.0</text>
+  <text x="360" y="52" text-anchor="middle" font-size="9" fill="#795548">추론 모드 — 특성 입력으로 분류</text>
+
+  <!-- 모드 탭 -->
+  <rect x="230" y="72" width="150" height="30" rx="15" fill="#FFF" stroke="#E0E0E0" stroke-width="1" filter="url(#shadowLight)"/>
+  <text x="305" y="91" text-anchor="middle" font-size="11" font-weight="500" fill="#888">🌿 학습 &amp; 분석</text>
+  <rect x="390" y="72" width="130" height="30" rx="15" fill="#1565C0" filter="url(#shadowLight)"/>
+  <text x="455" y="91" text-anchor="middle" font-size="11" font-weight="600" fill="#FFF">🔍 추론 모드</text>
+
+  <!-- 레이블 -->
+  <rect x="16" y="98" width="180" height="16" rx="8" fill="#1565C0" opacity="0.9"/>
+  <text x="106" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">① 특성 입력</text>
+  <rect x="206" y="98" width="370" height="16" rx="8" fill="#FF9800" opacity="0.9"/>
+  <text x="391" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">② 트리 경로 시각화</text>
+  <rect x="586" y="98" width="198" height="16" rx="8" fill="#2E7D32" opacity="0.9"/>
+  <text x="685" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">③ 분류 결과</text>
+
+  <!-- 좌측: 특성 입력 -->
+  <rect x="16" y="118" width="180" height="270" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="16" y="118" width="180" height="32" rx="10" fill="#E3F2FD"/>
+  <rect x="16" y="140" width="180" height="10" fill="#E3F2FD"/>
+  <text x="106" y="139" text-anchor="middle" font-size="12" font-weight="600" fill="#1565C0">🔢 특성 입력</text>
+
+  <text x="28" y="168" font-size="9" fill="#555">부리 길이 (mm)</text>
+  <rect x="28" y="174" width="156" height="4" rx="2" fill="#E0E0E0"/>
+  <circle cx="95" cy="176" r="6" fill="#1565C0"/>
+  <text x="95" y="196" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">39.1</text>
+
+  <text x="28" y="216" font-size="9" fill="#555">부리 깊이 (mm)</text>
+  <rect x="28" y="222" width="156" height="4" rx="2" fill="#E0E0E0"/>
+  <circle cx="110" cy="224" r="6" fill="#1565C0"/>
+  <text x="110" y="244" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">18.7</text>
+
+  <text x="28" y="264" font-size="9" fill="#555">날개 길이 (mm)</text>
+  <rect x="28" y="270" width="156" height="4" rx="2" fill="#E0E0E0"/>
+  <circle cx="100" cy="272" r="6" fill="#1565C0"/>
+  <text x="100" y="292" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">181</text>
+
+  <text x="28" y="312" font-size="9" fill="#555">체질량 (g)</text>
+  <rect x="28" y="318" width="156" height="4" rx="2" fill="#E0E0E0"/>
+  <circle cx="85" cy="320" r="6" fill="#1565C0"/>
+  <text x="85" y="340" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">3750</text>
+
+  <!-- 중앙: 트리 경로 시각화 -->
+  <rect x="206" y="118" width="370" height="270" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <text x="391" y="140" text-anchor="middle" font-size="11" font-weight="600" fill="#333">🌿 트리 경로 시각화</text>
+
+  <!-- 활성 경로 강조된 트리 -->
+  <rect x="346" y="155" width="90" height="30" rx="8" fill="#1565C0" stroke="#0D47A1" stroke-width="2"/>
+  <text x="391" y="174" text-anchor="middle" font-size="7" font-weight="600" fill="#FFF">부리길이 ≤ 42.3</text>
+  <text x="338" y="172" text-anchor="end" font-size="8" font-weight="700" fill="#2E7D32">✓ 예</text>
+
+  <!-- 활성 좌측 경로 -->
+  <line x1="370" y1="185" x2="310" y2="215" stroke="#1565C0" stroke-width="3"/>
+  <rect x="265" y="215" width="90" height="28" rx="8" fill="#1565C0" stroke="#0D47A1" stroke-width="2"/>
+  <text x="310" y="233" text-anchor="middle" font-size="7" font-weight="600" fill="#FFF">날개길이 ≤ 195</text>
+  <text x="257" y="232" text-anchor="end" font-size="8" font-weight="700" fill="#2E7D32">✓ 예</text>
+
+  <!-- 비활성 우측 경로 -->
+  <line x1="412" y1="185" x2="472" y2="215" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="427" y="215" width="90" height="28" rx="8" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="472" y="233" text-anchor="middle" font-size="7" fill="#CCC">체질량 ≤ 4200</text>
+
+  <!-- 활성 리프 (아델리) -->
+  <line x1="290" y1="243" x2="260" y2="270" stroke="#1565C0" stroke-width="3"/>
+  <rect x="220" y="270" width="80" height="30" rx="8" fill="#2E7D32"/>
+  <text x="260" y="289" text-anchor="middle" font-size="9" font-weight="700" fill="#FFF">🐧 아델리</text>
+
+  <!-- 비활성 리프들 -->
+  <line x1="330" y1="243" x2="360" y2="270" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="330" y="270" width="60" height="24" rx="6" fill="#F5F5F5"/>
+  <text x="360" y="286" text-anchor="middle" font-size="7" fill="#CCC">턱끈</text>
+  <line x1="452" y1="243" x2="440" y2="270" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="410" y="270" width="60" height="24" rx="6" fill="#F5F5F5"/>
+  <text x="440" y="286" text-anchor="middle" font-size="7" fill="#CCC">턱끈</text>
+  <line x1="492" y1="243" x2="520" y2="270" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="490" y="270" width="60" height="24" rx="6" fill="#F5F5F5"/>
+  <text x="520" y="286" text-anchor="middle" font-size="7" fill="#CCC">젠투</text>
+
+  <!-- 경로 설명 -->
+  <rect x="220" y="315" width="340" height="50" rx="8" fill="#E3F2FD"/>
+  <text x="390" y="333" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">📍 추론 경로</text>
+  <text x="390" y="350" text-anchor="middle" font-size="8" fill="#555">부리길이(39.1) ≤ 42.3 ✓ → 날개길이(181) ≤ 195 ✓ → 아델리</text>
+
+  <!-- 우측: 분류 결과 -->
+  <rect x="586" y="118" width="198" height="270" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="586" y="118" width="198" height="32" rx="10" fill="#E8F5E9"/>
+  <rect x="586" y="140" width="198" height="10" fill="#E8F5E9"/>
+  <text x="685" y="139" text-anchor="middle" font-size="12" font-weight="600" fill="#2E7D32">🎯 분류 결과</text>
+
+  <rect x="600" y="162" width="170" height="60" rx="8" fill="#C8E6C9"/>
+  <text x="685" y="182" text-anchor="middle" font-size="10" font-weight="600" fill="#2E7D32">예측 종</text>
+  <text x="685" y="210" text-anchor="middle" font-size="18" font-weight="700" fill="#2E7D32">🐧 아델리</text>
+
+  <rect x="600" y="234" width="170" height="70" rx="8" fill="#FFF8E1"/>
+  <text x="685" y="252" text-anchor="middle" font-size="9" font-weight="600" fill="#E65100">확률 분포</text>
+  <text x="610" y="272" font-size="8" fill="#555">아델리: 94.2%</text>
+  <rect x="680" y="264" width="80" height="8" rx="2" fill="#E0E0E0"/>
+  <rect x="680" y="264" width="75" height="8" rx="2" fill="#2E7D32"/>
+  <text x="610" y="290" font-size="8" fill="#555">턱끈: 4.1%</text>
+  <rect x="680" y="282" width="80" height="8" rx="2" fill="#E0E0E0"/>
+  <rect x="680" y="282" width="3" height="8" rx="2" fill="#1565C0"/>
+
+  <rect x="608" y="316" width="168" height="28" rx="6" fill="#FFF" stroke="#1565C0" stroke-width="1.5"/>
+  <text x="692" y="334" text-anchor="middle" font-size="10" font-weight="600" fill="#1565C0">🌿 학습 모드로 전환</text>
+</svg>

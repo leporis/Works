@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 370">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <linearGradient id="agentGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3498db"/>
+      <stop offset="100%" style="stop-color:#2471a3"/>
+    </linearGradient>
+    <linearGradient id="envGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#27ae60"/>
+      <stop offset="100%" style="stop-color:#1e8449"/>
+    </linearGradient>
+    <linearGradient id="qGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8e44ad"/>
+      <stop offset="100%" style="stop-color:#6c3483"/>
+    </linearGradient>
+    <linearGradient id="ruleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e67e22"/>
+      <stop offset="100%" style="stop-color:#ca6f1e"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadowSm">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#e67e22"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2980b9"/>
+    </marker>
+    <marker id="arrowGray" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#888"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="370" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-family="Noto Sans KR" font-size="17" font-weight="700" fill="#1a1a2e">강화학습의 에이전트-환경 상호작용</text>
+  <text x="400" y="50" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#888">Agent-Environment Interaction Loop</text>
+
+  <!-- ===== AGENT BOX ===== -->
+  <rect x="80" y="80" width="200" height="130" rx="12" fill="url(#agentGrad)" filter="url(#shadow)"/>
+  <text x="180" y="108" text-anchor="middle" font-family="Noto Sans KR" font-size="22" fill="white">🤖</text>
+  <text x="180" y="132" text-anchor="middle" font-family="Noto Sans KR" font-size="15" font-weight="700" fill="white">에이전트</text>
+  <text x="180" y="150" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="rgba(255,255,255,0.8)">Agent</text>
+  <text x="180" y="172" text-anchor="middle" font-family="Noto Sans KR" font-size="11" fill="rgba(255,255,255,0.9)">AI 플레이어 (X 또는 O)</text>
+  <text x="180" y="190" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="rgba(255,255,255,0.7)">Q-테이블 기반으로 행동 결정</text>
+
+  <!-- ===== ENVIRONMENT BOX ===== -->
+  <rect x="520" y="80" width="200" height="130" rx="12" fill="url(#envGrad)" filter="url(#shadow)"/>
+  <text x="620" y="108" text-anchor="middle" font-family="Noto Sans KR" font-size="22" fill="white">🎮</text>
+  <text x="620" y="132" text-anchor="middle" font-family="Noto Sans KR" font-size="15" font-weight="700" fill="white">환경</text>
+  <text x="620" y="150" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="rgba(255,255,255,0.8)">Environment</text>
+
+  <!-- Mini board inside environment -->
+  <g transform="translate(588, 158)">
+    <rect x="0" y="0" width="20" height="20" rx="2" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+    <rect x="22" y="0" width="20" height="20" rx="2" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+    <rect x="44" y="0" width="20" height="20" rx="2" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+    <rect x="0" y="22" width="20" height="20" rx="2" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+    <rect x="22" y="22" width="20" height="20" rx="2" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+    <rect x="44" y="22" width="20" height="20" rx="2" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+    <rect x="0" y="44" width="20" height="20" rx="2" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+    <rect x="22" y="44" width="20" height="20" rx="2" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+    <rect x="44" y="44" width="20" height="20" rx="2" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+    <!-- X and O marks -->
+    <text x="10" y="15" text-anchor="middle" font-family="JetBrains Mono" font-size="13" font-weight="700" fill="#85C1E9">X</text>
+    <text x="54" y="15" text-anchor="middle" font-family="JetBrains Mono" font-size="13" font-weight="700" fill="#F1948A">O</text>
+    <text x="32" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="13" font-weight="700" fill="#85C1E9">X</text>
+  </g>
+
+  <!-- ===== TOP ARROW: Action (Agent → Environment) ===== -->
+  <line x1="280" y1="115" x2="518" y2="115" stroke="#e67e22" stroke-width="2.5" stroke-dasharray="none" marker-end="url(#arrowOrange)"/>
+  <rect x="330" y="95" width="140" height="38" rx="8" fill="white" stroke="#e67e22" stroke-width="1.5" filter="url(#shadowSm)"/>
+  <text x="400" y="112" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="600" fill="#e67e22">행동 (Action)</text>
+  <text x="400" y="126" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#b7950b">빈 칸에 돌 놓기</text>
+
+  <!-- ===== BOTTOM ARROW: State + Reward (Environment → Agent) ===== -->
+  <line x1="518" y1="180" x2="282" y2="180" stroke="#2980b9" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+  <rect x="315" y="160" width="170" height="38" rx="8" fill="white" stroke="#2980b9" stroke-width="1.5" filter="url(#shadowSm)"/>
+  <text x="400" y="177" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="600" fill="#2980b9">상태 + 보상</text>
+  <text x="400" y="191" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#5b7fa5">보드 배치 + 승(+1)/패(-1)/무(+0.3)</text>
+
+  <!-- ===== Q-TABLE BOX (below Agent) ===== -->
+  <rect x="100" y="248" width="160" height="90" rx="10" fill="url(#qGrad)" filter="url(#shadow)"/>
+  <text x="180" y="273" text-anchor="middle" font-family="Noto Sans KR" font-size="14" fill="white">📋</text>
+  <text x="180" y="293" text-anchor="middle" font-family="Noto Sans KR" font-size="12" font-weight="600" fill="white">Q-테이블 (정책)</text>
+  <text x="180" y="310" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="rgba(255,255,255,0.8)">상태별 행동 가치 저장</text>
+  <text x="180" y="325" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="rgba(255,255,255,0.7)">~765개 정규 상태</text>
+
+  <!-- Connector: Agent ↔ Q-Table -->
+  <line x1="180" y1="210" x2="180" y2="246" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowGray)"/>
+  <text x="196" y="232" font-family="Noto Sans KR" font-size="9" fill="#8e44ad">조회/갱신</text>
+
+  <!-- ===== GAME RULES BOX (below Environment) ===== -->
+  <rect x="540" y="248" width="160" height="90" rx="10" fill="url(#ruleGrad)" filter="url(#shadow)"/>
+  <text x="620" y="273" text-anchor="middle" font-family="Noto Sans KR" font-size="14" fill="white">⚖️</text>
+  <text x="620" y="293" text-anchor="middle" font-family="Noto Sans KR" font-size="12" font-weight="600" fill="white">게임 규칙</text>
+  <text x="620" y="310" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="rgba(255,255,255,0.8)">3목 완성 → 승리 판정</text>
+  <text x="620" y="325" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="rgba(255,255,255,0.7)">빈 칸 없음 → 무승부</text>
+
+  <!-- Connector: Environment ↔ Rules -->
+  <line x1="620" y1="210" x2="620" y2="246" stroke="#ca6f1e" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowGray)"/>
+  <text x="636" y="232" font-family="Noto Sans KR" font-size="9" fill="#ca6f1e">판정</text>
+
+  <!-- ===== CYCLE LABEL ===== -->
+  <rect x="330" y="228" width="140" height="30" rx="15" fill="#1a1a2e" opacity="0.08"/>
+  <text x="400" y="248" text-anchor="middle" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#555">🔄 이 과정을 수만 번 반복</text>
+
+  <!-- Bottom note -->
+  <text x="400" y="360" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#999">그림 1. 강화학습의 에이전트-환경 상호작용 순환 구조 (RL 틱택토)</text>
+</svg>

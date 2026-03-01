@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d0d1a"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2980b9"/>
+      <stop offset="100%" style="stop-color:#c0392b"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.25"/>
+    </filter>
+    <filter id="glow">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#f39c12" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="800" height="440" fill="url(#bgGrad)"/>
+
+  <!-- ===== 헤더 ===== -->
+  <text x="400" y="26" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="15" font-weight="700" fill="url(#titleGrad)">⚔️ AI vs AI</text>
+  <rect x="470" y="13" width="52" height="20" rx="10" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+  <text x="496" y="26" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="7" font-weight="700" fill="#e0e0e0">☀️ 밝게</text>
+  <rect x="528" y="13" width="64" height="20" rx="5" fill="rgba(128,128,128,0.4)"/>
+  <text x="560" y="26" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="7" font-weight="700" fill="#fff">📊 대시보드</text>
+  <rect x="598" y="13" width="64" height="20" rx="5" fill="rgba(142,68,173,0.5)"/>
+  <text x="630" y="26" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="7" font-weight="700" fill="#fff">👤 사람 대전</text>
+
+  <!-- ===== 좌측: 게임 보드 영역 ===== -->
+  <!-- BoardDisplay: cellSize=70, gap=4 -->
+  <g transform="translate(120, 52)">
+    <rect x="-12" y="-12" width="240" height="240" rx="10" fill="rgba(0,0,0,0.5)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+    <!-- Row 0 -->
+    <rect x="0" y="0" width="70" height="70" rx="8" fill="rgba(41,128,185,0.15)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <text x="35" y="43" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="35" font-weight="900" fill="#2980b9">X</text>
+    <rect x="74" y="0" width="70" height="70" rx="8" fill="rgba(30,30,50,0.8)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <rect x="148" y="0" width="70" height="70" rx="8" fill="rgba(192,57,43,0.15)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <text x="183" y="43" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="35" font-weight="900" fill="#c0392b">O</text>
+    <!-- Row 1 -->
+    <rect x="0" y="74" width="70" height="70" rx="8" fill="rgba(192,57,43,0.15)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <text x="35" y="117" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="35" font-weight="900" fill="#c0392b">O</text>
+    <rect x="74" y="74" width="70" height="70" rx="8" fill="rgba(41,128,185,0.15)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <text x="109" y="117" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="35" font-weight="900" fill="#2980b9">X</text>
+    <!-- [5] 빈칸 -->
+    <rect x="148" y="74" width="70" height="70" rx="8" fill="rgba(30,30,50,0.8)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <!-- Row 2 -->
+    <rect x="0" y="148" width="70" height="70" rx="8" fill="rgba(30,30,50,0.8)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <!-- [7] 최근 AI 수 (highlight) -->
+    <rect x="74" y="148" width="70" height="70" rx="8" fill="rgba(0,245,255,0.15)" stroke="#00f5ff" stroke-width="2"/>
+    <text x="109" y="191" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="35" font-weight="900" fill="#2980b9">X</text>
+    <rect x="148" y="148" width="70" height="70" rx="8" fill="rgba(192,57,43,0.15)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <text x="183" y="191" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="35" font-weight="900" fill="#c0392b">O</text>
+  </g>
+
+  <!-- 차례 표시 -->
+  <text x="228" y="300" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" fill="#c0392b">🔴 O의 차례</text>
+
+  <!-- 대국 속도 슬라이더 -->
+  <text x="180" y="322" font-family="Segoe UI, sans-serif" font-size="8" fill="rgba(255,255,255,0.5)">대국 속도</text>
+  <rect x="158" y="328" width="140" height="4" rx="2" fill="rgba(255,255,255,0.1)"/>
+  <rect x="158" y="328" width="50" height="4" rx="2" fill="#00f5ff"/>
+  <circle cx="208" cy="330" r="4.5" fill="#00f5ff" stroke="#fff" stroke-width="0.5"/>
+
+  <!-- ===== 우측: 정보 패널 (width=240) ===== -->
+  <!-- 에이전트 정보 패널 -->
+  <rect x="410" y="52" width="280" height="164" rx="8" fill="rgba(0,0,0,0.4)"/>
+  <text x="425" y="72" font-family="Segoe UI, sans-serif" font-size="10" font-weight="700" fill="#e0e0e0">📊 에이전트 정보</text>
+
+  <!-- Agent X 카드 -->
+  <rect x="420" y="82" width="260" height="54" rx="6" fill="rgba(41,128,185,0.08)" stroke="rgba(41,128,185,0.2)" stroke-width="0.5"/>
+  <text x="435" y="98" font-family="Segoe UI, sans-serif" font-size="10" font-weight="700" fill="#2980b9">🔵 Agent X</text>
+  <g transform="translate(435, 106)">
+    <text x="0" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="rgba(255,255,255,0.5)">Q-상태:</text>
+    <text x="60" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="#e0e0e0">412</text>
+    <text x="120" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="rgba(255,255,255,0.5)">ε:</text>
+    <text x="140" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="#e0e0e0">2.3%</text>
+  </g>
+  <g transform="translate(435, 120)">
+    <text x="0" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="rgba(255,255,255,0.5)">α:</text>
+    <text x="20" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="#e0e0e0">0.30</text>
+    <text x="120" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="rgba(255,255,255,0.5)">γ:</text>
+    <text x="140" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="#e0e0e0">0.90</text>
+  </g>
+
+  <!-- Agent O 카드 -->
+  <rect x="420" y="142" width="260" height="54" rx="6" fill="rgba(192,57,43,0.08)" stroke="rgba(192,57,43,0.2)" stroke-width="0.5"/>
+  <text x="435" y="158" font-family="Segoe UI, sans-serif" font-size="10" font-weight="700" fill="#c0392b">🔴 Agent O</text>
+  <g transform="translate(435, 166)">
+    <text x="0" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="rgba(255,255,255,0.5)">Q-상태:</text>
+    <text x="60" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="#e0e0e0">389</text>
+    <text x="120" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="rgba(255,255,255,0.5)">ε:</text>
+    <text x="140" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="#e0e0e0">2.5%</text>
+  </g>
+  <g transform="translate(435, 180)">
+    <text x="0" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="rgba(255,255,255,0.5)">α:</text>
+    <text x="20" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="#e0e0e0">0.30</text>
+    <text x="120" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="rgba(255,255,255,0.5)">γ:</text>
+    <text x="140" y="8" font-family="Segoe UI, sans-serif" font-size="8" fill="#e0e0e0">0.90</text>
+  </g>
+
+  <!-- Q-값 히트맵 -->
+  <rect x="410" y="224" width="280" height="192" rx="8" fill="rgba(0,0,0,0.3)"/>
+  <text x="425" y="243" font-family="Segoe UI, sans-serif" font-size="10" font-weight="700" fill="#e0e0e0">🧠 O의 판단</text>
+
+  <!-- 3×3 히트맵 -->
+  <g transform="translate(425, 252)">
+    <!-- Row 0 -->
+    <!-- [0] X 있음 -->
+    <rect x="0" y="0" width="80" height="45" rx="4" fill="rgba(41,128,185,0.13)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <text x="40" y="29" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#2980b9">X</text>
+    <!-- [1] 빈칸 -->
+    <rect x="84" y="0" width="80" height="45" rx="4" fill="rgba(100,160,70,0.3)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <text x="124" y="26" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="700" fill="#27ae60">0.18</text>
+    <!-- [2] O 있음 -->
+    <rect x="168" y="0" width="80" height="45" rx="4" fill="rgba(192,57,43,0.13)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <text x="208" y="29" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#c0392b">O</text>
+
+    <!-- Row 1 -->
+    <!-- [3] O 있음 -->
+    <rect x="0" y="49" width="80" height="45" rx="4" fill="rgba(192,57,43,0.13)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <text x="40" y="78" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <!-- [4] X 있음 -->
+    <rect x="84" y="49" width="80" height="45" rx="4" fill="rgba(41,128,185,0.13)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <text x="124" y="78" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#2980b9">X</text>
+    <!-- [5] 빈칸 - 최선수! -->
+    <rect x="168" y="49" width="80" height="45" rx="4" fill="rgba(60,180,70,0.35)" stroke="#f39c12" stroke-width="2" filter="url(#glow)"/>
+    <text x="208" y="72" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="700" fill="#27ae60">0.35</text>
+    <text x="208" y="85" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="6" fill="#f39c12">⭐최선</text>
+
+    <!-- Row 2 -->
+    <!-- [6] 빈칸 -->
+    <rect x="0" y="98" width="80" height="45" rx="4" fill="rgba(100,160,70,0.2)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <text x="40" y="124" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="700" fill="#27ae60">0.12</text>
+    <!-- [7] X 있음 (최근 수) -->
+    <rect x="84" y="98" width="80" height="45" rx="4" fill="rgba(41,128,185,0.13)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <text x="124" y="127" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#2980b9">X</text>
+    <!-- [8] O 있음 -->
+    <rect x="168" y="98" width="80" height="45" rx="4" fill="rgba(192,57,43,0.13)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <text x="208" y="127" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#c0392b">O</text>
+  </g>
+
+  <!-- 범례 -->
+  <text x="425" y="405" font-family="Segoe UI, sans-serif" font-size="7.5" fill="rgba(255,255,255,0.5)">🟢 높음 = 유리</text>
+  <text x="675" y="405" text-anchor="end" font-family="Segoe UI, sans-serif" font-size="7.5" fill="rgba(255,255,255,0.5)">🔴 낮음 = 불리</text>
+
+  <!-- 캡션 -->
+  <text x="400" y="432" text-anchor="middle" font-family="Noto Sans KR, Segoe UI, sans-serif" font-size="9" fill="rgba(255,255,255,0.35)">그림 3. RL 틱택토 — AI 대전 모드 (다크 테마)</text>
+</svg>

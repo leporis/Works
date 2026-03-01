@@ -1,0 +1,1543 @@
+<!--
+  파일명: MakeCode시뮬레이터LED이름표시_v1_0_2_0_레이아웃수정_2026-02-19.html
+  버전: v1.0.2.0
+  설명: 1주차 LED에 이름 표시하기 — 마이크로비트 MakeCode 시뮬레이터
+  작성자: Claude
+  소속: 청주교육대학교 컴퓨터교육과
+  생성일: 2026-01-26
+  수정이력:
+    v1.0.0.0 (2026-01-26) - 최초 작성
+    v1.0.1.0 (2026-02-19) - 이중 인코딩(Mojibake) 복원 (ftfy + 수동: 한글 자모 22자),
+                             문서 헤더 주석 추가
+    v1.0.2.0 (2026-02-19) - 반응형 레이아웃 수정: 좁은 뷰포트(≤1100px)에서
+                             1열 세로 레이아웃으로 전환, 블록팔레트·코딩영역 표시 보장
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1주차: LED에 이름 표시하기 - 마이크로비트 MakeCode 시뮬레이터</title>
+  <!--
+  ============================================================
+  프로그램명: MakeCode 시뮬레이터 - LED 이름 표시
+  버전: v1.0.0.0
+  파일명: MakeCode시뮬레이터LED이름표시_v1.0.0.0_원본_2026-01-26_1910.html
+  ============================================================
+  
+  [참고자료]
+  # | 자료명 | 유형 | 비고
+  1 | MakeCode 공식 문서 | 웹사이트 | https://makecode.microbit.org/
+  2 | micro:bit V2 문서 | 웹사이트 | https://microbit.org/
+  
+  [생성/수정 이력]
+  버전 | 날짜 | 시간 | 변경 수준 | 변경 내용 | 작성자
+  v1.0.0.0 | 2026-01-26 | 19:10 | 최초 | 1주차 강의자료로 버전관리 적용 | Claude
+  ============================================================
+  -->
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
+      min-height: 100vh;
+      color: #e0e0e0;
+    }
+    
+    /* ===== 헤더 ===== */
+    .header {
+      background: linear-gradient(90deg, #6b4fbb 0%, #8b5cf6 100%);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(107, 79, 187, 0.3);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: #fff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    
+    .logo-text {
+      font-size: 1.1em;
+      font-weight: 700;
+      color: #fff;
+    }
+    
+    .logo-subtitle {
+      font-size: 0.75em;
+      color: rgba(255,255,255,0.8);
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .header-btn {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85em;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .header-btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
+    
+    .header-btn.primary {
+      background: #22c55e;
+    }
+    
+    .header-btn.primary:hover {
+      background: #16a34a;
+    }
+    
+    /* ===== 메인 레이아웃 ===== */
+    .main-container {
+      display: grid;
+      grid-template-columns: 320px 1fr 380px;
+      height: calc(100vh - 60px);
+    }
+    
+    @media (max-width: 1100px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        height: auto;
+        min-height: calc(100vh - 60px);
+      }
+    }
+    
+    /* ===== 블록 팔레트 ===== */
+    .block-palette {
+      background: #252535;
+      border-right: 1px solid #3a3a4a;
+      overflow-y: auto;
+      padding: 15px;
+    }
+    
+    .palette-category {
+      margin-bottom: 20px;
+    }
+    
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+    }
+    
+    .category-header:hover {
+      filter: brightness(1.1);
+    }
+    
+    .category-header.basic { background: #6b4fbb; }
+    .category-header.input { background: #d4145a; }
+    .category-header.music { background: #e63c80; }
+    .category-header.led { background: #5c3daa; }
+    .category-header.loops { background: #5ba55b; }
+    
+    .category-icon {
+      font-size: 1.2em;
+    }
+    
+    .category-name {
+      font-weight: 600;
+      font-size: 0.9em;
+      color: #fff;
+    }
+    
+    .category-blocks {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-left: 10px;
+    }
+    
+    .palette-block {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.85em;
+      cursor: grab;
+      transition: all 0.2s;
+      color: #fff;
+      font-weight: 500;
+      border: 2px solid transparent;
+      user-select: none;
+    }
+    
+    .palette-block:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    
+    .palette-block:active {
+      cursor: grabbing;
+    }
+    
+    .palette-block.basic { background: #7c5fd6; border-color: #6b4fbb; }
+    .palette-block.led { background: #6d4bc5; border-color: #5c3daa; }
+    .palette-block.input { background: #e6316b; border-color: #d4145a; }
+    
+    .block-input {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 4px;
+      padding: 3px 8px;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9em;
+      width: 80px;
+      text-align: center;
+    }
+    
+    .block-input:focus {
+      outline: 2px solid #fff;
+    }
+    
+    /* ===== 코딩 영역 ===== */
+    .coding-area {
+      background: #1a1a28;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .coding-canvas {
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle, #3a3a4a 1px, transparent 1px);
+      background-size: 20px 20px;
+      padding: 20px;
+      overflow: auto;
+    }
+    
+    /* 이벤트 블록 컨테이너 */
+    .event-container {
+      position: relative;
+      margin-bottom: 30px;
+    }
+    
+    .event-block {
+      background: linear-gradient(135deg, #5c3daa, #7c5fd6);
+      border-radius: 12px 12px 0 0;
+      padding: 12px 20px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95em;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(92, 61, 170, 0.4);
+    }
+    
+    .event-icon {
+      font-size: 1.3em;
+    }
+    
+    .code-stack {
+      background: rgba(92, 61, 170, 0.15);
+      border: 2px dashed #5c3daa;
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      min-height: 120px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .code-stack.drag-over {
+      background: rgba(92, 61, 170, 0.3);
+      border-color: #8b5cf6;
+    }
+    
+    .placed-block {
+      padding: 12px 18px;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 500;
+      font-size: 0.9em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: move;
+      transition: all 0.2s;
+      position: relative;
+    }
+    
+    .placed-block:hover {
+      filter: brightness(1.1);
+    }
+    
+    .placed-block.basic { background: #7c5fd6; }
+    .placed-block.led { background: #6d4bc5; }
+    
+    .placed-block .delete-btn {
+      position: absolute;
+      right: -8px;
+      top: -8px;
+      width: 20px;
+      height: 20px;
+      background: #ef4444;
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .placed-block:hover .delete-btn {
+      opacity: 1;
+    }
+    
+    .drop-hint {
+      color: #666;
+      font-size: 0.85em;
+      text-align: center;
+      padding: 30px;
+    }
+    
+    /* ===== 시뮬레이터 패널 ===== */
+    .simulator-panel {
+      background: #252535;
+      border-left: 1px solid #3a3a4a;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .simulator-title {
+      font-size: 0.9em;
+      color: #888;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    /* 마이크로비트 보드 */
+    .microbit-board {
+      width: 280px;
+      height: 340px;
+      background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+      border-radius: 20px;
+      position: relative;
+      box-shadow: 
+        0 20px 60px rgba(0,0,0,0.5),
+        inset 0 2px 4px rgba(255,255,255,0.1);
+      border: 3px solid #333;
+    }
+    
+    /* 버튼 A, B */
+    .btn-a, .btn-b {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(145deg, #1a1a1a, #333);
+      border: 2px solid #444;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      font-size: 0.7em;
+      font-weight: 700;
+    }
+    
+    .btn-a { top: 130px; left: 20px; }
+    .btn-b { top: 130px; right: 20px; }
+    
+    .btn-a:active, .btn-b:active {
+      transform: scale(0.95);
+      background: linear-gradient(145deg, #333, #1a1a1a);
+    }
+    
+    /* LED 매트릭스 */
+    .led-matrix {
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      padding: 15px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+    }
+    
+    .led {
+      width: 24px;
+      height: 24px;
+      background: #1a1a1a;
+      border-radius: 4px;
+      transition: all 0.1s;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .led.on {
+      background: #ff3030;
+      box-shadow: 
+        0 0 10px #ff3030,
+        0 0 20px #ff3030,
+        0 0 30px rgba(255, 48, 48, 0.5);
+    }
+    
+    /* 엣지 커넥터 */
+    .edge-connector {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(to bottom, #333, #222);
+      border-radius: 0 0 17px 17px;
+      display: flex;
+      justify-content: center;
+      gap: 3px;
+      padding: 10px 20px;
+    }
+    
+    .pin {
+      width: 18px;
+      height: 40px;
+      background: linear-gradient(to bottom, #c9a227, #a68b1e);
+      border-radius: 0 0 4px 4px;
+    }
+    
+    .pin.large {
+      width: 28px;
+    }
+    
+    .pin-label {
+      position: absolute;
+      bottom: 5px;
+      font-size: 0.5em;
+      color: #666;
+    }
+    
+    /* 로고 */
+    .board-logo {
+      position: absolute;
+      top: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75em;
+      color: #555;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    
+    /* LED 프로세서 칩 - 제거됨 */
+    .processor {
+      display: none;
+    }
+    
+    /* 컨트롤 버튼들 */
+    .sim-controls {
+      margin-top: 25px;
+      display: flex;
+      gap: 12px;
+    }
+    
+    .sim-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .sim-btn.run {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+    }
+    
+    .sim-btn.run:hover {
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      transform: translateY(-2px);
+    }
+    
+    .sim-btn.stop {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #fff;
+    }
+    
+    .sim-btn.stop:hover {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      transform: translateY(-2px);
+    }
+    
+    .sim-btn.reset {
+      background: linear-gradient(135deg, #6b7280, #4b5563);
+      color: #fff;
+    }
+    
+    .sim-btn.reset:hover {
+      background: linear-gradient(135deg, #4b5563, #374151);
+      transform: translateY(-2px);
+    }
+    
+    /* 상태 표시 */
+    .status-bar {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      font-size: 0.85em;
+      color: #888;
+      text-align: center;
+      width: 100%;
+    }
+    
+    .status-bar.running {
+      color: #22c55e;
+      background: rgba(34, 197, 94, 0.1);
+    }
+    
+    /* 입력 모달 */
+    .input-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .input-modal.show {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: #2d2d44;
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    
+    .modal-title {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    
+    .modal-input {
+      padding: 12px 20px;
+      font-size: 1.1em;
+      border: 2px solid #6b4fbb;
+      border-radius: 8px;
+      background: #1a1a28;
+      color: #fff;
+      text-align: center;
+      width: 200px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .modal-input:focus {
+      outline: none;
+      border-color: #8b5cf6;
+    }
+    
+    .modal-btn {
+      margin-top: 20px;
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #6b4fbb, #8b5cf6);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .modal-btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    /* 안내 툴팁 */
+    .help-tooltip {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(107, 79, 187, 0.9);
+      padding: 15px 20px;
+      border-radius: 12px;
+      max-width: 300px;
+      font-size: 0.85em;
+      line-height: 1.6;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      animation: fadeInUp 0.5s ease;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .help-tooltip .close-tip {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      font-size: 1.2em;
+    }
+    
+    /* 다운로드 버튼 영역 */
+    .download-section {
+      margin-top: 20px;
+      width: 100%;
+    }
+    
+    .download-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #8b5cf6, #6b4fbb);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .download-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+    }
+    
+    .download-btn:disabled {
+      background: #4a4a5a;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* 반응형 */
+    @media (max-width: 1100px) {
+      .block-palette {
+        border-right: none;
+        border-bottom: 1px solid #3a3a4a;
+        padding: 15px;
+        max-height: 350px;
+        overflow-y: auto;
+      }
+      
+      .coding-area {
+        min-height: 250px;
+      }
+      
+      .simulator-panel {
+        border-left: none;
+        border-top: 1px solid #3a3a4a;
+        padding-bottom: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 헤더 -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">🎯</div>
+      <div>
+        <div class="logo-text">1주차 강의자료</div>
+        <div class="logo-subtitle">LED에 이름 표시하기</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" onclick="resetAll()">
+        🔄 새로 만들기
+      </button>
+      <button class="header-btn" onclick="showHelp()">
+        ❓ 도움말
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 컨테이너 -->
+  <div class="main-container">
+    <!-- 블록 팔레트 -->
+    <aside class="block-palette">
+      <div class="palette-category">
+        <div class="category-header basic">
+          <span class="category-icon">🔲</span>
+          <span class="category-name">기본</span>
+        </div>
+        <div class="category-blocks">
+          <div class="palette-block basic" draggable="true" data-block="showString">
+            문자열 보여주기 <input type="text" class="block-input" value="Hello!" onclick="event.stopPropagation()">
+          </div>
+          <div class="palette-block basic" draggable="true" data-block="showNumber">
+            숫자 보여주기 <input type="number" class="block-input" value="0" onclick="event.stopPropagation()">
+          </div>
+          <div class="palette-block basic" draggable="true" data-block="showIcon">
+            아이콘 보여주기 ❤️
+          </div>
+          <div class="palette-block basic" draggable="true" data-block="pause">
+            일시정지 <input type="number" class="block-input" value="1000" onclick="event.stopPropagation()"> ms
+          </div>
+        </div>
+      </div>
+      
+      <div class="palette-category">
+        <div class="category-header led">
+          <span class="category-icon">💡</span>
+          <span class="category-name">LED</span>
+        </div>
+        <div class="category-blocks">
+          <div class="palette-block led" draggable="true" data-block="clearScreen">
+            화면 지우기
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 코딩 영역 -->
+    <main class="coding-area">
+      <div class="coding-canvas">
+        <!-- 시작하면 실행 이벤트 -->
+        <div class="event-container">
+          <div class="event-block">
+            <span class="event-icon">🚀</span>
+            시작하면 실행
+          </div>
+          <div class="code-stack" id="onStartStack">
+            <div class="drop-hint">블록을 여기에 드래그하세요</div>
+          </div>
+        </div>
+        
+        <!-- 무한반복 실행 이벤트 -->
+        <div class="event-container">
+          <div class="event-block">
+            <span class="event-icon">🔄</span>
+            무한반복 실행
+          </div>
+          <div class="code-stack" id="foreverStack">
+            <div class="drop-hint">블록을 여기에 드래그하세요</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 시뮬레이터 패널 -->
+    <aside class="simulator-panel">
+      <div class="simulator-title">마이크로비트 시뮬레이터</div>
+      
+      <!-- 마이크로비트 보드 -->
+      <div class="microbit-board">
+        <div class="board-logo">micro:bit</div>
+        
+        <button class="btn-a">A</button>
+        <button class="btn-b">B</button>
+        
+        <div class="led-matrix" id="ledMatrix">
+          <!-- 5x5 LED 생성 -->
+        </div>
+        
+        <div class="processor"></div>
+        
+        <div class="edge-connector">
+          <div class="pin large"></div>
+          <div class="pin"></div>
+          <div class="pin large"></div>
+          <div class="pin"></div>
+          <div class="pin large"></div>
+          <div class="pin"></div>
+          <div class="pin"></div>
+          <div class="pin large"></div>
+          <div class="pin"></div>
+          <div class="pin large"></div>
+        </div>
+      </div>
+      
+      <!-- 컨트롤 버튼 -->
+      <div class="sim-controls">
+        <button class="sim-btn run" id="runBtn" onclick="runSimulation()">
+          ▶️ 실행
+        </button>
+        <button class="sim-btn stop" id="stopBtn" onclick="stopSimulation()" style="display: none;">
+          ⏹️ 정지
+        </button>
+        <button class="sim-btn reset" onclick="resetSimulation()">
+          🔄 리셋
+        </button>
+      </div>
+      
+      <!-- 상태 표시 -->
+      <div class="status-bar" id="statusBar">
+        준비됨 - 블록을 배치하고 실행하세요
+      </div>
+      
+      <!-- 다운로드 섹션 -->
+      <div class="download-section">
+        <button class="download-btn" id="downloadBtn" onclick="downloadHex()" disabled>
+          ⬇️ .hex 파일 다운로드 (실제 마이크로비트용)
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- 입력 모달 -->
+  <div class="input-modal" id="inputModal">
+    <div class="modal-content">
+      <div class="modal-title">표시할 텍스트를 입력하세요</div>
+      <input type="text" class="modal-input" id="modalInput" maxlength="20" placeholder="이름 입력">
+      <br>
+      <button class="modal-btn" onclick="confirmInput()">확인</button>
+    </div>
+  </div>
+
+  <!-- 도움말 툴팁 -->
+  <div class="help-tooltip" id="helpTooltip">
+    <button class="close-tip" onclick="closeHelp()">×</button>
+    <strong>💡 사용 방법</strong><br><br>
+    1. 왼쪽 팔레트에서 블록을 드래그하세요<br>
+    2. "시작하면 실행" 또는 "무한반복" 영역에 놓으세요<br>
+    3. 블록의 입력값을 수정할 수 있어요<br>
+    4. ▶️ 실행 버튼을 눌러 결과를 확인하세요!
+  </div>
+
+  <script>
+    // ===== LED 문자 패턴 정의 =====
+    const CHAR_PATTERNS = {
+      'A': [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,1,1,1,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1]
+      ],
+      'B': [
+        [1,1,1,1,0],
+        [1,0,0,0,1],
+        [1,1,1,1,0],
+        [1,0,0,0,1],
+        [1,1,1,1,0]
+      ],
+      'C': [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,0],
+        [1,0,0,0,1],
+        [0,1,1,1,0]
+      ],
+      'D': [
+        [1,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,1,1,1,0]
+      ],
+      'E': [
+        [1,1,1,1,1],
+        [1,0,0,0,0],
+        [1,1,1,1,1],
+        [1,0,0,0,0],
+        [1,1,1,1,1]
+      ],
+      'F': [
+        [1,1,1,1,1],
+        [1,0,0,0,0],
+        [1,1,1,1,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0]
+      ],
+      'G': [
+        [0,1,1,1,0],
+        [1,0,0,0,0],
+        [1,0,1,1,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0]
+      ],
+      'H': [
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,1,1,1,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1]
+      ],
+      'I': [
+        [1,1,1,1,1],
+        [0,0,1,0,0],
+        [0,0,1,0,0],
+        [0,0,1,0,0],
+        [1,1,1,1,1]
+      ],
+      'J': [
+        [0,0,1,1,1],
+        [0,0,0,1,0],
+        [0,0,0,1,0],
+        [1,0,0,1,0],
+        [0,1,1,0,0]
+      ],
+      'K': [
+        [1,0,0,0,1],
+        [1,0,0,1,0],
+        [1,1,1,0,0],
+        [1,0,0,1,0],
+        [1,0,0,0,1]
+      ],
+      'L': [
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [1,1,1,1,1]
+      ],
+      'M': [
+        [1,0,0,0,1],
+        [1,1,0,1,1],
+        [1,0,1,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1]
+      ],
+      'N': [
+        [1,0,0,0,1],
+        [1,1,0,0,1],
+        [1,0,1,0,1],
+        [1,0,0,1,1],
+        [1,0,0,0,1]
+      ],
+      'O': [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0]
+      ],
+      'P': [
+        [1,1,1,1,0],
+        [1,0,0,0,1],
+        [1,1,1,1,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0]
+      ],
+      'Q': [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,1,0],
+        [0,1,1,0,1]
+      ],
+      'R': [
+        [1,1,1,1,0],
+        [1,0,0,0,1],
+        [1,1,1,1,0],
+        [1,0,0,1,0],
+        [1,0,0,0,1]
+      ],
+      'S': [
+        [0,1,1,1,1],
+        [1,0,0,0,0],
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [1,1,1,1,0]
+      ],
+      'T': [
+        [1,1,1,1,1],
+        [0,0,1,0,0],
+        [0,0,1,0,0],
+        [0,0,1,0,0],
+        [0,0,1,0,0]
+      ],
+      'U': [
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0]
+      ],
+      'V': [
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,0,1,0],
+        [0,0,1,0,0]
+      ],
+      'W': [
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,1,0,1],
+        [1,1,0,1,1],
+        [1,0,0,0,1]
+      ],
+      'X': [
+        [1,0,0,0,1],
+        [0,1,0,1,0],
+        [0,0,1,0,0],
+        [0,1,0,1,0],
+        [1,0,0,0,1]
+      ],
+      'Y': [
+        [1,0,0,0,1],
+        [0,1,0,1,0],
+        [0,0,1,0,0],
+        [0,0,1,0,0],
+        [0,0,1,0,0]
+      ],
+      'Z': [
+        [1,1,1,1,1],
+        [0,0,0,1,0],
+        [0,0,1,0,0],
+        [0,1,0,0,0],
+        [1,1,1,1,1]
+      ],
+      '0': [
+        [0,1,1,1,0],
+        [1,0,0,1,1],
+        [1,0,1,0,1],
+        [1,1,0,0,1],
+        [0,1,1,1,0]
+      ],
+      '1': [
+        [0,0,1,0,0],
+        [0,1,1,0,0],
+        [0,0,1,0,0],
+        [0,0,1,0,0],
+        [0,1,1,1,0]
+      ],
+      '2': [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [0,0,1,1,0],
+        [0,1,0,0,0],
+        [1,1,1,1,1]
+      ],
+      '3': [
+        [1,1,1,1,0],
+        [0,0,0,0,1],
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [1,1,1,1,0]
+      ],
+      '4': [
+        [1,0,0,1,0],
+        [1,0,0,1,0],
+        [1,1,1,1,1],
+        [0,0,0,1,0],
+        [0,0,0,1,0]
+      ],
+      '5': [
+        [1,1,1,1,1],
+        [1,0,0,0,0],
+        [1,1,1,1,0],
+        [0,0,0,0,1],
+        [1,1,1,1,0]
+      ],
+      '6': [
+        [0,1,1,1,0],
+        [1,0,0,0,0],
+        [1,1,1,1,0],
+        [1,0,0,0,1],
+        [0,1,1,1,0]
+      ],
+      '7': [
+        [1,1,1,1,1],
+        [0,0,0,0,1],
+        [0,0,0,1,0],
+        [0,0,1,0,0],
+        [0,0,1,0,0]
+      ],
+      '8': [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [0,1,1,1,0]
+      ],
+      '9': [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [0,1,1,1,1],
+        [0,0,0,0,1],
+        [0,1,1,1,0]
+      ],
+      ' ': [
+        [0,0,0,0,0],
+        [0,0,0,0,0],
+        [0,0,0,0,0],
+        [0,0,0,0,0],
+        [0,0,0,0,0]
+      ],
+      '!': [
+        [0,0,1,0,0],
+        [0,0,1,0,0],
+        [0,0,1,0,0],
+        [0,0,0,0,0],
+        [0,0,1,0,0]
+      ],
+      '?': [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [0,0,1,1,0],
+        [0,0,0,0,0],
+        [0,0,1,0,0]
+      ],
+      '❤️': [
+        [0,1,0,1,0],
+        [1,1,1,1,1],
+        [1,1,1,1,1],
+        [0,1,1,1,0],
+        [0,0,1,0,0]
+      ],
+      'HEART': [
+        [0,1,0,1,0],
+        [1,1,1,1,1],
+        [1,1,1,1,1],
+        [0,1,1,1,0],
+        [0,0,1,0,0]
+      ]
+    };
+    
+    // 한글 자모 분리 및 패턴
+    const KOREAN_PATTERNS = {
+      // 초성
+      'ㄱ': [[0,1,1,1,1],[0,0,0,0,1],[0,0,0,0,1],[0,0,0,0,1],[0,0,0,0,1]],
+      'ㄴ': [[1,0,0,0,0],[1,0,0,0,0],[1,0,0,0,0],[1,0,0,0,0],[1,1,1,1,1]],
+      'ㄷ': [[1,1,1,1,1],[1,0,0,0,0],[1,0,0,0,0],[1,0,0,0,0],[1,1,1,1,1]],
+      'ㄹ': [[1,1,1,1,1],[0,0,0,0,1],[1,1,1,1,1],[1,0,0,0,0],[1,1,1,1,1]],
+      'ㅁ': [[1,1,1,1,1],[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[1,1,1,1,1]],
+      'ㅑ': [[1,0,0,0,1],[1,0,0,0,1],[1,1,1,1,1],[1,0,0,0,1],[1,1,1,1,1]],
+      'ㅅ': [[0,0,1,0,0],[0,0,1,0,0],[0,1,0,1,0],[0,1,0,1,0],[1,0,0,0,1]],
+      'ㅇ': [[0,1,1,1,0],[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[0,1,1,1,0]],
+      'ㅈ': [[1,1,1,1,1],[0,0,1,0,0],[0,1,0,1,0],[0,1,0,1,0],[1,0,0,0,1]],
+      'ㅊ': [[0,0,1,0,0],[1,1,1,1,1],[0,0,1,0,0],[0,1,0,1,0],[1,0,0,0,1]],
+      'ㅋ': [[1,1,1,1,1],[0,0,0,0,1],[0,1,1,1,1],[0,0,0,0,1],[0,0,0,0,1]],
+      'ㅌ': [[1,1,1,1,1],[1,0,0,0,0],[1,1,1,1,1],[1,0,0,0,0],[1,1,1,1,1]],
+      'ㅍ': [[1,1,1,1,1],[1,0,1,0,1],[1,0,1,0,1],[1,0,1,0,1],[1,0,1,0,1]],
+      'ㅎ': [[0,0,1,0,0],[0,1,1,1,0],[0,0,0,0,0],[0,1,1,1,0],[1,0,0,0,1]],
+      // 중성
+      'ㅏ': [[0,1,0,0,0],[0,1,0,0,0],[0,1,1,1,0],[0,1,0,0,0],[0,1,0,0,0]],
+      'ㅓ': [[0,0,0,1,0],[0,0,0,1,0],[0,1,1,1,0],[0,0,0,1,0],[0,0,0,1,0]],
+      'ㅗ': [[0,0,1,0,0],[0,0,1,0,0],[1,1,1,1,1],[0,0,0,0,0],[0,0,0,0,0]],
+      'ㅜ': [[0,0,0,0,0],[0,0,0,0,0],[1,1,1,1,1],[0,0,1,0,0],[0,0,1,0,0]],
+      'ㅡ': [[0,0,0,0,0],[0,0,0,0,0],[1,1,1,1,1],[0,0,0,0,0],[0,0,0,0,0]],
+      'ㅣ': [[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0]],
+      'ㅐ': [[0,1,0,1,0],[0,1,0,1,0],[0,1,1,1,0],[0,1,0,1,0],[0,1,0,1,0]],
+      'ㅔ': [[0,1,0,1,0],[0,1,0,1,0],[0,1,1,1,0],[0,1,0,1,0],[0,1,0,1,0]],
+    };
+
+    // ===== 전역 변수 =====
+    let leds = [];
+    let isRunning = false;
+    let simulationLoop = null;
+    let currentAnimation = null;
+    const onStartBlocks = [];
+    const foreverBlocks = [];
+    
+    // ===== 초기화 =====
+    function init() {
+      createLedMatrix();
+      setupDragAndDrop();
+      
+      // 5초 후 도움말 자동 닫기
+      setTimeout(() => {
+        closeHelp();
+      }, 8000);
+    }
+    
+    // LED 매트릭스 생성
+    function createLedMatrix() {
+      const matrix = document.getElementById('ledMatrix');
+      matrix.innerHTML = '';
+      leds = [];
+      
+      for (let i = 0; i < 25; i++) {
+        const led = document.createElement('div');
+        led.className = 'led';
+        led.dataset.index = i;
+        matrix.appendChild(led);
+        leds.push(led);
+      }
+    }
+    
+    // ===== 드래그 앤 드롭 =====
+    function setupDragAndDrop() {
+      // 팔레트 블록에 드래그 이벤트 추가
+      document.querySelectorAll('.palette-block').forEach(block => {
+        block.addEventListener('dragstart', handleDragStart);
+        block.addEventListener('dragend', handleDragEnd);
+      });
+      
+      // 코드 스택에 드롭 이벤트 추가
+      document.querySelectorAll('.code-stack').forEach(stack => {
+        stack.addEventListener('dragover', handleDragOver);
+        stack.addEventListener('dragleave', handleDragLeave);
+        stack.addEventListener('drop', handleDrop);
+      });
+    }
+    
+    let draggedBlock = null;
+    
+    function handleDragStart(e) {
+      draggedBlock = e.target.closest('.palette-block');
+      e.dataTransfer.effectAllowed = 'copy';
+      setTimeout(() => {
+        draggedBlock.style.opacity = '0.5';
+      }, 0);
+    }
+    
+    function handleDragEnd(e) {
+      if (draggedBlock) {
+        draggedBlock.style.opacity = '1';
+        draggedBlock = null;
+      }
+      document.querySelectorAll('.code-stack').forEach(stack => {
+        stack.classList.remove('drag-over');
+      });
+    }
+    
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      e.currentTarget.classList.add('drag-over');
+    }
+    
+    function handleDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+    
+    function handleDrop(e) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      
+      if (!draggedBlock) return;
+      
+      const stackId = e.currentTarget.id;
+      const blockType = draggedBlock.dataset.block;
+      const input = draggedBlock.querySelector('.block-input');
+      let value = input ? input.value : '';
+      
+      // 드롭 힌트 제거
+      const hint = e.currentTarget.querySelector('.drop-hint');
+      if (hint) hint.remove();
+      
+      // 새 블록 생성
+      const newBlock = createPlacedBlock(blockType, value);
+      e.currentTarget.appendChild(newBlock);
+      
+      // 배열에 추가
+      const blockData = { type: blockType, value: value, element: newBlock };
+      if (stackId === 'onStartStack') {
+        onStartBlocks.push(blockData);
+      } else {
+        foreverBlocks.push(blockData);
+      }
+      
+      updateDownloadButton();
+    }
+    
+    function createPlacedBlock(type, value) {
+      const block = document.createElement('div');
+      block.className = 'placed-block';
+      
+      let content = '';
+      let className = 'basic';
+      
+      switch(type) {
+        case 'showString':
+          content = `문자열 보여주기 <input type="text" class="block-input" value="${value}" onchange="updateBlockValue(this)">`;
+          break;
+        case 'showNumber':
+          content = `숫자 보여주기 <input type="number" class="block-input" value="${value}" onchange="updateBlockValue(this)">`;
+          break;
+        case 'showIcon':
+          content = `아이콘 보여주기 ❤️`;
+          break;
+        case 'pause':
+          content = `일시정지 <input type="number" class="block-input" value="${value}" onchange="updateBlockValue(this)"> ms`;
+          break;
+        case 'clearScreen':
+          content = `화면 지우기`;
+          className = 'led';
+          break;
+      }
+      
+      block.className = `placed-block ${className}`;
+      block.dataset.type = type;
+      block.dataset.value = value;
+      block.innerHTML = `${content}<button class="delete-btn" onclick="deleteBlock(this)">×</button>`;
+      
+      return block;
+    }
+    
+    function updateBlockValue(input) {
+      const block = input.closest('.placed-block');
+      block.dataset.value = input.value;
+      
+      // 배열에서도 업데이트
+      const updateInArray = (arr) => {
+        arr.forEach(item => {
+          if (item.element === block) {
+            item.value = input.value;
+          }
+        });
+      };
+      updateInArray(onStartBlocks);
+      updateInArray(foreverBlocks);
+    }
+    
+    function deleteBlock(btn) {
+      const block = btn.closest('.placed-block');
+      const stack = block.parentElement;
+      
+      // 배열에서 제거
+      const removeFromArray = (arr) => {
+        const idx = arr.findIndex(item => item.element === block);
+        if (idx !== -1) arr.splice(idx, 1);
+      };
+      removeFromArray(onStartBlocks);
+      removeFromArray(foreverBlocks);
+      
+      block.remove();
+      
+      // 힌트 다시 표시
+      if (stack.children.length === 0) {
+        const hint = document.createElement('div');
+        hint.className = 'drop-hint';
+        hint.textContent = '블록을 여기에 드래그하세요';
+        stack.appendChild(hint);
+      }
+      
+      updateDownloadButton();
+    }
+    
+    // ===== 시뮬레이션 =====
+    async function runSimulation() {
+      if (isRunning) return;
+      
+      isRunning = true;
+      document.getElementById('runBtn').style.display = 'none';
+      document.getElementById('stopBtn').style.display = 'flex';
+      document.getElementById('statusBar').textContent = '실행 중...';
+      document.getElementById('statusBar').classList.add('running');
+      
+      // onStart 블록 실행
+      await executeBlocks(onStartBlocks);
+      
+      // forever 블록 반복 실행
+      if (foreverBlocks.length > 0) {
+        const runForever = async () => {
+          while (isRunning) {
+            await executeBlocks(foreverBlocks);
+          }
+        };
+        runForever();
+      }
+    }
+    
+    function stopSimulation() {
+      isRunning = false;
+      if (currentAnimation) {
+        clearTimeout(currentAnimation);
+        currentAnimation = null;
+      }
+      
+      document.getElementById('runBtn').style.display = 'flex';
+      document.getElementById('stopBtn').style.display = 'none';
+      document.getElementById('statusBar').textContent = '정지됨';
+      document.getElementById('statusBar').classList.remove('running');
+    }
+    
+    function resetSimulation() {
+      stopSimulation();
+      clearLeds();
+      document.getElementById('statusBar').textContent = '준비됨 - 블록을 배치하고 실행하세요';
+    }
+    
+    async function executeBlocks(blocks) {
+      for (const block of blocks) {
+        if (!isRunning) break;
+        
+        // 현재 실행 중인 블록 하이라이트
+        block.element.style.outline = '3px solid #22c55e';
+        
+        switch(block.type) {
+          case 'showString':
+            await showString(block.value);
+            break;
+          case 'showNumber':
+            await showNumber(parseInt(block.value) || 0);
+            break;
+          case 'showIcon':
+            await showIcon('HEART');
+            break;
+          case 'pause':
+            await pause(parseInt(block.value) || 1000);
+            break;
+          case 'clearScreen':
+            clearLeds();
+            await pause(100);
+            break;
+        }
+        
+        block.element.style.outline = 'none';
+      }
+    }
+    
+    // ===== LED 제어 함수 =====
+    function setLed(x, y, on) {
+      const index = y * 5 + x;
+      if (index >= 0 && index < 25) {
+        if (on) {
+          leds[index].classList.add('on');
+        } else {
+          leds[index].classList.remove('on');
+        }
+      }
+    }
+    
+    function clearLeds() {
+      leds.forEach(led => led.classList.remove('on'));
+    }
+    
+    function showPattern(pattern) {
+      clearLeds();
+      for (let y = 0; y < 5; y++) {
+        for (let x = 0; x < 5; x++) {
+          if (pattern[y] && pattern[y][x]) {
+            setLed(x, y, true);
+          }
+        }
+      }
+    }
+    
+    function getCharPattern(char) {
+      const upper = char.toUpperCase();
+      if (CHAR_PATTERNS[upper]) return CHAR_PATTERNS[upper];
+      if (KOREAN_PATTERNS[char]) return KOREAN_PATTERNS[char];
+      return CHAR_PATTERNS[' '];
+    }
+    
+    async function showString(str) {
+      for (const char of str) {
+        if (!isRunning) break;
+        const pattern = getCharPattern(char);
+        showPattern(pattern);
+        await pause(600);
+        clearLeds();
+        await pause(100);
+      }
+    }
+    
+    async function showNumber(num) {
+      await showString(num.toString());
+    }
+    
+    async function showIcon(icon) {
+      const pattern = CHAR_PATTERNS[icon] || CHAR_PATTERNS['HEART'];
+      showPattern(pattern);
+    }
+    
+    function pause(ms) {
+      return new Promise(resolve => {
+        currentAnimation = setTimeout(resolve, ms);
+      });
+    }
+    
+    // ===== 기타 함수 =====
+    function resetAll() {
+      stopSimulation();
+      clearLeds();
+      
+      // 블록 모두 제거
+      onStartBlocks.length = 0;
+      foreverBlocks.length = 0;
+      
+      document.querySelectorAll('.code-stack').forEach(stack => {
+        stack.innerHTML = '<div class="drop-hint">블록을 여기에 드래그하세요</div>';
+      });
+      
+      updateDownloadButton();
+    }
+    
+    function showHelp() {
+      document.getElementById('helpTooltip').style.display = 'block';
+    }
+    
+    function closeHelp() {
+      document.getElementById('helpTooltip').style.display = 'none';
+    }
+    
+    function updateDownloadButton() {
+      const hasBlocks = onStartBlocks.length > 0 || foreverBlocks.length > 0;
+      document.getElementById('downloadBtn').disabled = !hasBlocks;
+    }
+    
+    function downloadHex() {
+      // MakeCode 에디터로 연결하는 안내
+      alert('실제 마이크로비트에서 실행하려면:\n\n1. makecode.microbit.org 접속\n2. 동일한 블록을 배치\n3. 다운로드 버튼 클릭\n4. .hex 파일을 마이크로비트에 복사');
+    }
+    
+    // 초기화 실행
+    init();
+  </script>
+</body>
+</html>

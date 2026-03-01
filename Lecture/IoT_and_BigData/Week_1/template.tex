@@ -1,0 +1,106 @@
+\documentclass[11pt,a4paper]{article}
+
+% === 폰트 (XeLaTeX 전용) ===
+\usepackage{fontspec}
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setmonofont{Noto Sans Mono CJK KR}
+
+% === 기본 패키지 ===
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{calc}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+\usepackage{needspace}
+\usepackage{csquotes}
+
+% === pandoc 호환 매크로 ===
+\providecommand{\real}[1]{#1}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\passthrough}[1]{#1}
+
+% === 한글 캡션 ===
+\renewcommand{\contentsname}{목차}
+\renewcommand{\tablename}{표}
+\renewcommand{\figurename}{그림}
+
+% === 컬러 정의 ===
+\definecolor{sectioncolor}{HTML}{1a5276}
+\definecolor{subsectioncolor}{HTML}{2471a3}
+\definecolor{subsubsectioncolor}{HTML}{2e86c1}
+\definecolor{headerrulecolor}{HTML}{2471a3}
+\definecolor{codebgcolor}{HTML}{f4f4f4}
+\definecolor{linkblue}{HTML}{1a73e8}
+
+% === 코드 블록 ===
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{gray!40},
+  backgroundcolor=\color{codebgcolor},
+  columns=fullflexible,
+  keepspaces=true,
+}
+
+% === 하이퍼링크 ===
+\PassOptionsToPackage{hyphens}{url}
+\usepackage[colorlinks=true,linkcolor=sectioncolor,urlcolor=linkblue,breaklinks=true]{hyperref}
+\urlstyle{same}
+
+% === 컬러 섹션 제목 ===
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries\color{sectioncolor}}{\thesection.}{0.5em}{}[\color{headerrulecolor}\titlerule]
+\titleformat{\subsection}{\large\bfseries\color{subsectioncolor}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{subsubsectioncolor}}{\thesubsubsection}{0.5em}{}
+
+% === 헤더/풋터 ===
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{gray!70}\nouppercase{\leftmark}}
+\fancyhead[R]{\small\color{sectioncolor}$doctitle$}
+\fancyfoot[C]{\color{gray!70}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{headerrulecolor}\leaders\hrule height \headrulewidth\hfill}}
+
+% === 단락/테이블 ===
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\renewcommand{\arraystretch}{1.4}
+
+% === longtable 셀 여백 축소 + 폰트 축소 (넘침 방지) ===
+\setlength{\tabcolsep}{4pt}
+\AtBeginEnvironment{longtable}{\small}
+\setlength{\emergencystretch}{3em}
+
+% === URL 줄바꿈 허용 ===
+\usepackage{xurl}
+
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\color{headerrulecolor}\rule{\textwidth}{2pt}}
+\vspace{0.8cm}
+{\Huge\bfseries\color{sectioncolor} $doctitle$\par}
+\vspace{0.8cm}
+{\color{headerrulecolor}\rule{\textwidth}{1pt}}
+\vspace{1.5cm}
+{\Large $docauthor$\par}
+\vspace{0.8cm}
+{\large $docdate$\par}
+\vspace{2cm}
+{\large\bfseries\color{subsectioncolor} 시뮬레이터 버전: $simversion$ \quad|\quad 문서 버전: $docversion$\par}
+\vfill
+\end{titlepage}
+\tableofcontents
+\newpage
+$body$
+\end{document}

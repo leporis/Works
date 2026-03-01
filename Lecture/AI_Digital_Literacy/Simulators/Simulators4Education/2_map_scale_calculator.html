@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗺️ 지도 축척 계산기</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --color-blue-600:  #2563eb;
+    --color-blue-100:  #dbeafe;
+    --color-green-500: #10b981;
+    --color-amber-500: #f59e0b;
+    --color-slate-800: #1e293b;
+    --color-slate-100: #f8fafc;
+    --color-white:     #ffffff;
+    --color-grad-a:    #0ea5e9;
+    --color-grad-b:    #2563eb;
+
+    --primary:    var(--color-blue-600);
+    --success:    var(--color-green-500);
+    --warning:    var(--color-amber-500);
+    --bg-body:    var(--color-slate-100);
+    --bg-panel:   var(--color-white);
+    --text-dark:  var(--color-slate-800);
+
+    --btn-min-height: 48px;
+    --btn-min-width:  110px;
+    --btn-radius:     12px;
+    --font-primary:   'Nanum Gothic', 'Malgun Gothic', sans-serif;
+    --font-size-sm:   14px;
+    --font-size-base: 16px;
+    --font-size-lg:   20px;
+    --font-size-xl:   24px;
+    --sp-sm: 8px; --sp-md: 16px; --sp-lg: 24px;
+}
+* { box-sizing: border-box; }
+body {
+    font-family: var(--font-primary);
+    background: linear-gradient(135deg, var(--color-grad-a), var(--color-grad-b));
+    margin: 0; padding: 20px; min-height: 100vh;
+    font-size: var(--font-size-base);
+}
+header { text-align: center; color: var(--color-white); margin-bottom: 20px; }
+h1 { margin: 0; font-size: var(--font-size-xl); text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+.subtitle { font-size: var(--font-size-base); margin-top: 8px; opacity: 0.9; }
+
+.layout {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 300px 1fr 280px; gap: 18px;
+}
+.panel {
+    background: var(--bg-panel); border-radius: 18px;
+    padding: var(--sp-lg); box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+h3 { margin: 0 0 14px 0; font-size: var(--font-size-lg); color: var(--text-dark); }
+
+/* ── 축척 선택 버튼 ── */
+.scale-btn-group { display: flex; flex-direction: column; gap: 10px; margin: 14px 0; }
+.scale-btn {
+    min-height: var(--btn-min-height);
+    padding: 10px 16px; border: 2px solid #e2e8f0;
+    border-radius: 10px; background: var(--bg-body);
+    font-size: var(--font-size-base); font-weight: 700;
+    font-family: var(--font-primary); cursor: pointer;
+    text-align: left; transition: all 0.2s;
+}
+.scale-btn:hover  { border-color: var(--primary); background: var(--color-blue-100); }
+.scale-btn.active { background: var(--primary); color: var(--color-white); border-color: var(--primary); }
+
+/* ── 입력 ── */
+.input-group { margin: 14px 0; }
+.input-label { font-weight: 700; font-size: var(--font-size-base); margin-bottom: 6px; display: block; color: var(--text-dark); }
+.input-row { display: flex; gap: 8px; align-items: center; }
+.num-input {
+    flex: 1; min-height: var(--btn-min-height);
+    padding: 10px 14px; border: 2px solid #e2e8f0;
+    border-radius: 10px; font-size: var(--font-size-base);
+    font-family: var(--font-primary); outline: none;
+    transition: border-color 0.2s;
+}
+.num-input:focus { border-color: var(--primary); }
+.unit-label { font-size: var(--font-size-base); font-weight: 700; color: #64748b; }
+
+.btn-edu {
+    min-width: var(--btn-min-width); min-height: var(--btn-min-height);
+    padding: 10px 20px; border: none; border-radius: var(--btn-radius);
+    font-size: var(--font-size-base); font-weight: 700;
+    font-family: var(--font-primary); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-edu:hover  { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.btn-edu:active { transform: scale(0.96); }
+.btn-primary  { background: var(--primary);  color: var(--color-white); }
+.btn-success  { background: var(--success);  color: var(--color-white); }
+.btn-warning  { background: var(--warning);  color: var(--color-white); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+
+/* ── 결과 표시 ── */
+.result-card {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    color: var(--color-white); border-radius: 14px;
+    padding: var(--sp-lg); margin: 14px 0; text-align: center;
+}
+.result-label { font-size: var(--font-size-sm); opacity: 0.75; margin-bottom: 6px; }
+.result-value { font-size: 2rem; font-weight: 800; color: #fbbf24; }
+.result-unit  { font-size: var(--font-size-base); opacity: 0.8; margin-top: 4px; }
+
+/* ── 캔버스 ── */
+#mapCanvas {
+    width: 100%; height: 520px;
+    border-radius: 14px; background: #e8f4e8;
+    border: 3px solid #e2e8f0; cursor: crosshair; display: block;
+}
+.canvas-tip { font-size: var(--font-size-sm); color: #64748b; text-align: center; margin-top: 8px; }
+
+/* ── 정보박스 ── */
+.info-box {
+    padding: var(--sp-md); border-radius: 10px;
+    font-size: var(--font-size-base); line-height: 1.8;
+    margin: 12px 0;
+}
+.info-blue   { background: #eff6ff; border-left: 4px solid var(--primary); }
+.info-amber  { background: #fffbeb; border-left: 4px solid var(--warning); }
+.info-box h4 { margin: 0 0 8px 0; font-size: var(--font-size-base); }
+
+/* ── 비교표 ── */
+.compare-table { width: 100%; border-collapse: collapse; font-size: var(--font-size-base); }
+.compare-table th, .compare-table td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; }
+.compare-table th { background: var(--bg-body); font-weight: 700; text-align: left; }
+.compare-table tr.active-row td { background: var(--color-blue-100); font-weight: 700; color: var(--primary); }
+
+/* ── 퀴즈 ── */
+.quiz-box {
+    background: #fef3c7; border-radius: 12px;
+    padding: var(--sp-md); margin: 12px 0;
+    border-left: 4px solid var(--warning);
+}
+.quiz-q { font-weight: 700; font-size: var(--font-size-base); margin-bottom: 10px; }
+.quiz-input {
+    width: 100%; min-height: var(--btn-min-height);
+    padding: 10px 14px; border: 2px solid #fcd34d;
+    border-radius: 8px; font-size: var(--font-size-base);
+    font-family: var(--font-primary); outline: none; margin-bottom: 10px;
+}
+.feedback-box { padding: 12px; border-radius: 8px; font-weight: 700; font-size: var(--font-size-base); margin-top: 8px; }
+.feedback-correct { background: #dcfce7; color: #15803d; border: 2px solid #86efac; }
+.feedback-wrong   { background: #fef2f2; color: #dc2626; border: 2px solid #fca5a5; }
+.hidden { display: none !important; }
+
+/* ── 점수판 ── */
+.score-row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+.score-item { text-align: center; }
+.score-label { font-size: var(--font-size-sm); color: #64748b; }
+.score-value { font-size: var(--font-size-lg); font-weight: 800; color: var(--primary); }
+.badge-row { display: flex; gap: 8px; }
+.badge { font-size: 1.5rem; opacity: 0.2; transition: opacity 0.4s; }
+.badge.earned { opacity: 1; }
+
+@media (max-width: 1000px) {
+    .layout { grid-template-columns: 1fr; }
+    #mapCanvas { height: 360px; }
+}
+</style>
+</head>
+<body>
+<header>
+    <h1>🗺️ 지도 축척 계산기</h1>
+    <p class="subtitle">지도 위의 거리를 측정하고 실제 거리를 계산해보세요!</p>
+</header>
+
+<div class="layout">
+    <!-- 왼쪽: 축척 선택 + 계산 -->
+    <aside class="panel">
+        <h3>📏 축척 선택</h3>
+        <div class="score-row">
+            <div class="score-item"><div class="score-label">맞힌 퀴즈</div><div class="score-value" id="scoreCorrect">0</div></div>
+            <div class="score-item"><div class="score-label">총 시도</div><div class="score-value" id="scoreTotal">0</div></div>
+            <div class="badge-row">
+                <span class="badge" id="badge_first" title="첫 정답">🌟</span>
+                <span class="badge" id="badge_all"   title="전체 완료">🏆</span>
+            </div>
+        </div>
+
+        <div class="scale-btn-group" id="scaleBtns"></div>
+
+        <div class="result-card">
+            <div class="result-label">현재 축척</div>
+            <div class="result-value" id="scaleDisplay">1:50,000</div>
+            <div class="result-unit">지도 1cm = 실제 <span id="mPerCm">500</span>m</div>
+        </div>
+
+        <h3>🧮 거리 계산</h3>
+        <div class="input-group">
+            <label class="input-label">지도 거리 (cm)</label>
+            <div class="input-row">
+                <input class="num-input" type="number" id="mapDist" min="0.1" step="0.1" value="3" oninput="SimApp.calcReal()">
+                <span class="unit-label">cm</span>
+            </div>
+        </div>
+        <div class="result-card" style="padding:14px;">
+            <div class="result-label">실제 거리</div>
+            <div class="result-value" id="realDist">1.50</div>
+            <div class="result-unit">km</div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">실제 거리 (km)</label>
+            <div class="input-row">
+                <input class="num-input" type="number" id="realDistIn" min="0.1" step="0.1" value="1.5" oninput="SimApp.calcMap()">
+                <span class="unit-label">km</span>
+            </div>
+        </div>
+        <div class="result-card" style="padding:14px;">
+            <div class="result-label">지도 거리</div>
+            <div class="result-value" id="mapDistOut">3.00</div>
+            <div class="result-unit">cm</div>
+        </div>
+
+        <div class="info-box info-blue">
+            <h4>💡 공식</h4>
+            실제 거리 = 지도 거리 × 축척<br>
+            <code style="font-size:13px;">예) 3cm × 50,000 = 150,000cm = 1.5km</code>
+        </div>
+    </aside>
+
+    <!-- 중앙: 지도 캔버스 -->
+    <main class="panel" style="padding:16px;">
+        <h3>🗺️ 지도에서 거리 측정 <small style="font-size:14px;color:#64748b;">(두 점을 클릭)</small></h3>
+        <canvas id="mapCanvas"></canvas>
+        <p class="canvas-tip">📍 지도의 두 지점을 클릭하면 자동으로 거리를 계산합니다</p>
+        <div id="measureResult" class="result-card hidden" style="margin-top:12px;">
+            <div class="result-label">측정 결과</div>
+            <div><span id="mapMeasure" class="result-value" style="font-size:1.4rem;">-</span> <span class="result-unit">cm</span> → 실제 <span id="realMeasure" class="result-value" style="font-size:1.4rem; color:#86efac;">-</span> <span class="result-unit">km</span></div>
+        </div>
+    </main>
+
+    <!-- 오른쪽: 비교표 + 퀴즈 -->
+    <aside class="panel">
+        <h3>📊 축척 비교</h3>
+        <table class="compare-table" id="compareTable">
+            <thead><tr><th>축척</th><th>1cm →</th><th>용도</th></tr></thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="info-box info-amber" style="margin-top:16px;">
+            <h4>📚 축척이란?</h4>
+            지도에서의 거리와 실제 거리의 비율이에요.<br>
+            <strong>1:50,000</strong>이면 지도 1cm가 실제 500m!<br>
+            숫자가 클수록 더 넓은 지역을 나타내요.
+        </div>
+
+        <h3>🧩 퀴즈</h3>
+        <div class="quiz-box" id="quizBox">
+            <div class="quiz-q" id="quizQ"></div>
+            <input class="quiz-input" type="number" id="quizInput" placeholder="답을 입력하세요">
+            <div class="btn-row">
+                <button class="btn-edu btn-success" onclick="SimApp.checkQuiz()">✓ 확인</button>
+                <button class="btn-edu btn-warning" onclick="SimApp.nextQuiz()">→ 다음</button>
+            </div>
+            <div class="feedback-box hidden" id="quizFeedback"></div>
+        </div>
+
+        <div class="info-box info-blue" style="margin-top:10px;">
+            <h4>🔢 단위 변환</h4>
+            1km = 1,000m = 100,000cm<br>
+            1m  = 100cm
+        </div>
+    </aside>
+</div>
+
+<script>
+/* ===== CONFIG ===== */
+const CONFIG = {
+    CURRICULUM: {
+        subject: '사회', grade: 4, semester: 1,
+        unit: '1. 지역의 위치와 특성',
+        achievement: '[4사02-01] 지도의 기본 요소(축척, 방위, 기호 등)를 이해한다.'
+    },
+    DIFFICULTY: { level: 'medium', grade_range: [3,5], hint_penalty: 0 },
+    ANIMATION:  { FEEDBACK_DURATION: 3000, TOAST_DURATION: 2500 },
+    MAP: {
+        SCALE_BAR_M:    500,  // 축척바 실제 거리 m
+        SCALE_BAR_PX:   100,  // 축척바 픽셀
+        POINT_RADIUS:   8
+    }
+};
+
+/* ===== UI_TEXT ===== */
+const UI_TEXT = {
+    FEEDBACK_CORRECT: ['정답이에요! 👏', '잘했어요! ⭐', '맞았어요! 🎉', '훌륭해요! 💯'],
+    FEEDBACK_WRONG:   ['다시 계산해봐요 🤔', '거의 다 왔어요! 💪', '공식을 확인해봐요 📐'],
+    HINT_EXHAUSTED:   '힌트를 모두 사용했어요!'
+};
+
+/* ===== 축척 데이터 ===== */
+const SCALES = [
+    { ratio: 5000,   label: '1:5,000',   mPerCm: 50,    use: '도시 상세' },
+    { ratio: 25000,  label: '1:25,000',  mPerCm: 250,   use: '등산지도' },
+    { ratio: 50000,  label: '1:50,000',  mPerCm: 500,   use: '지형도' },
+    { ratio: 100000, label: '1:100,000', mPerCm: 1000,  use: '도로지도' },
+    { ratio: 250000, label: '1:250,000', mPerCm: 2500,  use: '광역지도' }
+];
+let currentScaleIdx = 2; // 기본 1:50,000
+
+/* ===== 퀴즈 데이터 ===== */
+const QUIZZES = [
+    { q: '축척 1:50,000 지도에서 지도 거리 2cm는\n실제로 몇 km인가요?', ans: 1.0, unit: 'km', hint: '2 × 50,000 = 100,000cm = 1km' },
+    { q: '축척 1:25,000 지도에서 지도 거리 4cm는\n실제로 몇 km인가요?', ans: 1.0, unit: 'km', hint: '4 × 25,000 = 100,000cm = 1km' },
+    { q: '축척 1:100,000 지도에서 실제 거리 5km를\n지도에 나타내면 몇 cm인가요?', ans: 5.0, unit: 'cm', hint: '5km = 500,000cm ÷ 100,000 = 5cm' },
+    { q: '축척 1:50,000 지도에서 지도 거리 6cm는\n실제로 몇 m인가요?', ans: 3000, unit: 'm', hint: '6 × 50,000 = 300,000cm = 3,000m' },
+    { q: '1:250,000 지도에서 지도 거리 1cm는\n실제로 몇 km인가요?', ans: 2.5, unit: 'km', hint: '1 × 250,000 = 250,000cm = 2.5km' }
+];
+let quizIdx = 0;
+
+/* ===== 측정 상태 ===== */
+let measurePt1 = null, measurePt2 = null;
+let scoreCorrect = 0, scoreTotal = 0;
+const earnedBadges = new Set();
+
+/* ===== ScoreManager ===== */
+function recordScore(isCorrect) {
+    scoreTotal++;
+    if (isCorrect) scoreCorrect++;
+    document.getElementById('scoreCorrect').textContent = scoreCorrect;
+    document.getElementById('scoreTotal').textContent   = scoreTotal;
+    if (isCorrect && scoreCorrect === 1) earnBadge('first', '🌟', '첫 정답!');
+    if (scoreCorrect >= QUIZZES.length)  earnBadge('all',   '🏆', '전체 완료!');
+}
+
+function earnBadge(id, icon, name) {
+    if (earnedBadges.has(id)) return;
+    earnedBadges.add(id);
+    const el = document.getElementById('badge_' + id);
+    if (el) el.classList.add('earned');
+    showToast(icon + ' 배지 획득: ' + name);
+}
+
+function showToast(msg) {
+    let c = document.getElementById('_tc');
+    if (!c) {
+        c = document.createElement('div'); c.id = '_tc';
+        c.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;';
+        document.body.appendChild(c);
+    }
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'background:#1e293b;color:#fff;padding:12px 20px;border-radius:10px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
+    c.appendChild(t);
+    setTimeout(() => t.remove(), CONFIG.ANIMATION.TOAST_DURATION);
+}
+
+function showFeedback(elId, type) {
+    const pool = UI_TEXT['FEEDBACK_' + type.toUpperCase()];
+    const msg  = pool[Math.floor(Math.random() * pool.length)];
+    const el   = document.getElementById(elId);
+    el.textContent = msg;
+    el.className   = `feedback-box feedback-${type}`;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), CONFIG.ANIMATION.FEEDBACK_DURATION);
+}
+
+/* ===== SimApp ===== */
+const SimApp = {
+    init() {
+        this.buildScaleBtns();
+        this.buildCompareTable();
+        this.buildQuiz();
+        this.initCanvas();
+        this.updateScale();
+    },
+
+    buildScaleBtns() {
+        const group = document.getElementById('scaleBtns');
+        group.innerHTML = SCALES.map((s, i) =>
+            `<button class="scale-btn ${i === currentScaleIdx ? 'active' : ''}"
+                     onclick="SimApp.setScale(${i})">${s.label} — ${s.use}</button>`
+        ).join('');
+    },
+
+    buildCompareTable() {
+        const tbody = document.querySelector('#compareTable tbody');
+        tbody.innerHTML = SCALES.map((s, i) =>
+            `<tr class="${i === currentScaleIdx ? 'active-row' : ''}">
+                <td>${s.label}</td>
+                <td>${s.mPerCm >= 1000 ? (s.mPerCm/1000)+'km' : s.mPerCm+'m'}</td>
+                <td>${s.use}</td>
+             </tr>`
+        ).join('');
+    },
+
+    setScale(idx) {
+        currentScaleIdx = idx;
+        document.querySelectorAll('.scale-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+        this.buildCompareTable();
+        this.updateScale();
+        this.drawMap();
+    },
+
+    updateScale() {
+        const s = SCALES[currentScaleIdx];
+        document.getElementById('scaleDisplay').textContent = s.label;
+        document.getElementById('mPerCm').textContent = s.mPerCm >= 1000 ? (s.mPerCm/1000) + 'km' : s.mPerCm + 'm';
+        this.calcReal();
+        this.calcMap();
+    },
+
+    calcReal() {
+        const mapCm  = parseFloat(document.getElementById('mapDist').value) || 0;
+        const realKm = (mapCm * SCALES[currentScaleIdx].ratio / 100000).toFixed(2);
+        document.getElementById('realDist').textContent = realKm;
+    },
+
+    calcMap() {
+        const realKm = parseFloat(document.getElementById('realDistIn').value) || 0;
+        const mapCm  = (realKm * 100000 / SCALES[currentScaleIdx].ratio).toFixed(2);
+        document.getElementById('mapDistOut').textContent = mapCm;
+    },
+
+    /* ── 캔버스 ── */
+    initCanvas() {
+        const canvas = document.getElementById('mapCanvas');
+        const resize = () => {
+            const p = canvas.parentElement;
+            canvas.width  = (p.clientWidth - 32);
+            canvas.height = 520;
+            this.drawMap();
+        };
+        resize();
+        window.addEventListener('resize', resize);
+
+        const getPos = (e, canvas) => {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width  / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top)  * scaleY };
+        };
+
+        const handleClick = (e) => {
+            e.preventDefault();
+            const pos = getPos(e, canvas);
+            if (!measurePt1) {
+                measurePt1 = pos;
+            } else {
+                measurePt2 = pos;
+                this.showMeasure(canvas);
+                measurePt1 = null; measurePt2 = null;
+            }
+            this.drawMap(pos);
+        };
+        canvas.addEventListener('click',      handleClick);
+        canvas.addEventListener('touchstart', handleClick, { passive: false });
+    },
+
+    drawMap(hoverPt) {
+        const canvas = document.getElementById('mapCanvas');
+        const ctx    = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+
+        // 배경
+        const grad = ctx.createLinearGradient(0, 0, W, H);
+        grad.addColorStop(0, '#d4edda'); grad.addColorStop(1, '#c8e6c9');
+        ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+
+        // 그리드
+        ctx.strokeStyle = 'rgba(0,100,0,0.12)'; ctx.lineWidth = 1;
+        for (let x = 0; x < W; x += 50) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+        for (let y = 0; y < H; y += 50) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+        // 도로
+        ctx.strokeStyle = '#f5f5dc'; ctx.lineWidth = 8;
+        ctx.beginPath(); ctx.moveTo(0, H*0.45); ctx.lineTo(W, H*0.45); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(W*0.55, 0); ctx.lineTo(W*0.55, H); ctx.stroke();
+
+        // 건물
+        [[W*0.2,H*0.25,60,40,'#90a4ae'],[W*0.7,H*0.25,50,35,'#a5d6a7'],
+         [W*0.2,H*0.65,45,45,'#ef9a9a'],[W*0.75,H*0.65,55,35,'#fff176']].forEach(([x,y,w,h,c]) => {
+            ctx.fillStyle = c; ctx.fillRect(x-w/2, y-h/2, w, h);
+            ctx.strokeStyle = 'rgba(0,0,0,0.2)'; ctx.lineWidth = 1; ctx.strokeRect(x-w/2, y-h/2, w, h);
+        });
+
+        // 공원
+        ctx.fillStyle = '#66bb6a';
+        ctx.beginPath(); ctx.arc(W*0.45, H*0.7, 40, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.font = '12px Nanum Gothic'; ctx.textAlign = 'center';
+        ctx.fillText('🌳 공원', W*0.45, H*0.7+5);
+
+        // 측정점
+        if (measurePt1) {
+            ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(measurePt1.x, measurePt1.y, CONFIG.MAP.POINT_RADIUS, 0, Math.PI*2); ctx.fill();
+        }
+        if (hoverPt && measurePt1) {
+            ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2; ctx.setLineDash([6,4]);
+            ctx.beginPath(); ctx.moveTo(measurePt1.x, measurePt1.y); ctx.lineTo(hoverPt.x, hoverPt.y); ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        // 축척바
+        this.drawScaleBar(ctx, W, H);
+
+        // 방위
+        this.drawCompass(ctx, W - 50, 50);
+
+        // 라벨
+        ctx.fillStyle = '#455a64'; ctx.font = 'bold 13px Nanum Gothic'; ctx.textAlign = 'center';
+        ctx.fillText('🏢 시청', W*0.2, H*0.25-30);
+        ctx.fillText('🏫 학교', W*0.7, H*0.25-28);
+        ctx.fillText('🏪 시장', W*0.2, H*0.65-32);
+        ctx.fillText('🏥 병원', W*0.75, H*0.65-28);
+
+        // 안내
+        if (!measurePt1) {
+            ctx.fillStyle = 'rgba(30,41,59,0.65)';
+            ctx.fillRect(W/2-140, H-44, 280, 30);
+            ctx.fillStyle = '#fff'; ctx.font = '13px Nanum Gothic';
+            ctx.fillText('📍 첫 번째 지점을 클릭하세요', W/2, H-25);
+        } else {
+            ctx.fillStyle = 'rgba(239,68,68,0.85)';
+            ctx.fillRect(W/2-140, H-44, 280, 30);
+            ctx.fillStyle = '#fff'; ctx.font = '13px Nanum Gothic';
+            ctx.fillText('📍 두 번째 지점을 클릭하세요', W/2, H-25);
+        }
+    },
+
+    drawScaleBar(ctx, W, H) {
+        const px = CONFIG.MAP.SCALE_BAR_PX;
+        const mPerCm = SCALES[currentScaleIdx].mPerCm;
+        const pxPerCm = 37.8;
+        const realM  = Math.round(px / pxPerCm * mPerCm);
+        const x = 20, y = H - 30;
+        ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fillRect(x-6, y-20, px+12+80, 28);
+        ctx.fillStyle = '#333'; ctx.fillRect(x, y-8, px, 8);
+        ctx.fillStyle = '#fff'; ctx.fillRect(x + px/2, y-8, px/2, 8);
+        ctx.strokeStyle = '#333'; ctx.lineWidth = 1; ctx.strokeRect(x, y-8, px, 8);
+        ctx.fillStyle = '#333'; ctx.font = 'bold 12px Nanum Gothic'; ctx.textAlign = 'center';
+        ctx.fillText('0', x, y+12);
+        ctx.fillText(realM >= 1000 ? (realM/1000)+'km' : realM+'m', x+px, y+12);
+    },
+
+    drawCompass(ctx, cx, cy) {
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.beginPath(); ctx.arc(cx, cy, 24, 0, Math.PI*2); ctx.fill();
+        ctx.strokeStyle = '#ccc'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.fillStyle = '#ef4444'; ctx.font = 'bold 16px serif'; ctx.textAlign = 'center';
+        ctx.fillText('N', cx, cy-8);
+        ctx.fillStyle = '#333'; ctx.font = '11px serif';
+        ctx.fillText('S', cx, cy+18); ctx.fillText('W', cx-14, cy+5); ctx.fillText('E', cx+14, cy+5);
+    },
+
+    showMeasure(canvas) {
+        if (!measurePt2) return;
+        const p1 = measurePt1 || {x:0,y:0}, p2 = measurePt2;
+        const pxDist   = Math.sqrt((p2.x-p1.x)**2 + (p2.y-p1.y)**2);
+        const pxPerCm  = canvas.width / (canvas.parentElement.clientWidth - 32) * 37.8;
+        const cmDist   = (pxDist / 37.8).toFixed(2);
+        const realKm   = (pxDist / 37.8 * SCALES[currentScaleIdx].ratio / 100000).toFixed(2);
+        document.getElementById('mapMeasure').textContent  = cmDist;
+        document.getElementById('realMeasure').textContent = realKm;
+        document.getElementById('measureResult').classList.remove('hidden');
+        this.drawMap();
+    },
+
+    /* ── 퀴즈 ── */
+    buildQuiz() {
+        quizIdx = Math.floor(Math.random() * QUIZZES.length);
+        this.renderQuiz();
+    },
+
+    renderQuiz() {
+        const q = QUIZZES[quizIdx];
+        document.getElementById('quizQ').innerHTML =
+            q.q.replace(/\n/g, '<br>') + ` <strong>(단위: ${q.unit})</strong>`;
+        document.getElementById('quizInput').value = '';
+        document.getElementById('quizFeedback').classList.add('hidden');
+    },
+
+    checkQuiz() {
+        const q   = QUIZZES[quizIdx];
+        const ans = parseFloat(document.getElementById('quizInput').value);
+        if (isNaN(ans)) { alert('숫자를 입력해주세요!'); return; }
+        const correct = Math.abs(ans - q.ans) < 0.01;
+        recordScore(correct);
+        const fb = document.getElementById('quizFeedback');
+        if (correct) {
+            showFeedback('quizFeedback', 'correct');
+        } else {
+            const pool = UI_TEXT.FEEDBACK_WRONG;
+            fb.innerHTML = pool[Math.floor(Math.random() * pool.length)]
+                + `<br><small style="font-weight:400;font-size:13px;">💡 ${q.hint}</small>`;
+            fb.className = 'feedback-box feedback-wrong';
+            fb.classList.remove('hidden');
+        }
+    },
+
+    nextQuiz() {
+        quizIdx = (quizIdx + 1) % QUIZZES.length;
+        this.renderQuiz();
+    }
+};
+
+window.onload = () => SimApp.init();
+</script>
+</body>
+</html>

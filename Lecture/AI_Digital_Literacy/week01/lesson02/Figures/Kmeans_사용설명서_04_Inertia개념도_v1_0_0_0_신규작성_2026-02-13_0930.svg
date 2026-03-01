@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="300" rx="12" fill="url(#bgGrad)"/>
+  <text x="400" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#333">📐 Inertia (관성) 개념도</text>
+  <text x="400" y="46" text-anchor="middle" font-size="9" fill="#795548">클러스터 내 데이터가 중심점에 얼마나 가까이 모여있는지 측정</text>
+
+  <!-- 좌측: 좋은 클러스터링 (낮은 Inertia) -->
+  <rect x="30" y="60" width="240" height="170" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="30" y="60" width="240" height="24" rx="10" fill="#E8F5E9"/>
+  <rect x="30" y="78" width="240" height="6" fill="#E8F5E9"/>
+  <text x="150" y="78" text-anchor="middle" font-size="10" font-weight="600" fill="#2E7D32">✅ 낮은 Inertia (좋음)</text>
+
+  <!-- 클러스터 A (빨강 - 촘촘) -->
+  <circle cx="95" cy="130" r="18" fill="#FFCDD2" opacity="0.4"/>
+  <circle cx="95" cy="130" r="5" fill="#E53935" stroke="#FFF" stroke-width="1.5"/>
+  <circle cx="87" cy="124" r="3" fill="#E53935" opacity="0.6"/>
+  <circle cx="102" cy="126" r="3" fill="#E53935" opacity="0.6"/>
+  <circle cx="90" cy="136" r="3" fill="#E53935" opacity="0.6"/>
+  <circle cx="100" cy="134" r="3" fill="#E53935" opacity="0.6"/>
+  <line x1="87" y1="124" x2="95" y2="130" stroke="#E53935" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+  <line x1="102" y1="126" x2="95" y2="130" stroke="#E53935" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+  <line x1="90" y1="136" x2="95" y2="130" stroke="#E53935" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+  <line x1="100" y1="134" x2="95" y2="130" stroke="#E53935" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+
+  <!-- 클러스터 B (파랑 - 촘촘) -->
+  <circle cx="190" cy="160" r="18" fill="#BBDEFB" opacity="0.4"/>
+  <circle cx="190" cy="160" r="5" fill="#1976D2" stroke="#FFF" stroke-width="1.5"/>
+  <circle cx="183" cy="154" r="3" fill="#1976D2" opacity="0.6"/>
+  <circle cx="197" cy="155" r="3" fill="#1976D2" opacity="0.6"/>
+  <circle cx="185" cy="167" r="3" fill="#1976D2" opacity="0.6"/>
+  <circle cx="195" cy="166" r="3" fill="#1976D2" opacity="0.6"/>
+  <line x1="183" y1="154" x2="190" y2="160" stroke="#1976D2" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+  <line x1="197" y1="155" x2="190" y2="160" stroke="#1976D2" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+  <line x1="185" y1="167" x2="190" y2="160" stroke="#1976D2" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+  <line x1="195" y1="166" x2="190" y2="160" stroke="#1976D2" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+
+  <text x="150" y="210" text-anchor="middle" font-size="8" fill="#555">거리 짧음 → 합 작음</text>
+  <text x="150" y="222" text-anchor="middle" font-size="8" font-weight="600" fill="#2E7D32">Inertia ≈ 25</text>
+
+  <!-- 우측: 나쁜 클러스터링 (높은 Inertia) -->
+  <rect x="300" y="60" width="240" height="170" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="300" y="60" width="240" height="24" rx="10" fill="#FFEBEE"/>
+  <rect x="300" y="78" width="240" height="6" fill="#FFEBEE"/>
+  <text x="420" y="78" text-anchor="middle" font-size="10" font-weight="600" fill="#C62828">⚠️ 높은 Inertia (나쁨)</text>
+
+  <!-- 클러스터 C (빨강 - 흩어진) -->
+  <circle cx="360" cy="130" r="30" fill="#FFCDD2" opacity="0.25"/>
+  <circle cx="360" cy="130" r="5" fill="#E53935" stroke="#FFF" stroke-width="1.5"/>
+  <circle cx="338" cy="112" r="3" fill="#E53935" opacity="0.6"/>
+  <circle cx="382" cy="118" r="3" fill="#E53935" opacity="0.6"/>
+  <circle cx="342" cy="148" r="3" fill="#E53935" opacity="0.6"/>
+  <circle cx="378" cy="145" r="3" fill="#E53935" opacity="0.6"/>
+  <line x1="338" y1="112" x2="360" y2="130" stroke="#E53935" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+  <line x1="382" y1="118" x2="360" y2="130" stroke="#E53935" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+  <line x1="342" y1="148" x2="360" y2="130" stroke="#E53935" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+  <line x1="378" y1="145" x2="360" y2="130" stroke="#E53935" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+
+  <!-- 클러스터 D (파랑 - 흩어진) -->
+  <circle cx="470" cy="150" r="30" fill="#BBDEFB" opacity="0.25"/>
+  <circle cx="470" cy="150" r="5" fill="#1976D2" stroke="#FFF" stroke-width="1.5"/>
+  <circle cx="448" cy="132" r="3" fill="#1976D2" opacity="0.6"/>
+  <circle cx="492" cy="138" r="3" fill="#1976D2" opacity="0.6"/>
+  <circle cx="452" cy="170" r="3" fill="#1976D2" opacity="0.6"/>
+  <circle cx="488" cy="168" r="3" fill="#1976D2" opacity="0.6"/>
+  <line x1="448" y1="132" x2="470" y2="150" stroke="#1976D2" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+  <line x1="492" y1="138" x2="470" y2="150" stroke="#1976D2" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+  <line x1="452" y1="170" x2="470" y2="150" stroke="#1976D2" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+  <line x1="488" y1="168" x2="470" y2="150" stroke="#1976D2" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+
+  <text x="420" y="210" text-anchor="middle" font-size="8" fill="#555">거리 김 → 합 큼</text>
+  <text x="420" y="222" text-anchor="middle" font-size="8" font-weight="600" fill="#C62828">Inertia ≈ 180</text>
+
+  <!-- 우측: 수식 및 해석 -->
+  <rect x="570" y="60" width="210" height="170" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="570" y="60" width="210" height="24" rx="10" fill="#FFF8E1"/>
+  <rect x="570" y="78" width="210" height="6" fill="#FFF8E1"/>
+  <text x="675" y="78" text-anchor="middle" font-size="10" font-weight="600" fill="#E65100">📐 수식</text>
+
+  <text x="675" y="108" text-anchor="middle" font-size="11" font-weight="700" fill="#1976D2">Inertia = Σᵢ dᵢ²</text>
+  <text x="675" y="128" text-anchor="middle" font-size="8" fill="#555">dᵢ = 데이터ᵢ와 소속</text>
+  <text x="675" y="142" text-anchor="middle" font-size="8" fill="#555">중심점 사이 유클리드 거리</text>
+
+  <line x1="590" y1="154" x2="760" y2="154" stroke="#E0E0E0" stroke-width="1"/>
+
+  <text x="675" y="172" text-anchor="middle" font-size="8" font-weight="600" fill="#333">해석:</text>
+  <text x="675" y="188" text-anchor="middle" font-size="7" fill="#2E7D32">Inertia ↓ → 촘촘한 클러스터</text>
+  <text x="675" y="202" text-anchor="middle" font-size="7" fill="#C62828">Inertia ↑ → 흩어진 클러스터</text>
+  <text x="675" y="220" text-anchor="middle" font-size="7" fill="#888">K값이 클수록 Inertia 감소</text>
+
+  <!-- 하단 안내 -->
+  <rect x="30" y="246" width="740" height="38" rx="8" fill="#FFF8E1" opacity="0.6"/>
+  <text x="400" y="263" text-anchor="middle" font-size="8" fill="#795548">💡 K-Means 알고리즘은 Inertia를 최소화하는 방향으로 중심점을 이동시킵니다.</text>
+  <text x="400" y="277" text-anchor="middle" font-size="7" fill="#999">수렴 조건: |이전 Inertia − 현재 Inertia| &lt; 0.01 이면 학습 종료</text>
+</svg>

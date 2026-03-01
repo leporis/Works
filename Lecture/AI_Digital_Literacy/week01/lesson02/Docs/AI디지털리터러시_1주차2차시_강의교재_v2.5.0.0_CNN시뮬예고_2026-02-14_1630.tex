@@ -1,0 +1,1283 @@
+% LuaLaTeX 컴파일 필요 (컬러 이모지 + 한글 지원)
+\documentclass[11pt,a4paper]{article}
+
+% === 필수 패키지 ===
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{emoji}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{float}
+
+% === 페이지 설정 ===
+\geometry{left=25mm, right=25mm, top=28mm, bottom=28mm}
+\setlength{\parskip}{0.3em}
+
+% === 섹션 전후 간격 ===
+\titlespacing*{\section}{0pt}{1.2em}{0.6em}
+\titlespacing*{\subsection}{0pt}{1.0em}{0.5em}
+\titlespacing*{\subsubsection}{0pt}{0.8em}{0.3em}
+
+% === 폰트 설정 ===
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setmonofont{Noto Sans Mono CJK KR}[Scale=0.85]
+\setemojifont{Noto Color Emoji}
+
+% === 색상 정의 (프로젝트 팔레트) ===
+\definecolor{primary}{HTML}{1976D2}
+\definecolor{darkblue}{HTML}{1565C0}
+\definecolor{teal}{HTML}{00897B}
+\definecolor{purple}{HTML}{7B1FA2}
+\definecolor{amber}{HTML}{FFA000}
+\definecolor{green}{HTML}{388E3C}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{lightgray}{HTML}{F5F5F5}
+\definecolor{lightteal}{HTML}{E0F2F1}
+\definecolor{cream}{HTML}{FFF8E1}
+\definecolor{tableheader}{HTML}{BBDEFB}
+\definecolor{darkgray}{HTML}{333333}
+
+% === 하이퍼링크 ===
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    citecolor=primary
+}
+
+% === 섹션 스타일 ===
+\titleformat{\section}
+  {\LARGE\bfseries\color{primary}}
+  {\thesection}{0.5em}{}
+
+\titleformat{\subsection}
+  {\Large\bfseries\color{darkblue}}
+  {\thesubsection}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\large\bfseries\color{teal}}
+  {\thesubsubsection}{0.5em}{}
+
+% === 머리글/바닥글 ===
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{primary}AI디지털리터러시}
+\fancyhead[R]{\small\color{primary}1주차 2차시 — 기계학습의 원리}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% === tcolorbox 스타일 ===
+\tcbuselibrary{skins, breakable}
+
+\newtcolorbox{definitionbox}[1][]{
+    colback=lightblue,
+    colframe=primary,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={#1},
+    rounded corners,
+    boxrule=1pt,
+    breakable
+}
+
+\newtcolorbox{tipbox}[1][]{
+    colback=cream,
+    colframe=amber,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={#1},
+    rounded corners,
+    boxrule=1pt,
+    breakable
+}
+
+\newtcolorbox{keybox}[1][]{
+    colback=lightteal,
+    colframe=teal,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={#1},
+    rounded corners,
+    boxrule=1pt,
+    breakable
+}
+
+\newtcolorbox{questionbox}{
+    colback=lightgray,
+    colframe=primary!50,
+    rounded corners,
+    boxrule=0.5pt,
+    breakable
+}
+
+\newtcolorbox{summarybox}[1][]{
+    colback=lightblue!50,
+    colframe=primary,
+    coltitle=white,
+    fonttitle=\bfseries\large,
+    title={#1},
+    rounded corners,
+    boxrule=1.5pt,
+    breakable
+}
+
+% === 표 행 간격 ===
+\renewcommand{\arraystretch}{1.4}
+
+% === 목차 한글화 ===
+\renewcommand{\contentsname}{목차}
+\renewcommand{\figurename}{그림}
+\renewcommand{\tablename}{표}
+
+\begin{document}
+
+% === 표지 ===
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+
+{\Huge\bfseries\color{primary} AI디지털리터러시}
+
+\vspace{0.5cm}
+
+{\LARGE\color{darkblue} 1주차 2차시 강의교재}
+
+\vspace{1.5cm}
+
+{\Huge\bfseries 기계학습의 원리}
+
+\vspace{0.5cm}
+
+{\Large\color{darkgray} 기계학습의 개념과 학습 유형을 설명할 수 있다}
+
+\vspace{3cm}
+
+{\large 청주교육대학교}
+
+\vspace{0.3cm}
+
+{\large 2026학년도}
+
+\vspace{2cm}
+
+\begin{tcolorbox}[colback=lightblue, colframe=primary, width=0.8\textwidth, halign=center]
+\begin{tabular}{ll}
+\textbf{교과목명} & AI디지털리터러시 \\
+\textbf{수업 대상} & 청주교육대학교 4학년 \\
+\textbf{수업 시간} & 50분 (1시간) \\
+\textbf{관련 성취기준} & {[6실05-05]} \\
+\end{tabular}
+\end{tcolorbox}
+
+\end{titlepage}
+
+% === 목차 ===
+\tableofcontents
+\newpage
+
+% === 수업 흐름 ===
+\section*{\emoji{clipboard} 수업 흐름}
+\addcontentsline{toc}{section}{수업 흐름}
+
+\begin{center}
+\begin{tabular}{|c|c|p{10cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} \\
+\hline
+5분 & \emoji{clapper-board} 도입 & AI, ML, DL의 포함 관계 \\
+\hline
+5분 & \emoji{blue-book} 전개 1 & 기계학습의 정의: 전통적 프로그래밍과 비교 \\
+\hline
+30분 & \emoji{green-book} 전개 2 & 머신러닝 3가지 방법(이론) + AI 사과농장 이야기(시뮬레이터 시연) \\
+\hline
+5분 & \emoji{orange-book} 전개 3 & 머신러닝 학습 과정 4단계 핵심 요약 \\
+\hline
+5분 & \emoji{memo} 정리 & 엔트리 AI 모델과의 연결, 다음 주 퀴즈 안내 \\
+\hline
+\end{tabular}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 학습 목표
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcolorbox}[colback=lightblue, colframe=primary, title={\emoji{bullseye} 이번 차시 학습 목표}, fonttitle=\bfseries\large]
+
+이번 차시를 마치면 다음을 할 수 있어야 합니다.
+
+\begin{enumerate}[leftmargin=*, itemsep=0.3cm]
+    \item \textbf{AI, ML, DL의 포함 관계}를 설명하고, 각각의 특징을 비교할 수 있다.
+    \item \textbf{전통적 프로그래밍과 인공지능 프로그래밍}의 차이를 ``규칙'' 관점에서 설명할 수 있다.
+    \item \textbf{지도학습, 비지도학습, 강화학습}의 원리를 비교하고, 각각의 예시를 들 수 있다.
+    \item AI 사과농장 이야기에서 \textbf{5가지 ML 기술}의 역할을 학습 유형과 연결하여 설명할 수 있다.
+    \item 머신러닝의 \textbf{4단계 학습 과정}(수집$\to$학습$\to$평가$\to$예측)을 엔트리와 연결하여 설명할 수 있다.
+\end{enumerate}
+
+\end{tcolorbox}
+
+\vspace{0.5cm}
+
+\begin{questionbox}
+\emoji{thinking-face} \textbf{핵심 질문}: ``컴퓨터는 어떻게 스스로 배울 수 있을까?''
+\end{questionbox}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1. 도입
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{clapper-board} 도입: AI, ML, DL의 포함 관계}
+
+\subsection{1차시 복습}
+
+지난 시간에 우리는 AI(인공지능)가 ``인간의 지능을 모방하는 컴퓨터 시스템''이라고 배웠어요. 그런데 AI라는 큰 세계 안에도 여러 가지 기술이 있답니다. 오늘은 그 중에서 가장 핵심적인 \textbf{기계학습(Machine Learning)}에 대해 알아보겠습니다.
+
+\subsection{AI $\supset$ ML $\supset$ DL}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{images/fig01_AI_ML_DL포함관계.png}
+\caption{AI, ML, DL의 포함 관계}
+\end{figure}
+
+AI, ML, DL은 서로 포함 관계에 있어요. 가장 큰 개념이 AI이고, 그 안에 ML이, ML 안에 DL이 들어 있습니다.
+
+\textbf{\emoji{robot} AI (Artificial Intelligence, 인공지능)} — 가장 큰 범주예요. 인간의 지능을 모방하는 \textbf{모든 기술}을 포함합니다. 규칙을 직접 작성하는 전통적인 방법부터, 데이터로 학습하는 최신 방법까지 모두 AI에 해당해요.
+
+\textbf{\emoji{brain} ML (Machine Learning, 기계학습)} — AI의 하위 분야로, 사람이 규칙을 직접 작성하는 대신 \textbf{컴퓨터가 데이터에서 패턴을 스스로 학습}하는 기술이에요. 오늘 수업의 주인공이랍니다!
+
+\textbf{\emoji{fire} DL (Deep Learning, 딥러닝)} — ML의 한 종류로, 인간의 뇌 신경망을 본뜬 \textbf{인공 신경망을 여러 층으로 쌓아} 복잡한 패턴을 학습하는 기술이에요. ChatGPT, AlphaGo가 대표적인 딥러닝 기술입니다.
+
+\begin{tipbox}[\emoji{light-bulb} 쉬운 비유]
+AI = 모든 탈것(자전거\textasciitilde 비행기), ML = 엔진 있는 탈것(자동차\textasciitilde 비행기), DL = 첨단 전기차
+\end{tipbox}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{구분} & \textbf{AI (인공지능)} & \textbf{ML (기계학습)} & \textbf{DL (딥러닝)} \\
+\hline
+범위 & 가장 넓음 & AI의 하위 & ML의 하위 \\
+\hline
+방법 & 규칙 기반 포함 & 데이터 학습 & 신경망 학습 \\
+\hline
+예시 & 체스 프로그램 & 스팸 필터 & ChatGPT \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}[\emoji{pushpin} 핵심]
+``모든 딥러닝은 기계학습이고, 모든 기계학습은 AI이지만, 그 반대는 성립하지 않아요!''
+\end{keybox}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2. 전개 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{blue-book} 전개 1: 기계학습의 정의}
+
+\subsection{기계학습이란?}
+
+\begin{definitionbox}[\emoji{books} 정의]
+\textbf{기계학습(Machine Learning)}: 컴퓨터가 명시적으로 프로그래밍되지 않고도, 데이터로부터 패턴을 스스로 학습하여 새로운 상황을 예측하는 AI 기술
+\end{definitionbox}
+
+쉽게 말하면, \textbf{``사람이 규칙을 작성하는 대신, 컴퓨터가 데이터에서 규칙을 찾아내는 기술''}이에요.
+
+\subsection{전통적 프로그래밍 vs 인공지능 프로그래밍}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/fig02_전통적프로그래밍vs기계학습.png}
+\caption{전통적 프로그래밍 vs 인공지능 프로그래밍}
+\end{figure}
+
+이 그림이 오늘 수업의 핵심이에요! 왼쪽(전통적 방식)과 오른쪽(AI 방식)을 비교해 봅시다.
+
+\subsubsection{전통적 프로그래밍 — 사람이 규칙을 작성}
+
+\begin{tcolorbox}[colback=lightgray, colframe=darkgray!60, title={\emoji{desktop-computer} 전통적 프로그래밍}, fonttitle=\bfseries, rounded corners, boxrule=1pt]
+\centering\large
+\textbf{규칙}(사람이 직접 작성) + \textbf{데이터}(입력값) $\;\to\;$ \fcolorbox{darkgray}{white}{\;컴퓨터(명령 실행)\;} $\;\to\;$ \textbf{결과}
+\end{tcolorbox}
+
+프로그래머가 ``이런 경우에는 이렇게 해라''라는 규칙을 하나하나 작성합니다. 예를 들어 스팸 메일 필터를 만든다면: IF ``무료'' 포함 AND ``당첨'' 포함 $\to$ 스팸, IF ``대출'' 포함 AND ``지금 바로'' 포함 $\to$ 스팸... 이런 식으로요.
+
+문제점이 보이시나요? 스패머들이 ``무\,료'', ``당/첨''처럼 글자를 바꾸면 규칙을 피할 수 있어요. 새로운 스팸 수법이 등장할 때마다 규칙을 계속 추가해야 합니다.
+
+\subsubsection{인공지능 프로그래밍 — 컴퓨터가 규칙을 발견}
+
+AI 프로그래밍은 \textbf{두 단계}로 나뉘어요.
+
+\begin{tcolorbox}[colback=lightblue!40, colframe=primary, title={\emoji{brain} ① 학습 단계 (Learning)}, fonttitle=\bfseries, rounded corners, boxrule=1pt]
+\centering\large
+\textbf{데이터}(입력값) + \textbf{정답}(레이블) $\;\to\;$ \fcolorbox{primary}{white}{\;컴퓨터(학습)\;} $\;\to\;$ \textbf{모델}(학습된 규칙)
+
+\vspace{0.3cm}
+\small 수천 개의 메일 데이터(스팸/정상)를 제공하면, 컴퓨터가 스스로 ``어떤 패턴이 스팸인지'' \textbf{규칙을 생성}합니다.
+\end{tcolorbox}
+
+\vspace{0.3cm}
+
+\begin{tcolorbox}[colback=lightteal!40, colframe=teal, title={\emoji{crystal-ball} ② 추론 단계 (Inference)}, fonttitle=\bfseries, rounded corners, boxrule=1pt]
+\centering\large
+\textbf{새 입력} + \textbf{학습된 모델} $\;\to\;$ \fcolorbox{teal}{white}{\;컴퓨터(추론)\;} $\;\to\;$ \textbf{예측 결과}
+
+\vspace{0.3cm}
+\small 학습이 완료된 모델에 새 데이터를 넣으면, ``이 사진은 아마 고양이입니다 (95\%)''처럼 \textbf{예측 결과}를 내놓아요!
+\end{tcolorbox}
+
+\begin{keybox}[\emoji{pushpin} 핵심]
+규칙을 사람이 만드느냐 vs 데이터에서 컴퓨터가 찾아내느냐
+\end{keybox}
+
+\subsection{일상 속 기계학습}
+
+우리는 이미 매일 기계학습의 혜택을 누리고 있어요:
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{서비스} & \textbf{기계학습 활용} \\
+\hline
+\emoji{e-mail} Gmail & 스팸 메일 자동 분류 \\
+\hline
+\emoji{television} 유튜브 / 넷플릭스 & 취향 분석 $\to$ 콘텐츠 추천 \\
+\hline
+\emoji{speaking-head} Siri / 빅스비 & 음성 인식 $\to$ 명령 수행 \\
+\hline
+\emoji{camera} 스마트폰 카메라 & 얼굴 인식, 사진 분류 \\
+\hline
+\emoji{shopping-cart} 쿠팡 / 네이버 쇼핑 & 구매 기록 $\to$ 상품 추천 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{왜 기계학습이 필요할까?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{images/fig18_왜기계학습이필요한가.jpg}
+\caption{왜 기계학습이 필요할까요? — 전통적 프로그래밍으로 해결하기 어려운 문제}
+\end{figure}
+
+기계학습이 필요한 이유는 크게 세 가지입니다:
+
+\begin{center}
+\begin{tabular}{|c|p{5cm}|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{이유} & \textbf{설명} & \textbf{예시} \\
+\hline
+① \textbf{규칙 작성이 어려운 문제} & 특징이 수천 가지여서 규칙을 사람이 다 작성할 수 없음 & ``이 사진이 고양이인지 어떤 규칙으로?'' \\
+\hline
+② \textbf{복잡한 패턴이 있는 문제} & 수백 개 변수가 복잡하게 얽혀 있음 & ``이 환자의 질병 위험은 얼마나?'' \\
+\hline
+③ \textbf{변하는 환경을 따라가야 할 때} & 기계학습은 새 데이터로 자동 업데이트 & ``내일의 스팸 메일은 어떤 패턴?'' \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tipbox}[\emoji{light-bulb} 핵심 메시지]
+``사람이 규칙을 만드는 대신, 데이터에서 규칙을 찾게 하자!'' — 이것이 기계학습의 핵심 아이디어예요.
+\end{tipbox}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 3. 전개 2: Part A 이론
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{green-book} 전개 2: 머신러닝의 3가지 방법 + AI 사과농장 이야기}
+
+\subsection{\emoji{a-button-blood-type} 머신러닝의 3가지 방법 — 이론}
+
+기계학습은 \textbf{데이터로부터 학습하는 방법}에 따라 크게 3가지로 나뉩니다. 먼저 전체 지도를 본 뒤, 각각을 하나씩 살펴보겠습니다.
+
+\subsubsection{세 가지 학습 유형 개관}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{구분} & \textbf{지도학습} & \textbf{비지도학습} & \textbf{강화학습} \\
+\hline
+\textbf{라벨(정답)} & \emoji{check-mark-button} 있음 & \emoji{cross-mark} 없음 & \emoji{bullseye} 보상 \\
+\hline
+\textbf{데이터 구조} & 입력 + 라벨 & 입력만 & 입력 + 보상 \\
+\hline
+\textbf{학습 목표} & 정답 맞추기 & 패턴 찾기 & 보상 최대화 \\
+\hline
+\textbf{피드백} & 정답(라벨) & 없음 & 보상(점수) \\
+\hline
+\textbf{비유} & 시험 공부 & 그룹 나누기 & 게임 연습 \\
+\hline
+\textbf{사과농장} & 1$\cdot$2$\cdot$4$\cdot$5장 & 3장 & — \\
+\hline
+\textbf{시뮬레이터} & \mbox{KNN, 선형 회귀,} \mbox{의사결정 트리} & K-Means & 스네이크 RL \\
+\hline
+\textbf{대표 예시} & 스팸 필터, 질병 진단 & 고객 세분화 & AlphaGo, 자율주행 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}[\emoji{pushpin} 핵심 메시지]
+문제 유형에 따라 적절한 학습 방식을 선택해요. 초등학교 AI 교육에서는 주로 \textbf{지도학습}(엔트리 이미지 분류)을 다룬답니다!
+\end{keybox}
+
+\newpage
+
+%--- 지도학습 ---
+\subsubsection{지도학습 (Supervised Learning)}
+
+\begin{definitionbox}[\emoji{books} 정의]
+\textbf{지도학습}: 정답(라벨)이 있는 데이터로 학습하는 방식
+
+``선생님이 문제와 정답을 함께 주고, 학생이 문제 유형을 파악하며 공부하는 것''과 같아요.
+\end{definitionbox}
+
+\textbf{학습 과정}:
+\begin{enumerate}[leftmargin=*]
+    \item \emoji{chart-increasing} 데이터 + 정답(Label) 제공 $\to$ ``이 사진은 고양이야'', ``이건 개야''
+    \item \emoji{brain} 컴퓨터가 데이터와 정답의 관계를 학습 $\to$ 패턴 발견
+    \item \emoji{crystal-ball} 새로운 데이터 $\to$ 정답 예측 $\to$ ``이건 고양이일 확률 95\%!''
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{images/fig03_지도학습vs비지도학습.png}
+\caption{지도학습 vs 비지도학습 데이터 구조 비교}
+\end{figure}
+
+지도학습의 핵심은 \textbf{라벨(Label)}이에요. 라벨이란 데이터에 붙인 ``정답 스티커''입니다.
+
+지도학습에는 두 가지 주요 과제가 있어요:
+
+\begin{center}
+\begin{tabular}{|c|p{5cm}|p{5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{과제} & \textbf{설명} & \textbf{사과농장 연결} \\
+\hline
+\textbf{분류 (Classification)} & 데이터를 범주로 나누기 & 1장 수확(익음/덜 익음), 2장 품종(홍로/부사) \\
+\hline
+\textbf{회귀 (Regression)} & 연속적인 값 예측하기 & 4장 가격(품질 $\to$ 가격 얼마?) \\
+\hline
+\end{tabular}
+\end{center}
+
+%--- 지도 vs 비지도 비교 ---
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{구분} & \textbf{지도학습} & \textbf{비지도학습} \\
+\hline
+\textbf{라벨(정답)} & \emoji{check-mark-button} 있음 & \emoji{cross-mark} 없음 \\
+\hline
+\textbf{데이터 구조} & 입력 + 라벨 & 입력만 \\
+\hline
+\textbf{학습 목표} & 정답 맞추기 & 패턴 찾기 \\
+\hline
+\textbf{비유} & 시험 공부 (문제+정답) & 그룹 나누기 (정답 없이) \\
+\hline
+\textbf{사과농장} & 1$\cdot$2$\cdot$4$\cdot$5장 & 3장 \\
+\hline
+\textbf{시뮬레이터} & KNN, 선형 회귀, 의사결정 트리 & K-Means \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}[\emoji{pushpin} 강조 포인트]
+지도학습 = 라벨(정답)이 있어야 학습 가능, 비지도학습 = 라벨 없이도 패턴 발견 가능. 둘 다 중요하고, 상황에 따라 선택해요!
+\end{keybox}
+
+\newpage
+
+%--- 비지도학습 ---
+\subsubsection{비지도학습 (Unsupervised Learning)}
+
+\begin{definitionbox}[\emoji{books} 정의]
+\textbf{비지도학습}: 라벨(정답 표시) 없이 데이터의 숨겨진 패턴을 스스로 찾는 방식
+\end{definitionbox}
+
+\paragraph{``정답이 없다''의 정확한 의미}
+
+많은 사람들이 비지도학습을 ``정답이 없는 학습''이라고 표현하는데, 이게 정확히 무슨 뜻일까요?
+
+\begin{keybox}[\emoji{pushpin} 정확한 의미]
+``정답이 없다'' = \textbf{``라벨(정답 스티커)이 없다''}
+\end{keybox}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{images/fig04_라벨없는_3가지이유.png}
+\caption{라벨이 없는 3가지 이유}
+\end{figure}
+
+\textbf{왜 라벨이 없을까요?} 세 가지 경우가 있어요:
+
+\begin{center}
+\begin{tabular}{|c|p{4cm}|p{6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{이유} & \textbf{예시} \\
+\hline
+1 & \textbf{라벨 자체가 없을 때} & 신규 고객 — 어떤 유형인지 아직 몰라요 \\
+\hline
+2 & \textbf{라벨 만들기 어려울 때} & 수백만 뉴스 기사에 일일이 분류 라벨을 붙일 수 없어요 \\
+\hline
+3 & \textbf{숨겨진 패턴을 찾고 싶을 때} & 사람도 몰랐던 새로운 고객 유형을 발견하고 싶어요 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{군집화 (Clustering)}
+
+비지도학습의 대표적인 과제가 \textbf{군집화}예요. 비슷한 데이터끼리 자동으로 그룹을 만드는 것이죠.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{images/fig05_군집화_3단계과정.png}
+\caption{군집화 3단계 과정}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{images/fig06_고객세분화결과.png}
+\caption{고객 세분화 결과 4개 그룹}
+\end{figure}
+
+쇼핑몰 고객 데이터를 군집화하면:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{그룹 A} (30\%): 알뜰형 — 저가$\cdot$할인 선호, 20\textasciitilde 30대
+    \item \textbf{그룹 B} (20\%): 명품 선호형 — 고가$\cdot$브랜드, 30\textasciitilde 50대
+    \item \textbf{그룹 C} (25\%): 트렌드 민감형 — 신상품$\cdot$유행, 10\textasciitilde 20대
+    \item \textbf{그룹 D} (25\%): 실속형 — 가성비$\cdot$리뷰 중심, 전연령
+\end{itemize}
+
+사람이 미리 ``알뜰형'', ``명품형'' 같은 라벨을 정하지 않았는데, AI가 스스로 의미 있는 그룹을 발견한 거예요!
+
+\newpage
+
+%--- 강화학습 ---
+\subsubsection{강화학습 (Reinforcement Learning)}
+
+\begin{definitionbox}[\emoji{books} 정의]
+\textbf{강화학습}: 시행착오를 통해 \textbf{보상을 최대화}하는 방향으로 학습하는 방식
+
+``게임을 하면서 점수로 배우는 것''과 같아요.
+\end{definitionbox}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{images/fig07_강화학습루프.png}
+\caption{강화학습 루프}
+\end{figure}
+
+\paragraph{강화학습의 구성 요소}
+
+\begin{center}
+\begin{tabular}{|l|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{요소} & \textbf{설명} & \textbf{게임 예시} & \textbf{강아지 훈련} \\
+\hline
+\textbf{Agent} & 학습하는 주체 & 게임 플레이어 & 강아지 \\
+\hline
+\textbf{Environment} & 활동하는 세계 & 게임 화면 & 집$\cdot$공원 \\
+\hline
+\textbf{Action} & 선택하는 행동 & 상하좌우 이동 & 앉기, 짖기 \\
+\hline
+\textbf{Reward} & 행동에 대한 피드백 & 점수 +10 / $-$5 & 간식 / 무시 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{비유: 강아지 훈련}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{images/fig08_강아지훈련.png}
+\caption{강아지 훈련 — 강화학습 비유}
+\end{figure}
+
+강아지를 훈련시킬 때를 생각해 보세요:
+\begin{itemize}[leftmargin=*]
+    \item \emoji{bone} \textbf{앉기 성공} $\to$ 간식(+보상) $\to$ 앉는 행동 반복!
+    \item \emoji{cross-mark} \textbf{짖음} $\to$ 무시($-$보상) $\to$ 짖는 행동 줄어듦!
+    \item 반복하며 ``어떤 행동이 좋은 결과를 가져오는지'' 스스로 학습!
+\end{itemize}
+
+\paragraph{대표적인 강화학습 예시}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{images/fig09_게임점수획득.png}
+\caption{게임 점수 획득 — 강화학습 과정}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|l|l|l|p{4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{예시} & \textbf{보상(+)} & \textbf{벌점($-$)} & \textbf{학습 결과} \\
+\hline
+\emoji{video-game} AlphaGo & 이기면 +1 & 지면 $-$1 & 세계 챔피언 이기는 전략 \\
+\hline
+\emoji{automobile} 자율주행 & 안전 주행 +1 & 사고 위험 $-$100 & 안전한 운전 경로 \\
+\hline
+\emoji{snake} 스네이크 게임 & 먹이 획득 +10 & 벽 충돌 $-$100 & 먹이를 찾아가는 전략 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tipbox}[\emoji{light-bulb} 참고]
+사과농장 애니메이션에는 강화학습 장면이 등장하지 않지만, 기계학습의 세 번째 기둥인 만큼 꼭 알아야 해요! ``사과를 가장 효율적으로 수확하는 경로를 시행착오로 찾는 로봇''을 상상해 보세요.
+\end{tipbox}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 3. 전개 2: Part B 시뮬레이터 시연
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\emoji{b-button-blood-type} AI 사과농장 이야기 — 시뮬레이터 시연}
+
+3가지 학습 방법을 배웠으니, 이제 사과 농장에서 이 기술들이 어떻게 활용되는지 시뮬레이터로 직접 확인해 봅시다!
+
+\subsubsection{사과농장 이야기를 시작합니다!}
+
+\emoji{man-farmer} 농부 김사과와 \emoji{robot} AI 로봇 알파가 함께 사과 농장을 운영합니다. 수확부터 배송까지, 각 단계에서 서로 다른 AI 기술이 활약해요!
+
+\begin{center}
+\begin{tabular}{|c|p{4cm}|l|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{장} & \textbf{문제 상황} & \textbf{ML 기술} & \textbf{학습 유형} \\
+\hline
+1장 & \emoji{deciduous-tree} 익은 사과만 골라 따기 & 딥러닝 CNN & 지도학습 \\
+\hline
+2장 & \emoji{magnifying-glass-tilted-left} 섞인 품종 구분하기 & KNN & 지도학습 \\
+\hline
+3장 & \emoji{package} 크기별 등급 나누기 & K-Means & 비지도학습 \\
+\hline
+4장 & \emoji{money-bag} 가격 매기기 & 선형 회귀 & 지도학습 \\
+\hline
+5장 & \emoji{delivery-truck} 배송지 정하기 & 의사결정 트리 & 지도학습 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{images/fig11_AI사과농장이야기.png}
+\caption{AI 사과 농장 이야기: 새로운 시작 — 농부 김사과와 AI 농업 도우미 알파}
+\end{figure}
+
+\newpage
+
+%--- 지도학습 시뮬레이터 ---
+\subsubsection{지도학습 시뮬레이터 시연}
+
+\paragraph{사과농장 1장: 수확의 시작 — 딥러닝 CNN}
+
+농장에서 카메라로 사과를 촬영하면, CNN(합성곱 신경망)이 익은 정도를 분석합니다.
+
+\begin{tcolorbox}[colback=lightblue!30, colframe=primary!60, rounded corners, boxrule=0.5pt]
+\centering
+\emoji{camera} 사과 사진 촬영 $\;\to\;$ \emoji{brain} 딥러닝 CNN 분석 $\;\to\;$ \emoji{check-mark-button} ``92\% 확률로 익었다!'' $\;\to\;$ \emoji{robot} 수확!
+\end{tcolorbox}
+
+CNN은 딥러닝의 대표적인 기술이에요. 딥러닝은 기계학습의 한 종류이니까, 결국 지도학습의 확장판이라고 생각하면 됩니다!
+
+\begin{tipbox}[\emoji{light-bulb} 참고 — CNN은 다음 주에!]
+CNN은 다음 주 ``딥러닝'' 수업에서 더 자세히 다룰 예정이에요.
+
+\emoji{loudspeaker} \textbf{다음 주 예고}: 2주차 1차시에서 CNN 시뮬레이터로 사과 이미지 분류를 직접 체험해봅니다! 학습률을 바꾸면 어떻게 될까요? 노이즈가 섞인 데이터로 학습하면?
+\end{tipbox}
+
+\paragraph{사과농장 2장: 품종이 섞였다! — KNN (K-최근접 이웃)}
+
+수확한 사과에 여러 품종이 섞여 있어요. 홍로, 부사, 아오리... 어떻게 구분할까요?
+
+\begin{definitionbox}[\emoji{books} KNN]
+\textbf{KNN (K-Nearest Neighbors, K-최근접 이웃)}: 새 데이터가 들어오면, 기존 데이터 중에서 \textbf{가장 가까운 K개의 이웃}을 찾아 \textbf{다수결}로 분류하는 방법
+\end{definitionbox}
+
+\textbf{어떻게 작동하나요?} 새 사과가 들어오면:
+\begin{enumerate}[leftmargin=*]
+    \item 기존에 라벨이 붙어 있는 사과 데이터들 중에서
+    \item 새 사과와 특징(크기, 색상, 모양)이 \textbf{가장 비슷한 K개} 찾기
+    \item K개 이웃 중 \textbf{가장 많은 품종}으로 분류
+\end{enumerate}
+
+\begin{center}
+\begin{tabular}{|c|p{5cm}|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{K값} & \textbf{가장 가까운 이웃들} & \textbf{결과} \\
+\hline
+K=3 & 홍로, 홍로, 부사 & \textbf{홍로} (2:1) \\
+\hline
+K=5 & 홍로, 홍로, 부사, 부사, 홍로 & \textbf{홍로} (3:2) \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tipbox}[\emoji{light-bulb} 핵심]
+KNN은 ``유유상종'' — 비슷한 것끼리 모이는 원리! 하지만 기존 데이터에 \textbf{라벨(품종명)}이 반드시 있어야 해요. 그래서 지도학습이랍니다.
+\end{tipbox}
+
+\textbf{\emoji{desktop-computer} 시뮬레이터 시연: KNN 분류}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/fig13_KNN_학습모드.png}
+\caption{KNN 분류 시뮬레이터 — 학습 모드 화면}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|c|p{5cm}|p{5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{시연 내용} & \textbf{관찰 포인트} \\
+\hline
+설정 & 파란점(홍로)과 초록점(부사) 배치 & 두 품종이 영역별로 분포 \\
+\hline
+실행 & K=3 설정, 새 데이터 분류 & 가까운 3개 이웃 중 다수결 \\
+\hline
+해설 & K값 변경에 따른 결과 변화 & K가 클수록 안정적이지만 경계 둔감 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/fig20_KNN_추론모드.png}
+\caption{KNN 분류 시뮬레이터 — 추론 모드 화면}
+\end{figure}
+
+\emoji{pushpin} \textbf{학습 $\to$ 추론 전환}: 학습이 완료되면 `추론 모드' 탭을 클릭하세요. 새 사과의 특성값(크기, 색상)을 슬라이더로 조절하면 어떤 품종으로 분류되는지 즉시 확인할 수 있어요!
+
+\newpage
+
+\paragraph{사과농장 4장: 가격을 매기자 — 선형 회귀}
+
+사과의 품질(크기, 당도, 색상)과 가격 사이에는 어떤 관계가 있을까요?
+
+\begin{definitionbox}[\emoji{books} 선형 회귀]
+\textbf{선형 회귀 (Linear Regression)}: 데이터의 추세를 나타내는 \textbf{직선(추세선)}을 찾아, 새로운 입력에 대한 \textbf{연속적인 값을 예측}하는 방법
+\end{definitionbox}
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{품질 점수} & \textbf{실제 판매가} \\
+\hline
+60점 & 800원 \\
+\hline
+75점 & 1,200원 \\
+\hline
+90점 & 1,500원 \\
+\hline
+85점 & ??? \\
+\hline
+\end{tabular}
+\end{center}
+
+이 데이터를 그래프에 점으로 찍으면, 점들이 대략 직선 위에 놓여요. 선형 회귀는 이 점들 사이에 \textbf{``가장 잘 맞는 직선''}을 찾아서, 새로운 품질 점수(85점)의 가격을 예측합니다.
+
+\begin{tipbox}[\emoji{light-bulb} 핵심]
+분류(KNN)는 ``어떤 종류?''를 맞추고, 회귀(선형 회귀)는 ``얼마나?''를 예측해요.
+\end{tipbox}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{구분} & \textbf{분류 (Classification)} & \textbf{회귀 (Regression)} \\
+\hline
+질문 & ``어떤 종류?'' & ``얼마나?'' \\
+\hline
+출력 & 범주 (홍로/부사) & 숫자 (1,350원) \\
+\hline
+사과농장 & 2장 & 4장 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{\emoji{desktop-computer} 시뮬레이터 시연: 선형 회귀}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/fig14_선형회귀_학습모드.png}
+\caption{선형 회귀 시뮬레이터 — 학습 모드 화면}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|c|p{5cm}|p{5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{시연 내용} & \textbf{관찰 포인트} \\
+\hline
+설정 & 품질-가격 데이터 입력 (산점도) & 점들이 대략 직선 형태 \\
+\hline
+실행 & 학습 실행 $\to$ 추세선 생성 & 직선이 데이터에 맞춰지는 과정 \\
+\hline
+해설 & 새 데이터 입력 $\to$ 예측값 확인 & 추세선 위의 값이 예측 가격 \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+\paragraph{사과농장 5장: 어디로 보낼까? — 의사결정 트리}
+
+분류된 사과를 백화점, 대형마트, 온라인몰, 주스공장 중 어디로 보낼지 결정해야 해요.
+
+\begin{definitionbox}[\emoji{books} 의사결정 트리]
+\textbf{의사결정 트리 (Decision Tree)}: \textbf{예/아니오 질문을 반복}하여 최종 결정에 도달하는 방법
+\end{definitionbox}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{images/fig_decision_tree.png}
+\caption{사과 배송지 결정 의사결정 트리 — 예/아니오 질문으로 최적 배송지 도달}
+\end{figure}
+
+마치 스무고개 게임처럼, 예/아니오 질문을 통해 점점 좁혀가며 답을 찾아요!
+
+\textbf{의사결정 트리의 장점}: 사람이 이해하기 쉬움 (결정 과정이 투명), ``왜 이 결정을 했는가?'' 설명 가능, 데이터에서 가장 효과적인 질문 순서를 \textbf{자동으로} 학습.
+
+\begin{tipbox}[\emoji{light-bulb} 핵심]
+의사결정 트리도 정답 라벨(``백화점'', ``마트'' 등)이 있어야 학습할 수 있어요. 지도학습이죠!
+\end{tipbox}
+
+\textbf{\emoji{desktop-computer} 시뮬레이터 시연: 의사결정 트리}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/fig15_의사결정트리_학습분석모드.png}
+\caption{의사결정 트리 시뮬레이터 — 학습 \& 분석 모드 화면}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|c|p{5cm}|p{5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{시연 내용} & \textbf{관찰 포인트} \\
+\hline
+설정 & 사과 속성(크기, 품질) + 배송지 라벨 입력 & 학습 데이터 확인 \\
+\hline
+실행 & 트리 구조 자동 생성 & 어떤 질문이 먼저 나오는지 관찰 \\
+\hline
+해설 & 새 사과 입력 $\to$ 배송지 결정 경로 추적 & 질문 따라가며 결과 확인 \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+%--- 비지도학습 시뮬레이터 ---
+\subsubsection{비지도학습 시뮬레이터 시연}
+
+\paragraph{사과농장 3장: 크기별 등급 분류 — K-Means}
+
+수확한 사과를 크기별로 등급을 나눠야 하는데, 미리 정해진 기준이 없어요!
+
+\begin{definitionbox}[\emoji{books} K-Means]
+\textbf{K-Means 클러스터링}: 데이터를 \textbf{K개의 그룹}으로 나누되, 각 그룹의 \textbf{중심점(평균)}과 가장 가까운 데이터끼리 묶는 방법
+\end{definitionbox}
+
+사과농장에서의 활용: 사과들의 크기(무게, 지름) 데이터만 있고 ``대/중/소'' 라벨은 없음. K=3으로 설정하면, AI가 자동으로 3개 그룹으로 나눔.
+
+\textbf{K-Means의 작동 원리}:
+\begin{enumerate}[leftmargin=*]
+    \item K개의 중심점을 임의로 배치
+    \item 각 데이터를 가장 가까운 중심점의 그룹에 배정
+    \item 각 그룹의 평균 위치로 중심점 이동
+    \item 2\textasciitilde 3번 반복 $\to$ 중심점이 더 이상 움직이지 않으면 완료!
+\end{enumerate}
+
+\begin{tipbox}[\emoji{light-bulb} KNN vs K-Means — 이름이 비슷하지만 전혀 달라요!]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{구분} & \textbf{KNN (K-최근접 이웃)} & \textbf{K-Means (K-평균)} \\
+\hline
+학습 유형 & \textbf{지도학습} & \textbf{비지도학습} \\
+\hline
+라벨 필요? & \emoji{check-mark-button} 필요 & \emoji{cross-mark} 불필요 \\
+\hline
+K의 의미 & 이웃 수 & 그룹 수 \\
+\hline
+목적 & 새 데이터 분류 & 전체 데이터 그룹화 \\
+\hline
+사과농장 & 2장 (품종 분류) & 3장 (등급 분류) \\
+\hline
+\end{tabular}
+\end{center}
+\end{tipbox}
+
+\textbf{\emoji{desktop-computer} 시뮬레이터 시연: K-Means 클러스터링}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/fig16_Kmeans_학습모드.png}
+\caption{K-Means 클러스터링 시뮬레이터 — 학습 모드 화면}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|c|p{5cm}|p{5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{시연 내용} & \textbf{관찰 포인트} \\
+\hline
+설정 & 라벨 없는 데이터 점들 배치 & 라벨 없이 점들의 분포만 보임 \\
+\hline
+실행 & K=3 설정, 클러스터링 실행 & 중심점이 반복 이동하며 그룹 형성 \\
+\hline
+해설 & K값 변경 (K=2, K=4) 비교 & 같은 데이터도 K에 따라 그룹 달라짐 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/fig21_Kmeans_Inertia.png}
+\caption{Inertia(관성) 개념도 — 클러스터 품질을 어떻게 측정할까?}
+\end{figure}
+
+\emoji{pushpin} \textbf{Inertia가 낮을수록 좋은 클러스터!} 시뮬레이터에서 K값을 바꿔보면 Inertia 값이 변하는 것을 확인할 수 있어요.
+
+\newpage
+
+%--- 강화학습 시뮬레이터 ---
+\subsubsection{강화학습 시뮬레이터 시연}
+
+\textbf{\emoji{desktop-computer} 시뮬레이터 시연: 스네이크 강화학습}
+
+``AI가 시행착오를 통해 점점 똑똑해지는 과정을 직접 확인해 봅시다!''
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/fig19_Q러닝개념도.png}
+\caption{Q-Learning 알고리즘 개념도}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/fig17_스네이크RL_전체화면.png}
+\caption{스네이크 강화학습 시뮬레이터 — 전체 화면}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|c|p{5cm}|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{시연 내용} & \textbf{관찰 포인트} \\
+\hline
+설정 & 스네이크 게임 환경 준비 & AI 에이전트 초기 상태 (무작위 이동) \\
+\hline
+실행 & AI 학습 과정 관찰 & 처음: 벽에 부딪힘 $\to$ 나중: 먹이를 찾아감 \\
+\hline
+해설 & 학습 전후 비교 & 보상(먹이 +, 벽 $-$)만으로 전략 습득 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}[\emoji{pushpin} 시뮬레이터에서 확인하세요]
+아무도 ``먹이 쪽으로 가라''고 알려주지 않았는데, 보상만으로 AI가 전략을 만들어내는 과정을 관찰!
+\end{keybox}
+
+\newpage
+
+%--- 에필로그 ---
+\subsubsection{사과농장 에필로그: 스마트 과수원 완성!}
+
+``농부 김사과와 AI 로봇 알파의 스마트 과수원이 완성되었습니다! \emoji{party-popper}''
+
+5가지 AI 기술이 힘을 합쳐 사과 농장의 모든 과정을 자동화했어요:
+
+\begin{center}
+\begin{tabular}{|c|p{2cm}|l|c|p{3.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{순서} & \textbf{단계} & \textbf{AI 기술} & \textbf{학습 유형} & \textbf{역할} \\
+\hline
+1 & \emoji{deciduous-tree} 수확 & 딥러닝 CNN & 지도학습 & 익은 사과 판별 \\
+\hline
+2 & \emoji{magnifying-glass-tilted-left} 품종 분류 & KNN & 지도학습 & 섞인 품종 구분 \\
+\hline
+3 & \emoji{package} 등급 분류 & K-Means & 비지도학습 & 크기별 자동 그룹화 \\
+\hline
+4 & \emoji{money-bag} 가격 책정 & 선형 회귀 & 지도학습 & 품질-가격 예측 \\
+\hline
+5 & \emoji{delivery-truck} 배송 결정 & 의사결정 트리 & 지도학습 & 조건별 최적 배송지 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{핵심 교훈}:
+\begin{itemize}[leftmargin=*]
+    \item 하나의 현실 문제에도 \textbf{여러 가지 ML 기술}이 함께 사용될 수 있어요
+    \item 각 기술은 서로 다른 종류의 문제를 해결하기에 적합해요
+    \item \textbf{``어떤 도구를 쓸지 선택하는 능력''}이 진짜 중요합니다!
+\end{itemize}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 4. 전개 3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{orange-book} 전개 3: 머신러닝 학습 과정 4단계}
+
+사과농장에서 본 모든 AI 기술은 공통된 \textbf{4단계 학습 과정}을 따라요.
+
+\begin{tipbox}[\emoji{light-bulb} 연결]
+그림~2의 \textbf{① 학습 단계}와 \textbf{② 추론 단계}를 더 자세히 풀어보면 바로 이 4단계예요!
+\end{tipbox}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/fig10_머신러닝프로세스.png}
+\caption{머신러닝 4단계 프로세스}
+\end{figure}
+
+\subsection{1단계: 데이터 수집 (Data Collection)}
+
+\begin{tipbox}[\emoji{light-bulb} ``좋은 데이터 = 좋은 AI'']
+학습의 재료인 데이터를 모으는 단계예요. 데이터의 양과 질이 AI의 성능을 결정합니다.
+\end{tipbox}
+
+\begin{center}
+\begin{tabular}{|l|p{5cm}|p{4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{조건} & \textbf{설명} & \textbf{예시} \\
+\hline
+\emoji{check-mark-button} 충분한 양 & 수백\textasciitilde 수천 개 이상 & 사과 사진 1,000장 \\
+\hline
+\emoji{check-mark-button} 높은 품질 & 정확한 라벨, 선명한 이미지 & 흐릿한 사진 제외 \\
+\hline
+\emoji{check-mark-button} 다양성 & 다양한 조건 포함 & 맑은 날$\cdot$흐린 날$\cdot$다양한 품종 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{images/fig11_편향된데이터vs좋은데이터.png}
+\caption{편향된 데이터 vs 좋은 데이터}
+\end{figure}
+
+\emoji{warning} \textbf{데이터 편향 주의!} 빨간 사과 사진만으로 학습하면, 초록 사과를 ``사과가 아니다''라고 판단할 수 있어요.
+
+\textbf{엔트리 연결}: 3\textasciitilde 4주차 실습에서 웹캠으로 사진을 직접 촬영하는 것이 바로 1단계!
+
+\subsection{2단계: 학습 (Training)}
+
+수집한 데이터에서 \textbf{패턴을 찾는 과정}이에요. 그림~2의 \textbf{① 학습 단계}가 바로 이 단계입니다!
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{에포크(Epoch)}: 전체 데이터를 1회 학습하는 단위 (교과서 한 번 읽기 = 1에포크)
+    \item \textbf{가중치(Weight)}: 각 특징의 중요도를 나타내는 숫자
+    \item 에포크를 반복할수록 가중치가 조정되며 성능이 향상
+\end{itemize}
+
+\textbf{엔트리 연결}: ``모델 학습하기'' 버튼 = 2단계 실행!
+
+\subsection{3단계: 평가 (Testing)}
+
+학습이 끝난 모델을 \textbf{새로운 데이터로 테스트}하는 단계예요. 학습에 사용하지 않은 새 데이터로 정확도를 확인합니다. 시험 공부 후 모의고사를 보는 것과 같아요!
+
+\textbf{엔트리 연결}: 학습 후 표시되는 정확도(\%) = 3단계 결과!
+
+\subsection{4단계: 예측 (Prediction)}
+
+학습이 완료된 모델을 \textbf{실전에 적용}하는 단계예요. 그림~2의 \textbf{② 추론 단계}가 바로 이 단계입니다!
+
+완전히 새로운 입력 데이터에 대해 결과를 예측합니다. 사과농장: 새 사과 사진 $\to$ ``익었다!'' $\to$ 수확
+
+\textbf{엔트리 연결}: 새 이미지를 분류하는 것 = 4단계!
+
+\begin{keybox}[\emoji{pushpin} 사과농장도 이 4단계를 따랐어요]
+사과 사진 수집(1단계) $\to$ CNN 학습(2단계) $\to$ 정확도 확인(3단계) $\to$ 새 사과 판별(4단계)
+\end{keybox}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 5. 정리
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{memo} 정리}
+
+\subsection{오늘 배운 핵심 개념 4가지}
+
+\begin{summarybox}[\emoji{star} 핵심 정리]
+
+\textbf{① AI $\supset$ ML $\supset$ DL — 포함 관계}
+
+AI가 가장 큰 개념이고, 그 안에 기계학습이, 기계학습 안에 딥러닝이 포함되어 있어요.
+
+\textbf{② 전통적 프로그래밍 vs 인공지능 프로그래밍}
+
+전통적(규칙 $\to$ 결과) vs AI(① 학습: 데이터 $\to$ 모델, ② 추론: 새 입력 $\to$ 예측)
+
+\textbf{③ 3가지 학습 유형 (사과농장 연결)}
+
+\begin{center}
+\begin{tabular}{|l|l|p{3.5cm}|p{4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{유형} & \textbf{핵심} & \textbf{사과농장} & \textbf{시뮬레이터} \\
+\hline
+지도학습 & 라벨 있음 & 수확$\cdot$품종$\cdot$가격$\cdot$배송 & KNN, 선형 회귀, 의사결정 트리 \\
+\hline
+비지도학습 & 라벨 없음 & 등급 분류 & K-Means \\
+\hline
+강화학습 & 보상 & — & 스네이크 RL \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{④ 머신러닝 4단계 과정}
+
+데이터 수집 $\to$ 학습 $\to$ 평가 $\to$ 예측
+
+\end{summarybox}
+
+\subsection{엔트리 AI 모델과의 연결}
+
+오늘 배운 이론은 3\textasciitilde 4주차 엔트리 실습으로 이어집니다!
+
+\textbf{엔트리 이미지 분류 모델 = 지도학습}:
+\begin{enumerate}[leftmargin=*]
+    \item 웹캠으로 고양이/개 사진 촬영 (데이터 수집)
+    \item ``모델 학습하기'' 버튼 클릭 (학습)
+    \item 정확도 확인 — 예: 92\% (평가)
+    \item 새 이미지 실시간 분류 (예측)
+\end{enumerate}
+
+$\to$ \textbf{오늘 배운 지도학습의 4단계 과정이 그대로 적용됩니다!}
+
+\subsection{주요 용어 정리}
+
+\begin{center}
+\begin{tabular}{|l|l|p{7cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{용어} & \textbf{영문} & \textbf{의미} \\
+\hline
+모델 & Model & 데이터에서 학습된 규칙(패턴)의 집합 \\
+\hline
+추론 & Inference & 학습된 모델로 새 데이터를 예측하는 과정 \\
+\hline
+에포크 & Epoch & 전체 데이터 1회 학습 단위 \\
+\hline
+가중치 & Weight & 특징의 중요도 숫자 \\
+\hline
+정확도 & Accuracy & 맞춘 비율 (\%) \\
+\hline
+라벨 & Label & 데이터의 정답 표시 \\
+\hline
+특징 & Feature & 데이터의 속성 (크기, 색상 등) \\
+\hline
+군집화 & Clustering & 유사 데이터 그룹화 \\
+\hline
+보상 & Reward & 행동에 대한 피드백 \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 참고자료
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{참고자료}
+\addcontentsline{toc}{section}{참고자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|p{6cm}|p{2.5cm}|p{3.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & AI디지털리터러시\_강의계획서\_v1.3.0.0 & 프로젝트 문서 & 1주차 2차시 수업 계획 \\
+\hline
+2 & 2022 개정 교육과정 (교육부 고시 제2022-33호) & 교육부 문서 & [6실05-05] 성취기준 \\
+\hline
+3 & AI사과농장이야기 애니메이션 v1.5.0.0 & 교수 제공 & 5가지 ML 기술 스토리텔링 \\
+\hline
+4 & KNN 분류 시뮬레이터 & 교수 제공 & 지도학습 시연 (사과농장 2장) \\
+\hline
+5 & 선형 회귀 시뮬레이터 & 교수 제공 & 지도학습 시연 (사과농장 4장) \\
+\hline
+6 & 의사결정 트리 시뮬레이터 & 교수 제공 & 지도학습 시연 (사과농장 5장) \\
+\hline
+7 & K-Means 클러스터링 시뮬레이터 & 교수 제공 & 비지도학습 시연 (사과농장 3장) \\
+\hline
+8 & 스네이크 강화학습 시뮬레이터 & 교수 제공 & 강화학습 시연 \\
+\hline
+9 & 엔트리 (playentry.org) & 웹사이트 & 이미지 분류 모델 예시 \\
+\hline
+10 & CNN 사과분류 시뮬레이터 v1.1.1.0 & 교수 제공 & 딥러닝 CNN 시연 — 2주차 1차시 메인 시연 예정 \\
+\hline
+\end{tabular}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 생성/수정 이력
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{생성/수정 이력}
+\addcontentsline{toc}{section}{생성/수정 이력}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{|l|l|l|l|p{5.5cm}|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경 수준} & \textbf{변경 내용} & \textbf{작성자} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{tableheader}
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경 수준} & \textbf{변경 내용} & \textbf{작성자} \\
+\hline
+\endhead
+v2.1.0.0 & 2026-02-13 & 16:00 & 메이저 & 강의개요$\cdot$강의노트 v2.1.0.0 기반 교재 초안 신규 작성. AI사과농장 5종 시뮬레이터 통합, 시간 재배분 5-5-30-5-5 & Claude \\
+\hline
+v2.2.0.0 & 2026-02-14 & 02:30 & 마이너 & 시뮬레이터 썸네일 6종(그림~12\textasciitilde 17) + `왜 기계학습이 필요한가' 그림~18 추가. 사용 그림 11$\to$18종 & Claude \\
+\hline
+v2.3.0.0 & 2026-02-14 & 04:30 & 마이너 & 시뮬레이터 문서 이미지 확대 활용(그림~19\textasciitilde 21 추가). Q-러닝 개념도, KNN 추론모드, K-Means Inertia 개념도 삽입. 사용 그림 18$\to$21종 & Claude \\
+\hline
+v2.4.0.0 & 2026-02-14 & 11:00 & 마이너 & 이론/실습 분리. 전개2를 Part~A 이론$\cdot$Part~B 시뮬레이터 시연으로 재구성 & Claude \\
+\hline
+v2.5.0.0 & 2026-02-14 & 16:30 & 마이너 & CNN 사과분류 시뮬레이터 예고 추가. 사과농장 1장 fig22 삽입 + 2주차 예고 멘트 추가. 참고자료 CNN 시뮬레이터 v1.1.1.0 추가 & Claude \\
+\hline
+\end{longtable}
+\end{center}
+
+\end{document}

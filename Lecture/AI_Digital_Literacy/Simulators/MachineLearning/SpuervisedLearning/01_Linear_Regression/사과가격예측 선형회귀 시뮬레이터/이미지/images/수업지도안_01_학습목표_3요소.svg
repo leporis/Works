@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <linearGradient id="knowledgeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E53935"/>
+      <stop offset="100%" style="stop-color:#C62828"/>
+    </linearGradient>
+    <linearGradient id="skillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#43A047"/>
+      <stop offset="100%" style="stop-color:#2E7D32"/>
+    </linearGradient>
+    <linearGradient id="attitudeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1976D2"/>
+      <stop offset="100%" style="stop-color:#1565C0"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="800" height="450" fill="url(#bgGrad)"/>
+  
+  <!-- 제목 -->
+  <text x="400" y="35" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="22" font-weight="700" fill="#E53935">🎯 학습 목표 (3요소)</text>
+  <text x="400" y="58" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#5D4037">선형 회귀 시뮬레이터 2차시 수업</text>
+  
+  <!-- 중앙 원 -->
+  <circle cx="400" cy="240" r="60" fill="#FFC107" filter="url(#shadow)"/>
+  <text x="400" y="230" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" font-weight="700" fill="#3E2723">🍎</text>
+  <text x="400" y="248" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="600" fill="#3E2723">선형 회귀</text>
+  <text x="400" y="265" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">시뮬레이터</text>
+  
+  <!-- 연결선 -->
+  <line x1="340" y1="210" x2="240" y2="150" stroke="#E53935" stroke-width="3" stroke-dasharray="5,3"/>
+  <line x1="460" y1="210" x2="560" y2="150" stroke="#43A047" stroke-width="3" stroke-dasharray="5,3"/>
+  <line x1="400" y1="300" x2="400" y2="360" stroke="#1976D2" stroke-width="3" stroke-dasharray="5,3"/>
+  
+  <!-- 지식 영역 (왼쪽 상단) - 수정됨 -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="75" width="220" height="160" rx="16" fill="white" stroke="#E53935" stroke-width="2"/>
+    <rect x="50" y="75" width="220" height="45" rx="16" fill="url(#knowledgeGrad)"/>
+    <rect x="50" y="108" width="220" height="12" fill="url(#knowledgeGrad)"/>
+    <text x="160" y="105" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="white">📚 지식</text>
+    
+    <text x="70" y="145" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#3E2723" font-weight="600">품질 점수 계산 방법과</text>
+    <text x="70" y="165" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#3E2723" font-weight="600">단순 선형 회귀(y=wx+b)의</text>
+    <text x="70" y="185" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#3E2723" font-weight="600">원리를 설명할 수 있다.</text>
+    
+    <text x="70" y="210" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#8D6E63">✓ 당도+무게 → 품질 점수</text>
+    <text x="70" y="225" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#8D6E63">✓ 가중치(w)와 편향(b)의 의미</text>
+  </g>
+  
+  <!-- 기능 영역 (오른쪽 상단) - 수정됨 -->
+  <g filter="url(#shadow)">
+    <rect x="530" y="75" width="220" height="160" rx="16" fill="white" stroke="#43A047" stroke-width="2"/>
+    <rect x="530" y="75" width="220" height="45" rx="16" fill="url(#skillGrad)"/>
+    <rect x="530" y="108" width="220" height="12" fill="url(#skillGrad)"/>
+    <text x="640" y="105" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="white">🔧 기능</text>
+    
+    <text x="550" y="145" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#3E2723" font-weight="600">시뮬레이터를 활용하여</text>
+    <text x="550" y="165" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#3E2723" font-weight="600">오차선을 분석하고</text>
+    <text x="550" y="185" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#3E2723" font-weight="600">학습 과정을 재생할 수 있다.</text>
+    
+    <text x="550" y="210" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#8D6E63">✓ 오차선 토글 및 해석</text>
+    <text x="550" y="225" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#8D6E63">✓ 학습 과정 재생 기능 활용</text>
+  </g>
+  
+  <!-- 태도 영역 (하단 중앙) - 수정됨 -->
+  <g filter="url(#shadow)">
+    <rect x="200" y="335" width="400" height="100" rx="16" fill="white" stroke="#1976D2" stroke-width="2"/>
+    <rect x="200" y="335" width="400" height="45" rx="16" fill="url(#attitudeGrad)"/>
+    <rect x="200" y="368" width="400" height="12" fill="url(#attitudeGrad)"/>
+    <text x="400" y="365" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="white">💡 태도</text>
+    
+    <text x="220" y="400" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#3E2723" font-weight="600">실험 결과를 바탕으로 AI 모델의 한계를 인식하고 비판적으로 평가한다.</text>
+    <text x="220" y="422" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#8D6E63">✓ "AI는 항상 맞지 않다" 인식 ✓ R²와 오차를 통한 모델 평가</text>
+  </g>
+  
+  <!-- 하단 박스 -->
+  <rect x="50" y="250" width="130" height="60" rx="8" fill="#FFEBEE" filter="url(#shadow)"/>
+  <text x="115" y="275" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="#C62828">📖 이해하기</text>
+  <text x="115" y="295" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">개념과 원리</text>
+  
+  <rect x="620" y="250" width="130" height="60" rx="8" fill="#E8F5E9" filter="url(#shadow)"/>
+  <text x="685" y="275" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="#2E7D32">🛠️ 할 수 있기</text>
+  <text x="685" y="295" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">실습과 적용</text>
+</svg>

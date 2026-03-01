@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFF8E1"/>
+      <stop offset="100%" style="stop-color:#FFECB3"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <filter id="shadowLight" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.06"/>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="800" height="450" rx="12" fill="url(#bgGrad)"/>
+
+  <!-- 헤더 -->
+  <rect x="16" y="12" width="768" height="52" rx="10" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <text x="400" y="34" text-anchor="middle" font-size="15" font-weight="700" fill="#1976D2">📈 범용 선형회귀 시뮬레이터</text>
+  <rect x="600" y="23" width="62" height="20" rx="10" fill="#1976D2"/>
+  <text x="631" y="37" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">v1.4.0.0</text>
+  <text x="400" y="52" text-anchor="middle" font-size="9" fill="#795548">Y = wX + b</text>
+
+  <!-- 모드 탭 -->
+  <rect x="250" y="72" width="130" height="30" rx="15" fill="#1976D2" filter="url(#shadowLight)"/>
+  <text x="315" y="91" text-anchor="middle" font-size="11" font-weight="600" fill="#FFF">🧠 학습 모드</text>
+  <rect x="390" y="72" width="130" height="30" rx="15" fill="#FFF" stroke="#E0E0E0" stroke-width="1" filter="url(#shadowLight)"/>
+  <text x="455" y="91" text-anchor="middle" font-size="11" font-weight="500" fill="#888">🔮 추론 모드</text>
+
+  <!-- 교육용 영역 레이블 -->
+  <rect x="16" y="98" width="180" height="16" rx="8" fill="#1976D2" opacity="0.9"/>
+  <text x="106" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">① 데이터 입력</text>
+  <rect x="206" y="98" width="370" height="16" rx="8" fill="#FF9800" opacity="0.9"/>
+  <text x="391" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">② 회귀 시각화</text>
+  <rect x="586" y="98" width="198" height="16" rx="8" fill="#2E7D32" opacity="0.9"/>
+  <text x="685" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">③ 학습 설정</text>
+
+  <!-- 좌측: 데이터 입력 -->
+  <rect x="16" y="118" width="180" height="280" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="16" y="118" width="180" height="32" rx="10" fill="#E3F2FD"/>
+  <rect x="16" y="140" width="180" height="10" fill="#E3F2FD"/>
+  <text x="106" y="139" text-anchor="middle" font-size="12" font-weight="600" fill="#1976D2">📋 데이터 입력</text>
+
+  <!-- 탭 버튼들 -->
+  <rect x="28" y="158" width="48" height="20" rx="4" fill="#1976D2"/>
+  <text x="52" y="172" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">데이터셋</text>
+  <rect x="80" y="158" width="36" height="20" rx="4" fill="#FFF" stroke="#DDD" stroke-width="1"/>
+  <text x="98" y="172" text-anchor="middle" font-size="8" fill="#888">CSV</text>
+  <rect x="120" y="158" width="36" height="20" rx="4" fill="#FFF" stroke="#DDD" stroke-width="1"/>
+  <text x="138" y="172" text-anchor="middle" font-size="8" fill="#888">직접</text>
+
+  <!-- 변수 선택 -->
+  <text x="28" y="200" font-size="9" fill="#555">변수 선택</text>
+  <text x="28" y="216" font-size="9" fill="#555">X:</text>
+  <rect x="44" y="206" width="100" height="20" rx="4" fill="#FFF" stroke="#DDD" stroke-width="1"/>
+  <text x="52" y="220" font-size="8" fill="#333">경력(년)</text>
+  <text x="134" y="220" text-anchor="end" font-size="8" fill="#AAA">▼</text>
+  <text x="28" y="240" font-size="9" fill="#555">Y:</text>
+  <rect x="44" y="230" width="100" height="20" rx="4" fill="#FFF" stroke="#DDD" stroke-width="1"/>
+  <text x="52" y="244" font-size="8" fill="#333">연봉(만원)</text>
+  <text x="134" y="244" text-anchor="end" font-size="8" fill="#AAA">▼</text>
+
+  <!-- 데이터 테이블 미니 -->
+  <text x="28" y="270" font-size="9" fill="#555">데이터 테이블</text>
+  <rect x="28" y="276" width="156" height="60" rx="4" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+  <line x1="28" y1="290" x2="184" y2="290" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="60" y="287" text-anchor="middle" font-size="7" font-weight="600" fill="#555">경력</text>
+  <text x="130" y="287" text-anchor="middle" font-size="7" font-weight="600" fill="#555">연봉</text>
+  <text x="60" y="303" text-anchor="middle" font-size="7" fill="#666">3</text>
+  <text x="130" y="303" text-anchor="middle" font-size="7" fill="#666">3100</text>
+  <text x="60" y="316" text-anchor="middle" font-size="7" fill="#666">5</text>
+  <text x="130" y="316" text-anchor="middle" font-size="7" fill="#666">3600</text>
+  <text x="60" y="329" text-anchor="middle" font-size="7" fill="#666">…</text>
+  <text x="130" y="329" text-anchor="middle" font-size="7" fill="#666">…</text>
+
+  <!-- 중앙: 회귀 시각화 -->
+  <rect x="206" y="118" width="370" height="180" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <text x="230" y="136" font-size="10" font-weight="600" fill="#333">📉 손실 그래프</text>
+  <text x="410" y="136" font-size="10" font-weight="600" fill="#333">📈 산점도 + 회귀선</text>
+  <line x1="380" y1="142" x2="380" y2="290" stroke="#E0E0E0" stroke-width="1"/>
+
+  <!-- 손실 그래프 스케치 -->
+  <polyline points="220,270 240,230 260,200 280,185 300,178 320,175 340,174 360,173" fill="none" stroke="#1976D2" stroke-width="2"/>
+  <text x="290" y="160" text-anchor="middle" font-size="7" fill="#999">손실(MSE)</text>
+
+  <!-- 산점도 스케치 -->
+  <circle cx="410" cy="260" r="3" fill="#1976D2" opacity="0.6"/>
+  <circle cx="425" cy="245" r="3" fill="#1976D2" opacity="0.6"/>
+  <circle cx="440" cy="235" r="3" fill="#1976D2" opacity="0.6"/>
+  <circle cx="460" cy="220" r="3" fill="#1976D2" opacity="0.6"/>
+  <circle cx="480" cy="200" r="3" fill="#1976D2" opacity="0.6"/>
+  <circle cx="500" cy="185" r="3" fill="#1976D2" opacity="0.6"/>
+  <circle cx="520" cy="175" r="3" fill="#1976D2" opacity="0.6"/>
+  <circle cx="540" cy="165" r="3" fill="#1976D2" opacity="0.6"/>
+  <line x1="400" y1="272" x2="555" y2="158" stroke="#FF9800" stroke-width="2"/>
+
+  <!-- 하단 중앙: 학습 결과 -->
+  <rect x="206" y="304" width="370" height="94" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="206" y="304" width="370" height="28" rx="10" fill="#E3F2FD"/>
+  <rect x="206" y="322" width="370" height="10" fill="#E3F2FD"/>
+  <text x="391" y="323" text-anchor="middle" font-size="11" font-weight="600" fill="#1976D2">📊 학습 결과</text>
+
+  <!-- 교육 레이블: 학습 결과 -->
+  <rect x="206" y="290" width="370" height="16" rx="8" fill="#E65100" opacity="0.85"/>
+  <text x="391" y="301" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">④ 학습 결과</text>
+
+  <text x="220" y="348" font-size="9" font-weight="600" fill="#333">회귀 방정식:</text>
+  <text x="310" y="348" font-size="9" fill="#1976D2">Y = 200.0X + 2500.0</text>
+  <text x="220" y="366" font-size="9" font-weight="600" fill="#333">R²: </text>
+  <text x="248" y="366" font-size="9" fill="#2E7D32">0.92</text>
+  <text x="300" y="366" font-size="9" font-weight="600" fill="#333">MSE: </text>
+  <text x="335" y="366" font-size="9" fill="#E65100">15,234</text>
+  <rect x="220" y="374" width="100" height="18" rx="4" fill="#E3F2FD"/>
+  <text x="270" y="387" text-anchor="middle" font-size="8" fill="#1565C0">📏 오차 분석</text>
+  <rect x="330" y="374" width="120" height="18" rx="4" fill="#E3F2FD"/>
+  <text x="390" y="387" text-anchor="middle" font-size="8" fill="#1565C0">📽️ 학습 과정 재생</text>
+
+  <!-- 우측: 학습 설정 -->
+  <rect x="586" y="118" width="198" height="280" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="586" y="118" width="198" height="32" rx="10" fill="#E8F5E9"/>
+  <rect x="586" y="140" width="198" height="10" fill="#E8F5E9"/>
+  <text x="685" y="139" text-anchor="middle" font-size="12" font-weight="600" fill="#2E7D32">⚙️ 학습 설정</text>
+
+  <!-- 학습률 슬라이더 -->
+  <text x="600" y="168" font-size="9" fill="#555">학습률 (Learning Rate)</text>
+  <rect x="600" y="174" width="170" height="4" rx="2" fill="#E0E0E0"/>
+  <circle cx="685" cy="176" r="6" fill="#1976D2"/>
+  <text x="685" y="196" text-anchor="middle" font-size="9" font-weight="600" fill="#1976D2">0.01</text>
+
+  <!-- 에포크 슬라이더 -->
+  <text x="600" y="216" font-size="9" fill="#555">에포크 (반복 횟수)</text>
+  <rect x="600" y="222" width="170" height="4" rx="2" fill="#E0E0E0"/>
+  <circle cx="700" cy="224" r="6" fill="#1976D2"/>
+  <text x="700" y="244" text-anchor="middle" font-size="9" font-weight="600" fill="#1976D2">500</text>
+
+  <!-- 데이터 분할 -->
+  <text x="600" y="268" font-size="9" fill="#555">🔀 데이터 분할</text>
+  <rect x="600" y="276" width="136" height="12" rx="3" fill="#1976D2"/>
+  <rect x="736" y="276" width="34" height="12" rx="3" fill="#FF9800"/>
+  <text x="668" y="286" text-anchor="middle" font-size="7" font-weight="600" fill="#FFF">훈련 80%</text>
+  <text x="753" y="286" text-anchor="middle" font-size="7" font-weight="600" fill="#FFF">20%</text>
+  <text x="600" y="302" font-size="8" fill="#888">훈련 24개 · 테스트 6개</text>
+
+  <!-- 학습 실행 버튼 -->
+  <rect x="608" y="320" width="168" height="34" rx="8" fill="#1976D2" filter="url(#shadowLight)"/>
+  <text x="692" y="342" text-anchor="middle" font-size="12" font-weight="700" fill="#FFF">⚡ 학습 실행</text>
+
+  <!-- 초기화 버튼 -->
+  <rect x="608" y="362" width="168" height="26" rx="6" fill="#FFF" stroke="#DDD" stroke-width="1"/>
+  <text x="692" y="379" text-anchor="middle" font-size="10" fill="#888">🗑️ 초기화</text>
+</svg>

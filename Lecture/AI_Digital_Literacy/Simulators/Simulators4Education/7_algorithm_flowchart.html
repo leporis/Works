@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💻 알고리즘 순서도 시뮬레이터</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Nanum Gothic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0; padding: 20px; min-height: 100vh;
+        }
+        header { text-align: center; color: white; margin-bottom: 20px; }
+        h1 { margin: 0; font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+
+        .main-container {
+            max-width: 1500px; margin: 0 auto;
+            display: grid; grid-template-columns: 280px 1fr 320px; gap: 20px;
+        }
+        .panel {
+            background: white; border-radius: 20px;
+            padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .canvas-wrap {
+            background: white; border-radius: 20px;
+            padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        #flowCanvas {
+            width: 100%; height: 700px;
+            border-radius: 15px; background: #f8fafc;
+            border: 3px solid #e2e8f0; cursor: default;
+            display: block;
+        }
+
+        /* 블록 팔레트 */
+        .block-palette { display: flex; flex-direction: column; gap: 10px; margin: 15px 0; }
+        .block-item {
+            padding: 14px 16px; border-radius: 10px;
+            border: 2px solid transparent; cursor: pointer;
+            font-weight: bold; font-size: 0.95rem;
+            transition: all 0.2s; display: flex; align-items: center; gap: 10px;
+        }
+        .block-item:hover { transform: translateX(4px); box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
+        .block-item.selected { border-color: #333; transform: scale(1.03); }
+
+        .block-start   { background: #d1fae5; color: #065f46; }
+        .block-end     { background: #fee2e2; color: #991b1b; }
+        .block-process { background: #dbeafe; color: #1e40af; }
+        .block-decide  { background: #fef3c7; color: #92400e; }
+        .block-io      { background: #ede9fe; color: #4c1d95; }
+
+        .block-shape {
+            width: 36px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+        }
+
+        /* 예제 버튼 */
+        .example-btn {
+            width: 100%; padding: 12px; margin: 6px 0;
+            border: 2px solid #e2e8f0; border-radius: 10px;
+            background: white; font-size: 0.95rem; font-weight: bold;
+            cursor: pointer; transition: all 0.2s; text-align: left;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+        .example-btn:hover { background: #f0f9ff; border-color: #3b82f6; transform: translateY(-1px); }
+
+        /* 실행 버튼 */
+        .btn {
+            width: 100%; padding: 13px; border: none; border-radius: 10px;
+            font-size: 1rem; font-weight: bold; cursor: pointer;
+            margin: 7px 0; transition: all 0.3s;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn-run    { background: #10b981; color: white; }
+        .btn-step   { background: #3b82f6; color: white; }
+        .btn-reset  { background: #ef4444; color: white; }
+        .btn-clear  { background: #64748b; color: white; }
+
+        /* 실행 로그 */
+        .log-box {
+            background: #1e293b; color: #e2e8f0;
+            padding: 15px; border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem; line-height: 1.8;
+            min-height: 160px; max-height: 200px;
+            overflow-y: auto; margin: 15px 0;
+        }
+        .log-line { margin: 2px 0; }
+        .log-line.active { color: #fbbf24; font-weight: bold; }
+        .log-line.done   { color: #86efac; }
+        .log-line.branch { color: #c4b5fd; }
+
+        /* 변수 패널 */
+        .var-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        .var-table th, .var-table td {
+            padding: 8px 12px; text-align: left;
+            border-bottom: 1px solid #e2e8f0; font-size: 0.9rem;
+        }
+        .var-table th { background: #f8fafc; font-weight: bold; color: #334155; }
+        .var-table td.val { color: #3b82f6; font-weight: bold; font-family: 'Courier New', monospace; }
+
+        /* 정보박스 */
+        .info-box {
+            padding: 14px; border-radius: 10px;
+            margin: 12px 0; border-left: 4px solid;
+        }
+        .info-box h4 { margin: 0 0 8px 0; font-size: 0.95rem; }
+        .info-box p  { margin: 0; font-size: 0.88rem; line-height: 1.7; }
+        .info-blue  { background: #f0f9ff; border-color: #3b82f6; }
+        .info-blue h4 { color: #1e40af; }
+        .info-yellow { background: #fef3c7; border-color: #f59e0b; }
+        .info-yellow h4 { color: #92400e; }
+        .info-green  { background: #f0fdf4; border-color: #10b981; }
+        .info-green h4 { color: #065f46; }
+
+        /* 순서도 범례 */
+        .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+        .legend-item {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.82rem; font-weight: bold;
+        }
+        .legend-shape {
+            width: 32px; height: 22px; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; color: white; flex-shrink: 0;
+        }
+
+        /* 속도 조절 */
+        .speed-control { margin: 10px 0; }
+        .speed-control label { font-weight: bold; color: #334155; font-size: 0.9rem; }
+        input[type=range] {
+            width: 100%; height: 6px; border-radius: 3px;
+            background: linear-gradient(to right, #e2e8f0, #3b82f6);
+            outline: none; cursor: pointer; margin-top: 6px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 18px; height: 18px;
+            border-radius: 50%; background: #3b82f6; cursor: pointer;
+        }
+
+        @media (max-width: 1200px) { .main-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>💻 알고리즘 순서도 시뮬레이터</h1>
+    <p style="font-size:1.1rem; margin-top:10px;">순서도를 보고 알고리즘이 실행되는 과정을 단계별로 따라가 보세요!</p>
+</header>
+
+<div class="main-container">
+
+    <!-- 왼쪽: 블록 팔레트 & 예제 -->
+    <aside class="panel">
+        <h3 style="margin-top:0;">🧩 순서도 기호</h3>
+
+        <div class="block-palette">
+            <div class="block-item block-start">
+                <div class="block-shape">⬭</div>
+                <div>시작 / 끝<br><small style="font-weight:normal;">타원형</small></div>
+            </div>
+            <div class="block-item block-process">
+                <div class="block-shape">▭</div>
+                <div>처리<br><small style="font-weight:normal;">직사각형</small></div>
+            </div>
+            <div class="block-item block-decide">
+                <div class="block-shape">◇</div>
+                <div>판단 (조건)<br><small style="font-weight:normal;">마름모</small></div>
+            </div>
+            <div class="block-item block-io">
+                <div class="block-shape">▱</div>
+                <div>입력 / 출력<br><small style="font-weight:normal;">평행사변형</small></div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-shape" style="background:#10b981; border-radius:50%;">S/E</div>
+                시작/끝
+            </div>
+            <div class="legend-item">
+                <div class="legend-shape" style="background:#3b82f6;">처리</div>
+                처리
+            </div>
+            <div class="legend-item">
+                <div class="legend-shape" style="background:#f59e0b; transform:rotate(45deg); width:22px; height:22px;"></div>
+                &nbsp;판단
+            </div>
+            <div class="legend-item">
+                <div class="legend-shape" style="background:#8b5cf6;">입출력</div>
+                입출력
+            </div>
+        </div>
+
+        <hr style="border:none; border-top:2px solid #e2e8f0; margin:18px 0;">
+
+        <h3>📚 예제 알고리즘</h3>
+        <button class="example-btn" onclick="SimApp.loadExample('sum')">
+            ➕ 1부터 N까지 합계<br>
+            <small style="font-weight:normal; color:#64748b;">반복문 기초</small>
+        </button>
+        <button class="example-btn" onclick="SimApp.loadExample('max')">
+            🏆 두 수 중 최댓값<br>
+            <small style="font-weight:normal; color:#64748b;">조건문 기초</small>
+        </button>
+        <button class="example-btn" onclick="SimApp.loadExample('even')">
+            🔢 짝수/홀수 판별<br>
+            <small style="font-weight:normal; color:#64748b;">나머지 연산</small>
+        </button>
+        <button class="example-btn" onclick="SimApp.loadExample('count')">
+            🔄 카운트다운<br>
+            <small style="font-weight:normal; color:#64748b;">반복 감소</small>
+        </button>
+        <button class="example-btn" onclick="SimApp.loadExample('grade')">
+            📝 점수 등급 판별<br>
+            <small style="font-weight:normal; color:#64748b;">중첩 조건문</small>
+        </button>
+    </aside>
+
+    <!-- 중앙: 순서도 캔버스 -->
+    <main class="canvas-wrap">
+        <canvas id="flowCanvas"></canvas>
+    </main>
+
+    <!-- 오른쪽: 실행 제어 & 로그 -->
+    <aside class="panel">
+        <h3 style="margin-top:0;">▶️ 실행 제어</h3>
+
+        <div class="speed-control">
+            <label>실행 속도: <span id="speedLabel">보통</span></label>
+            <input type="range" id="speedSlider" min="1" max="5" value="3"
+                   oninput="SimApp.setSpeed(this.value)">
+        </div>
+
+        <button class="btn btn-run"  onclick="SimApp.runAll()">▶️ 전체 실행</button>
+        <button class="btn btn-step" onclick="SimApp.stepRun()">⏭️ 한 단계씩</button>
+        <button class="btn btn-reset" onclick="SimApp.resetRun()">⏮️ 처음으로</button>
+        <button class="btn btn-clear" onclick="SimApp.loadExample(SimApp.currentExample)">🔄 다시 불러오기</button>
+
+        <h4>📋 실행 로그</h4>
+        <div class="log-box" id="logBox">
+            <div class="log-line" style="color:#64748b;">예제를 선택하고 실행해보세요!</div>
+        </div>
+
+        <h4>📊 변수 상태</h4>
+        <table class="var-table" id="varTable">
+            <thead><tr><th>변수</th><th>값</th></tr></thead>
+            <tbody id="varBody">
+                <tr><td colspan="2" style="color:#94a3b8; text-align:center;">변수 없음</td></tr>
+            </tbody>
+        </table>
+
+        <div class="info-box info-blue">
+            <h4>💡 알고리즘이란?</h4>
+            <p>문제를 해결하기 위한<br>
+            <strong>순서가 있는 명령어 모음</strong>입니다.<br>
+            순서도는 알고리즘을<br>
+            그림으로 표현한 것이에요!</p>
+        </div>
+
+        <div class="info-box info-yellow">
+            <h4>📐 순서도 기호 의미</h4>
+            <p>
+            ⬭ <strong>타원:</strong> 시작·끝<br>
+            ▭ <strong>사각형:</strong> 계산·처리<br>
+            ◇ <strong>마름모:</strong> 예/아니오 판단<br>
+            ▱ <strong>평행사변형:</strong> 입력·출력
+            </p>
+        </div>
+
+        <div class="info-box info-green">
+            <h4>🎯 핵심 개념</h4>
+            <p>
+            <strong>순차:</strong> 위→아래 순서로 실행<br>
+            <strong>선택:</strong> 조건에 따라 분기<br>
+            <strong>반복:</strong> 조건 만족 시 반복
+            </p>
+        </div>
+    </aside>
+</div>
+
+<script>
+const SimApp = {
+    currentExample: 'sum',
+    stepIndex: 0,
+    isRunning: false,
+    stepDelay: 800,
+    nodes: [],
+    logs: [],
+    variables: {},
+
+    examples: {
+        sum: {
+            title: '1부터 N까지 합계',
+            input: { N: 5 },
+            nodes: [
+                { id:0,  type:'start',   label:'시작',          x:360, y:40  },
+                { id:1,  type:'io',      label:'N 입력 (N=5)',   x:360, y:120 },
+                { id:2,  type:'process', label:'i = 1\nsum = 0', x:360, y:210 },
+                { id:3,  type:'decide',  label:'i ≤ N ?',        x:360, y:310, yes:4, no:6 },
+                { id:4,  type:'process', label:'sum = sum + i',  x:360, y:410 },
+                { id:5,  type:'process', label:'i = i + 1',      x:360, y:490 },
+                { id:6,  type:'io',      label:'sum 출력',        x:360, y:590 },
+                { id:7,  type:'end',     label:'끝',             x:360, y:660 }
+            ],
+            edges: [
+                {from:0,to:1},{from:1,to:2},{from:2,to:3},
+                {from:3,to:4,label:'예'},{from:3,to:6,label:'아니오',side:'right'},
+                {from:4,to:5},{from:5,to:3,curve:true},
+                {from:6,to:7}
+            ],
+            steps: [
+                { node:0, log:'▶ 알고리즘 시작!', vars:{} },
+                { node:1, log:'📥 N = 5 입력', vars:{N:5} },
+                { node:2, log:'🔧 i = 1, sum = 0 초기화', vars:{N:5, i:1, sum:0} },
+                { node:3, log:'❓ i(1) ≤ N(5)? → 예', vars:{N:5, i:1, sum:0}, branch:'yes' },
+                { node:4, log:'➕ sum = 0 + 1 = 1', vars:{N:5, i:1, sum:1} },
+                { node:5, log:'🔼 i = 1 + 1 = 2', vars:{N:5, i:2, sum:1} },
+                { node:3, log:'❓ i(2) ≤ N(5)? → 예', vars:{N:5, i:2, sum:1}, branch:'yes' },
+                { node:4, log:'➕ sum = 1 + 2 = 3', vars:{N:5, i:2, sum:3} },
+                { node:5, log:'🔼 i = 2 + 1 = 3', vars:{N:5, i:3, sum:3} },
+                { node:3, log:'❓ i(3) ≤ N(5)? → 예', vars:{N:5, i:3, sum:3}, branch:'yes' },
+                { node:4, log:'➕ sum = 3 + 3 = 6', vars:{N:5, i:3, sum:6} },
+                { node:5, log:'🔼 i = 3 + 1 = 4', vars:{N:5, i:4, sum:6} },
+                { node:3, log:'❓ i(4) ≤ N(5)? → 예', vars:{N:5, i:4, sum:6}, branch:'yes' },
+                { node:4, log:'➕ sum = 6 + 4 = 10', vars:{N:5, i:4, sum:10} },
+                { node:5, log:'🔼 i = 4 + 1 = 5', vars:{N:5, i:5, sum:10} },
+                { node:3, log:'❓ i(5) ≤ N(5)? → 예', vars:{N:5, i:5, sum:10}, branch:'yes' },
+                { node:4, log:'➕ sum = 10 + 5 = 15', vars:{N:5, i:5, sum:15} },
+                { node:5, log:'🔼 i = 5 + 1 = 6', vars:{N:5, i:6, sum:15} },
+                { node:3, log:'❓ i(6) ≤ N(5)? → 아니오! 반복 종료', vars:{N:5, i:6, sum:15}, branch:'no' },
+                { node:6, log:'📤 결과 출력: sum = 15', vars:{N:5, i:6, sum:15} },
+                { node:7, log:'✅ 알고리즘 종료! (1+2+3+4+5 = 15)', vars:{N:5, i:6, sum:15} }
+            ]
+        },
+
+        max: {
+            title: '두 수 중 최댓값',
+            input: { A:7, B:3 },
+            nodes: [
+                { id:0, type:'start',   label:'시작',         x:360, y:40  },
+                { id:1, type:'io',      label:'A, B 입력\n(A=7, B=3)', x:360, y:130 },
+                { id:2, type:'decide',  label:'A > B ?',       x:360, y:240, yes:3, no:4 },
+                { id:3, type:'process', label:'max = A',       x:220, y:360 },
+                { id:4, type:'process', label:'max = B',       x:500, y:360 },
+                { id:5, type:'io',      label:'max 출력',       x:360, y:480 },
+                { id:6, type:'end',     label:'끝',            x:360, y:580 }
+            ],
+            edges: [
+                {from:0,to:1},{from:1,to:2},
+                {from:2,to:3,label:'예',side:'left'},
+                {from:2,to:4,label:'아니오',side:'right'},
+                {from:3,to:5},{from:4,to:5},
+                {from:5,to:6}
+            ],
+            steps: [
+                { node:0, log:'▶ 알고리즘 시작!', vars:{} },
+                { node:1, log:'📥 A = 7, B = 3 입력', vars:{A:7, B:3} },
+                { node:2, log:'❓ A(7) > B(3)? → 예!', vars:{A:7, B:3}, branch:'yes' },
+                { node:3, log:'🏆 max = A = 7', vars:{A:7, B:3, max:7} },
+                { node:5, log:'📤 출력: max = 7', vars:{A:7, B:3, max:7} },
+                { node:6, log:'✅ 알고리즘 종료! (최댓값 = 7)', vars:{A:7, B:3, max:7} }
+            ]
+        },
+
+        even: {
+            title: '짝수/홀수 판별',
+            input: { n:6 },
+            nodes: [
+                { id:0, type:'start',   label:'시작',           x:360, y:40  },
+                { id:1, type:'io',      label:'n 입력 (n=6)',    x:360, y:130 },
+                { id:2, type:'decide',  label:'n % 2 = 0 ?',    x:360, y:240, yes:3, no:4 },
+                { id:3, type:'io',      label:'"짝수" 출력',     x:210, y:370 },
+                { id:4, type:'io',      label:'"홀수" 출력',     x:510, y:370 },
+                { id:5, type:'end',     label:'끝',             x:360, y:500 }
+            ],
+            edges: [
+                {from:0,to:1},{from:1,to:2},
+                {from:2,to:3,label:'예',side:'left'},
+                {from:2,to:4,label:'아니오',side:'right'},
+                {from:3,to:5},{from:4,to:5}
+            ],
+            steps: [
+                { node:0, log:'▶ 알고리즘 시작!', vars:{} },
+                { node:1, log:'📥 n = 6 입력', vars:{n:6} },
+                { node:2, log:'❓ 6 % 2 = 0 ? → 예! (나머지가 0)', vars:{n:6, 'n%2':0}, branch:'yes' },
+                { node:3, log:'📤 "짝수" 출력!', vars:{n:6, 결과:'짝수'} },
+                { node:5, log:'✅ 알고리즘 종료! (6은 짝수)', vars:{n:6, 결과:'짝수'} }
+            ]
+        },
+
+        count: {
+            title: '카운트다운',
+            input: { n:5 },
+            nodes: [
+                { id:0, type:'start',   label:'시작',         x:360, y:40  },
+                { id:1, type:'io',      label:'n 입력 (n=5)', x:360, y:120 },
+                { id:2, type:'decide',  label:'n > 0 ?',      x:360, y:220, yes:3, no:5 },
+                { id:3, type:'io',      label:'n 출력',        x:360, y:330 },
+                { id:4, type:'process', label:'n = n - 1',    x:360, y:430 },
+                { id:5, type:'io',      label:'"발사!" 출력', x:360, y:560 },
+                { id:6, type:'end',     label:'끝',           x:360, y:645 }
+            ],
+            edges: [
+                {from:0,to:1},{from:1,to:2},
+                {from:2,to:3,label:'예'},{from:2,to:5,label:'아니오',side:'right'},
+                {from:3,to:4},{from:4,to:2,curve:true},
+                {from:5,to:6}
+            ],
+            steps: [
+                { node:0, log:'▶ 알고리즘 시작!', vars:{} },
+                { node:1, log:'📥 n = 5 입력', vars:{n:5} },
+                { node:2, log:'❓ n(5) > 0? → 예', vars:{n:5}, branch:'yes' },
+                { node:3, log:'📤 5 출력', vars:{n:5} },
+                { node:4, log:'🔽 n = 5 - 1 = 4', vars:{n:4} },
+                { node:2, log:'❓ n(4) > 0? → 예', vars:{n:4}, branch:'yes' },
+                { node:3, log:'📤 4 출력', vars:{n:4} },
+                { node:4, log:'🔽 n = 4 - 1 = 3', vars:{n:3} },
+                { node:2, log:'❓ n(3) > 0? → 예', vars:{n:3}, branch:'yes' },
+                { node:3, log:'📤 3 출력', vars:{n:3} },
+                { node:4, log:'🔽 n = 3 - 1 = 2', vars:{n:2} },
+                { node:2, log:'❓ n(2) > 0? → 예', vars:{n:2}, branch:'yes' },
+                { node:3, log:'📤 2 출력', vars:{n:2} },
+                { node:4, log:'🔽 n = 2 - 1 = 1', vars:{n:1} },
+                { node:2, log:'❓ n(1) > 0? → 예', vars:{n:1}, branch:'yes' },
+                { node:3, log:'📤 1 출력', vars:{n:1} },
+                { node:4, log:'🔽 n = 1 - 1 = 0', vars:{n:0} },
+                { node:2, log:'❓ n(0) > 0? → 아니오! 반복 종료', vars:{n:0}, branch:'no' },
+                { node:5, log:'📤 "🚀 발사!" 출력', vars:{n:0} },
+                { node:6, log:'✅ 알고리즘 종료!', vars:{n:0} }
+            ]
+        },
+
+        grade: {
+            title: '점수 등급 판별',
+            input: { score:82 },
+            nodes: [
+                { id:0, type:'start',   label:'시작',            x:360, y:30  },
+                { id:1, type:'io',      label:'score 입력(82)',   x:360, y:110 },
+                { id:2, type:'decide',  label:'score ≥ 90?',     x:360, y:200, yes:3, no:4 },
+                { id:3, type:'io',      label:'"A" 출력',         x:180, y:300 },
+                { id:4, type:'decide',  label:'score ≥ 80?',     x:520, y:200, yes:5, no:6 },
+                { id:5, type:'io',      label:'"B" 출력',         x:520, y:300 },
+                { id:6, type:'decide',  label:'score ≥ 70?',     x:520, y:390, yes:7, no:8 },
+                { id:7, type:'io',      label:'"C" 출력',         x:390, y:490 },
+                { id:8, type:'io',      label:'"D" 출력',         x:640, y:490 },
+                { id:9, type:'end',     label:'끝',              x:360, y:600 }
+            ],
+            edges: [
+                {from:0,to:1},{from:1,to:2},
+                {from:2,to:3,label:'예',side:'left'},
+                {from:2,to:4,label:'아니오',side:'right'},
+                {from:4,to:5,label:'예',side:'left'},
+                {from:4,to:6,label:'아니오'},
+                {from:6,to:7,label:'예',side:'left'},
+                {from:6,to:8,label:'아니오',side:'right'},
+                {from:3,to:9},{from:5,to:9},{from:7,to:9},{from:8,to:9}
+            ],
+            steps: [
+                { node:0, log:'▶ 알고리즘 시작!', vars:{} },
+                { node:1, log:'📥 score = 82 입력', vars:{score:82} },
+                { node:2, log:'❓ score(82) ≥ 90? → 아니오', vars:{score:82}, branch:'no' },
+                { node:4, log:'❓ score(82) ≥ 80? → 예!', vars:{score:82}, branch:'yes' },
+                { node:5, log:'📤 등급 "B" 출력!', vars:{score:82, 등급:'B'} },
+                { node:9, log:'✅ 알고리즘 종료! (82점 → B등급)', vars:{score:82, 등급:'B'} }
+            ]
+        }
+    },
+
+    viz: {
+        ctx: null, canvas: null,
+        activeNode: -1,
+
+        init() {
+            this.canvas = document.getElementById('flowCanvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.resize();
+            window.addEventListener('resize', () => this.resize());
+        },
+
+        resize() {
+            const p = this.canvas.parentElement;
+            this.canvas.width  = p.clientWidth - 40;
+            this.canvas.height = 700;
+        },
+
+        draw(nodes, edges, activeNodeId) {
+            const ctx = this.ctx;
+            const w = this.canvas.width, h = this.canvas.height;
+            const ex = SimApp.examples[SimApp.currentExample];
+
+            // 캔버스 중앙 오프셋 계산
+            const maxX = Math.max(...nodes.map(n => n.x)) + 80;
+            const minX = Math.min(...nodes.map(n => n.x)) - 80;
+            const offsetX = (w - (maxX - minX)) / 2 - minX;
+
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, w, h);
+
+            // 제목
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 20px Nanum Gothic';
+            ctx.textAlign = 'center';
+            ctx.fillText('📊 ' + ex.title, w / 2, 30);
+
+            // 엣지 그리기
+            edges.forEach(edge => this.drawEdge(ctx, nodes, edge, offsetX));
+
+            // 노드 그리기
+            nodes.forEach(node => this.drawNode(ctx, node, node.id === activeNodeId, offsetX));
+        },
+
+        drawEdge(ctx, nodes, edge, offsetX) {
+            const from = nodes.find(n => n.id === edge.from);
+            const to   = nodes.find(n => n.id === edge.to);
+            if (!from || !to) return;
+
+            const fx = from.x + offsetX, tx = to.x + offsetX;
+            const fy = from.y, ty = to.y;
+
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([]);
+
+            if (edge.curve) {
+                // 반복 화살표 (왼쪽으로 돌아가는 곡선)
+                ctx.beginPath();
+                ctx.moveTo(fx, fy + 35);
+                ctx.lineTo(fx - 80, fy + 35);
+                ctx.lineTo(tx - 80, ty - 35);
+                ctx.lineTo(tx, ty - 35);
+                ctx.stroke();
+                this.drawArrowHead(ctx, tx - 10, ty - 35, tx + 5, ty - 35);
+            } else if (edge.side === 'right') {
+                ctx.beginPath();
+                ctx.moveTo(fx + 50, fy);
+                ctx.lineTo(tx, fy);
+                ctx.lineTo(tx, ty - 35);
+                ctx.stroke();
+                this.drawArrowHead(ctx, tx, ty - 45, tx, ty - 30);
+            } else if (edge.side === 'left') {
+                ctx.beginPath();
+                ctx.moveTo(fx - 50, fy);
+                ctx.lineTo(tx, fy);
+                ctx.lineTo(tx, ty - 35);
+                ctx.stroke();
+                this.drawArrowHead(ctx, tx, ty - 45, tx, ty - 30);
+            } else {
+                ctx.beginPath();
+                ctx.moveTo(fx, fy + 35);
+                ctx.lineTo(tx, ty - 35);
+                ctx.stroke();
+                this.drawArrowHead(ctx, fx, fy + 35, tx, ty - 35);
+            }
+
+            // 엣지 라벨
+            if (edge.label) {
+                ctx.fillStyle = '#ef4444';
+                ctx.font = 'bold 13px Nanum Gothic';
+                ctx.textAlign = 'center';
+                const lx = edge.side === 'right' ? fx + 75 :
+                           edge.side === 'left'  ? fx - 75 : fx + 15;
+                const ly = edge.side ? fy - 12 : (fy + ty) / 2;
+                ctx.fillText(edge.label, lx, ly);
+            }
+        },
+
+        drawArrowHead(ctx, x1, y1, x2, y2) {
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            const len = 12;
+            ctx.fillStyle = '#94a3b8';
+            ctx.beginPath();
+            ctx.moveTo(x2, y2);
+            ctx.lineTo(x2 - len * Math.cos(angle - 0.4), y2 - len * Math.sin(angle - 0.4));
+            ctx.lineTo(x2 - len * Math.cos(angle + 0.4), y2 - len * Math.sin(angle + 0.4));
+            ctx.closePath();
+            ctx.fill();
+        },
+
+        drawNode(ctx, node, isActive, offsetX) {
+            const x = node.x + offsetX, y = node.y;
+            const colors = {
+                start:   { bg:'#10b981', border:'#059669', text:'white' },
+                end:     { bg:'#ef4444', border:'#dc2626', text:'white' },
+                process: { bg: isActive ? '#1d4ed8' : '#3b82f6', border:'#1e40af', text:'white' },
+                decide:  { bg: isActive ? '#d97706' : '#f59e0b', border:'#b45309', text:'white' },
+                io:      { bg:'#8b5cf6', border:'#6d28d9', text:'white' }
+            };
+            const c = colors[node.type] || colors.process;
+
+            // 활성 노드 강조 효과
+            if (isActive) {
+                ctx.shadowColor = 'rgba(251, 191, 36, 0.8)';
+                ctx.shadowBlur = 20;
+            } else {
+                ctx.shadowBlur = 0;
+            }
+
+            ctx.fillStyle = c.bg;
+            ctx.strokeStyle = isActive ? '#fbbf24' : c.border;
+            ctx.lineWidth = isActive ? 4 : 2;
+
+            if (node.type === 'start' || node.type === 'end') {
+                // 타원
+                ctx.beginPath();
+                ctx.ellipse(x, y, 70, 28, 0, 0, Math.PI * 2);
+                ctx.fill(); ctx.stroke();
+            } else if (node.type === 'decide') {
+                // 마름모
+                ctx.beginPath();
+                ctx.moveTo(x, y - 32);
+                ctx.lineTo(x + 70, y);
+                ctx.lineTo(x, y + 32);
+                ctx.lineTo(x - 70, y);
+                ctx.closePath();
+                ctx.fill(); ctx.stroke();
+            } else if (node.type === 'io') {
+                // 평행사변형
+                ctx.beginPath();
+                ctx.moveTo(x - 60, y - 25);
+                ctx.lineTo(x + 70, y - 25);
+                ctx.lineTo(x + 60, y + 25);
+                ctx.lineTo(x - 70, y + 25);
+                ctx.closePath();
+                ctx.fill(); ctx.stroke();
+            } else {
+                // 사각형
+                ctx.beginPath();
+                ctx.roundRect(x - 70, y - 28, 140, 56, 6);
+                ctx.fill(); ctx.stroke();
+            }
+
+            ctx.shadowBlur = 0;
+
+            // 텍스트
+            ctx.fillStyle = c.text;
+            ctx.textAlign = 'center';
+            const lines = node.label.split('\n');
+            if (lines.length === 1) {
+                ctx.font = `bold ${node.label.length > 12 ? 12 : 14}px Nanum Gothic`;
+                ctx.fillText(node.label, x, y + 5);
+            } else {
+                ctx.font = 'bold 12px Nanum Gothic';
+                lines.forEach((line, i) => {
+                    ctx.fillText(line, x, y - 4 + i * 18);
+                });
+            }
+        }
+    },
+
+    init() {
+        this.viz.init();
+        this.loadExample('sum');
+    },
+
+    loadExample(name) {
+        this.currentExample = name;
+        this.stepIndex = 0;
+        this.isRunning = false;
+        this.variables = {};
+
+        const ex = this.examples[name];
+        this.viz.draw(ex.nodes, ex.edges, -1);
+
+        document.getElementById('logBox').innerHTML =
+            '<div class="log-line" style="color:#64748b;">▶️ "전체 실행" 또는 "한 단계씩"을 눌러보세요!</div>';
+        this.updateVarTable({});
+    },
+
+    stepRun() {
+        const ex = this.examples[this.currentExample];
+        if (this.stepIndex >= ex.steps.length) {
+            this.stepIndex = 0;
+            this.viz.draw(ex.nodes, ex.edges, -1);
+            return;
+        }
+        this.executeStep(this.stepIndex);
+        this.stepIndex++;
+    },
+
+    executeStep(idx) {
+        const ex = this.examples[this.currentExample];
+        const step = ex.steps[idx];
+
+        this.viz.draw(ex.nodes, ex.edges, step.node);
+        this.updateVarTable(step.vars);
+        this.appendLog(step.log, step.branch);
+    },
+
+    runAll() {
+        if (this.isRunning) return;
+        this.isRunning = true;
+        this.stepIndex = 0;
+
+        const ex = this.examples[this.currentExample];
+        document.getElementById('logBox').innerHTML = '';
+
+        const runNext = () => {
+            if (this.stepIndex >= ex.steps.length || !this.isRunning) {
+                this.isRunning = false;
+                this.stepIndex = ex.steps.length;
+                return;
+            }
+            this.executeStep(this.stepIndex);
+            this.stepIndex++;
+            setTimeout(runNext, this.stepDelay);
+        };
+        runNext();
+    },
+
+    resetRun() {
+        this.isRunning = false;
+        this.stepIndex = 0;
+        const ex = this.examples[this.currentExample];
+        this.viz.draw(ex.nodes, ex.edges, -1);
+        document.getElementById('logBox').innerHTML =
+            '<div class="log-line" style="color:#64748b;">처음으로 돌아왔습니다. 다시 실행해보세요!</div>';
+        this.updateVarTable({});
+    },
+
+    appendLog(msg, branch) {
+        const box = document.getElementById('logBox');
+        const div = document.createElement('div');
+        div.className = 'log-line' + (branch ? ' branch' : ' active');
+        div.textContent = msg;
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    },
+
+    updateVarTable(vars) {
+        const tbody = document.getElementById('varBody');
+        const keys = Object.keys(vars);
+        if (keys.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="2" style="color:#94a3b8; text-align:center;">변수 없음</td></tr>';
+            return;
+        }
+        tbody.innerHTML = keys.map(k =>
+            `<tr><td><strong>${k}</strong></td><td class="val">${vars[k]}</td></tr>`
+        ).join('');
+    },
+
+    setSpeed(val) {
+        const labels = { 1:'느림', 2:'약간 느림', 3:'보통', 4:'빠름', 5:'매우 빠름' };
+        const delays  = { 1:1800, 2:1200, 3:800, 4:400, 5:150 };
+        this.stepDelay = delays[val];
+        document.getElementById('speedLabel').textContent = labels[val];
+    }
+};
+
+window.onload = () => SimApp.init();
+</script>
+</body>
+</html>

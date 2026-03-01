@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 660" font-family="'Noto Sans KR', sans-serif">
+  <defs>
+    <filter id="ds"><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-opacity="0.10"/></filter>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="900" height="660" rx="12" fill="#FAFAFA"/>
+
+  <!-- 제목 영역 -->
+  <rect x="0" y="0" width="900" height="78" rx="12" fill="#1976D2"/>
+  <rect x="0" y="40" width="900" height="38" fill="#1976D2"/>
+  <text x="450" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">설득 권력의 작동 방식 — 시대별 비교</text>
+  <text x="450" y="62" text-anchor="middle" font-size="13" font-weight="400" fill="#BBDEFB">『권력과 진보』 3장 · Power to Persuade</text>
+
+  <!-- ========== 3열 비교 카드 ========== -->
+  <!-- 카드 폭 260, 간격 20, 시작 x=50, 330, 610 -->
+
+  <!-- ===== 카드 1: 중세 교회 ===== -->
+  <rect x="40" y="96" width="260" height="410" rx="12" fill="#E8EAF6" stroke="#5C6BC0" stroke-width="1.5" filter="url(#ds)"/>
+  <!-- 헤더 -->
+  <rect x="40" y="96" width="260" height="50" rx="12" fill="#3F51B5"/>
+  <rect x="40" y="126" width="260" height="20" fill="#3F51B5"/>
+  <text x="170" y="123" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">⛪ 중세 교회</text>
+  <text x="170" y="142" text-anchor="middle" font-size="11" fill="#C5CAE9">11 ~ 14세기</text>
+
+  <!-- 비전 설정자 -->
+  <text x="56" y="172" font-size="10" font-weight="700" fill="#283593">비전 설정자</text>
+  <text x="56" y="190" font-size="13" fill="#3F51B5">교황 · 주교 · 수도원장</text>
+  <line x1="56" y1="200" x2="284" y2="200" stroke="#C5CAE9" stroke-width="1"/>
+
+  <!-- 핵심 내러티브 -->
+  <text x="56" y="220" font-size="10" font-weight="700" fill="#283593">핵심 내러티브</text>
+  <rect x="56" y="228" width="220" height="36" rx="6" fill="#C5CAE9" opacity="0.4"/>
+  <text x="166" y="250" text-anchor="middle" font-size="13" font-weight="600" fill="#1A237E">"이것은 신의 뜻이다"</text>
+  <line x1="56" y1="272" x2="284" y2="272" stroke="#C5CAE9" stroke-width="1"/>
+
+  <!-- 비판 차단 -->
+  <text x="56" y="292" font-size="10" font-weight="700" fill="#283593">비판 차단 논리</text>
+  <text x="56" y="310" font-size="13" fill="#3F51B5">"신성 모독" · "이단"</text>
+  <line x1="56" y1="320" x2="284" y2="320" stroke="#C5CAE9" stroke-width="1"/>
+
+  <!-- 피해자 -->
+  <text x="56" y="340" font-size="10" font-weight="700" fill="#283593">피해자</text>
+  <text x="56" y="358" font-size="13" fill="#3F51B5">농민 · 농노</text>
+  <line x1="56" y1="368" x2="284" y2="368" stroke="#C5CAE9" stroke-width="1"/>
+
+  <!-- 잉여 행방 -->
+  <text x="56" y="388" font-size="10" font-weight="700" fill="#283593">잉여의 행방</text>
+  <text x="56" y="406" font-size="13" fill="#3F51B5">거대 성당 건축</text>
+  <line x1="56" y1="416" x2="284" y2="416" stroke="#C5CAE9" stroke-width="1"/>
+
+  <!-- 설득 도구 -->
+  <text x="56" y="436" font-size="10" font-weight="700" fill="#283593">설득 도구</text>
+  <text x="56" y="454" font-size="12" fill="#3F51B5">설교 · 의례 · 성인 전설</text>
+  <text x="56" y="472" font-size="12" fill="#3F51B5">문맹 대중에게 시각적 설득</text>
+
+  <!-- ===== 카드 2: 산업혁명 ===== -->
+  <rect x="320" y="96" width="260" height="410" rx="12" fill="#E0F2F1" stroke="#00897B" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="320" y="96" width="260" height="50" rx="12" fill="#00897B"/>
+  <rect x="320" y="126" width="260" height="20" fill="#00897B"/>
+  <text x="450" y="123" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">🏭 산업혁명</text>
+  <text x="450" y="142" text-anchor="middle" font-size="11" fill="#B2DFDB">18 ~ 19세기</text>
+
+  <text x="336" y="172" font-size="10" font-weight="700" fill="#004D40">비전 설정자</text>
+  <text x="336" y="190" font-size="13" fill="#00897B">공장주 · 경제학자</text>
+  <line x1="336" y1="200" x2="564" y2="200" stroke="#B2DFDB" stroke-width="1"/>
+
+  <text x="336" y="220" font-size="10" font-weight="700" fill="#004D40">핵심 내러티브</text>
+  <rect x="336" y="228" width="220" height="36" rx="6" fill="#B2DFDB" opacity="0.4"/>
+  <text x="446" y="250" text-anchor="middle" font-size="13" font-weight="600" fill="#004D40">"자유 시장이 모두를 살린다"</text>
+  <line x1="336" y1="272" x2="564" y2="272" stroke="#B2DFDB" stroke-width="1"/>
+
+  <text x="336" y="292" font-size="10" font-weight="700" fill="#004D40">비판 차단 논리</text>
+  <text x="336" y="310" font-size="13" fill="#00897B">"시장 방해자" · "비효율"</text>
+  <line x1="336" y1="320" x2="564" y2="320" stroke="#B2DFDB" stroke-width="1"/>
+
+  <text x="336" y="340" font-size="10" font-weight="700" fill="#004D40">피해자</text>
+  <text x="336" y="358" font-size="13" fill="#00897B">공장 노동자 · 아동</text>
+  <line x1="336" y1="368" x2="564" y2="368" stroke="#B2DFDB" stroke-width="1"/>
+
+  <text x="336" y="388" font-size="10" font-weight="700" fill="#004D40">잉여의 행방</text>
+  <text x="336" y="406" font-size="13" fill="#00897B">자본가의 부 축적</text>
+  <line x1="336" y1="416" x2="564" y2="416" stroke="#B2DFDB" stroke-width="1"/>
+
+  <text x="336" y="436" font-size="10" font-weight="700" fill="#004D40">설득 도구</text>
+  <text x="336" y="454" font-size="12" fill="#00897B">경제학 이론 · 신문</text>
+  <text x="336" y="472" font-size="12" fill="#00897B">"보이지 않는 손" 담론</text>
+
+  <!-- ===== 카드 3: 빅테크 ===== -->
+  <rect x="600" y="96" width="260" height="410" rx="12" fill="#F3E5F5" stroke="#8E24AA" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="600" y="96" width="260" height="50" rx="12" fill="#7B1FA2"/>
+  <rect x="600" y="126" width="260" height="20" fill="#7B1FA2"/>
+  <text x="730" y="123" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">💻 빅테크</text>
+  <text x="730" y="142" text-anchor="middle" font-size="11" fill="#CE93D8">21세기</text>
+
+  <text x="616" y="172" font-size="10" font-weight="700" fill="#4A148C">비전 설정자</text>
+  <text x="616" y="190" font-size="13" fill="#7B1FA2">빅테크 CEO · 벤처캐피털</text>
+  <line x1="616" y1="200" x2="844" y2="200" stroke="#CE93D8" stroke-width="1"/>
+
+  <text x="616" y="220" font-size="10" font-weight="700" fill="#4A148C">핵심 내러티브</text>
+  <rect x="616" y="228" width="220" height="36" rx="6" fill="#CE93D8" opacity="0.3"/>
+  <text x="726" y="250" text-anchor="middle" font-size="13" font-weight="600" fill="#4A148C">"혁신이 세상을 더 낫게 한다"</text>
+  <line x1="616" y1="272" x2="844" y2="272" stroke="#CE93D8" stroke-width="1"/>
+
+  <text x="616" y="292" font-size="10" font-weight="700" fill="#4A148C">비판 차단 논리</text>
+  <text x="616" y="310" font-size="13" fill="#7B1FA2">"규제 만능주의" · "러다이트"</text>
+  <line x1="616" y1="320" x2="844" y2="320" stroke="#CE93D8" stroke-width="1"/>
+
+  <text x="616" y="340" font-size="10" font-weight="700" fill="#4A148C">피해자</text>
+  <text x="616" y="358" font-size="13" fill="#7B1FA2">플랫폼 노동자 · 이용자</text>
+  <line x1="616" y1="368" x2="844" y2="368" stroke="#CE93D8" stroke-width="1"/>
+
+  <text x="616" y="388" font-size="10" font-weight="700" fill="#4A148C">잉여의 행방</text>
+  <text x="616" y="406" font-size="13" fill="#7B1FA2">주주 배당 · 자사주 매입</text>
+  <line x1="616" y1="416" x2="844" y2="416" stroke="#CE93D8" stroke-width="1"/>
+
+  <text x="616" y="436" font-size="10" font-weight="700" fill="#4A148C">설득 도구</text>
+  <text x="616" y="454" font-size="12" fill="#7B1FA2">알고리즘 · TED 강연</text>
+  <text x="616" y="472" font-size="12" fill="#7B1FA2">"기술 중립성" 담론</text>
+
+  <!-- ========== 하단: 공통 구조 흐름도 ========== -->
+  <line x1="40" y1="522" x2="860" y2="522" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="450" y="544" text-anchor="middle" font-size="13" font-weight="700" fill="#424242">설득 권력의 공통 작동 구조</text>
+
+  <!-- 4단계 흐름 -->
+  <rect x="60" y="556" width="160" height="44" rx="8" fill="#1976D2" filter="url(#ds)"/>
+  <text x="140" y="583" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">비전 설정자</text>
+
+  <!-- 화살표 1→2 -->
+  <text x="232" y="583" text-anchor="middle" font-size="18" fill="#1976D2">→</text>
+
+  <rect x="248" y="556" width="160" height="44" rx="8" fill="#1565C0" filter="url(#ds)"/>
+  <text x="328" y="583" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">내러티브 확산</text>
+
+  <!-- 화살표 2→3 -->
+  <text x="420" y="583" text-anchor="middle" font-size="18" fill="#1976D2">→</text>
+
+  <rect x="436" y="556" width="160" height="44" rx="8" fill="#0D47A1" filter="url(#ds)"/>
+  <text x="516" y="578" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">대중의 동의</text>
+  <text x="516" y="593" text-anchor="middle" font-size="10" fill="#90CAF9">"상식이 되다"</text>
+
+  <!-- 화살표 3→4 -->
+  <text x="608" y="583" text-anchor="middle" font-size="18" fill="#1976D2">→</text>
+
+  <rect x="624" y="556" width="216" height="44" rx="8" fill="#E65100" filter="url(#ds)"/>
+  <text x="732" y="578" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">비판 차단</text>
+  <text x="732" y="593" text-anchor="middle" font-size="10" fill="#FFE0B2">"비현실적이다" "방해자다"</text>
+
+  <!-- ========== 최하단: 핵심 질문 ========== -->
+  <rect x="100" y="616" width="700" height="32" rx="8" fill="#E3F2FD" stroke="#1976D2" stroke-width="1.5"/>
+  <text x="450" y="638" text-anchor="middle" font-size="12" font-weight="500" fill="#0D47A1">💡  오늘날 나는 어떤 '설득 권력'의 영향 아래 있는가?  "AI가 교육을 혁신한다"는 누구의 내러티브인가?</text>
+
+</svg>

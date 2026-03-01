@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNN 사과 분류 시뮬레이터</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    /* ===== 주요 색상 ===== */
+    --apple-red: #E53935;
+    --apple-red-dark: #C62828;
+    --apple-green: #43A047;
+    --apple-green-dark: #2E7D32;
+    --honey-yellow: #FFC107;
+    --playback-blue: #2196F3;
+    --playback-blue-dark: #1976D2;
+    --stop-gray: #757575;
+    --info-blue: #1565C0;
+    --info-blue-light: #E3F2FD;
+    --purple-accent: #7B1FA2;
+    --purple-light: #F3E5F5;
+
+    /* ===== 배경 색상 ===== */
+    --warm-cream: #FFFBF5;
+    --warm-cream-dark: #FFF3E0;
+
+    /* ===== 텍스트 색상 ===== */
+    --text-dark: #3E2723;
+    --text-medium: #5D4037;
+    --text-light: #8D6E63;
+
+    /* ===== 테두리 & 그림자 ===== */
+    --border-color: #FFCCBC;
+    --shadow-soft: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-medium: 0 4px 16px rgba(0,0,0,0.12);
+
+    /* ===== 컴포넌트 ===== */
+    --panel-radius: 16px;
+    --panel-padding: 20px;
+    --btn-radius: 10px;
+    --transition-normal: all 0.3s ease;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--warm-cream);
+    color: var(--text-medium);
+    min-height: 100vh;
+    padding: 16px;
+}
+
+.container { max-width: 1460px; margin: 0 auto; }
+
+/* ===== 헤더 ===== */
+.header {
+    text-align: center;
+    padding: var(--panel-padding);
+    background: white;
+    border-radius: var(--panel-radius);
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 16px;
+}
+.header h1 { font-size: 1.6rem; font-weight: 700; color: var(--apple-red); }
+.version-badge {
+    display: inline-block; background: var(--apple-red); color: white;
+    padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;
+    vertical-align: middle; margin-left: 6px;
+}
+.header p { color: var(--text-light); font-size: 0.95rem; margin-top: 4px; }
+
+/* ===== 모드 탭 ===== */
+.mode-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+.mode-tab {
+    padding: 10px 28px; border: none; border-radius: var(--btn-radius);
+    font-size: 0.95rem; font-weight: 500; cursor: pointer;
+    transition: var(--transition-normal); font-family: inherit;
+}
+.mode-tab.active { background: var(--apple-red); color: white; box-shadow: var(--shadow-medium); }
+.mode-tab:not(.active) { background: white; color: var(--text-medium); border: 2px solid var(--border-color); }
+.mode-tab:not(.active):hover { border-color: var(--apple-red); color: var(--apple-red); }
+
+/* ===== 3열 레이아웃 ===== */
+.main-layout { display: grid; grid-template-columns: 280px 1fr 280px; gap: 16px; align-items: start; }
+
+/* ===== 패널 ===== */
+.panel {
+    background: white; border-radius: var(--panel-radius);
+    padding: var(--panel-padding); box-shadow: var(--shadow-soft);
+}
+.panel + .panel { margin-top: 16px; }
+.panel-title {
+    font-size: 1.05rem; font-weight: 600; color: var(--text-dark);
+    margin-bottom: 16px; padding-bottom: 10px;
+    border-bottom: 2px solid var(--warm-cream-dark);
+    display: flex; align-items: center; gap: 8px;
+}
+
+/* ===== 버튼 ===== */
+.btn {
+    padding: 10px 20px; border: none; border-radius: var(--btn-radius);
+    font-size: 0.9rem; font-weight: 500; cursor: pointer;
+    transition: var(--transition-normal); font-family: inherit;
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 6px; width: 100%;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-medium); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-primary { background: var(--apple-red); color: white; }
+.btn-primary:hover { background: var(--apple-red-dark); }
+.btn-success { background: var(--apple-green); color: white; }
+.btn-success:hover { background: var(--apple-green-dark); }
+.btn-playback { background: var(--playback-blue); color: white; }
+.btn-playback:hover { background: var(--playback-blue-dark); }
+.btn-stop { background: var(--stop-gray); color: white; }
+.btn-outline { background: white; color: var(--text-medium); border: 2px solid var(--border-color); }
+.btn-outline:hover { border-color: var(--apple-red); color: var(--apple-red); }
+.btn + .btn { margin-top: 8px; }
+
+/* ===== 사과 미리보기 ===== */
+.apple-preview {
+    width: 100%; aspect-ratio: 1; background: var(--warm-cream-dark);
+    border: 2px dashed var(--border-color); border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px; position: relative; overflow: hidden;
+    transition: var(--transition-normal);
+}
+.apple-preview.active { border-style: solid; border-color: var(--apple-red); }
+.apple-preview canvas { border-radius: 10px; }
+
+/* ===== 사과 타입 선택 ===== */
+.type-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.type-btn {
+    padding: 12px 8px; border: 2px solid var(--border-color);
+    border-radius: var(--btn-radius); cursor: pointer; background: white;
+    text-align: center; transition: var(--transition-normal);
+    font-weight: 600; font-size: 0.88rem; font-family: inherit; color: var(--text-medium);
+}
+.type-btn:hover { transform: scale(1.03); }
+.type-btn.ripe-type.selected { border-color: var(--apple-red); background: #FFEBEE; color: var(--apple-red-dark); }
+.type-btn.unripe-type.selected { border-color: var(--apple-green); background: #E8F5E9; color: var(--apple-green-dark); }
+
+/* ===== 슬라이더 ===== */
+.slider-group { margin-bottom: 12px; }
+.slider-label {
+    display: flex; justify-content: space-between; margin-bottom: 4px;
+    font-size: 0.8rem; font-weight: 500; color: var(--text-light);
+}
+.slider-label span { color: var(--info-blue); font-weight: 600; }
+input[type="range"] {
+    width: 100%; height: 5px; border-radius: 3px;
+    background: var(--border-color); outline: none; -webkit-appearance: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--apple-red); cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* ===== 입력 그룹 ===== */
+.input-group { margin-bottom: 12px; }
+.input-group label {
+    display: block; font-size: 0.8rem; font-weight: 500;
+    color: var(--text-light); margin-bottom: 4px;
+}
+.input-group select, .input-group input[type="number"] {
+    width: 100%; padding: 8px 10px; border: 2px solid var(--border-color);
+    border-radius: 8px; font-size: 0.85rem; font-family: inherit;
+    color: var(--text-dark); background: white; outline: none;
+    transition: var(--transition-normal);
+}
+.input-group select:focus, .input-group input[type="number"]:focus {
+    border-color: var(--apple-red);
+}
+
+/* ===== 학습 컨트롤 ===== */
+.train-controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.train-ctrl-btn {
+    padding: 10px 4px; border: none; border-radius: var(--btn-radius);
+    font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    transition: var(--transition-normal); font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+}
+.train-ctrl-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-medium); }
+.train-ctrl-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.ctrl-start { background: var(--apple-green); color: white; }
+.ctrl-start:hover { background: var(--apple-green-dark); }
+.ctrl-pause { background: var(--honey-yellow); color: var(--text-dark); }
+.ctrl-step { background: var(--playback-blue); color: white; }
+.ctrl-step:hover { background: var(--playback-blue-dark); }
+
+/* ===== 진행 표시줄 ===== */
+.progress-section { margin-bottom: 14px; }
+.progress-header {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.78rem; color: var(--text-light); margin-bottom: 5px;
+}
+.progress-header .epoch-text { font-weight: 600; color: var(--apple-red); }
+.progress-bar { height: 8px; background: var(--warm-cream-dark); border-radius: 4px; overflow: hidden; }
+.progress-fill {
+    height: 100%; border-radius: 4px; transition: width 0.3s ease;
+    background: linear-gradient(90deg, var(--apple-green), var(--honey-yellow));
+    width: 0%;
+}
+
+/* ===== 상태 배지 ===== */
+.train-status {
+    text-align: center; padding: 8px; border-radius: 8px;
+    font-size: 0.82rem; font-weight: 600; margin-bottom: 10px;
+}
+.train-status.idle { background: var(--warm-cream-dark); color: var(--text-light); }
+.train-status.running { background: #E8F5E9; color: var(--apple-green-dark); }
+.train-status.paused { background: #FFF8E1; color: #F57F17; }
+.train-status.done { background: #E3F2FD; color: var(--info-blue); }
+
+/* ===== 통계 그리드 ===== */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.stat-item { text-align: center; padding: 10px 6px; background: var(--warm-cream-dark); border-radius: 10px; }
+.stat-value { font-size: 1.25rem; font-weight: 700; color: var(--apple-red); }
+.stat-label { font-size: 0.7rem; color: var(--text-light); margin-top: 2px; }
+
+/* ===== 중앙 차트 영역 ===== */
+.center-col { display: flex; flex-direction: column; gap: 16px; }
+
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.chart-card {
+    background: white; border-radius: var(--panel-radius);
+    padding: 16px; box-shadow: var(--shadow-soft);
+}
+.chart-card canvas {
+    display: block; width: 100%; border-radius: 8px;
+    border: 1px solid var(--border-color); background: white;
+}
+.chart-card .chart-title {
+    font-size: 0.85rem; font-weight: 600; color: var(--text-dark);
+    margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+
+/* ===== 특성맵 ===== */
+.fm-section {
+    background: white; border-radius: var(--panel-radius);
+    padding: 16px; box-shadow: var(--shadow-soft);
+}
+.fm-section .panel-title { font-size: 0.9rem; margin-bottom: 12px; }
+.fm-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.fm-block h4 {
+    font-size: 0.75rem; color: var(--purple-accent); margin-bottom: 8px;
+    padding-bottom: 4px; border-bottom: 1px solid var(--warm-cream-dark);
+}
+.fm-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.fm-item { text-align: center; }
+.fm-item canvas {
+    width: 100%; aspect-ratio: 1; border-radius: 4px;
+    border: 1px solid var(--border-color); background: #111;
+}
+.fm-item .fm-label {
+    font-size: 0.55rem; color: var(--text-light); margin-top: 2px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* ===== 분류 결과 바 ===== */
+.result-panel {
+    background: white; border-radius: var(--panel-radius);
+    padding: 20px; box-shadow: var(--shadow-soft);
+}
+.result-bars { display: flex; flex-direction: column; gap: 14px; }
+.bar-group { text-align: left; }
+.bar-label {
+    font-size: 0.85rem; font-weight: 600; margin-bottom: 5px;
+    display: flex; justify-content: space-between; color: var(--text-dark);
+}
+.bar-track { height: 28px; background: var(--warm-cream-dark); border-radius: 8px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 8px; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); width: 0%; }
+.bar-fill.ripe-fill { background: linear-gradient(90deg, var(--apple-red), #FF7043); }
+.bar-fill.unripe-fill { background: linear-gradient(90deg, var(--apple-green), #66BB6A); }
+
+.verdict {
+    margin-top: 16px; padding: 16px; border-radius: 12px;
+    text-align: center; font-size: 1.2rem; font-weight: 700;
+    opacity: 0; transform: scale(0.95); transition: var(--transition-normal);
+}
+.verdict.show { opacity: 1; transform: scale(1); }
+.verdict.ripe-v { background: #FFEBEE; border: 2px solid var(--apple-red); color: var(--apple-red-dark); }
+.verdict.unripe-v { background: #E8F5E9; border: 2px solid var(--apple-green); color: var(--apple-green-dark); }
+
+/* ===== 학습 결과 패널 (하단 3열) ===== */
+.train-result-panel {
+    background: white; border-radius: var(--panel-radius);
+    padding: 20px; box-shadow: var(--shadow-soft); margin-top: 16px;
+}
+.result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.result-section {
+    background: var(--warm-cream-dark); border-radius: 12px; padding: 14px;
+}
+.result-section h4 {
+    font-size: 0.9rem; color: var(--text-dark); margin-bottom: 12px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--border-color);
+}
+.result-table { width: 100%; }
+.result-table tr td { padding: 5px 0; font-size: 0.82rem; }
+.result-table tr td:first-child { color: var(--text-light); }
+.result-table tr td:last-child { text-align: right; font-weight: 600; color: var(--text-dark); font-family: 'JetBrains Mono', monospace; }
+
+/* ===== 오른쪽 패널 ===== */
+.layer-info {
+    margin-bottom: 8px; padding: 10px; background: var(--warm-cream-dark);
+    border-radius: 10px; border-left: 3px solid var(--border-color);
+    cursor: pointer; transition: var(--transition-normal);
+}
+.layer-info:hover { background: var(--info-blue-light); }
+.layer-info.active { background: var(--info-blue-light); border-left-color: var(--info-blue); }
+.layer-info .li-name { font-size: 0.78rem; font-weight: 700; color: var(--text-dark); }
+.layer-info .li-shape {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+    color: var(--purple-accent); margin-top: 3px;
+}
+.layer-info .li-desc { font-size: 0.7rem; color: var(--text-light); margin-top: 3px; line-height: 1.4; }
+
+/* ===== 공식 박스 ===== */
+.formula-box {
+    background: var(--warm-cream-dark); padding: 12px; border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+    text-align: center; color: var(--text-dark); line-height: 1.6; margin-top: 10px;
+}
+
+/* ===== 학습 로그 ===== */
+.train-log {
+    max-height: 110px; overflow-y: auto; background: var(--warm-cream-dark);
+    border-radius: 8px; padding: 8px; margin-top: 8px;
+    font-size: 0.65rem; font-family: 'JetBrains Mono', monospace;
+    color: var(--text-light); line-height: 1.5;
+}
+
+/* ===== 진행 오버레이 ===== */
+.proc-overlay {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.92); display: none;
+    align-items: center; justify-content: center;
+    border-radius: 12px; z-index: 10; flex-direction: column; gap: 10px;
+}
+.proc-overlay.show { display: flex; }
+.spinner {
+    width: 36px; height: 36px; border: 4px solid var(--border-color);
+    border-top-color: var(--apple-red); border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.proc-text { font-size: 0.85rem; color: var(--apple-red); font-weight: 600; }
+
+/* ===== CNN 아키텍처 캔버스 ===== */
+#archCanvas { background: var(--warm-cream-dark); }
+
+/* ===== 숨김 ===== */
+.hidden { display: none !important; }
+
+/* ===== 반응형 ===== */
+@media (max-width: 1100px) {
+    .main-layout { grid-template-columns: 1fr; max-width: 700px; margin: 0 auto; }
+    .chart-row { grid-template-columns: 1fr; }
+    .result-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <!-- 헤더 -->
+    <header class="header">
+        <h1>🍎 CNN 사과 분류 시뮬레이터 <span class="version-badge">v1.1.1</span></h1>
+        <p>합성곱 신경망(CNN)으로 익은 사과와 덜 익은 사과를 분류해보세요!</p>
+    </header>
+
+    <!-- 모드 탭 -->
+    <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="train" onclick="setMode('train')">🧠 학습 모드</button>
+        <button class="mode-tab" data-mode="classify" onclick="setMode('classify')">🔮 분류 모드</button>
+    </div>
+
+    <!-- 3열 레이아웃 -->
+    <div class="main-layout">
+        <!-- ===== 왼쪽: 데이터 생성 (학습) / 입력 이미지 (분류) ===== -->
+        <div class="left-col">
+            <!-- 학습 모드: 데이터 생성 -->
+            <div class="panel" id="panelData">
+                <h3 class="panel-title">📦 학습 데이터</h3>
+                <div class="slider-group">
+                    <div class="slider-label">데이터 수 <span id="dataSizeVal">100</span></div>
+                    <input type="range" min="20" max="300" value="100" step="10" id="dataSizeSlider" oninput="document.getElementById('dataSizeVal').textContent=this.value">
+                </div>
+                <div class="slider-group">
+                    <div class="slider-label">노이즈 강도 <span id="dataNoiseVal">15%</span></div>
+                    <input type="range" min="0" max="50" value="15" id="dataNoiseSlider" oninput="document.getElementById('dataNoiseVal').textContent=this.value+'%'">
+                </div>
+                <div class="slider-group">
+                    <div class="slider-label">밝기 변동폭 <span id="dataBrightVal">20%</span></div>
+                    <input type="range" min="0" max="50" value="20" id="dataBrightSlider" oninput="document.getElementById('dataBrightVal').textContent=this.value+'%'">
+                </div>
+                <button class="btn btn-primary" onclick="generateTrainData()">🎲 학습 데이터 생성</button>
+                <div style="margin-top:10px; font-size:0.75rem; color:var(--text-light); text-align:center;" id="dataStatus">데이터를 생성하세요</div>
+            </div>
+
+            <!-- 학습 모드: CNN 레이어 설명 -->
+            <div class="panel" id="panelLayerInfo">
+                <h3 class="panel-title">📖 CNN 레이어 설명</h3>
+                <div class="layer-info active" id="layerInput" onclick="highlightLayer('input')">
+                    <div class="li-name">① 입력층 (Input)</div>
+                    <div class="li-shape">64 × 64 × 3 (RGB)</div>
+                    <div class="li-desc">사과 이미지를 64×64 크기의 RGB 픽셀로 변환하여 입력합니다.</div>
+                </div>
+                <div class="layer-info" id="layerConv1" onclick="highlightLayer('conv1')">
+                    <div class="li-name">② 합성곱층 1 (Conv2D)</div>
+                    <div class="li-shape">62 × 62 × 8</div>
+                    <div class="li-desc">3×3 필터 8개로 에지, 색상 경계 등 저수준 특징을 추출합니다.</div>
+                </div>
+                <div class="layer-info" id="layerPool1" onclick="highlightLayer('pool1')">
+                    <div class="li-name">③ 풀링층 1 (MaxPool)</div>
+                    <div class="li-shape">31 × 31 × 8</div>
+                    <div class="li-desc">2×2 영역에서 최댓값만 선택하여 크기를 절반으로 줄입니다.</div>
+                </div>
+                <div class="layer-info" id="layerConv2" onclick="highlightLayer('conv2')">
+                    <div class="li-name">④ 합성곱층 2 (Conv2D)</div>
+                    <div class="li-shape">29 × 29 × 16</div>
+                    <div class="li-desc">3×3 필터 16개로 색상 패턴, 질감 등 고수준 특징을 추출합니다.</div>
+                </div>
+                <div class="layer-info" id="layerPool2" onclick="highlightLayer('pool2')">
+                    <div class="li-name">⑤ 풀링층 2 (MaxPool)</div>
+                    <div class="li-shape">14 × 14 × 16</div>
+                    <div class="li-desc">다시 2×2 풀링으로 크기를 줄여 핵심만 남깁니다.</div>
+                </div>
+                <div class="layer-info" id="layerFlatten" onclick="highlightLayer('flatten')">
+                    <div class="li-name">⑥ 평탄화 (Flatten)</div>
+                    <div class="li-shape">3,136</div>
+                    <div class="li-desc">2D 특성맵을 1D 벡터로 펼쳐 완전연결층에 전달합니다.</div>
+                </div>
+                <div class="layer-info" id="layerDense" onclick="highlightLayer('dense')">
+                    <div class="li-name">⑦ 완전연결층 (Dense)</div>
+                    <div class="li-shape">64 → 2</div>
+                    <div class="li-desc">추출된 특징을 조합하여 최종 분류 확률을 계산합니다.</div>
+                </div>
+                <div class="layer-info" id="layerOutput" onclick="highlightLayer('output')">
+                    <div class="li-name">⑧ 출력층 (Softmax)</div>
+                    <div class="li-shape">2 (익은 / 덜 익은)</div>
+                    <div class="li-desc">각 클래스의 확률을 0~1 사이로 변환합니다. 합 = 1</div>
+                </div>
+                <div class="formula-box">
+                    합성곱: (W−F+2P)/S+1 = (64−3)/1+1 = 62<br>
+                    Softmax: P(y=k) = e<sup>z<sub>k</sub></sup> / Σe<sup>z<sub>j</sub></sup>
+                </div>
+            </div>
+
+            <!-- 분류 모드: 입력 이미지 -->
+            <div class="panel hidden" id="panelClassify">
+                <h3 class="panel-title">🖼️ 입력 이미지</h3>
+                <div class="apple-preview" id="applePreview">
+                    <canvas id="appleCanvas" width="240" height="240"></canvas>
+                    <div class="proc-overlay" id="procOverlay">
+                        <div class="spinner"></div>
+                        <div class="proc-text" id="procText">CNN 분석 중...</div>
+                    </div>
+                </div>
+                <div class="type-btns">
+                    <div class="type-btn ripe-type selected" onclick="selectType('ripe')">🍎 익은 사과</div>
+                    <div class="type-btn unripe-type" onclick="selectType('unripe')">🍏 덜 익은 사과</div>
+                </div>
+                <div class="slider-group">
+                    <div class="slider-label">밝기 변화 <span id="brightnessVal">0%</span></div>
+                    <input type="range" min="-50" max="50" value="0" id="brightnessSlider" oninput="updateApple()">
+                </div>
+                <div class="slider-group">
+                    <div class="slider-label">노이즈 강도 <span id="noiseVal">10%</span></div>
+                    <input type="range" min="0" max="50" value="10" id="noiseSlider" oninput="updateApple()">
+                </div>
+                <div class="slider-group">
+                    <div class="slider-label">회전 각도 <span id="rotateVal">0°</span></div>
+                    <input type="range" min="-30" max="30" value="0" id="rotateSlider" oninput="updateApple()">
+                </div>
+                <button class="btn btn-outline" onclick="randomSample()">🎲 랜덤 샘플</button>
+                <button class="btn btn-primary" onclick="classifyApple()" id="classifyBtn">🔍 CNN 분류 실행</button>
+            </div>
+        </div>
+
+        <!-- ===== 중앙: 시각화 ===== -->
+        <div class="center-col">
+            <!-- 학습 모드: 손실 + 정확도 차트 (가로 2열) -->
+            <div class="chart-row" id="chartRow">
+                <div class="chart-card">
+                    <div class="chart-title">📉 손실 함수 (Loss)</div>
+                    <canvas id="lossCanvas" width="400" height="220"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">📈 정확도 (Accuracy)</div>
+                    <canvas id="accCanvas" width="400" height="220"></canvas>
+                </div>
+            </div>
+
+            <!-- CNN 아키텍처 -->
+            <div class="chart-card">
+                <div class="chart-title">🏗️ CNN 아키텍처 — 현재 처리 단계 시각화</div>
+                <canvas id="archCanvas" width="820" height="175"></canvas>
+            </div>
+
+            <!-- 특성맵 (분류 모드에서 표시) -->
+            <div class="fm-section hidden" id="fmSection">
+                <h3 class="panel-title">🔬 특성맵 시각화</h3>
+                <div class="fm-pair">
+                    <div class="fm-block">
+                        <h4>Conv1 — 에지 검출 (3×3 필터 ×8)</h4>
+                        <div class="fm-grid" id="fmConv1"></div>
+                    </div>
+                    <div class="fm-block">
+                        <h4>Pool1 — 맥스풀링 (2×2)</h4>
+                        <div class="fm-grid" id="fmPool1"></div>
+                    </div>
+                </div>
+                <div class="fm-pair" style="margin-top:14px">
+                    <div class="fm-block">
+                        <h4>Conv2 — 패턴 인식 (3×3 필터 ×16)</h4>
+                        <div class="fm-grid" id="fmConv2"></div>
+                    </div>
+                    <div class="fm-block">
+                        <h4>Pool2 — 맥스풀링 (2×2)</h4>
+                        <div class="fm-grid" id="fmPool2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 분류 결과 (분류 모드) -->
+            <div class="result-panel hidden" id="resultPanel">
+                <h3 class="panel-title">📋 분류 결과</h3>
+                <div class="result-bars">
+                    <div class="bar-group">
+                        <div class="bar-label">🍎 익은 사과 <span id="ripePercent">—</span></div>
+                        <div class="bar-track"><div class="bar-fill ripe-fill" id="ripeFill"></div></div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar-label">🍏 덜 익은 사과 <span id="unripePercent">—</span></div>
+                        <div class="bar-track"><div class="bar-fill unripe-fill" id="unripeFill"></div></div>
+                    </div>
+                </div>
+                <div class="verdict" id="verdict"></div>
+            </div>
+        </div>
+
+        <!-- ===== 오른쪽: 학습 설정 + 컨트롤 + 현황 ===== -->
+        <div class="right-col">
+            <!-- 학습 설정 -->
+            <div class="panel" id="panelSettings">
+                <h3 class="panel-title">⚙️ 학습 설정</h3>
+                <div class="input-group">
+                    <label>학습률 (Learning Rate)</label>
+                    <select id="lrSelect">
+                        <option value="0.001">0.001 (매우 느림)</option>
+                        <option value="0.005">0.005 (느림)</option>
+                        <option value="0.01" selected>0.01 (보통)</option>
+                        <option value="0.05">0.05 (빠름)</option>
+                        <option value="0.1">0.1 (매우 빠름)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>에포크 수</label>
+                    <select id="epochSelect">
+                        <option value="10">10 에포크</option>
+                        <option value="30" selected>30 에포크</option>
+                        <option value="50">50 에포크</option>
+                        <option value="100">100 에포크</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>시각화 간격</label>
+                    <select id="vizInterval">
+                        <option value="1">매 에포크</option>
+                        <option value="2">2 에포크마다</option>
+                        <option value="5" selected>5 에포크마다</option>
+                        <option value="10">10 에포크마다</option>
+                    </select>
+                </div>
+
+                <!-- ▶ ⏸ ⏭ 학습 컨트롤 -->
+                <div class="train-controls">
+                    <button class="train-ctrl-btn ctrl-start" id="btnStart" onclick="startTraining()">▶ 시작</button>
+                    <button class="train-ctrl-btn ctrl-pause" id="btnPause" onclick="pauseTraining()" disabled>⏸ 일시정지</button>
+                    <button class="train-ctrl-btn ctrl-step" id="btnStep" onclick="stepTraining()">⏭ 단계</button>
+                </div>
+
+                <!-- 진행률 -->
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span>학습 진행</span>
+                        <span class="epoch-text" id="progressText">0 / 30</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                </div>
+
+                <!-- 상태 배지 -->
+                <div class="train-status idle" id="trainStatusBadge">⏹ 대기 중</div>
+
+                <button class="btn btn-outline" onclick="resetAll()">🗑️ 전체 초기화</button>
+            </div>
+
+            <!-- 학습 현황 -->
+            <div class="panel" id="panelStats">
+                <h3 class="panel-title">📊 학습 현황</h3>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="stat-value" id="statEpoch">0</div><div class="stat-label">에포크</div></div>
+                    <div class="stat-item"><div class="stat-value" id="statSamples">0</div><div class="stat-label">학습 샘플</div></div>
+                    <div class="stat-item"><div class="stat-value" id="statLoss">—</div><div class="stat-label">현재 손실</div></div>
+                    <div class="stat-item"><div class="stat-value" id="statAcc">—</div><div class="stat-label">정확도</div></div>
+                </div>
+                <div class="train-log" id="trainLog">학습을 시작하면 로그가 표시됩니다.</div>
+            </div>
+
+            <!-- 학습 완료 후: 재생 -->
+            <div class="panel hidden" id="panelPlayback">
+                <h3 class="panel-title">📽️ 학습 과정 재생</h3>
+                <div class="slider-group">
+                    <div class="slider-label">재생 속도 <span id="playSpeedVal">1x</span></div>
+                    <input type="range" min="1" max="5" value="2" id="playSpeedSlider" oninput="document.getElementById('playSpeedVal').textContent=['0.5x','1x','2x','3x','5x'][this.value-1]">
+                </div>
+                <button class="btn btn-playback" id="btnReplay" onclick="replayTraining()">📽️ 학습 과정 재생</button>
+                <button class="btn btn-stop hidden" id="btnStopReplay" onclick="stopReplay()">⏹ 재생 중지</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 학습 결과 패널 (차트 아래, 학습 완료 시 표시) ===== -->
+    <div class="train-result-panel hidden" id="trainResultPanel">
+        <h3 class="panel-title">📊 학습 결과</h3>
+        <div class="result-grid">
+            <div class="result-section">
+                <h4>🎯 모델 성능</h4>
+                <table class="result-table">
+                    <tr><td>최종 손실</td><td id="resFinalLoss">—</td></tr>
+                    <tr><td>최종 정확도</td><td id="resFinalAcc">—</td></tr>
+                    <tr><td>최고 정확도</td><td id="resBestAcc">—</td></tr>
+                    <tr><td>수렴 에포크</td><td id="resConverge">—</td></tr>
+                </table>
+            </div>
+            <div class="result-section">
+                <h4>📐 학습된 가중치</h4>
+                <table class="result-table">
+                    <tr><td>Red 가중치</td><td id="resWRed">—</td></tr>
+                    <tr><td>Green 가중치</td><td id="resWGreen">—</td></tr>
+                    <tr><td>Texture 가중치</td><td id="resWTex">—</td></tr>
+                    <tr><td>Bias</td><td id="resWBias">—</td></tr>
+                </table>
+            </div>
+            <div class="result-section">
+                <h4>⚙️ 학습 설정</h4>
+                <table class="result-table">
+                    <tr><td>학습률</td><td id="resLR">—</td></tr>
+                    <tr><td>총 에포크</td><td id="resEpochs">—</td></tr>
+                    <tr><td>학습 데이터</td><td id="resDataSize">—</td></tr>
+                    <tr><td>노이즈 수준</td><td id="resNoise">—</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===== STATE =====
+const STATE = {
+    mode: 'train',
+    appleType: 'ripe', brightness: 0, noise: 10, rotate: 0,
+    imageData: null,
+    // 학습
+    epoch: 0, targetEpochs: 30,
+    lossHistory: [], accHistory: [],
+    weights: null,
+    trainRunning: false, trainPaused: false, trainTimer: null,
+    trainDataGenerated: false,
+    // 재생
+    replayTimer: null, replayRunning: false,
+    // 레이어
+    activeLayer: 'input',
+    // 학습 과정 기록 (재생용)
+    epochSnapshots: [],
+    // 분류
+    correct: 0, total: 0,
+    // 학습 중 시각화 단계
+    currentTrainStep: 'idle'
+};
+
+// ===== CONFIG =====
+const CONFIG = {
+    CANVAS_SIZE: 240, DOWNSAMPLE: 64,
+    NUM_FILTERS: 8,
+    TARGET_RED_W: 2.5, TARGET_GREEN_W: -2.0, TARGET_TEX_W: 1.0, TARGET_BIAS: -0.3,
+    LAYER_STEPS: ['input','conv1','pool1','conv2','pool2','flatten','dense','output'],
+    LAYER_MSGS: ['입력 전처리...','Conv1 필터 적용...','Pool1 축소...','Conv2 특징 추출...','Pool2 축소...','평탄화...','Dense 연결...','Softmax 출력...']
+};
+
+const FILTERS_CONV1 = [
+    [[-1,-1,-1],[0,0,0],[1,1,1]], [[-1,0,1],[-1,0,1],[-1,0,1]],
+    [[-1,-1,0],[-1,0,1],[0,1,1]], [[0,-1,-1],[1,0,-1],[1,1,0]],
+    [[0,0,0],[0,2,0],[0,0,0]], [[0,0,0],[0,-1,0],[0,0,0]],
+    [[0,-1,0],[-1,5,-1],[0,-1,0]], [[1,1,1],[1,1,1],[1,1,1]]
+];
+const FILTER_NAMES_1 = ['수평에지','수직에지','대각↘','대각↗','밝기','반전','샤프닝','블러'];
+const FILTER_NAMES_2 = ['패턴A','패턴B','패턴C','패턴D','색상A','색상B','텍스처A','텍스처B'];
+
+// ===== 초기화 =====
+function init() {
+    initWeights();
+    initFeatureMaps();
+    drawArchitecture();
+    drawChart('lossCanvas', [], 'Loss', '#E53935');
+    drawChart('accCanvas', [], 'Accuracy', '#43A047');
+}
+
+function initWeights() {
+    STATE.weights = {
+        redWeight: 0.5 + (Math.random()-0.5)*0.3,
+        greenWeight: -0.5 + (Math.random()-0.5)*0.3,
+        textureWeight: 0.1 + (Math.random()-0.5)*0.1,
+        bias: (Math.random()-0.5)*0.2
+    };
+}
+
+function initFeatureMaps() {
+    ['fmConv1','fmPool1','fmConv2','fmPool2'].forEach(id => {
+        const c = document.getElementById(id); c.innerHTML = '';
+        const names = (id.includes('Conv1')||id.includes('Pool1')) ? FILTER_NAMES_1 : FILTER_NAMES_2;
+        for (let i = 0; i < CONFIG.NUM_FILTERS; i++) {
+            const d = document.createElement('div'); d.className = 'fm-item';
+            d.innerHTML = `<canvas width="62" height="62"></canvas><div class="fm-label">${names[i]}</div>`;
+            c.appendChild(d);
+        }
+    });
+}
+
+// ===== 모드 전환 =====
+function setMode(mode) {
+    STATE.mode = mode;
+    document.querySelectorAll('.mode-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+
+    // 학습 모드 전용
+    const trainOnly = ['panelData','panelSettings','chartRow'];
+    // 분류 모드 전용
+    const classifyOnly = ['panelClassify','fmSection','resultPanel'];
+    // 양쪽 모드 공통 (항상 표시)
+    // panelLayerInfo, panelStats - 항상 표시
+
+    if (mode === 'train') {
+        trainOnly.forEach(id => document.getElementById(id).classList.remove('hidden'));
+        classifyOnly.forEach(id => document.getElementById(id).classList.add('hidden'));
+        document.getElementById('panelLayerInfo').classList.remove('hidden');
+        document.getElementById('panelStats').classList.remove('hidden');
+        if (STATE.epochSnapshots.length > 0) document.getElementById('panelPlayback').classList.remove('hidden');
+    } else {
+        trainOnly.forEach(id => document.getElementById(id).classList.add('hidden'));
+        classifyOnly.forEach(id => document.getElementById(id).classList.remove('hidden'));
+        document.getElementById('panelLayerInfo').classList.remove('hidden');
+        document.getElementById('panelStats').classList.remove('hidden');
+        document.getElementById('panelPlayback').classList.add('hidden');
+        drawApple();
+    }
+}
+
+// ===== 학습 데이터 생성 =====
+function generateTrainData() {
+    STATE.trainDataGenerated = true;
+    const n = +document.getElementById('dataSizeSlider').value;
+    document.getElementById('dataStatus').innerHTML = `✅ <strong>${n}개</strong> 학습 데이터 생성 완료 (익은: ${Math.round(n/2)}, 덜 익은: ${Math.round(n/2)})`;
+    document.getElementById('dataStatus').style.color = 'var(--apple-green-dark)';
+}
+
+// ===== 학습 제어: 시작 =====
+function startTraining() {
+    if (!STATE.trainDataGenerated) {
+        alert('먼저 학습 데이터를 생성하세요!');
+        return;
+    }
+    if (STATE.trainPaused) {
+        // 재개
+        STATE.trainPaused = false;
+        STATE.trainRunning = true;
+        setTrainStatus('running');
+        runEpochLoop();
+        return;
+    }
+    // 새 학습 시작
+    STATE.epoch = 0;
+    STATE.lossHistory = [];
+    STATE.accHistory = [];
+    STATE.epochSnapshots = [];
+    STATE.targetEpochs = +document.getElementById('epochSelect').value;
+    initWeights();
+    STATE.trainRunning = true;
+    STATE.trainPaused = false;
+    document.getElementById('trainLog').innerHTML = '';
+    document.getElementById('trainResultPanel').classList.add('hidden');
+    document.getElementById('panelPlayback').classList.add('hidden');
+    setTrainStatus('running');
+    updateTrainControls();
+    runEpochLoop();
+}
+
+function pauseTraining() {
+    STATE.trainPaused = true;
+    STATE.trainRunning = false;
+    clearTimeout(STATE.trainTimer);
+    setTrainStatus('paused');
+    updateTrainControls();
+}
+
+function stepTraining() {
+    if (!STATE.trainDataGenerated) { alert('먼저 학습 데이터를 생성하세요!'); return; }
+    if (STATE.epoch === 0 && STATE.lossHistory.length === 0) {
+        STATE.targetEpochs = +document.getElementById('epochSelect').value;
+        initWeights();
+        document.getElementById('trainLog').innerHTML = '';
+        document.getElementById('trainResultPanel').classList.add('hidden');
+    }
+    if (STATE.epoch >= STATE.targetEpochs) return;
+    STATE.trainRunning = false; STATE.trainPaused = true;
+    runSingleEpoch();
+    setTrainStatus('paused');
+    updateTrainControls();
+}
+
+// ===== 에포크 루프 =====
+function runEpochLoop() {
+    if (!STATE.trainRunning || STATE.epoch >= STATE.targetEpochs) {
+        if (STATE.epoch >= STATE.targetEpochs) finishTraining();
+        return;
+    }
+    const viz = +document.getElementById('vizInterval').value;
+    runSingleEpoch();
+
+    // 시각화 간격에 따른 딜레이
+    const shouldVisualize = (STATE.epoch % viz === 0) || STATE.epoch === STATE.targetEpochs;
+    const delay = shouldVisualize ? 180 : 30;
+
+    STATE.trainTimer = setTimeout(() => runEpochLoop(), delay);
+}
+
+function runSingleEpoch() {
+    STATE.epoch++;
+    const lr = +document.getElementById('lrSelect').value;
+    const w = STATE.weights;
+
+    // 에포크별 레이어 순차 하이라이트
+    const stepIdx = STATE.epoch % CONFIG.LAYER_STEPS.length;
+    highlightLayer(CONFIG.LAYER_STEPS[stepIdx]);
+
+    // 가중치 업데이트 (경사하강법 시뮬레이션)
+    const noise = () => (Math.random()-0.5)*0.4;
+    w.redWeight   += (CONFIG.TARGET_RED_W   - w.redWeight)   * lr * (0.8+noise());
+    w.greenWeight += (CONFIG.TARGET_GREEN_W - w.greenWeight) * lr * (0.8+noise());
+    w.textureWeight += (CONFIG.TARGET_TEX_W - w.textureWeight) * lr * (0.8+noise());
+    w.bias        += (CONFIG.TARGET_BIAS    - w.bias)        * lr * (0.8+noise());
+
+    // 손실/정확도 계산
+    const dataNoise = +document.getElementById('dataNoiseSlider').value / 100;
+    const baseLoss = 0.85 * Math.exp(-STATE.epoch * lr * 3) + dataNoise * 0.1;
+    const loss = Math.max(0.02, baseLoss + (Math.random()-0.5)*0.04);
+    const acc = Math.min(0.99, Math.max(0.4, 1 - loss*0.9 + (Math.random()-0.5)*0.02));
+
+    STATE.lossHistory.push(loss);
+    STATE.accHistory.push(acc);
+    STATE.epochSnapshots.push({
+        epoch: STATE.epoch, loss, acc,
+        weights: {...w},
+        layer: CONFIG.LAYER_STEPS[stepIdx]
+    });
+
+    // UI 업데이트
+    const viz = +document.getElementById('vizInterval').value;
+    if (STATE.epoch % viz === 0 || STATE.epoch === STATE.targetEpochs || STATE.epoch === 1) {
+        drawChart('lossCanvas', STATE.lossHistory, 'Loss', '#E53935');
+        drawChart('accCanvas', STATE.accHistory, 'Accuracy', '#43A047');
+    }
+
+    // 통계 업데이트
+    document.getElementById('statEpoch').textContent = STATE.epoch;
+    document.getElementById('statSamples').textContent = STATE.epoch * (+document.getElementById('dataSizeSlider').value);
+    document.getElementById('statLoss').textContent = loss.toFixed(4);
+    document.getElementById('statLoss').style.color = loss < 0.1 ? 'var(--apple-green)' : loss < 0.3 ? 'var(--honey-yellow)' : 'var(--apple-red)';
+    document.getElementById('statAcc').textContent = (acc*100).toFixed(1)+'%';
+    document.getElementById('statAcc').style.color = acc > 0.9 ? 'var(--apple-green)' : acc > 0.7 ? 'var(--honey-yellow)' : 'var(--apple-red)';
+
+    // 진행률
+    const pct = (STATE.epoch / STATE.targetEpochs * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = `${STATE.epoch} / ${STATE.targetEpochs}`;
+
+    // 로그
+    const log = document.getElementById('trainLog');
+    log.innerHTML += `[Epoch ${String(STATE.epoch).padStart(3)}] loss: ${loss.toFixed(4)} | acc: ${(acc*100).toFixed(1)}% | layer: ${CONFIG.LAYER_STEPS[stepIdx]}\n`;
+    log.scrollTop = log.scrollHeight;
+}
+
+function finishTraining() {
+    STATE.trainRunning = false;
+    STATE.trainPaused = false;
+    setTrainStatus('done');
+    updateTrainControls();
+
+    // 차트 최종 갱신
+    drawChart('lossCanvas', STATE.lossHistory, 'Loss', '#E53935');
+    drawChart('accCanvas', STATE.accHistory, 'Accuracy', '#43A047');
+
+    // 재생 패널 표시
+    document.getElementById('panelPlayback').classList.remove('hidden');
+
+    // 학습 결과 패널 표시
+    const rp = document.getElementById('trainResultPanel');
+    rp.classList.remove('hidden');
+
+    const lastLoss = STATE.lossHistory[STATE.lossHistory.length-1];
+    const lastAcc = STATE.accHistory[STATE.accHistory.length-1];
+    const bestAcc = Math.max(...STATE.accHistory);
+    let converge = STATE.accHistory.findIndex(a => a > 0.9);
+    converge = converge >= 0 ? converge+1 : '미수렴';
+
+    document.getElementById('resFinalLoss').textContent = lastLoss.toFixed(4);
+    document.getElementById('resFinalAcc').textContent = (lastAcc*100).toFixed(1)+'%';
+    document.getElementById('resBestAcc').textContent = (bestAcc*100).toFixed(1)+'%';
+    document.getElementById('resConverge').textContent = typeof converge==='number' ? `${converge} 에포크` : converge;
+
+    const w = STATE.weights;
+    document.getElementById('resWRed').textContent = w.redWeight.toFixed(4);
+    document.getElementById('resWGreen').textContent = w.greenWeight.toFixed(4);
+    document.getElementById('resWTex').textContent = w.textureWeight.toFixed(4);
+    document.getElementById('resWBias').textContent = w.bias.toFixed(4);
+
+    document.getElementById('resLR').textContent = document.getElementById('lrSelect').value;
+    document.getElementById('resEpochs').textContent = STATE.targetEpochs;
+    document.getElementById('resDataSize').textContent = document.getElementById('dataSizeSlider').value + '개';
+    document.getElementById('resNoise').textContent = document.getElementById('dataNoiseSlider').value + '%';
+
+    highlightLayer('output');
+}
+
+// ===== 학습 재생 =====
+function replayTraining() {
+    if (STATE.epochSnapshots.length === 0) return;
+    STATE.replayRunning = true;
+    document.getElementById('btnReplay').classList.add('hidden');
+    document.getElementById('btnStopReplay').classList.remove('hidden');
+    setTrainStatus('running');
+
+    // 차트 초기화
+    let idx = 0;
+    const speeds = [400,200,100,60,30];
+    const spd = speeds[+document.getElementById('playSpeedSlider').value - 1] || 100;
+
+    function replayStep() {
+        if (!STATE.replayRunning || idx >= STATE.epochSnapshots.length) {
+            stopReplay();
+            return;
+        }
+        const snap = STATE.epochSnapshots[idx];
+        highlightLayer(snap.layer);
+
+        // 차트 점진적 표시
+        const partialLoss = STATE.lossHistory.slice(0, idx+1);
+        const partialAcc = STATE.accHistory.slice(0, idx+1);
+        drawChart('lossCanvas', partialLoss, 'Loss', '#E53935');
+        drawChart('accCanvas', partialAcc, 'Accuracy', '#43A047');
+
+        // 통계
+        document.getElementById('statEpoch').textContent = snap.epoch;
+        document.getElementById('statLoss').textContent = snap.loss.toFixed(4);
+        document.getElementById('statAcc').textContent = (snap.acc*100).toFixed(1)+'%';
+        document.getElementById('progressFill').style.width = (snap.epoch/STATE.targetEpochs*100)+'%';
+        document.getElementById('progressText').textContent = `${snap.epoch} / ${STATE.targetEpochs}`;
+
+        idx++;
+        STATE.replayTimer = setTimeout(replayStep, spd);
+    }
+    replayStep();
+}
+
+function stopReplay() {
+    STATE.replayRunning = false;
+    clearTimeout(STATE.replayTimer);
+    document.getElementById('btnReplay').classList.remove('hidden');
+    document.getElementById('btnStopReplay').classList.add('hidden');
+    setTrainStatus('done');
+
+    // 최종 상태 복원
+    drawChart('lossCanvas', STATE.lossHistory, 'Loss', '#E53935');
+    drawChart('accCanvas', STATE.accHistory, 'Accuracy', '#43A047');
+}
+
+// ===== UI 헬퍼 =====
+function setTrainStatus(status) {
+    const el = document.getElementById('trainStatusBadge');
+    el.className = 'train-status ' + status;
+    const texts = { idle:'⏹ 대기 중', running:'▶ 학습 중...', paused:'⏸ 일시정지', done:'✅ 학습 완료' };
+    el.textContent = texts[status] || '';
+}
+
+function updateTrainControls() {
+    const r = STATE.trainRunning, p = STATE.trainPaused, d = STATE.epoch >= STATE.targetEpochs;
+    document.getElementById('btnStart').disabled = r;
+    document.getElementById('btnStart').textContent = p ? '▶ 재개' : (d ? '▶ 재학습' : '▶ 시작');
+    document.getElementById('btnPause').disabled = !r;
+    document.getElementById('btnStep').disabled = r || d;
+}
+
+// ===== 차트 그리기 =====
+function drawChart(canvasId, data, label, color) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0,0,w,h);
+
+    const pad = {top:20, right:16, bottom:28, left:42};
+    const pW = w-pad.left-pad.right, pH = h-pad.top-pad.bottom;
+
+    // 배경
+    ctx.fillStyle = '#FFFBF5'; ctx.fillRect(pad.left, pad.top, pW, pH);
+
+    // 그리드
+    ctx.strokeStyle = '#FFCCBC'; ctx.lineWidth = 0.5;
+    for (let i=0;i<=4;i++) {
+        const y = pad.top + (pH/4)*i;
+        ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(w-pad.right,y); ctx.stroke();
+        ctx.fillStyle='#8D6E63'; ctx.font='9px JetBrains Mono'; ctx.textAlign='right';
+        ctx.fillText((1-i*0.25).toFixed(2), pad.left-4, y+3);
+    }
+
+    // 축
+    ctx.strokeStyle='#5D4037'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(pad.left,pad.top); ctx.lineTo(pad.left,h-pad.bottom);
+    ctx.lineTo(w-pad.right,h-pad.bottom); ctx.stroke();
+
+    // 라벨
+    ctx.fillStyle='#5D4037'; ctx.font='10px Noto Sans KR'; ctx.textAlign='center';
+    ctx.fillText('에포크', w/2, h-4);
+    ctx.save(); ctx.translate(12,h/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText(label, 0, 0); ctx.restore();
+
+    if (data.length < 2) {
+        ctx.fillStyle='#8D6E63'; ctx.font='12px Noto Sans KR'; ctx.textAlign='center';
+        ctx.fillText('학습을 시작하세요', w/2, h/2);
+        return;
+    }
+
+    const n = data.length;
+    const maxVal = label==='Loss' ? 1.0 : 1.0;
+
+    // 면적 채우기
+    ctx.beginPath();
+    ctx.moveTo(pad.left, pad.top + pH);
+    data.forEach((v,i) => {
+        const x = pad.left + (i/(n-1))*pW;
+        const y = pad.top + (1 - Math.min(v,maxVal)/maxVal)*pH;
+        ctx.lineTo(x, y);
+    });
+    ctx.lineTo(pad.left + pW, pad.top + pH);
+    ctx.closePath();
+    ctx.fillStyle = color + '18'; ctx.fill();
+
+    // 선
+    ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 2.5;
+    data.forEach((v,i) => {
+        const x = pad.left + (i/(n-1))*pW;
+        const y = pad.top + (1 - Math.min(v,maxVal)/maxVal)*pH;
+        i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+
+    // 현재값 점
+    if (data.length > 0) {
+        const lastV = data[data.length-1];
+        const lx = pad.left + ((n-1)/(n-1))*pW;
+        const ly = pad.top + (1 - Math.min(lastV,maxVal)/maxVal)*pH;
+        ctx.beginPath(); ctx.arc(lx,ly,5,0,Math.PI*2);
+        ctx.fillStyle=color; ctx.fill();
+        ctx.fillStyle='white'; ctx.beginPath(); ctx.arc(lx,ly,2,0,Math.PI*2); ctx.fill();
+
+        // 현재값 라벨
+        ctx.fillStyle=color; ctx.font='bold 10px JetBrains Mono'; ctx.textAlign='right';
+        const valText = label==='Loss' ? lastV.toFixed(4) : (lastV*100).toFixed(1)+'%';
+        ctx.fillText(valText, lx-8, ly-8);
+    }
+}
+
+// ===== CNN 아키텍처 =====
+function drawArchitecture() {
+    const canvas = document.getElementById('archCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    const layers = [
+        {name:'Input',w:48,h:48,color:'#E53935',sub:'64×64×3',id:'input'},
+        {name:'Conv1',w:44,h:44,color:'#7B1FA2',sub:'62×62×8',id:'conv1'},
+        {name:'Pool1',w:33,h:33,color:'#F57C00',sub:'31×31×8',id:'pool1'},
+        {name:'Conv2',w:28,h:28,color:'#7B1FA2',sub:'29×29×16',id:'conv2'},
+        {name:'Pool2',w:20,h:20,color:'#F57C00',sub:'14×14×16',id:'pool2'},
+        {name:'Flatten',w:7,h:52,color:'#1976D2',sub:'3136',id:'flatten'},
+        {name:'Dense',w:7,h:32,color:'#00897B',sub:'64',id:'dense'},
+        {name:'Output',w:7,h:14,color:'#43A047',sub:'2',id:'output'}
+    ];
+
+    const gap = (canvas.width - 70) / layers.length;
+    const cy = canvas.height / 2 + 5;
+
+    layers.forEach((l,i) => {
+        const x = 35 + i*gap + gap/2;
+        const isAct = STATE.activeLayer === l.id;
+
+        // 연결선
+        if (i > 0) {
+            const px = 35 + (i-1)*gap + gap/2;
+            ctx.beginPath();
+            ctx.moveTo(px + layers[i-1].w/2+2, cy);
+            ctx.lineTo(x - l.w/2-2, cy);
+            const isActive = isAct || STATE.activeLayer === layers[i-1].id;
+            ctx.strokeStyle = isActive ? l.color+'88' : '#FFCCBC';
+            ctx.lineWidth = isActive ? 2 : 1.5;
+            ctx.setLineDash(isActive ? [] : [3,3]);
+            ctx.stroke(); ctx.setLineDash([]);
+            // 화살촉
+            const ax = x - l.w/2 - 2;
+            ctx.beginPath(); ctx.moveTo(ax,cy); ctx.lineTo(ax-5,cy-3); ctx.lineTo(ax-5,cy+3);
+            ctx.fillStyle = isActive ? l.color+'88' : '#FFCCBC'; ctx.fill();
+        }
+
+        const lx = x-l.w/2, ly = cy-l.h/2;
+
+        // 활성 글로우
+        if (isAct) {
+            ctx.shadowColor = l.color; ctx.shadowBlur = 14;
+            // 펄스 테두리
+            ctx.strokeStyle = l.color; ctx.lineWidth = 3;
+            ctx.strokeRect(lx-3,ly-3,l.w+6,l.h+6);
+            ctx.shadowBlur = 0;
+        }
+
+        // 3D 그림자
+        ctx.fillStyle = l.color+'30'; ctx.fillRect(lx+3,ly+3,l.w,l.h);
+        // 본체
+        ctx.fillStyle = isAct ? l.color : l.color+'BB';
+        ctx.fillRect(lx,ly,l.w,l.h);
+        ctx.strokeStyle = l.color; ctx.lineWidth = isAct?2.5:1.5;
+        ctx.strokeRect(lx,ly,l.w,l.h);
+
+        // 라벨
+        ctx.fillStyle='#3E2723'; ctx.font='bold 9px Noto Sans KR'; ctx.textAlign='center';
+        ctx.fillText(l.name, x, ly-8);
+        ctx.fillStyle='#8D6E63'; ctx.font='7px JetBrains Mono';
+        ctx.fillText(l.sub, x, ly+l.h+12);
+    });
+}
+
+function highlightLayer(id) {
+    STATE.activeLayer = id;
+    document.querySelectorAll('.layer-info').forEach(el => el.classList.remove('active'));
+    const el = document.getElementById('layer'+id.charAt(0).toUpperCase()+id.slice(1));
+    if (el) { el.classList.add('active'); el.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+    drawArchitecture();
+}
+
+// ===== 분류 모드 =====
+function drawApple() {
+    const canvas = document.getElementById('appleCanvas');
+    const ctx = canvas.getContext('2d');
+    const w=canvas.width, h=canvas.height;
+    ctx.clearRect(0,0,w,h); ctx.save();
+    ctx.fillStyle='#faf5f0'; ctx.fillRect(0,0,w,h);
+    const cx=w/2, cy=h/2+10;
+    ctx.translate(cx,cy); ctx.rotate(STATE.rotate*Math.PI/180); ctx.translate(-cx,-cy);
+    const br=STATE.brightness/100;
+    const isRipe=STATE.appleType==='ripe';
+    const bR=isRipe?200:120, bG=isRipe?50:190, bB=isRipe?50:60;
+    const r=Math.max(0,Math.min(255,bR+br*100));
+    const g=Math.max(0,Math.min(255,bG+br*50));
+    const b=Math.max(0,Math.min(255,bB+br*30));
+
+    ctx.beginPath(); ctx.ellipse(cx+5,cy+80,55,11,0,0,Math.PI*2);
+    ctx.fillStyle='rgba(0,0,0,0.08)'; ctx.fill();
+
+    ctx.beginPath(); ctx.moveTo(cx,cy-70);
+    ctx.bezierCurveTo(cx+80,cy-70,cx+85,cy+10,cx+65,cy+60);
+    ctx.bezierCurveTo(cx+45,cy+85,cx+10,cy+85,cx,cy+75);
+    ctx.bezierCurveTo(cx-10,cy+85,cx-45,cy+85,cx-65,cy+60);
+    ctx.bezierCurveTo(cx-85,cy+10,cx-80,cy-70,cx,cy-70); ctx.closePath();
+
+    const grad=ctx.createRadialGradient(cx-18,cy-28,8,cx,cy,85);
+    if(isRipe){
+        grad.addColorStop(0,`rgb(${Math.min(255,r+40)},${g+30},${b+20})`);
+        grad.addColorStop(0.4,`rgb(${r},${g},${b})`);
+        grad.addColorStop(0.7,`rgb(${Math.max(0,r-30)},${Math.max(0,g-15)},${b})`);
+        grad.addColorStop(1,`rgb(${Math.max(0,r-60)},${Math.max(0,g-20)},${b})`);
+    } else {
+        grad.addColorStop(0,`rgb(${r+40},${Math.min(255,g+30)},${b+30})`);
+        grad.addColorStop(0.4,`rgb(${r},${g},${b})`);
+        grad.addColorStop(0.7,`rgb(${Math.max(0,r-20)},${Math.max(0,g-25)},${b})`);
+        grad.addColorStop(1,`rgb(${Math.max(0,r-40)},${Math.max(0,g-50)},${Math.max(0,b-10)})`);
+    }
+    ctx.fillStyle=grad; ctx.fill();
+
+    ctx.beginPath(); ctx.ellipse(cx-22,cy-30,16,12,-0.3,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.fill();
+
+    ctx.beginPath(); ctx.moveTo(cx-2,cy-68);
+    ctx.quadraticCurveTo(cx+3,cy-95,cx+8,cy-105);
+    ctx.lineWidth=3.5; ctx.strokeStyle='#5D4037'; ctx.lineCap='round'; ctx.stroke();
+
+    ctx.beginPath(); ctx.moveTo(cx+5,cy-90);
+    ctx.quadraticCurveTo(cx+32,cy-105,cx+42,cy-83);
+    ctx.quadraticCurveTo(cx+28,cy-80,cx+5,cy-90);
+    ctx.fillStyle='#4CAF50'; ctx.fill();
+    ctx.restore();
+
+    const nLvl=STATE.noise/100;
+    if(nLvl>0){
+        const imgD=ctx.getImageData(0,0,w,h); const d=imgD.data;
+        for(let i=0;i<d.length;i+=4){
+            const n=(Math.random()-0.5)*nLvl*120;
+            d[i]=Math.max(0,Math.min(255,d[i]+n));
+            d[i+1]=Math.max(0,Math.min(255,d[i+1]+n));
+            d[i+2]=Math.max(0,Math.min(255,d[i+2]+n));
+        }
+        ctx.putImageData(imgD,0,0);
+    }
+    STATE.imageData=ctx.getImageData(0,0,w,h);
+    document.getElementById('applePreview').classList.add('active');
+}
+
+function selectType(type) {
+    STATE.appleType=type;
+    document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
+    document.querySelector(`.${type==='ripe'?'ripe-type':'unripe-type'}`).classList.add('selected');
+    drawApple();
+}
+
+function updateApple() {
+    STATE.brightness=+document.getElementById('brightnessSlider').value;
+    STATE.noise=+document.getElementById('noiseSlider').value;
+    STATE.rotate=+document.getElementById('rotateSlider').value;
+    document.getElementById('brightnessVal').textContent=STATE.brightness+'%';
+    document.getElementById('noiseVal').textContent=STATE.noise+'%';
+    document.getElementById('rotateVal').textContent=STATE.rotate+'°';
+    drawApple();
+}
+
+function randomSample() {
+    STATE.appleType=Math.random()>0.5?'ripe':'unripe';
+    document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
+    document.querySelector(`.${STATE.appleType==='ripe'?'ripe-type':'unripe-type'}`).classList.add('selected');
+    STATE.brightness=Math.floor(Math.random()*60-30);
+    STATE.noise=Math.floor(Math.random()*30+5);
+    STATE.rotate=Math.floor(Math.random()*40-20);
+    document.getElementById('brightnessSlider').value=STATE.brightness;
+    document.getElementById('noiseSlider').value=STATE.noise;
+    document.getElementById('rotateSlider').value=STATE.rotate;
+    document.getElementById('brightnessVal').textContent=STATE.brightness+'%';
+    document.getElementById('noiseVal').textContent=STATE.noise+'%';
+    document.getElementById('rotateVal').textContent=STATE.rotate+'°';
+    drawApple();
+}
+
+// ===== 분류 실행 (단계적 시각화) =====
+function classifyApple() {
+    if(!STATE.imageData) { drawApple(); }
+    const ov=document.getElementById('procOverlay');
+    ov.classList.add('show');
+    let si=0;
+
+    const tm=setInterval(()=>{
+        if(si<CONFIG.LAYER_STEPS.length){
+            highlightLayer(CONFIG.LAYER_STEPS[si]);
+            document.getElementById('procText').textContent=CONFIG.LAYER_MSGS[si];
+            si++;
+        } else {
+            clearInterval(tm);
+            performClassification();
+            ov.classList.remove('show');
+        }
+    }, 300);
+}
+
+function performClassification() {
+    generateFeatureMaps();
+    const d=STATE.imageData.data;
+    let tR=0,tG=0,cnt=0;
+    const cx=120,cy=130,rad=65;
+    for(let y=cy-rad;y<cy+rad;y++) for(let x=cx-rad;x<cx+rad;x++){
+        if((x-cx)**2+(y-cy)**2<rad**2){
+            const i=(y*CONFIG.CANVAS_SIZE+x)*4;
+            tR+=d[i]; tG+=d[i+1]; cnt++;
+        }
+    }
+    const aR=tR/cnt/255, aG=tG/cnt/255;
+    const w=STATE.weights;
+    let logit=w.redWeight*aR+w.greenWeight*aG+w.textureWeight*(aR-aG)+w.bias;
+    let rP=1/(1+Math.exp(-logit*(2+STATE.epoch*0.3)));
+    const nE=STATE.noise/200;
+    rP=rP*(1-nE)+0.5*nE;
+    if(STATE.epoch===0) rP=0.45+Math.random()*0.1;
+    const uP=1-rP;
+
+    document.getElementById('ripePercent').textContent=(rP*100).toFixed(1)+'%';
+    document.getElementById('unripePercent').textContent=(uP*100).toFixed(1)+'%';
+    setTimeout(()=>{
+        document.getElementById('ripeFill').style.width=(rP*100)+'%';
+        document.getElementById('unripeFill').style.width=(uP*100)+'%';
+    },50);
+
+    const pred=rP>0.5?'ripe':'unripe';
+    const ok=pred===STATE.appleType;
+    STATE.total++; if(ok) STATE.correct++;
+
+    const v=document.getElementById('verdict');
+    v.className='verdict show '+(pred==='ripe'?'ripe-v':'unripe-v');
+    v.innerHTML=(pred==='ripe'?'🍎 익은 사과':'🍏 덜 익은 사과')+' '+(ok?'✅ 정답!':'❌ 오답');
+}
+
+// ===== 특성맵 =====
+function generateFeatureMaps() {
+    if(!STATE.imageData) return;
+    const small=downsample(STATE.imageData,CONFIG.CANVAS_SIZE,CONFIG.CANVAS_SIZE,CONFIG.DOWNSAMPLE);
+    const conv1=[]; for(let f=0;f<CONFIG.NUM_FILTERS;f++) conv1.push(applyFilter(small,64,64,FILTERS_CONV1[f],f));
+    renderMaps('fmConv1',conv1,62);
+    const pool1=conv1.map(m=>maxPool(m,62)); renderMaps('fmPool1',pool1,31);
+    const conv2=[]; for(let f=0;f<CONFIG.NUM_FILTERS;f++) conv2.push(combineFeatures(pool1,f));
+    renderMaps('fmConv2',conv2,29);
+    const pool2=conv2.map(m=>maxPool(m,29)); renderMaps('fmPool2',pool2,14);
+}
+
+function downsample(imgData,srcW,srcH,tgt){
+    const r=new Float32Array(tgt*tgt*3); const s=srcW/tgt;
+    for(let y=0;y<tgt;y++) for(let x=0;x<tgt;x++){
+        const si=(Math.floor(y*s)*srcW+Math.floor(x*s))*4;
+        const di=(y*tgt+x)*3;
+        r[di]=imgData.data[si]/255; r[di+1]=imgData.data[si+1]/255; r[di+2]=imgData.data[si+2]/255;
+    }
+    return r;
+}
+
+function applyFilter(img,w,h,kernel,fIdx){
+    const oW=w-2,oH=h-2; const r=new Float32Array(oW*oH);
+    const ch=fIdx<4?0:(fIdx<6?1:0);
+    for(let y=0;y<oH;y++) for(let x=0;x<oW;x++){
+        let s=0;
+        for(let ky=0;ky<3;ky++) for(let kx=0;kx<3;kx++){
+            s+=img[((y+ky)*w+(x+kx))*3+ch]*kernel[ky][kx];
+        }
+        r[y*oW+x]=Math.max(0,s);
+    }
+    return r;
+}
+
+function maxPool(map,size){
+    const o=Math.floor(size/2); const r=new Float32Array(o*o);
+    for(let y=0;y<o;y++) for(let x=0;x<o;x++){
+        let mx=-Infinity;
+        for(let dy=0;dy<2;dy++) for(let dx=0;dx<2;dx++){
+            const i=(y*2+dy)*size+(x*2+dx);
+            if(i<map.length) mx=Math.max(mx,map[i]);
+        }
+        r[y*o+x]=mx;
+    }
+    return r;
+}
+
+function combineFeatures(poolMaps,fIdx){
+    const size=31,oS=size-2; const r=new Float32Array(oS*oS);
+    const iA=fIdx%poolMaps.length, iB=(fIdx+3)%poolMaps.length;
+    for(let y=0;y<oS;y++) for(let x=0;x<oS;x++){
+        let s=0;
+        for(let ky=0;ky<3;ky++) for(let kx=0;kx<3;kx++){
+            const i=(y+ky)*size+(x+kx);
+            if(i<poolMaps[iA].length) s+=poolMaps[iA][i]*FILTERS_CONV1[fIdx%8][ky][kx];
+            if(i<poolMaps[iB].length) s+=poolMaps[iB][i]*0.5;
+        }
+        r[y*oS+x]=Math.max(0,s/9);
+    }
+    return r;
+}
+
+function renderMaps(cId,maps,size){
+    const canvases=document.getElementById(cId).querySelectorAll('canvas');
+    maps.forEach((m,i)=>{
+        if(i>=canvases.length) return;
+        const cv=canvases[i],ctx=cv.getContext('2d');
+        const ds=Math.min(size,62); cv.width=ds; cv.height=ds;
+        let mn=Infinity,mx=-Infinity;
+        for(let j=0;j<m.length;j++){mn=Math.min(mn,m[j]);mx=Math.max(mx,m[j]);}
+        const rng=mx-mn||1;
+        const img=ctx.createImageData(ds,ds); const sc=size/ds;
+        const isConv=cId.includes('Conv');
+        for(let y=0;y<ds;y++) for(let x=0;x<ds;x++){
+            const si=Math.min(Math.floor(y*sc),size-1)*size+Math.min(Math.floor(x*sc),size-1);
+            const v=si<m.length?((m[si]-mn)/rng)*255:0;
+            const pi=(y*ds+x)*4;
+            if(isConv){img.data[pi]=v*0.3|0;img.data[pi+1]=v*0.6|0;img.data[pi+2]=v|0;}
+            else{img.data[pi]=v|0;img.data[pi+1]=v*0.6|0;img.data[pi+2]=v*0.2|0;}
+            img.data[pi+3]=255;
+        }
+        ctx.putImageData(img,0,0);
+    });
+}
+
+// ===== 초기화 =====
+function resetAll() {
+    STATE.epoch=0; STATE.lossHistory=[]; STATE.accHistory=[];
+    STATE.epochSnapshots=[]; STATE.correct=0; STATE.total=0;
+    STATE.trainRunning=false; STATE.trainPaused=false;
+    STATE.trainDataGenerated=false;
+    clearTimeout(STATE.trainTimer); clearTimeout(STATE.replayTimer);
+    initWeights();
+
+    document.getElementById('ripeFill').style.width='0%';
+    document.getElementById('unripeFill').style.width='0%';
+    document.getElementById('ripePercent').textContent='—';
+    document.getElementById('unripePercent').textContent='—';
+    document.getElementById('verdict').className='verdict';
+    document.getElementById('verdict').textContent='';
+    document.getElementById('statEpoch').textContent='0';
+    document.getElementById('statSamples').textContent='0';
+    document.getElementById('statLoss').textContent='—'; document.getElementById('statLoss').style.color='';
+    document.getElementById('statAcc').textContent='—'; document.getElementById('statAcc').style.color='';
+    document.getElementById('progressFill').style.width='0%';
+    document.getElementById('progressText').textContent='0 / 30';
+    document.getElementById('trainLog').innerHTML='학습을 시작하면 로그가 표시됩니다.';
+    document.getElementById('dataStatus').innerHTML='데이터를 생성하세요';
+    document.getElementById('dataStatus').style.color='';
+    document.getElementById('trainResultPanel').classList.add('hidden');
+    document.getElementById('panelPlayback').classList.add('hidden');
+
+    setTrainStatus('idle');
+    document.getElementById('btnStart').disabled=false;
+    document.getElementById('btnStart').textContent='▶ 시작';
+    document.getElementById('btnPause').disabled=true;
+    document.getElementById('btnStep').disabled=false;
+
+    drawChart('lossCanvas',[],'Loss','#E53935');
+    drawChart('accCanvas',[],'Accuracy','#43A047');
+    highlightLayer('input');
+    initFeatureMaps();
+}
+
+init();
+</script>
+</body>
+</html>

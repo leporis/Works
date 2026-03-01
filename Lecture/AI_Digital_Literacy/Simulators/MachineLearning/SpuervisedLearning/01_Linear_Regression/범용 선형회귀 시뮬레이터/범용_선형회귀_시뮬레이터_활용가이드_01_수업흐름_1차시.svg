@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 350">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .title { font-family: 'Noto Sans KR', sans-serif; font-size: 16px; font-weight: 700; fill: #3E2723; }
+      .subtitle { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; font-weight: 600; fill: #5D4037; }
+      .label { font-family: 'Noto Sans KR', sans-serif; font-size: 10px; font-weight: 500; fill: #5D4037; }
+      .small { font-family: 'Noto Sans KR', sans-serif; font-size: 9px; fill: #5D4037; }
+      .hint { font-family: 'Noto Sans KR', sans-serif; font-size: 8px; fill: #8D6E63; }
+      .time { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; fill: #FFFFFF; }
+      .white { fill: #FFFFFF; }
+    </style>
+  </defs>
+  
+  <rect width="800" height="350" fill="url(#bgGrad)"/>
+  
+  <text x="400" y="28" text-anchor="middle" class="title">📚 1차시: 선형 회귀 기초 (45분)</text>
+  
+  <!-- 타임라인 바 -->
+  <rect x="40" y="50" width="720" height="20" rx="10" fill="#E0E0E0"/>
+  
+  <!-- 도입: 5분 (0-5) -->
+  <rect x="40" y="50" width="80" height="20" rx="10" fill="#9C27B0"/>
+  <text x="80" y="64" text-anchor="middle" class="time">5분</text>
+  
+  <!-- 전개1: 10분 (5-15) -->
+  <rect x="120" y="50" width="160" height="20" fill="#E53935"/>
+  <text x="200" y="64" text-anchor="middle" class="time">10분</text>
+  
+  <!-- 전개2: 20분 (15-35) -->
+  <rect x="280" y="50" width="320" height="20" fill="#43A047"/>
+  <text x="440" y="64" text-anchor="middle" class="time">20분</text>
+  
+  <!-- 전개3: 5분 (35-40) -->
+  <rect x="600" y="50" width="80" height="20" fill="#FFC107"/>
+  <text x="640" y="64" text-anchor="middle" class="time">5분</text>
+  
+  <!-- 정리: 5분 (40-45) -->
+  <rect x="680" y="50" width="80" height="20" rx="10" fill="#1565C0"/>
+  <text x="720" y="64" text-anchor="middle" class="time">5분</text>
+  
+  <!-- 시간 눈금 -->
+  <text x="40" y="85" text-anchor="middle" class="hint">0분</text>
+  <text x="120" y="85" text-anchor="middle" class="hint">5분</text>
+  <text x="280" y="85" text-anchor="middle" class="hint">15분</text>
+  <text x="600" y="85" text-anchor="middle" class="hint">35분</text>
+  <text x="680" y="85" text-anchor="middle" class="hint">40분</text>
+  <text x="760" y="85" text-anchor="middle" class="hint">45분</text>
+  
+  <!-- 단계별 상세 카드 -->
+  <!-- 도입 -->
+  <rect x="30" y="100" width="140" height="110" rx="8" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="30" y="100" width="140" height="25" rx="8" fill="#9C27B0"/>
+  <rect x="30" y="117" width="140" height="8" fill="#9C27B0"/>
+  <text x="100" y="118" text-anchor="middle" class="label white">🎯 도입</text>
+  <text x="40" y="145" class="small" style="font-weight:600">교수 활동</text>
+  <text x="40" y="158" class="hint">"키와 발크기의 관계는?"</text>
+  <text x="40" y="175" class="small" style="font-weight:600">학습 활동</text>
+  <text x="40" y="188" class="hint">경험 공유, 예측</text>
+  
+  <!-- 전개1 -->
+  <rect x="180" y="100" width="140" height="110" rx="8" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="180" y="100" width="140" height="25" rx="8" fill="#E53935"/>
+  <rect x="180" y="117" width="140" height="8" fill="#E53935"/>
+  <text x="250" y="118" text-anchor="middle" class="label white">📖 전개1</text>
+  <text x="190" y="145" class="small" style="font-weight:600">교수 활동</text>
+  <text x="190" y="158" class="hint">Y = wX + b 개념 설명</text>
+  <text x="190" y="175" class="small" style="font-weight:600">학습 활동</text>
+  <text x="190" y="188" class="hint">개념 노트 작성</text>
+  
+  <!-- 전개2 -->
+  <rect x="330" y="100" width="140" height="110" rx="8" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="330" y="100" width="140" height="25" rx="8" fill="#43A047"/>
+  <rect x="330" y="117" width="140" height="8" fill="#43A047"/>
+  <text x="400" y="118" text-anchor="middle" class="label white">💻 전개2</text>
+  <text x="340" y="145" class="small" style="font-weight:600">교수 활동</text>
+  <text x="340" y="158" class="hint">시뮬레이터 시연</text>
+  <text x="340" y="175" class="small" style="font-weight:600">학습 활동</text>
+  <text x="340" y="188" class="hint">[탐구 활동 1] 실습</text>
+  
+  <!-- 전개3 -->
+  <rect x="480" y="100" width="140" height="110" rx="8" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="480" y="100" width="140" height="25" rx="8" fill="#FFC107"/>
+  <rect x="480" y="117" width="140" height="8" fill="#FFC107"/>
+  <text x="550" y="118" text-anchor="middle" class="label" style="fill:#3E2723">📏 전개3</text>
+  <text x="490" y="145" class="small" style="font-weight:600">교수 활동</text>
+  <text x="490" y="158" class="hint">오차선 기능 소개</text>
+  <text x="490" y="175" class="small" style="font-weight:600">학습 활동</text>
+  <text x="490" y="188" class="hint">오차의 의미 토론</text>
+  
+  <!-- 정리 -->
+  <rect x="630" y="100" width="140" height="110" rx="8" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="630" y="100" width="140" height="25" rx="8" fill="#1565C0"/>
+  <rect x="630" y="117" width="140" height="8" fill="#1565C0"/>
+  <text x="700" y="118" text-anchor="middle" class="label white">✅ 정리</text>
+  <text x="640" y="145" class="small" style="font-weight:600">교수 활동</text>
+  <text x="640" y="158" class="hint">핵심 개념 정리</text>
+  <text x="640" y="175" class="small" style="font-weight:600">학습 활동</text>
+  <text x="640" y="188" class="hint">학습 결과 공유</text>
+  
+  <!-- 학습 목표 -->
+  <rect x="30" y="225" width="740" height="110" rx="10" fill="#FFFFFF" filter="url(#shadow)"/>
+  <text x="400" y="250" text-anchor="middle" class="subtitle">🎯 학습 목표</text>
+  
+  <circle cx="70" cy="275" r="8" fill="#E53935"/>
+  <text x="70" y="279" text-anchor="middle" class="hint white">1</text>
+  <text x="85" y="279" class="small">선형 회귀의 개념(기울기, 절편)을 설명할 수 있다</text>
+  
+  <circle cx="70" cy="300" r="8" fill="#43A047"/>
+  <text x="70" y="304" text-anchor="middle" class="hint white">2</text>
+  <text x="85" y="304" class="small">시뮬레이터를 사용하여 모델을 학습시킬 수 있다</text>
+  
+  <circle cx="70" cy="325" r="8" fill="#1565C0"/>
+  <text x="70" y="329" text-anchor="middle" class="hint white">3</text>
+  <text x="85" y="329" class="small">손실 그래프를 해석할 수 있다</text>
+  
+  <!-- 핵심 활동 강조 -->
+  <rect x="450" y="265" width="300" height="60" rx="8" fill="#E8F5E9" stroke="#43A047" stroke-width="2"/>
+  <text x="600" y="288" text-anchor="middle" class="label" style="fill:#2E7D32">💡 핵심 활동: 시뮬레이터 실습</text>
+  <text x="600" y="308" text-anchor="middle" class="hint" style="fill:#2E7D32">🏠 주택 프리셋으로 데이터 생성 → 학습 실행</text>
+</svg>

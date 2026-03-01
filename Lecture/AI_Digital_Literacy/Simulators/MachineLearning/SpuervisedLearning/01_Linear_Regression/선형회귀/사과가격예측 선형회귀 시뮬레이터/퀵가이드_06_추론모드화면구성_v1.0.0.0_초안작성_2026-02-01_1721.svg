@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 200">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow2" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="700" height="200" fill="url(#bgGrad2)" rx="12"/>
+  
+  <!-- 제목 -->
+  <text x="350" y="28" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" font-weight="700" fill="#9C27B0">🔮 추론 모드</text>
+  
+  <!-- 3열 레이아웃 -->
+  <!-- 왼쪽: 예측 입력 -->
+  <g filter="url(#shadow2)">
+    <rect x="20" y="45" width="140" height="140" rx="10" fill="white" stroke="#E1BEE7" stroke-width="2"/>
+    <rect x="20" y="45" width="140" height="32" rx="10" fill="#9C27B0"/>
+    <rect x="20" y="67" width="140" height="10" fill="#9C27B0"/>
+    <text x="90" y="68" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="white">🎯 예측 입력</text>
+    <text x="90" y="100" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">🍯 당도 (Brix)</text>
+    <rect x="40" y="108" width="100" height="6" rx="3" fill="#E1BEE7"/>
+    <circle cx="90" cy="111" r="5" fill="#9C27B0"/>
+    <text x="90" y="138" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">⚖️ 무게 (g)</text>
+    <rect x="40" y="146" width="100" height="6" rx="3" fill="#E1BEE7"/>
+    <circle cx="80" cy="149" r="5" fill="#9C27B0"/>
+    <text x="90" y="175" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#9C27B0" font-weight="600">⭐ 품질: 50.0점</text>
+  </g>
+  
+  <!-- 중앙: 예측 시각화 -->
+  <g filter="url(#shadow2)">
+    <rect x="175" y="45" width="350" height="140" rx="10" fill="white" stroke="#E1BEE7" stroke-width="2"/>
+    <text x="350" y="68" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#3E2723">📈 예측 시각화 (산점도 + 회귀선 + 예측점)</text>
+    
+    <!-- 축 -->
+    <line x1="210" y1="165" x2="210" y2="85" stroke="#BCAAA4" stroke-width="1"/>
+    <line x1="210" y1="165" x2="490" y2="165" stroke="#BCAAA4" stroke-width="1"/>
+    <text x="350" y="178" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#8D6E63">품질 점수</text>
+    <text x="195" y="125" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#8D6E63" transform="rotate(-90 195 125)">가격</text>
+    
+    <!-- 데이터 점들 -->
+    <circle cx="240" cy="155" r="2" fill="#43A047" opacity="0.5"/>
+    <circle cx="260" cy="148" r="2" fill="#43A047" opacity="0.5"/>
+    <circle cx="285" cy="140" r="2" fill="#43A047" opacity="0.5"/>
+    <circle cx="310" cy="132" r="2" fill="#FFC107" opacity="0.5"/>
+    <circle cx="340" cy="122" r="2" fill="#FFC107" opacity="0.5"/>
+    <circle cx="370" cy="112" r="2" fill="#FFC107" opacity="0.5"/>
+    <circle cx="400" cy="105" r="2" fill="#1565C0" opacity="0.5"/>
+    <circle cx="430" cy="98" r="2" fill="#1565C0" opacity="0.5"/>
+    <circle cx="460" cy="92" r="2" fill="#1565C0" opacity="0.5"/>
+    
+    <!-- 회귀선 -->
+    <line x1="225" y1="160" x2="475" y2="88" stroke="#1565C0" stroke-width="2"/>
+    
+    <!-- 수직선 (품질 → 회귀선) -->
+    <line x1="350" y1="165" x2="350" y2="120" stroke="#FF5722" stroke-width="2" stroke-dasharray="4,3"/>
+    
+    <!-- 수평선 (회귀선 → 가격축) -->
+    <line x1="210" y1="120" x2="350" y2="120" stroke="#FF5722" stroke-width="2" stroke-dasharray="4,3"/>
+    
+    <!-- 예측점 (노란색 큰 원) -->
+    <circle cx="350" cy="120" r="8" fill="#FFC107" stroke="#FF9800" stroke-width="2"/>
+    
+    <!-- 레이블 -->
+    <text x="350" y="108" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#FF5722" font-weight="600">2,510원</text>
+  </g>
+  
+  <!-- 오른쪽: 예측 결과 -->
+  <g filter="url(#shadow2)">
+    <rect x="540" y="45" width="140" height="140" rx="10" fill="white" stroke="#E1BEE7" stroke-width="2"/>
+    <rect x="540" y="45" width="140" height="32" rx="10" fill="#9C27B0"/>
+    <rect x="540" y="67" width="140" height="10" fill="#9C27B0"/>
+    <text x="610" y="68" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="white">💰 예측 결과</text>
+    
+    <!-- 예측 가격 박스 -->
+    <rect x="555" y="85" width="110" height="45" rx="8" fill="linear-gradient(135deg, #9C27B0, #7B1FA2)"/>
+    <rect x="555" y="85" width="110" height="45" rx="8" fill="#9C27B0"/>
+    <text x="610" y="102" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="white" opacity="0.9">예측 가격</text>
+    <text x="610" y="122" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="white">2,510원</text>
+    
+    <!-- 추론 과정 -->
+    <text x="610" y="148" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#5D4037">기본가격: 985원</text>
+    <text x="610" y="162" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#5D4037">품질기여: +1,525원</text>
+    <text x="610" y="178" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#9C27B0">가격 = w×품질 + b</text>
+  </g>
+</svg>

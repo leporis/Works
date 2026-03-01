@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFBFF"/>
+      <stop offset="100%" style="stop-color:#EEF2FF"/>
+    </linearGradient>
+    <filter id="shadow3" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.10"/>
+    </filter>
+    <linearGradient id="blueTitle" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1976D2"/>
+      <stop offset="100%" style="stop-color:#42A5F5"/>
+    </linearGradient>
+    <linearGradient id="centerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1976D2"/>
+      <stop offset="100%" style="stop-color:#1565C0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="800" height="450" fill="url(#bgGrad3)" rx="12"/>
+
+  <!-- 제목 -->
+  <rect x="245" y="12" width="310" height="42" fill="url(#blueTitle)" rx="8"/>
+  <text x="400" y="40" font-family="'Noto Sans CJK KR', sans-serif" font-size="19" font-weight="700" text-anchor="middle" fill="#FFFFFF">프롬프트 작성 4원칙</text>
+
+  <!-- 중앙 원 -->
+  <circle cx="400" cy="225" r="55" fill="url(#centerGrad)" filter="url(#shadow3)"/>
+  <text x="400" y="218" font-family="'Noto Sans CJK KR', sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="#FFFFFF">효과적인</text>
+  <text x="400" y="238" font-family="'Noto Sans CJK KR', sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="#FFFFFF">프롬프트</text>
+
+  <!-- 연결선 (중앙→카드) -->
+  <line x1="345" y1="190" x2="230" y2="140" stroke="#90CAF9" stroke-width="2"/>
+  <line x1="455" y1="190" x2="570" y2="140" stroke="#90CAF9" stroke-width="2"/>
+  <line x1="345" y1="260" x2="230" y2="320" stroke="#90CAF9" stroke-width="2"/>
+  <line x1="455" y1="260" x2="570" y2="320" stroke="#90CAF9" stroke-width="2"/>
+
+  <!-- 원칙 1: 명확하고 구체적으로 (좌상) -->
+  <rect x="30" y="72" width="240" height="130" fill="#FFFFFF" stroke="#BBDEFB" stroke-width="1.5" rx="12" filter="url(#shadow3)"/>
+  <rect x="30" y="72" width="240" height="40" fill="#E3F2FD" rx="12"/>
+  <rect x="30" y="95" width="240" height="17" fill="#E3F2FD"/>
+  <circle cx="55" cy="92" r="14" fill="#1976D2"/>
+  <text x="55" y="97" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" text-anchor="middle" fill="#FFFFFF" font-weight="700">1</text>
+  <text x="78" y="97" font-family="'Noto Sans CJK KR', sans-serif" font-size="14" font-weight="700" fill="#1565C0">명확하고 구체적으로</text>
+
+  <text x="50" y="135" font-family="'Noto Sans CJK KR', sans-serif" font-size="12" fill="#455A64">모호한 표현 대신</text>
+  <text x="50" y="153" font-family="'Noto Sans CJK KR', sans-serif" font-size="12" fill="#455A64" font-weight="600">정확한 요구사항을 작성</text>
+  <text x="50" y="178" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" fill="#78909C">누가, 무엇을, 어떻게, 얼마나</text>
+  <text x="50" y="194" font-family="'Noto Sans CJK KR', sans-serif" font-size="10" fill="#1976D2">"3학년 분수 학습지 10문항"</text>
+
+  <!-- 원칙 2: 맥락과 배경 제공 (우상) -->
+  <rect x="530" y="72" width="240" height="130" fill="#FFFFFF" stroke="#BBDEFB" stroke-width="1.5" rx="12" filter="url(#shadow3)"/>
+  <rect x="530" y="72" width="240" height="40" fill="#E3F2FD" rx="12"/>
+  <rect x="530" y="95" width="240" height="17" fill="#E3F2FD"/>
+  <circle cx="555" cy="92" r="14" fill="#1976D2"/>
+  <text x="555" y="97" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" text-anchor="middle" fill="#FFFFFF" font-weight="700">2</text>
+  <text x="578" y="97" font-family="'Noto Sans CJK KR', sans-serif" font-size="14" font-weight="700" fill="#1565C0">맥락과 배경 제공</text>
+
+  <text x="550" y="135" font-family="'Noto Sans CJK KR', sans-serif" font-size="12" fill="#455A64">AI에게 상황, 대상,</text>
+  <text x="550" y="153" font-family="'Noto Sans CJK KR', sans-serif" font-size="12" fill="#455A64" font-weight="600">목적을 알려주기</text>
+  <text x="550" y="178" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" fill="#78909C">대상, 수준, 목적, 상황, 제한</text>
+  <text x="550" y="194" font-family="'Noto Sans CJK KR', sans-serif" font-size="10" fill="#1976D2">"초등 3학년 대상, 기초 수준"</text>
+
+  <!-- 원칙 3: 출력 형식 지정 (좌하) -->
+  <rect x="30" y="250" width="240" height="130" fill="#FFFFFF" stroke="#BBDEFB" stroke-width="1.5" rx="12" filter="url(#shadow3)"/>
+  <rect x="30" y="250" width="240" height="40" fill="#E3F2FD" rx="12"/>
+  <rect x="30" y="273" width="240" height="17" fill="#E3F2FD"/>
+  <circle cx="55" cy="270" r="14" fill="#1976D2"/>
+  <text x="55" y="275" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" text-anchor="middle" fill="#FFFFFF" font-weight="700">3</text>
+  <text x="78" y="275" font-family="'Noto Sans CJK KR', sans-serif" font-size="14" font-weight="700" fill="#1565C0">출력 형식 지정</text>
+
+  <text x="50" y="313" font-family="'Noto Sans CJK KR', sans-serif" font-size="12" fill="#455A64">결과물의 형태와</text>
+  <text x="50" y="331" font-family="'Noto Sans CJK KR', sans-serif" font-size="12" fill="#455A64" font-weight="600">구조를 미리 지정</text>
+  <text x="50" y="356" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" fill="#78909C">표, 목록, 분량, 구조 등</text>
+  <text x="50" y="372" font-family="'Noto Sans CJK KR', sans-serif" font-size="10" fill="#1976D2">"A4 1장, 표 형식으로"</text>
+
+  <!-- 원칙 4: 단계별로 나누어 요청 (우하) -->
+  <rect x="530" y="250" width="240" height="130" fill="#FFFFFF" stroke="#BBDEFB" stroke-width="1.5" rx="12" filter="url(#shadow3)"/>
+  <rect x="530" y="250" width="240" height="40" fill="#E3F2FD" rx="12"/>
+  <rect x="530" y="273" width="240" height="17" fill="#E3F2FD"/>
+  <circle cx="555" cy="270" r="14" fill="#1976D2"/>
+  <text x="555" y="275" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" text-anchor="middle" fill="#FFFFFF" font-weight="700">4</text>
+  <text x="578" y="275" font-family="'Noto Sans CJK KR', sans-serif" font-size="14" font-weight="700" fill="#1565C0">단계별로 나누어 요청</text>
+
+  <text x="550" y="313" font-family="'Noto Sans CJK KR', sans-serif" font-size="12" fill="#455A64">복잡한 과제는</text>
+  <text x="550" y="331" font-family="'Noto Sans CJK KR', sans-serif" font-size="12" fill="#455A64" font-weight="600">작은 단위로 나누기</text>
+  <text x="550" y="356" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" fill="#78909C">확인 → 수정 → 확장 반복</text>
+  <text x="550" y="372" font-family="'Noto Sans CJK KR', sans-serif" font-size="10" fill="#1976D2">"먼저 목차 → 내용 → 검토"</text>
+
+  <!-- 하단 요약 바 -->
+  <rect x="50" y="400" width="700" height="38" fill="#1976D2" rx="19"/>
+  <text x="400" y="424" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" font-weight="600" text-anchor="middle" fill="#FFFFFF">같은 AI라도 프롬프트에 따라 결과가 완전히 달라집니다!</text>
+</svg>

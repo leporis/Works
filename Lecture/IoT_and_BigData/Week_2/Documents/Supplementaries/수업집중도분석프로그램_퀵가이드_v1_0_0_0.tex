@@ -1,0 +1,259 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}수업 집중도 분석 프로그램 퀵가이드 v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{bar-chart} 수업 집중도 분석 프로그램}\\[0.5cm]
+{\Huge\bfseries\color{primary} 퀵가이드}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v2.4.0.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 퀵가이드는 수업 집중도 분석 프로그램와 함께 보는 내비게이션입니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{\emoji{open-book} 이 문서 사용법}
+
+\begin{tcolorbox}[tipbox]
+\textbf{이 퀵가이드는 집중도 분석 프로그램과 함께 보는 내비게이션입니다.}
+
+\end{tcolorbox}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{9.5cm}|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{상황} & \textbf{참조 섹션} \\
+\hline
+처음 시작 & \emoji{high-voltage} 초속성 실습 \\
+\hline
+탭이 5개나 있어서 헷갈림 & \emoji{rocket} 빠른 시작 \\
+\hline
+학생 모델 vs 교수 모델? & \emoji{magnifying-glass-tilted-left} 관찰 포인트 \\
+\hline
+문제 발생 & \emoji{sos} 트러블슈팅 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{high-voltage} 1분 초속성 실습}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{8.5cm}|p{5.0cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{행동} & \textbf{확인} \\
+\hline
+1 & \textbf{\emoji{inbox-tray} 데이터 수집} 탭에서 \textbf{\emoji{package} 샘플 데이터 로드} 클릭 & "12건을 로드했습니다" 알림이 떴나요? \\
+\hline
+2 & \textbf{\emoji{bar-chart} 데이터 분석} 탭 클릭 & 산점도에 점들이 나타났나요? \\
+\hline
+3 & \textbf{\emoji{man-student} 학생 모델} 탭에서 \textbf{예측 테스트} 영역의 \textbf{예측하기} 클릭 & 높음/보통/낮음 결과가 나오면 \emoji{party-popper} \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{rocket} 빠른 시작 (3단계)}
+
+\subsection*{\emoji{keycap-1} 데이터 준비하기}
+
+\textbf{\emoji{inbox-tray} 데이터 수집} 탭에서 4가지 방법 중 하나를 선택합니다:
+
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{4.7cm}|p{10.3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{방법} & \textbf{언제 쓸까?} \\
+\hline
+\textbf{\emoji{package} 샘플 로드} & 프로그램 처음 써볼 때 (12건) \\
+\hline
+\textbf{\emoji{game-die} 랜덤 생성} & 대량 데이터가 필요할 때 (날짜·간격 설정) \\
+\hline
+\textbf{\emoji{file-folder} CSV 파일} & 실제 수집한 데이터가 있을 때 \\
+\hline
+\textbf{\emoji{keyboard} 직접 입력} & 소량 데이터를 빠르게 넣을 때 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[tipbox, title={\emoji{light-bulb} 팁}]
+\emoji{light-bulb} \textbf{팁}: 처음에는 \textbf{샘플 로드}로 시작하세요. 프로그램에 익숙해지면 랜덤 생성으로 다양한 패턴을 실험해보세요.
+
+\end{tcolorbox}
+
+\subsection*{\emoji{keycap-2} 모델 만들기}
+
+\textbf{\emoji{man-student} 학생 모델} 탭에서 나만의 규칙을 설정합니다:
+
+$\bullet$ "최적 온도 범위"와 "소음 기준"을 슬라이더로 조절
+
+$\bullet$ 설정한 규칙이 실시간으로 반영됩니다
+
+$\bullet$ \textbf{정확도}를 확인하며 규칙을 개선하세요
+
+
+그다음 \textbf{\emoji{man-teacher} 교수 모델} 탭에서 \textbf{\emoji{brain} 학습 시작}을 클릭합니다:
+
+$\bullet$ 데이터에서 자동으로 계수를 계산합니다
+
+$\bullet$ 수식과 R²(설명력)을 확인하세요
+
+
+\subsection*{\emoji{keycap-3} 비교하기}
+
+\textbf{\emoji{balance-scale} 모델 비교} 탭에서 두 모델의 차이를 관찰합니다:
+
+$\bullet$ 비교 차트: 온도에 따른 예측 곡선 2개
+
+$\bullet$ 정확도 비교: 어느 모델이 더 정확한가?
+
+$\bullet$ 핵심 질문: \textbf{"규칙의 기준은 누가 정했나?"}
+
+
+
+\section*{\emoji{desktop-computer} 화면 구성}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{images/S6_Concentration_screen.png}
+\end{center}
+
+
+\section*{\emoji{magnifying-glass-tilted-left} 관찰 포인트}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.9cm}|p{5.7cm}|p{6.4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{관찰 대상} & \textbf{찾아볼 장면} & \textbf{의미} \\
+\hline
+산점도 점 분포 & 온도↑ 집중도↓ 경향 & "온도와 집중도는 음의 상관" \\
+\hline
+학생 모델 정확도 & 규칙 변경 시 정확도 변동 & "내가 정한 기준이 결과를 좌우한다" \\
+\hline
+교수 모델 R² & 학습 후 R² 값 (0\textasciitilde{}100\%) & "데이터가 얼마나 모델을 설명하는가" \\
+\hline
+비교 차트 곡선 & 학생=꺾은선, 교수=부드러운 곡선 & "규칙은 불연속, 회귀는 연속" \\
+\hline
+온도 계수 부호 & β₁ < 0 (음수) & "온도가 오르면 집중도가 떨어진다" \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[tipbox]
+\emoji{brain} \textbf{핵심}: 학생 모델이 교수 모델보다 정확할 수도 있습니다! 중요한 건 \textbf{"기준을 누가 정했는가"}입니다.
+
+\end{tcolorbox}
+
+
+\section*{\emoji{sos} 도와주세요!}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.6cm}|p{5.4cm}|p{6.0cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{증상} & \textbf{원인} & \textbf{해결책} \\
+\hline
+차트가 안 보여요 & 인터넷 미연결 (Chart.js 로드 실패) & Wi-Fi 연결 후 새로고침 \\
+\hline
+학습 시작이 안 돼요 & 데이터 3건 미만 & \emoji{inbox-tray} 탭에서 데이터 추가 (샘플 로드 추천) \\
+\hline
+"변동이 너무 작아" 오류 & 모든 온도/소음이 동일 & 범위를 넓혀서 랜덤 데이터 재생성 \\
+\hline
+정확도가 0\%에요 & 집중도가 없는 데이터(null) & 랜덤 생성 시 "집중도 포함: 예" 선택 \\
+\hline
+CSV 업로드가 안 돼요 & 열 순서 불일치 & \texttt{날짜,시간대,온도,소음,집중도} 순서로 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{key} 핵심 용어}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.8cm}|p{3.7cm}|p{3.8cm}|p{5.7cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{용어} & \textbf{학술 용어} & \textbf{의미} & \textbf{쉬운 설명} \\
+\hline
+집중도 & Concentration Score & 수업 집중 정도 (1\textasciitilde{}5점) & 1점은 딴짓, 5점은 완전 집중 \\
+\hline
+규칙 기반 모델 & Rule-based Model & if-else로 판정 & "온도 22\textasciitilde{}26℃이면 높음" 같은 내 규칙 \\
+\hline
+회귀 모델 & Regression Model & 데이터에서 수식을 찾음 & 데이터가 알려주는 최적의 수식 \\
+\hline
+R² (설명력) & Coefficient of Determination & 모델이 데이터를 설명하는 비율 & "67\%면 변동의 67\%를 설명" \\
+\hline
+계수 (β) & Coefficient & 변수의 영향력 크기 & "β₁ = -0.15면 온도 1℃↑ \textrightarrow{} 집중도 0.15↓" \\
+\hline
+상관 & Correlation & 두 변수의 함께 변하는 경향 & "온도가 오를 때 집중도가 내려간다" \\
+\hline
+인과 & Causation & 원인과 결과 관계 & "온도 때문에 집중도가 내려간다" (단정 불가!) \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{thought-balloon} 생각해보기}
+
+\begin{tcolorbox}[tipbox]
+\textbf{"데이터는 원인을 말해주지 않습니다. 우리가 원인을 추정할 뿐입니다."}
+
+\vspace{0.3em}
+- 온도가 높으면 집중도가 낮아지는 건, 온도 \textbf{때문}인가요? 아니면 오후라서 피곤한 건가요?
+
+- 학생 모델과 교수 모델 중 어느 것이 "더 좋은" 모델인가요? "좋다"의 기준은 무엇인가요?
+
+- AI가 "이 학생은 집중하지 않고 있다"고 판단할 수 있을까요?
+
+\end{tcolorbox}
+
+
+\section*{참고자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{7.6cm}|p{2.7cm}|p{3.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & 수업집중도분석프로그램\_v2.4.0.0 & HTML 파일 & 시뮬레이터 \\
+\hline
+2 & 수업집중도분석프로그램\_개발참조\_v1.0.0.0 & 문서 & 기술 상세 \\
+\hline
+3 & 코딩관리지침\_v4.0.0.0 \S{}17 & 프로젝트 문서 & 퀵가이드 작성법 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{수업 집중도 분석 프로그램 퀵가이드}
+\end{center}
+\end{document}

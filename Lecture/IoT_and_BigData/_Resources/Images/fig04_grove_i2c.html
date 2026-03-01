@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Grove I2C 연결 구조</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: white;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      text-align: center;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #0066cc;
+      margin-bottom: 40px;
+    }
+    .diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+    .microbit {
+      width: 180px;
+      height: 120px;
+      background: linear-gradient(135deg, #00c896 0%, #009664 100%);
+      border-radius: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .connector {
+      width: 4px;
+      height: 50px;
+      background: #0066cc;
+    }
+    .shield {
+      width: 350px;
+      height: 100px;
+      background: linear-gradient(135deg, #4a90e2 0%, #0066cc 100%);
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .ports {
+      display: flex;
+      gap: 20px;
+      margin-top: 15px;
+    }
+    .port {
+      width: 50px;
+      height: 30px;
+      background: #ffd700;
+      border-radius: 5px;
+      border: 2px solid #333;
+    }
+    .i2c-line {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background: repeating-linear-gradient(
+        90deg,
+        #fff,
+        #fff 10px,
+        transparent 10px,
+        transparent 20px
+      );
+      bottom: 35px;
+    }
+    .label {
+      font-size: 13px;
+      color: #666;
+      margin-top: 10px;
+    }
+    .sensors {
+      display: flex;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    .sensor {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .sensor-box {
+      width: 70px;
+      height: 50px;
+      background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 11px;
+      font-weight: bold;
+      text-align: center;
+      line-height: 1.2;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    .sensor-line {
+      width: 2px;
+      height: 40px;
+      background: #c92a2a;
+    }
+    .note {
+      margin-top: 30px;
+      padding: 15px 25px;
+      background: #f0f8ff;
+      border-left: 4px solid #0066cc;
+      font-size: 14px;
+      line-height: 1.6;
+      text-align: left;
+      max-width: 500px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">Grove I2C 연결 구조</div>
+    
+    <div class="diagram">
+      <!-- 마이크로비트 -->
+      <div class="microbit">
+        micro:bit V2
+      </div>
+      
+      <!-- 연결선 -->
+      <div class="connector"></div>
+      <div style="font-size: 14px; font-weight: bold; color: #0066cc; margin-top: -20px;">
+        ↓ 꽂기
+      </div>
+      
+      <!-- Grove Shield -->
+      <div class="shield">
+        <div>Grove Shield</div>
+        <div class="i2c-line"></div>
+        <div style="font-size: 11px; margin-top: 5px;">SDA/SCL 공유</div>
+      </div>
+      
+      <!-- I2C 포트들 -->
+      <div class="ports">
+        <div class="port"></div>
+        <div class="port"></div>
+        <div class="port"></div>
+        <div class="port"></div>
+        <div class="port"></div>
+        <div class="port"></div>
+      </div>
+      <div class="label">최대 6개 I2C 포트</div>
+      
+      <!-- 연결선들 -->
+      <div style="display: flex; gap: 30px;">
+        <div class="connector" style="height: 30px; background: #c92a2a;"></div>
+        <div class="connector" style="height: 30px; background: #c92a2a;"></div>
+        <div class="connector" style="height: 30px; background: #c92a2a;"></div>
+        <div class="connector" style="height: 30px; background: #c92a2a;"></div>
+      </div>
+      
+      <!-- 센서들 -->
+      <div class="sensors">
+        <div class="sensor">
+          <div class="sensor-box">SHT40<br/>온습도</div>
+          <div style="font-size: 10px; color: #666; margin-top: 5px;">0x44</div>
+        </div>
+        <div class="sensor">
+          <div class="sensor-box">BMP280<br/>기압</div>
+          <div style="font-size: 10px; color: #666; margin-top: 5px;">0x76</div>
+        </div>
+        <div class="sensor">
+          <div class="sensor-box">SGP30<br/>CO₂</div>
+          <div style="font-size: 10px; color: #666; margin-top: 5px;">0x58</div>
+        </div>
+        <div class="sensor">
+          <div class="sensor-box">TCS34725<br/>컬러</div>
+          <div style="font-size: 10px; color: #666; margin-top: 5px;">0x29</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="note">
+      <strong>I2C 통신의 특징:</strong><br/>
+      • 2개의 선(SDA, SCL)으로 여러 센서 연결<br/>
+      • 각 센서는 고유 주소로 구분 (예: 0x44, 0x76)<br/>
+      • Grove Shield로 쉽게 연결 (납땜 불필요)
+    </div>
+  </div>
+</body>
+</html>

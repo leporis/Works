@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" font-family="'Noto Sans KR', sans-serif">
+  <defs>
+    <filter id="ds"><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-opacity="0.10"/></filter>
+    <marker id="ap1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#7B1FA2"/>
+    </marker>
+    <marker id="ap2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#6A1B9A"/>
+    </marker>
+    <marker id="ap3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#4A148C"/>
+    </marker>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="900" height="640" rx="12" fill="#FAFAFA"/>
+
+  <!-- 제목 영역 -->
+  <rect x="0" y="0" width="900" height="78" rx="12" fill="#1976D2"/>
+  <rect x="0" y="40" width="900" height="38" fill="#1976D2"/>
+  <text x="450" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">알고리즘은 어떻게 공론장을 파괴하는가</text>
+  <text x="450" y="62" text-anchor="middle" font-size="13" font-weight="400" fill="#BBDEFB">『권력과 진보』 10장 · Democracy Under Threat</text>
+
+  <!-- ========== 1층: 플랫폼 비즈니스 모델 ========== -->
+  <rect x="270" y="98" width="360" height="58" rx="12" fill="#F3E5F5" stroke="#AB47BC" stroke-width="2" filter="url(#ds)"/>
+  <text x="450" y="124" text-anchor="middle" font-size="15" font-weight="700" fill="#6A1B9A">💰 플랫폼 비즈니스 모델</text>
+  <text x="450" y="144" text-anchor="middle" font-size="12" fill="#8E24AA">"사용자의 주의력 = 광고 수익"</text>
+
+  <!-- 화살표 1→2 -->
+  <line x1="450" y1="156" x2="450" y2="178" stroke="#7B1FA2" stroke-width="2.5" marker-end="url(#ap1)"/>
+
+  <!-- ========== 2층: 참여 극대화 알고리즘 ========== -->
+  <rect x="270" y="184" width="360" height="58" rx="12" fill="#EDE7F6" stroke="#7B1FA2" stroke-width="2" filter="url(#ds)"/>
+  <text x="450" y="210" text-anchor="middle" font-size="15" font-weight="700" fill="#4A148C">⚡ 참여 극대화 알고리즘</text>
+  <text x="450" y="230" text-anchor="middle" font-size="12" fill="#7B1FA2">"자극적일수록 클릭 → 더 많이 추천"</text>
+
+  <!-- 3갈래 분기 화살표 -->
+  <line x1="340" y1="242" x2="200" y2="274" stroke="#7B1FA2" stroke-width="2" marker-end="url(#ap1)"/>
+  <line x1="450" y1="242" x2="450" y2="274" stroke="#7B1FA2" stroke-width="2" marker-end="url(#ap1)"/>
+  <line x1="560" y1="242" x2="700" y2="274" stroke="#7B1FA2" stroke-width="2" marker-end="url(#ap1)"/>
+
+  <!-- ========== 3층: 3가지 메커니즘 ========== -->
+  <!-- 필터 버블 -->
+  <rect x="70" y="280" width="240" height="100" rx="12" fill="#FFF3E0" stroke="#E65100" stroke-width="1.5" filter="url(#ds)"/>
+  <text x="190" y="306" text-anchor="middle" font-size="14" font-weight="700" fill="#BF360C">🫧 필터 버블</text>
+  <text x="190" y="326" text-anchor="middle" font-size="12" fill="#E65100">내가 좋아하는 것만 보여줌</text>
+  <text x="190" y="344" text-anchor="middle" font-size="12" fill="#E65100">→ 다른 관점 차단</text>
+  <text x="190" y="364" text-anchor="middle" font-size="11" fill="#F57C00">"나와 다른 생각은 존재하지 않는다"</text>
+
+  <!-- 극단화 -->
+  <rect x="330" y="280" width="240" height="100" rx="12" fill="#E0F2F1" stroke="#00897B" stroke-width="1.5" filter="url(#ds)"/>
+  <text x="450" y="306" text-anchor="middle" font-size="14" font-weight="700" fill="#004D40">🔥 극단화</text>
+  <text x="450" y="326" text-anchor="middle" font-size="12" fill="#00897B">점점 더 자극적인 콘텐츠 추천</text>
+  <text x="450" y="344" text-anchor="middle" font-size="12" fill="#00897B">→ 온건한 입장 사라짐</text>
+  <text x="450" y="364" text-anchor="middle" font-size="11" fill="#00897B">"상대편은 적이다"</text>
+
+  <!-- 가짜 뉴스 -->
+  <rect x="590" y="280" width="240" height="100" rx="12" fill="#E8EAF6" stroke="#5C6BC0" stroke-width="1.5" filter="url(#ds)"/>
+  <text x="710" y="306" text-anchor="middle" font-size="14" font-weight="700" fill="#283593">📰 가짜 뉴스 확산</text>
+  <text x="710" y="326" text-anchor="middle" font-size="12" fill="#3F51B5">자극적 허위정보가 빠르게 퍼짐</text>
+  <text x="710" y="344" text-anchor="middle" font-size="12" fill="#3F51B5">→ 사실과 의견의 경계 소멸</text>
+  <text x="710" y="364" text-anchor="middle" font-size="11" fill="#5C6BC0">"무엇이 진실인지 모르겠다"</text>
+
+  <!-- 3갈래 합류 화살표 -->
+  <line x1="230" y1="380" x2="370" y2="412" stroke="#6A1B9A" stroke-width="2" marker-end="url(#ap2)"/>
+  <line x1="450" y1="380" x2="450" y2="412" stroke="#6A1B9A" stroke-width="2" marker-end="url(#ap2)"/>
+  <line x1="670" y1="380" x2="530" y2="412" stroke="#6A1B9A" stroke-width="2" marker-end="url(#ap2)"/>
+
+  <!-- ========== 4층: 사회적 양극화 ========== -->
+  <rect x="290" y="418" width="320" height="52" rx="12" fill="#CE93D8" stroke="#8E24AA" stroke-width="2" filter="url(#ds)"/>
+  <text x="450" y="441" text-anchor="middle" font-size="15" font-weight="700" fill="#4A148C">⚔️ 사회적 양극화</text>
+  <text x="450" y="460" text-anchor="middle" font-size="12" fill="#6A1B9A">대화 불가능 · 상호 불신 · 진영 논리</text>
+
+  <!-- 화살표 4→5 -->
+  <line x1="450" y1="470" x2="450" y2="496" stroke="#4A148C" stroke-width="3" marker-end="url(#ap3)"/>
+
+  <!-- ========== 5층: 공론장 붕괴 ========== -->
+  <rect x="250" y="502" width="400" height="58" rx="12" fill="#4A148C" stroke="#311B92" stroke-width="2" filter="url(#ds)"/>
+  <text x="450" y="528" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">🚨 공론장 붕괴 · 민주주의 위기</text>
+  <text x="450" y="548" text-anchor="middle" font-size="12" fill="#CE93D8">합리적 토론이 사라진 사회 — 민주적 의사결정 불가능</text>
+
+  <!-- ========== 좌측: 보충 설명 ========== -->
+  <rect x="42" y="418" width="220" height="80" rx="8" fill="#fff" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="152" y="438" text-anchor="middle" font-size="11" font-weight="600" fill="#616161">📊 실증 데이터</text>
+  <text x="152" y="456" text-anchor="middle" font-size="10" fill="#757575">가짜뉴스는 진짜뉴스보다</text>
+  <text x="152" y="472" text-anchor="middle" font-size="10" fill="#757575">6배 빠르게 확산 (MIT, 2018)</text>
+  <text x="152" y="488" text-anchor="middle" font-size="10" fill="#757575">유튜브 추천의 70%가 극단 콘텐츠</text>
+
+  <!-- ========== 우측: 보충 설명 ========== -->
+  <rect x="680" y="418" width="180" height="80" rx="8" fill="#fff" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="770" y="438" text-anchor="middle" font-size="11" font-weight="600" fill="#616161">🌍 실제 사례</text>
+  <text x="770" y="456" text-anchor="middle" font-size="10" fill="#757575">미국 대선 개입</text>
+  <text x="770" y="472" text-anchor="middle" font-size="10" fill="#757575">미얀마 로힝야 학살</text>
+  <text x="770" y="488" text-anchor="middle" font-size="10" fill="#757575">브렉시트 여론 조작</text>
+
+  <!-- ========== 하단: 악순환 강조 ========== -->
+  <rect x="120" y="574" width="660" height="34" rx="8" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="1.5"/>
+  <text x="450" y="596" text-anchor="middle" font-size="12" font-weight="600" fill="#4A148C">핵심 구조 :  광고 수익 모델  →  참여 극대화  →  극단화 · 분열  →  민주주의 약화  →  규제 실패  →  광고 수익 ↑ (악순환)</text>
+
+  <!-- ========== 최하단: 핵심 질문 ========== -->
+  <rect x="100" y="616" width="700" height="18" rx="6" fill="none"/>
+  <text x="450" y="632" text-anchor="middle" font-size="12" font-weight="500" fill="#0D47A1">💡  알고리즘 추천이 나의 세계관을 어떻게 형성하고 있는가?  "추천 영상"은 정말 내가 선택한 것인가?</text>
+
+</svg>

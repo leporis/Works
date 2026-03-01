@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="Noto Sans CJK KR">
+  <defs>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#2a2a3e"/>
+    </linearGradient>
+    <filter id="ledGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="800" height="500" fill="#1a1a2e" rx="8"/>
+
+  <!-- 헤더 -->
+  <rect x="0" y="0" width="800" height="50" fill="#16213e" rx="8"/>
+  <rect x="0" y="40" width="800" height="10" fill="#16213e"/>
+  <circle cx="24" cy="25" r="14" fill="#8b5cf6" opacity="0.8"/>
+  <text x="24" y="30" text-anchor="middle" fill="white" font-size="12">🔮</text>
+  <text x="48" y="22" fill="white" font-size="11" font-weight="bold">1주차 강의자료</text>
+  <text x="48" y="38" fill="#aaa" font-size="9">LED에 이름 표시하기</text>
+  <rect x="640" y="12" width="70" height="26" rx="4" fill="#2a2a4a" stroke="#444" stroke-width="1"/>
+  <text x="675" y="30" text-anchor="middle" fill="#aaa" font-size="9">🔄 새로 만들기</text>
+  <rect x="720" y="12" width="60" height="26" rx="4" fill="#2a2a4a" stroke="#444" stroke-width="1"/>
+  <text x="750" y="30" text-anchor="middle" fill="#aaa" font-size="9">❓ 도움말</text>
+
+  <!-- 구분선 -->
+  <line x1="220" y1="50" x2="220" y2="500" stroke="#3a3a4a" stroke-width="1"/>
+  <line x1="530" y1="50" x2="530" y2="500" stroke="#3a3a4a" stroke-width="1"/>
+
+  <!-- 블록 팔레트 (좌측) -->
+  <rect x="10" y="60" width="200" height="30" rx="6" fill="#6b4fbb"/>
+  <text x="20" y="80" fill="white" font-size="11" font-weight="600">🔲 기본</text>
+
+  <rect x="20" y="100" width="190" height="28" rx="6" fill="#7c5fd6" stroke="#6b4fbb" stroke-width="1.5"/>
+  <text x="30" y="119" fill="white" font-size="10">문자열 보여주기</text>
+  <rect x="140" y="105" width="60" height="18" rx="3" fill="rgba(255,255,255,0.2)"/>
+  <text x="155" y="118" fill="white" font-size="9">Hello!</text>
+
+  <rect x="20" y="134" width="190" height="28" rx="6" fill="#7c5fd6" stroke="#6b4fbb" stroke-width="1.5"/>
+  <text x="30" y="153" fill="white" font-size="10">숫자 보여주기</text>
+  <rect x="130" y="139" width="40" height="18" rx="3" fill="rgba(255,255,255,0.2)"/>
+  <text x="145" y="152" fill="white" font-size="9">0</text>
+
+  <rect x="20" y="168" width="190" height="28" rx="6" fill="#7c5fd6" stroke="#6b4fbb" stroke-width="1.5"/>
+  <text x="30" y="187" fill="white" font-size="10">아이콘 보여주기 ❤️</text>
+
+  <rect x="20" y="202" width="190" height="28" rx="6" fill="#7c5fd6" stroke="#6b4fbb" stroke-width="1.5"/>
+  <text x="30" y="221" fill="white" font-size="10">일시정지</text>
+  <rect x="90" y="207" width="45" height="18" rx="3" fill="rgba(255,255,255,0.2)"/>
+  <text x="100" y="220" fill="white" font-size="9">1000</text>
+  <text x="140" y="220" fill="white" font-size="9">ms</text>
+
+  <rect x="10" y="245" width="200" height="30" rx="6" fill="#5c3daa"/>
+  <text x="20" y="265" fill="white" font-size="11" font-weight="600">💡 LED</text>
+
+  <rect x="20" y="285" width="190" height="28" rx="6" fill="#6d4bc5" stroke="#5c3daa" stroke-width="1.5"/>
+  <text x="30" y="304" fill="white" font-size="10">화면 지우기</text>
+
+  <!-- 코딩 영역 (중앙) -->
+  <!-- 시작하면 실행 -->
+  <rect x="235" y="60" width="280" height="30" rx="6" fill="#4a8b4a"/>
+  <text x="250" y="80" fill="white" font-size="11" font-weight="600">🚀 시작하면 실행</text>
+
+  <rect x="235" y="95" width="280" height="120" rx="6" fill="rgba(74,139,74,0.15)" stroke="#4a8b4a" stroke-width="1" stroke-dasharray="4,2"/>
+  <!-- 배치된 블록 예시 -->
+  <rect x="245" y="105" width="260" height="26" rx="5" fill="#7c5fd6" stroke="#f5c518" stroke-width="2"/>
+  <text x="255" y="123" fill="white" font-size="10">문자열 보여주기</text>
+  <rect x="380" y="109" width="55" height="18" rx="3" fill="rgba(255,255,255,0.2)"/>
+  <text x="393" y="122" fill="white" font-size="9">Hello!</text>
+
+  <rect x="245" y="138" width="260" height="26" rx="5" fill="#7c5fd6"/>
+  <text x="255" y="156" fill="white" font-size="10">아이콘 보여주기 ❤️</text>
+
+  <rect x="245" y="171" width="260" height="26" rx="5" fill="#7c5fd6"/>
+  <text x="255" y="189" fill="white" font-size="10">일시정지</text>
+  <rect x="320" y="175" width="45" height="18" rx="3" fill="rgba(255,255,255,0.2)"/>
+  <text x="330" y="188" fill="white" font-size="9">1000</text>
+  <text x="370" y="188" fill="white" font-size="9">ms</text>
+
+  <!-- 무한반복 실행 -->
+  <rect x="235" y="230" width="280" height="30" rx="6" fill="#4a6b8b"/>
+  <text x="250" y="250" fill="white" font-size="11" font-weight="600">🔄 무한반복 실행</text>
+
+  <rect x="235" y="265" width="280" height="80" rx="6" fill="rgba(74,107,139,0.15)" stroke="#4a6b8b" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="375" y="310" text-anchor="middle" fill="#666" font-size="10">(블록을 여기에 드래그하세요)</text>
+
+  <!-- 시뮬레이터 패널 (우측) -->
+  <text x="660" y="75" text-anchor="middle" fill="#aaa" font-size="10">마이크로비트 시뮬레이터</text>
+
+  <!-- LED 매트릭스 -->
+  <rect x="595" y="90" width="130" height="130" rx="8" fill="#111"/>
+  <!-- 5x5 LED - "H" 패턴 예시 -->
+  <g transform="translate(605, 100)">
+    <!-- Row 0: H = 1 0 0 0 1 -->
+    <circle cx="5" cy="5" r="8" fill="#ff0000" filter="url(#ledGlow)"/>
+    <circle cx="30" cy="5" r="8" fill="#333"/>
+    <circle cx="55" cy="5" r="8" fill="#333"/>
+    <circle cx="80" cy="5" r="8" fill="#333"/>
+    <circle cx="105" cy="5" r="8" fill="#ff0000" filter="url(#ledGlow)"/>
+    <!-- Row 1 -->
+    <circle cx="5" cy="28" r="8" fill="#ff0000" filter="url(#ledGlow)"/>
+    <circle cx="30" cy="28" r="8" fill="#333"/>
+    <circle cx="55" cy="28" r="8" fill="#333"/>
+    <circle cx="80" cy="28" r="8" fill="#333"/>
+    <circle cx="105" cy="28" r="8" fill="#ff0000" filter="url(#ledGlow)"/>
+    <!-- Row 2 -->
+    <circle cx="5" cy="51" r="8" fill="#ff0000" filter="url(#ledGlow)"/>
+    <circle cx="30" cy="51" r="8" fill="#ff0000" filter="url(#ledGlow)"/>
+    <circle cx="55" cy="51" r="8" fill="#ff0000" filter="url(#ledGlow)"/>
+    <circle cx="80" cy="51" r="8" fill="#ff0000" filter="url(#ledGlow)"/>
+    <circle cx="105" cy="51" r="8" fill="#ff0000" filter="url(#ledGlow)"/>
+    <!-- Row 3 -->
+    <circle cx="5" cy="74" r="8" fill="#ff0000" filter="url(#ledGlow)"/>
+    <circle cx="30" cy="74" r="8" fill="#333"/>
+    <circle cx="55" cy="74" r="8" fill="#333"/>
+    <circle cx="80" cy="74" r="8" fill="#333"/>
+    <circle cx="105" cy="74" r="8" fill="#ff0000" filter="url(#ledGlow)"/>
+    <!-- Row 4 -->
+    <circle cx="5" cy="97" r="8" fill="#ff0000" filter="url(#ledGlow)"/>
+    <circle cx="30" cy="97" r="8" fill="#333"/>
+    <circle cx="55" cy="97" r="8" fill="#333"/>
+    <circle cx="80" cy="97" r="8" fill="#333"/>
+    <circle cx="105" cy="97" r="8" fill="#ff0000" filter="url(#ledGlow)"/>
+  </g>
+
+  <!-- A / B 버튼 -->
+  <circle cx="580" cy="155" r="10" fill="#333" stroke="#555" stroke-width="1"/>
+  <text x="580" y="159" text-anchor="middle" fill="#aaa" font-size="9">A</text>
+  <circle cx="740" cy="155" r="10" fill="#333" stroke="#555" stroke-width="1"/>
+  <text x="740" y="159" text-anchor="middle" fill="#aaa" font-size="9">B</text>
+
+  <!-- 하단 핀 -->
+  <g transform="translate(608, 228)">
+    <rect x="0" y="0" width="100" height="8" rx="1" fill="#555"/>
+    <line x1="10" y1="0" x2="10" y2="8" stroke="#444" stroke-width="0.5"/>
+    <line x1="20" y1="0" x2="20" y2="8" stroke="#444" stroke-width="0.5"/>
+    <line x1="30" y1="0" x2="30" y2="8" stroke="#444" stroke-width="0.5"/>
+    <line x1="40" y1="0" x2="40" y2="8" stroke="#444" stroke-width="0.5"/>
+    <line x1="50" y1="0" x2="50" y2="8" stroke="#444" stroke-width="0.5"/>
+  </g>
+
+  <!-- 제어 버튼 -->
+  <rect x="570" y="250" width="55" height="28" rx="5" fill="#00d4aa"/>
+  <text x="597" y="269" text-anchor="middle" fill="white" font-size="10" font-weight="bold">▶ 실행</text>
+
+  <rect x="632" y="250" width="55" height="28" rx="5" fill="#e74c3c"/>
+  <text x="659" y="269" text-anchor="middle" fill="white" font-size="10" font-weight="bold">⏹ 정지</text>
+
+  <rect x="694" y="250" width="55" height="28" rx="5" fill="#3498db"/>
+  <text x="721" y="269" text-anchor="middle" fill="white" font-size="10" font-weight="bold">🔄 리셋</text>
+
+  <!-- 상태 표시줄 -->
+  <rect x="570" y="290" width="180" height="24" rx="4" fill="#2a2a4a"/>
+  <text x="660" y="306" text-anchor="middle" fill="#00d4aa" font-size="9">✅ 실행 중...</text>
+
+  <!-- 하단 라벨 -->
+  <rect x="0" y="460" width="800" height="40" fill="#111" rx="0"/>
+  <rect x="0" y="460" width="800" height="2" fill="#3a3a4a"/>
+
+  <!-- 너비 표시 -->
+  <line x1="10" y1="478" x2="210" y2="478" stroke="#8b5cf6" stroke-width="1.5"/>
+  <text x="110" y="492" text-anchor="middle" fill="#8b5cf6" font-size="10" font-weight="bold">① 블록 팔레트 (320px)</text>
+
+  <line x1="230" y1="478" x2="520" y2="478" stroke="#4a8b4a" stroke-width="1.5"/>
+  <text x="375" y="492" text-anchor="middle" fill="#4a8b4a" font-size="10" font-weight="bold">② 코딩 영역 (가변)</text>
+
+  <line x1="540" y1="478" x2="790" y2="478" stroke="#3498db" stroke-width="1.5"/>
+  <text x="665" y="492" text-anchor="middle" fill="#3498db" font-size="10" font-weight="bold">③ 시뮬레이터 (380px)</text>
+</svg>

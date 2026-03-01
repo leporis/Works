@@ -1,0 +1,507 @@
+\documentclass[11pt,a4paper]{article}
+\input{preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{lightbrown}\emoji{robot} RL 틱택토 개발일지}
+\fancyhead[R]{\small\color{lightbrown}v1.1.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+\begin{document}
+
+% === 타이틀 페이지 ===
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\fontsize{48pt}{50pt}\selectfont \emoji{robot}}
+\vspace{1cm}
+
+{\Huge\bfseries\color{mainblue} RL 틱택토}
+\vspace{0.3cm}
+
+{\LARGE\color{darkbrown} 개발일지}
+\vspace{1.5cm}
+
+{\large AI 강화학습 시뮬레이터 — 기술 설계 문서}
+\vspace{3cm}
+
+\begin{tabular}{rl}
+\textbf{문서 버전} & v1.1.0.0 \\
+\textbf{시뮬레이터} & rl-tictactoe-v3.html (v3) \\
+\textbf{작성일} & 2026-02-14 \\
+\end{tabular}
+\vfill
+{\small\color{lightbrown} 청주교육대학교 — 컴퓨팅사고와 AI교육}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{프로젝트 개요}
+% ============================================================
+
+\subsection{목적}
+
+틱택토(Tic-Tac-Toe) 게임에서 \textbf{Q-Learning 강화학습} 알고리즘이 시행착오를 통해 스스로 게임 전략을 학습하는 과정을 시각적으로 관찰하고 체험할 수 있는 교육용 시뮬레이터입니다.
+
+\subsection{교육 목표}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|>{\bfseries}l|p{9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{목표} & \textbf{내용} \\
+\hline
+개념 이해 & 강화학습의 핵심 개념(상태, 행동, 보상, Q-값)을 직관적으로 이해 \\
+\hline
+과정 관찰 & AI가 무작위 탐험에서 최적 전략으로 수렴하는 과정을 실시간 관찰 \\
+\hline
+체험 학습 & AI와 직접 대국하며 학습 수준을 체감 \\
+\hline
+파라미터 실험 & 학습률, 할인율, 탐험률 등을 조절하며 학습에 미치는 영향 탐구 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{배경}
+
+초등 예비교사 대상 「컴퓨팅사고와 AI교육」 강좌에서, 강화학습의 원리를 직접 눈으로 확인할 수 있는 도구가 필요하여 개발하였습니다. 틱택토는 규칙이 단순하면서도 최적 전략이 존재하여 강화학습 교육에 적합합니다.
+
+% ============================================================
+\section{시스템 설계}
+% ============================================================
+
+\subsection{알고리즘: Q-Learning}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{설명} \\
+\hline
+알고리즘 & Q-Learning (오프-폴리시 시간차 학습) \\
+\hline
+상태 & 보드 배치 ($3\times3$, 각 칸 = X / O / 빈칸) \\
+\hline
+행동 & 빈 칸 중 하나에 돌 놓기 (0\textasciitilde8) \\
+\hline
+Q-테이블 & 상태$\to$행동별 가치 매핑 \\
+\hline
+갱신 식 & $Q(s,a) \leftarrow Q(s,a) + \alpha \times (r - Q(s,a))$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{대칭성 정규화}
+
+보드의 \textbf{8가지 대칭 변환}(4회전 $\times$ 2반사)을 활용하여, 동일 모양의 보드를 하나의 정규 상태로 통합합니다.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{미적용} & \textbf{적용} & \textbf{효율} \\
+\hline
+첫수 고유 상태 & 9 & \textbf{3} (중앙/모서리/변) & — \\
+\hline
+Q-테이블 최대 크기 & \textasciitilde5,000 & \textbf{\textasciitilde765} & $\sim$7배 \\
+\hline
+학습 효율 & 1$\times$ & \textbf{\textasciitilde8$\times$} & 8배 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{보상 체계}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|p{7cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{결과} & \textbf{보상값} & \textbf{설명} \\
+\hline
+승리 & $+1.0$ & 이기면 보상 \\
+\hline
+패배 & $-1.0$ & 지면 패널티 \\
+\hline
+무승부 & $+0.3$ & 비기면 소량 보상 \\
+\hline
+매 수 & $-0.01$ & 단계 패널티 (빠른 승리 유도) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{에이전트 구성}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{기본값} & \textbf{범위} \\
+\hline
+학습률 $\alpha$ & 0.3 & 0.01\textasciitilde1.0 \\
+\hline
+할인율 $\gamma$ & 0.9 & 0.1\textasciitilde1.0 \\
+\hline
+초기 탐험률 $\varepsilon$ & 1.0 & — \\
+\hline
+최소 탐험률 & 0.01 & — \\
+\hline
+$\varepsilon$ 감소율 & 0.9995 & 0.99\textasciitilde1.0 \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{주요 기능}
+% ============================================================
+
+\subsection{기능 목록}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{|c|l|p{7cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{기능} & \textbf{설명} \\
+\hline
+1 & 자기대국 학습 & X$\leftrightarrow$O 에이전트가 상호 대국하며 학습 \\
+\hline
+2 & 단독 학습 & 한쪽만 학습, 상대는 랜덤 (X 단독 / O 단독) \\
+\hline
+3 & AI 대전 관전 & 학습된 두 AI의 대국을 실시간 관전 \\
+\hline
+4 & 사람 vs AI & 사용자가 AI와 직접 대국 \\
+\hline
+5 & 대칭성 정규화 & 8가지 대칭 변환으로 Q-테이블 압축 (8배 효율) \\
+\hline
+6 & 단계 패널티 & 매 수 $-0.01$ 보상으로 최단 경로 승리 유도 \\
+\hline
+7 & 배치 학습 & 속도별 동적 배치 크기 (1ms=500판, 100ms=10판) \\
+\hline
+8 & Q-값 히트맵 & 각 칸의 Q-값을 색상으로 시각화 \\
+\hline
+9 & 실시간 그래프 & 승률, 탐험률, 강도, Q-상태 수 추이 \\
+\hline
+10 & 학습 단계 표시 & 초기$\to$탐색$\to$학습$\to$응용$\to$숙련 5단계 진행바 \\
+\hline
+11 & 저장/불러오기 & localStorage 자동저장 + JSON 파일 내보내기/가져오기 \\
+\hline
+12 & 학습 보고서 & Markdown 형식 보고서 다운로드 \\
+\hline
+13 & 다크/라이트 테마 & 토글 스위치로 즉시 전환, localStorage 기억 \\
+\hline
+14 & 파라미터 실시간 조절 & $\alpha$, $\gamma$, $\varepsilon$ 감소율 슬라이더 (동기/개별 모드) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{학습 모드}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|c|p{5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{모드} & \textbf{X 에이전트} & \textbf{O 에이전트} & \textbf{용도} \\
+\hline
+자기대국 & 학습 & 학습 & 두 AI 상호 발전 \\
+\hline
+X 단독 & 학습 & 랜덤 & X 전용 강화 \\
+\hline
+O 단독 & 랜덤 & 학습 & O 전용 강화 (후공 전략) \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{화면 구성}
+% ============================================================
+
+\subsection{대시보드 모드 (메인)}
+
+좌측 컨트롤 패널(160px)과 우측 모니터링 영역으로 구성됩니다. 좌측에서 학습 방식, 파라미터, 속도를 조절하고, 우측에서 학습 단계 진행바, 6개 지표 카드, 4개 그래프, 인사이트 패널을 관찰합니다.
+
+\subsection{사람 대전 모드}
+
+$3\times3$ 게임 보드(좌측)와 정보 패널(우측)로 구성됩니다. 보드에서 빈 칸을 클릭하여 돌을 놓고, 우측에서 학습 단계, 강도/등급, Q-값 히트맵을 확인합니다. \emoji{counterclockwise-arrows-button} 새 게임, \emoji{shuffle-tracks-button} 선후공 전환 버튼이 제공됩니다.
+
+\subsection{AI 대전 모드}
+
+학습된 Agent X와 Agent O가 자동으로 대국합니다. 속도 슬라이더(1\textasciitilde20)로 대국 속도를 조절하고, 우측에서 각 에이전트의 Q-상태 수, $\varepsilon$, Q-값 히트맵을 실시간으로 관찰합니다.
+
+% ============================================================
+\section{기술 구현}
+% ============================================================
+
+\subsection{기술 스택}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{기술} \\
+\hline
+UI 프레임워크 & React 18 (CDN) \\
+\hline
+JSX 변환 & Babel Standalone (CDN) \\
+\hline
+언어 & JavaScript (ES6+) \\
+\hline
+렌더링 & React DOM, 인라인 스타일 \\
+\hline
+저장 & localStorage, JSON 파일 \\
+\hline
+배포 형태 & \textbf{단일 HTML 파일} (CDN 의존) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{핵심 아키텍처}
+
+\textbf{QAgent 클래스}: Q-테이블 관리, $\varepsilon$-greedy 행동 선택, 역방향 갱신을 담당합니다. \texttt{chooseAction()}에서 정규화 좌표계로 변환한 뒤 행동을 선택하고, 역변환하여 원본 좌표로 반환합니다.
+
+\textbf{대칭성 변환 모듈}: \texttt{SYMMETRIES[8]}(원본$\to$변환 매핑)과 \texttt{SYMMETRIES\_INV[8]}(역매핑)을 사용하여 \texttt{canonicalize(board)}로 사전순 최소 표현을 선택합니다.
+
+\textbf{테마 시스템}: \texttt{THEMES = \{ dark, light \}}를 \texttt{ThemeContext}로 전파하여 20+ 속성(bg, text, panel, cell 등)을 일괄 전환합니다.
+
+\subsection{배치 학습 최적화}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{속도 설정} & \textbf{배치 크기} & \textbf{$\varepsilon$ 감소 주기} \\
+\hline
+1ms & 500판/틱 & 배치 단위 \\
+\hline
+5ms & 200판/틱 & 배치 단위 \\
+\hline
+20ms & 50판/틱 & 배치 단위 \\
+\hline
+100ms & 10판/틱 & 배치 단위 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{저장 포맷}
+
+JSON 형식으로 저장하며, \texttt{version: 2}, 타임스탬프, 양쪽 에이전트의 Q-테이블·파라미터, 통계 데이터(에피소드 수, 승률 히스토리 등)를 포함합니다.
+
+% ============================================================
+\section{교육적 활용}
+% ============================================================
+
+\subsection{권장 수업 흐름 (45분)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|p{4cm}|p{4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{시간} & \textbf{활동} & \textbf{시뮬레이터 기능} \\
+\hline
+도입 & 5분 & ``AI는 어떻게 게임을 배울까?'' 질문 & — \\
+\hline
+개념 & 5분 & Q-값, 보상, 탐험-활용 설명 & 도움말(\emoji{red-question-mark}) \\
+\hline
+관찰 & 10분 & 자기대국 학습 실행, 그래프 관찰 & 대시보드, 그래프 \\
+\hline
+실험 & 10분 & 파라미터 변경 실험 & $\alpha$/$\gamma$/$\varepsilon$ 슬라이더 \\
+\hline
+대국 & 10분 & AI와 직접 대국 & 사람 대전 모드 \\
+\hline
+정리 & 5분 & Q-값 히트맵 해석, 토론 & Q-값 히트맵 \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{파일 정보}
+% ============================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{내용} \\
+\hline
+파일명 & \texttt{rl-tictactoe-v3.html} \\
+\hline
+파일 크기 & 약 65KB \\
+\hline
+코드 라인 수 & 1,183줄 \\
+\hline
+실행 환경 & 모던 브라우저 (Chrome, Edge, Firefox, Safari) \\
+\hline
+외부 의존성 & React 18 (CDN), Babel Standalone (CDN) \\
+\hline
+오프라인 & \emoji{cross-mark} (CDN 필요) \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{교육 자료 이미지}
+% ============================================================
+
+기술 문서(사용설명서, 이론해설서, 활용가이드)에 삽입할 교육용 SVG 이미지 12종을 제작하였습니다.
+
+\subsection{기존 화면 캡처 (3종)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{|c|l|c|p{4.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{파일명} & \textbf{viewBox} & \textbf{내용} \\
+\hline
+1 & RL틱택토\_화면\_대시보드.svg & 800$\times$500 & 대시보드 전체 레이아웃 (다크 테마) \\
+\hline
+2 & RL틱택토\_화면\_사람대전.svg & 800$\times$480 & 사람 대전 모드 (보드+히트맵) \\
+\hline
+3 & RL틱택토\_화면\_AI대전.svg & 800$\times$440 & AI 대전 모드 (보드+에이전트 정보) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{신규 개념도 (9종)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{|c|p{4cm}|c|p{4.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{파일명} & \textbf{viewBox} & \textbf{내용} \\
+\hline
+1 & 이론해설서\_01\_강화학습순환구조 & 800$\times$370 & 에이전트-환경 상호작용 루프 \\
+\hline
+2 & 이론해설서\_02\_Q값갱신과정 & 800$\times$370 & 정방향 진행 + 역방향 보상 전파 \\
+\hline
+3 & 이론해설서\_03\_탐험활용균형 & 800$\times$360 & $\varepsilon$-greedy 분기 + 감소 곡선 \\
+\hline
+4 & 이론해설서\_04\_대칭성변환 & 800$\times$420 & 8가지 보드 대칭 변환 \\
+\hline
+5 & 이론해설서\_05\_보상체계위치가치 & 800$\times$310 & 보상 수직선 + 위치별 히트맵 \\
+\hline
+6 & 사용설명서\_06\_Q값히트맵해석 & 800$\times$310 & 보드$\to$히트맵$\to$해석 3단계 \\
+\hline
+7 & 이론해설서\_07\_학습5단계 & 800$\times$260 & 5단계 타임라인 \\
+\hline
+8 & 활용가이드\_08\_수업흐름도 & 800$\times$260 & 45분 수업 5단계 흐름 \\
+\hline
+9 & 사용설명서\_09\_저장불러오기 & 800$\times$260 & 4가지 저장 경로 흐름도 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{공통 디자인 규격}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{사양} \\
+\hline
+배경 & 밝은 크림색 그라데이션 (\#FFFBF5$\to$\#FFF3E0) \\
+\hline
+X 플레이어 & 파랑 (\#2980b9) \\
+\hline
+O 플레이어 & 빨강 (\#c0392b) \\
+\hline
+제목 폰트 & Noto Sans KR 700, 17px \\
+\hline
+본문 폰트 & Noto Sans KR 400, 9\textasciitilde11px \\
+\hline
+코드/수식 폰트 & JetBrains Mono 400, 9\textasciitilde12px \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{향후 개선}
+% ============================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|l|p{7cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{우선순위} & \textbf{항목} & \textbf{설명} \\
+\hline
+\emoji{yellow-circle} 중 & Web Worker 분리 & 학습 연산을 별도 스레드로 이동하여 UI 응답성 확보 \\
+\hline
+\emoji{yellow-circle} 중 & 수렴 자동 감지 & 승률 변동이 안정화되면 학습 자동 정지 \\
+\hline
+\emoji{green-circle} 낮 & AI vs AI 누적 전적 & AI 대전 모드에서 승/무/패 카운터 표시 \\
+\hline
+\emoji{green-circle} 낮 & 게임 종료 모달 & 승/패/무승부 결과를 시각적 모달로 표시 \\
+\hline
+\emoji{green-circle} 낮 & 보고서 모달 뷰 & MD 다운로드 외에 화면 내 보고서 표시 \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+\newpage
+\section*{참고자료}
+% ============================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|l|l|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & 코딩관리지침\_v3.0.0.0 & 프로젝트 문서 & 개발일지·퀵가이드 작성법 \\
+\hline
+2 & 코딩작성지침\_v1.0.0.0 & 프로젝트 문서 & 소프트코딩·UI/UX 원칙 \\
+\hline
+3 & 버전관리지침\_v1.3.0 & 프로젝트 문서 & 버전 번호·파일명 체계 \\
+\hline
+4 & 문서관리지침\_v2.1.1.0 & 프로젝트 문서 & 이미지 제작 프로세스 \\
+\hline
+5 & Sutton \& Barto, \textit{RL} & 이론 참고 & Q-Learning 알고리즘 \\
+\hline
+\end{tabular}
+\end{center}
+
+\section*{생성/수정 이력}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{|l|l|l|l|p{5.5cm}|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경 수준} & \textbf{변경 내용} & \textbf{작성자} \\
+\hline
+v1.0.0.0 & 2026-02-09 & 15:30 & 최초 & 초안 작성 — 시뮬레이터 v3 기준 & Claude \\
+\hline
+\textbf{v1.1.0.0} & \textbf{2026-02-14} & \textbf{23:00} & \textbf{부분 추가} & \textbf{§8 교육 자료 이미지 섹션 신설 — SVG 12종 목록, 공통 디자인 규격} & \textbf{Claude} \\
+\hline
+\end{tabular}
+\end{center}
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\emph{RL 틱택토 AI 강화학습 시뮬레이터 개발일지}
+\end{center}
+
+\end{document}

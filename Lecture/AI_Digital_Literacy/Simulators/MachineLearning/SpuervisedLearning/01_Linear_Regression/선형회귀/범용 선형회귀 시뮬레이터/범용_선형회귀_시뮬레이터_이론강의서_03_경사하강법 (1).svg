@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <linearGradient id="mountainGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFCCBC"/>
+      <stop offset="100%" style="stop-color:#FFAB91"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .title { font-family: 'Noto Sans KR', sans-serif; font-size: 18px; font-weight: 700; fill: #3E2723; }
+      .subtitle { font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 600; fill: #5D4037; }
+      .label { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; font-weight: 500; fill: #5D4037; }
+      .small { font-family: 'Noto Sans KR', sans-serif; font-size: 10px; fill: #5D4037; }
+      .hint { font-family: 'Noto Sans KR', sans-serif; font-size: 9px; fill: #8D6E63; }
+      .formula { font-family: monospace; font-size: 11px; fill: #E53935; font-weight: 600; }
+      .white { fill: #FFFFFF; }
+    </style>
+  </defs>
+  
+  <rect width="800" height="400" fill="url(#bgGrad)"/>
+  
+  <text x="400" y="30" text-anchor="middle" class="title">⛰️ 경사 하강법 (Gradient Descent)</text>
+  <text x="400" y="50" text-anchor="middle" class="hint">손실을 최소화하는 w, b를 찾는 방법</text>
+  
+  <!-- 산 그래프 -->
+  <rect x="30" y="70" width="450" height="250" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  <text x="255" y="95" text-anchor="middle" class="subtitle">🏔️ 직관적 이해: 산에서 골짜기 찾기</text>
+  
+  <!-- 좌표축 -->
+  <line x1="70" y1="110" x2="70" y2="290" stroke="#5D4037" stroke-width="2"/>
+  <line x1="70" y1="290" x2="440" y2="290" stroke="#5D4037" stroke-width="2"/>
+  <text x="55" y="115" text-anchor="end" class="small">손실</text>
+  <text x="55" y="130" text-anchor="end" class="small">(MSE)</text>
+  <text x="430" y="305" class="small">가중치 (w)</text>
+  
+  <!-- 산 모양 곡선 -->
+  <path d="M 80 280 Q 120 150, 180 200 Q 220 230, 260 170 Q 300 120, 340 200 Q 380 260, 420 240" 
+        fill="none" stroke="url(#mountainGrad)" stroke-width="4"/>
+  <path d="M 80 280 Q 120 150, 180 200 Q 220 230, 260 170 Q 300 120, 340 200 Q 380 260, 420 240 L 420 290 L 80 290 Z" 
+        fill="url(#mountainGrad)" opacity="0.3"/>
+  
+  <!-- 시작점 (산꼭대기) -->
+  <circle cx="120" cy="165" r="12" fill="#E53935"/>
+  <text x="120" y="170" text-anchor="middle" class="hint white" style="font-weight:600">시작</text>
+  <text x="120" y="145" text-anchor="middle" class="hint" style="fill:#C62828">현재 위치</text>
+  
+  <!-- 화살표 경로 -->
+  <line x1="132" y1="175" x2="165" y2="190" stroke="#E53935" stroke-width="2" marker-end="url(#arrowRed)"/>
+  <circle cx="175" cy="198" r="6" fill="#FF7043"/>
+  
+  <line x1="182" y1="202" x2="210" y2="215" stroke="#FF7043" stroke-width="2"/>
+  <circle cx="220" cy="220" r="6" fill="#FFA000"/>
+  
+  <line x1="228" y1="218" x2="255" y2="195" stroke="#FFA000" stroke-width="2"/>
+  <circle cx="265" cy="185" r="6" fill="#FFC107"/>
+  
+  <line x1="275" y1="180" x2="295" y2="155" stroke="#FFC107" stroke-width="2"/>
+  
+  <!-- 목표점 (골짜기) -->
+  <circle cx="300" cy="140" r="14" fill="#43A047"/>
+  <text x="300" y="145" text-anchor="middle" class="hint white" style="font-weight:600">목표</text>
+  <text x="300" y="125" text-anchor="middle" class="hint" style="fill:#2E7D32">최저점</text>
+  
+  <!-- 설명 박스 -->
+  <rect x="500" y="70" width="270" height="130" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  <text x="635" y="95" text-anchor="middle" class="subtitle">📝 핵심 원리</text>
+  
+  <circle cx="525" cy="120" r="8" fill="#E53935"/>
+  <text x="540" y="124" class="small">1. 현재 위치에서 기울기 계산</text>
+  
+  <circle cx="525" cy="145" r="8" fill="#FFC107"/>
+  <text x="540" y="149" class="small">2. 기울기의 반대 방향으로 이동</text>
+  
+  <circle cx="525" cy="170" r="8" fill="#43A047"/>
+  <text x="540" y="174" class="small">3. 최저점에 도달할 때까지 반복</text>
+  
+  <!-- 수식 박스 -->
+  <rect x="500" y="210" width="270" height="110" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  <text x="635" y="235" text-anchor="middle" class="subtitle">📐 수식</text>
+  
+  <rect x="515" y="250" width="240" height="55" rx="6" fill="#FFEBEE"/>
+  <text x="635" y="272" text-anchor="middle" class="formula">w := w - α × (∂MSE/∂w)</text>
+  <text x="635" y="292" text-anchor="middle" class="formula">b := b - α × (∂MSE/∂b)</text>
+  
+  <!-- 학습률 설명 -->
+  <rect x="30" y="330" width="740" height="55" rx="10" fill="#FFFFFF" filter="url(#shadow)"/>
+  <text x="400" y="352" text-anchor="middle" class="label">α (알파) = 학습률 (Learning Rate): 한 번에 얼마나 이동할지 결정</text>
+  <text x="400" y="372" text-anchor="middle" class="hint">α가 너무 작으면 느림 | α가 적절하면 빠르고 안정 | α가 너무 크면 발산 (목표를 지나침)</text>
+</svg>

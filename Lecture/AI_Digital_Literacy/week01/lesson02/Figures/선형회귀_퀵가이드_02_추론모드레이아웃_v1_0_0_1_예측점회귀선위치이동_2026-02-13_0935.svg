@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFF8E1"/>
+      <stop offset="100%" style="stop-color:#FFECB3"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <filter id="shadowLight" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.06"/>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="400" rx="12" fill="url(#bgGrad)"/>
+
+  <!-- 헤더 -->
+  <rect x="16" y="12" width="768" height="52" rx="10" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <text x="400" y="34" text-anchor="middle" font-size="15" font-weight="700" fill="#1976D2">📈 범용 선형회귀 시뮬레이터</text>
+  <rect x="600" y="23" width="62" height="20" rx="10" fill="#1976D2"/>
+  <text x="631" y="37" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">v1.4.0.0</text>
+  <text x="400" y="52" text-anchor="middle" font-size="9" fill="#795548">추론 모드 — 새 데이터 예측</text>
+
+  <!-- 모드 탭 -->
+  <rect x="250" y="72" width="130" height="30" rx="15" fill="#FFF" stroke="#E0E0E0" stroke-width="1" filter="url(#shadowLight)"/>
+  <text x="315" y="91" text-anchor="middle" font-size="11" font-weight="500" fill="#888">🧠 학습 모드</text>
+  <rect x="390" y="72" width="130" height="30" rx="15" fill="#1976D2" filter="url(#shadowLight)"/>
+  <text x="455" y="91" text-anchor="middle" font-size="11" font-weight="600" fill="#FFF">🔮 추론 모드</text>
+
+  <!-- 레이블 -->
+  <rect x="16" y="98" width="180" height="16" rx="8" fill="#1976D2" opacity="0.9"/>
+  <text x="106" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">① 입력값</text>
+  <rect x="206" y="98" width="370" height="16" rx="8" fill="#FF9800" opacity="0.9"/>
+  <text x="391" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">② 예측 시각화</text>
+  <rect x="586" y="98" width="198" height="16" rx="8" fill="#2E7D32" opacity="0.9"/>
+  <text x="685" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">③ 예측 결과</text>
+
+  <!-- 좌측: 입력값 -->
+  <rect x="16" y="118" width="180" height="270" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="16" y="118" width="180" height="32" rx="10" fill="#E3F2FD"/>
+  <rect x="16" y="140" width="180" height="10" fill="#E3F2FD"/>
+  <text x="106" y="139" text-anchor="middle" font-size="12" font-weight="600" fill="#1976D2">🔢 예측 입력</text>
+
+  <!-- X값 슬라이더 -->
+  <text x="28" y="170" font-size="9" fill="#555">X값 (경력)</text>
+  <rect x="28" y="176" width="156" height="4" rx="2" fill="#E0E0E0"/>
+  <circle cx="100" cy="178" r="6" fill="#1976D2"/>
+  <text x="100" y="198" text-anchor="middle" font-size="10" font-weight="600" fill="#1976D2">5.0</text>
+
+  <!-- 추론 과정 정보 -->
+  <rect x="28" y="214" width="156" height="80" rx="6" fill="#E3F2FD"/>
+  <text x="106" y="232" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">추론 과정</text>
+  <text x="36" y="252" font-size="8" fill="#1976D2">절편(b): 2500</text>
+  <text x="36" y="266" font-size="8" fill="#1976D2">w × X: 200 × 5 = 1000</text>
+  <text x="36" y="284" font-size="9" font-weight="700" fill="#1565C0">예측 Y: 3500</text>
+
+  <!-- 모델 정보 -->
+  <rect x="28" y="306" width="156" height="36" rx="6" fill="#FFF8E1"/>
+  <text x="106" y="322" text-anchor="middle" font-size="8" font-weight="600" fill="#E65100">사용 모델</text>
+  <text x="106" y="336" text-anchor="middle" font-size="8" fill="#795548">Y = 200.0X + 2500.0</text>
+
+  <!-- 중앙: 예측 시각화 -->
+  <rect x="206" y="118" width="370" height="270" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <text x="391" y="140" text-anchor="middle" font-size="11" font-weight="600" fill="#333">🔮 예측 시각화</text>
+
+  <!-- 산점도 + 회귀선 -->
+  <circle cx="260" cy="330" r="3" fill="#1976D2" opacity="0.5"/>
+  <circle cx="285" cy="310" r="3" fill="#1976D2" opacity="0.5"/>
+  <circle cx="310" cy="295" r="3" fill="#1976D2" opacity="0.5"/>
+  <circle cx="335" cy="275" r="3" fill="#1976D2" opacity="0.5"/>
+  <circle cx="365" cy="255" r="3" fill="#1976D2" opacity="0.5"/>
+  <circle cx="395" cy="235" r="3" fill="#1976D2" opacity="0.5"/>
+  <circle cx="425" cy="215" r="3" fill="#1976D2" opacity="0.5"/>
+  <circle cx="455" cy="200" r="3" fill="#1976D2" opacity="0.5"/>
+  <circle cx="485" cy="185" r="3" fill="#1976D2" opacity="0.5"/>
+  <line x1="240" y1="345" x2="530" y2="170" stroke="#FF9800" stroke-width="2"/>
+
+  <!-- 예측점 (노란색) — 회귀선 위 -->
+  <circle cx="370" cy="267" r="7" fill="#FFC107" stroke="#E65100" stroke-width="2"/>
+  <line x1="370" y1="267" x2="370" y2="355" stroke="#999" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="228" y1="267" x2="370" y2="267" stroke="#999" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="370" y="370" text-anchor="middle" font-size="8" fill="#999">X=5</text>
+  <text x="222" y="269" text-anchor="end" font-size="8" fill="#999">Y=3500</text>
+
+  <!-- 예측값 레이블 -->
+  <rect x="380" y="253" width="80" height="22" rx="6" fill="#FFC107" filter="url(#shadowLight)"/>
+  <text x="420" y="268" text-anchor="middle" font-size="9" font-weight="600" fill="#333">📍 3,500</text>
+
+  <!-- 우측: 예측 결과 -->
+  <rect x="586" y="118" width="198" height="270" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="586" y="118" width="198" height="32" rx="10" fill="#E8F5E9"/>
+  <rect x="586" y="140" width="198" height="10" fill="#E8F5E9"/>
+  <text x="685" y="139" text-anchor="middle" font-size="12" font-weight="600" fill="#2E7D32">🎯 예측 결과</text>
+
+  <!-- 예측값 카드 -->
+  <rect x="600" y="162" width="170" height="56" rx="8" fill="#E3F2FD"/>
+  <text x="685" y="182" text-anchor="middle" font-size="10" font-weight="600" fill="#1565C0">예측값</text>
+  <text x="685" y="206" text-anchor="middle" font-size="20" font-weight="700" fill="#1976D2">3,500</text>
+
+  <!-- 신뢰구간 -->
+  <rect x="600" y="228" width="170" height="50" rx="8" fill="#FFF8E1"/>
+  <text x="685" y="248" text-anchor="middle" font-size="9" font-weight="600" fill="#E65100">신뢰 구간</text>
+  <text x="685" y="268" text-anchor="middle" font-size="9" fill="#795548">3,200 ~ 3,800</text>
+
+  <!-- R² 표시 -->
+  <rect x="600" y="290" width="170" height="40" rx="8" fill="#E8F5E9"/>
+  <text x="685" y="310" text-anchor="middle" font-size="9" font-weight="600" fill="#2E7D32">모델 R²</text>
+  <text x="685" y="324" text-anchor="middle" font-size="12" font-weight="700" fill="#2E7D32">0.92</text>
+
+  <!-- 모드 전환 버튼 -->
+  <rect x="608" y="342" width="168" height="28" rx="6" fill="#FFF" stroke="#1976D2" stroke-width="1.5"/>
+  <text x="692" y="360" text-anchor="middle" font-size="10" font-weight="600" fill="#1976D2">🧠 학습 모드로 전환</text>
+</svg>

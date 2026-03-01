@@ -1,0 +1,197 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}MakeCode LED 이름 표시 시뮬레이터 활용가이드 v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{desktop-computer} MakeCode LED 이름 표시 시뮬레이터}\\[0.5cm]
+{\Huge\bfseries\color{primary} 활용가이드}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v1.0.2.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 활용가이드는 MakeCode LED 이름 표시 시뮬레이터의 수업 적용 방법을 안내합니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{1. 수업 개요}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.8cm}|p{12.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{내용} \\
+\hline
+강좌 & 사물인터넷과 빅데이터 \\
+\hline
+적용 주차 & 1주차 \\
+\hline
+자료 역할 & 강의자료 \\
+\hline
+대상 & 4학년 (프로그래밍 비전공, 초등 예비교사) \\
+\hline
+수업 시간 & 45분 (1차시) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{1.1 학습 목표}
+
+$\bullet$ 블록코딩의 기본 개념(순차, 이벤트)을 이해할 수 있다
+
+$\bullet$ 마이크로비트 LED에 자신의 이름을 표시하는 프로그램을 작성할 수 있다
+
+$\bullet$ 블록코딩과 텍스트코딩의 관계를 설명할 수 있다
+
+
+
+\section*{2. 수업 시나리오 (45분)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{1.5cm}|p{9.4cm}|p{2.6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{시간} & \textbf{활동} & \textbf{시뮬레이터 활용} \\
+\hline
+도입 & 5분 & 마이크로비트 실물 보여주기, "이 작은 컴퓨터로 뭘 할 수 있을까?" & — \\
+\hline
+시연 & 5분 & 교수가 시뮬레이터로 이름 표시 시연 & 실행 시연 \\
+\hline
+실습1 & 15분 & 각자 자기 이름을 LED에 표시하기 (문자열 블록) & 블록 배치, 실행 \\
+\hline
+실습2 & 10분 & 버튼A/B에 다른 메시지 연결, 아이콘 추가 & 이벤트 블록 \\
+\hline
+정리 & 10분 & 작품 공유 + 블록코딩↔텍스트코딩 비교 설명 & — \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{3. 학습 질문}
+
+\subsection*{초급 (이해)}
+
+$\bullet$ Q: 블록코딩에서 '이벤트'란 무엇인가요?
+
+$\bullet$ Q: LED 매트릭스는 몇 개의 LED로 구성되어 있나요?
+
+
+\subsection*{중급 (적용)}
+
+$\bullet$ Q: 버튼 A와 버튼 B에 각각 다른 메시지를 연결하려면 어떻게 해야 하나요?
+
+$\bullet$ Q: 문자열 표시 후 아이콘을 보여주려면 블록을 어떤 순서로 배치해야 하나요?
+
+
+\subsection*{고급 (분석)}
+
+$\bullet$ Q: 블록코딩과 텍스트코딩은 어떤 관계가 있나요?
+
+$\bullet$ Q: 순차 실행이 프로그래밍에서 왜 중요한가요?
+
+
+\subsection*{확장 (창의)}
+
+$\bullet$ Q: 이 시뮬레이터를 초등학교 수업에서 어떻게 활용할 수 있을까요?
+
+$\bullet$ Q: LED로 간단한 애니메이션을 만들려면 어떤 블록들이 필요할까요?
+
+
+
+\section*{4. 학생 활동지}
+
+\subsection*{활동: LED 자기소개 프로그램 만들기}
+
+\textbf{목표}: 블록코딩으로 LED에 이름과 좋아하는 아이콘을 표시한다
+
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{7.6cm}|p{4.4cm}|p{1.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{블록} & \textbf{설정값} & \textbf{완료} \\
+\hline
+1 & 시작하면 실행 + 문자열 보여주기 & 내 이름: \_\_\_\_\_\_\_ & $\square$ \\
+\hline
+2 & 버튼 A + 아이콘 보여주기 & 아이콘: \_\_\_\_\_\_\_ & $\square$ \\
+\hline
+3 & 버튼 B + 숫자 보여주기 & 숫자: \_\_\_\_\_\_\_ & $\square$ \\
+\hline
+4 & 실행하여 결과 확인 &  & $\square$ \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{5. 평가 관찰 체크리스트}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.8cm}|p{5.7cm}|p{4.3cm}|p{2.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{평가 항목} & \textbf{상} & \textbf{중} & \textbf{하} \\
+\hline
+블록 배치 & 3가지 이벤트에 블록 배치 완료 & 1\textasciitilde{}2가지 이벤트 활용 & 배치 미완료 \\
+\hline
+순차 실행 이해 & 블록 순서의 의미를 설명 & 순서대로 실행됨을 인지 & 이해 부족 \\
+\hline
+창의적 활용 & 독창적 자기소개 프로그램 & 기본 이름 표시 완료 & 미완성 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{6. 수업 팁}
+
+$\bullet$ \emoji{light-bulb} 첫 성공 경험이 중요합니다 — 이름 표시 성공까지 5분 이내를 목표로 하세요
+
+$\bullet$ \emoji{light-bulb} 블록 카테고리를 하나씩 천천히 소개하면 혼란이 줄어듭니다
+
+$\bullet$ \emoji{light-bulb} 실제 마이크로비트가 있다면 시뮬레이터 결과와 비교하면 효과적입니다
+
+
+
+\section*{7. 관련 자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{7.6cm}|p{5.9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{비고} \\
+\hline
+1 & MakeCode시뮬레이터LED이름표시\_퀵가이드 & 소프트웨어 사용 중 빠른 참조 \\
+\hline
+2 & MakeCode시뮬레이터LED이름표시\_사용설명서 & 전체 기능 상세 \\
+\hline
+3 & MakeCode시뮬레이터LED이름표시\_이론해설서 & 배경 이론 \\
+\hline
+4 & MakeCode시뮬레이터LED이름표시\_개발참조 & 기술 사양 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{MakeCode LED 이름 표시 시뮬레이터 활용가이드}
+\end{center}
+\end{document}

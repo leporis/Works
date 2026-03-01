@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-opacity="0.10"/>
+    </filter>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <!-- 화살표 마커 -->
+    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#43A047"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1976D2"/>
+    </marker>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="800" height="320" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- 타이틀 -->
+  <text x="400" y="30" text-anchor="middle" font-family="Noto Sans KR" font-size="16" font-weight="700" fill="#3E2723">🚀 빠른 시작 — 3단계로 CNN 사과 분류 체험하기</text>
+  <text x="400" y="48" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#8D6E63">30초 만에 첫 분류 결과를 확인하세요!</text>
+
+  <!-- ===== 1단계: 준비 ===== -->
+  <rect x="40" y="68" width="210" height="210" rx="14" fill="white" filter="url(#cardShadow)"/>
+  <!-- 단계 번호 배지 -->
+  <rect x="40" y="68" width="210" height="40" rx="14" fill="#E53935"/>
+  <rect x="40" y="90" width="210" height="18" fill="#E53935"/>
+  <text x="145" y="93" text-anchor="middle" font-family="Noto Sans KR" font-size="14" font-weight="700" fill="white">1️⃣ 준비 — 데이터 생성</text>
+
+  <!-- 내용 -->
+  <text x="60" y="128" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#3E2723">🧠 학습 모드 선택</text>
+  <text x="60" y="148" font-family="Noto Sans KR" font-size="9" fill="#5D4037">① 슬라이더로 데이터 수 설정</text>
+  <text x="72" y="163" font-family="Noto Sans KR" font-size="8" fill="#8D6E63">(기본값 100개면 충분!)</text>
+  <text x="60" y="183" font-family="Noto Sans KR" font-size="9" fill="#5D4037">② [🎲 학습 데이터 생성] 클릭</text>
+
+  <!-- 확인 포인트 -->
+  <rect x="55" y="200" width="180" height="32" rx="8" fill="#E8F5E9"/>
+  <text x="145" y="215" text-anchor="middle" font-family="Noto Sans KR" font-size="8.5" font-weight="600" fill="#2E7D32">✅ 확인: "100개 생성 완료"</text>
+  <text x="145" y="227" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#2E7D32">메시지가 보이면 성공!</text>
+
+  <!-- 소요 시간 -->
+  <rect x="55" y="240" width="180" height="20" rx="6" fill="#FFF3E0"/>
+  <text x="145" y="254" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#E65100">⏱️ 약 5초</text>
+
+  <!-- ===== 화살표 1→2 ===== -->
+  <line x1="258" y1="170" x2="288" y2="170" stroke="#43A047" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+  <text x="273" y="160" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="#43A047">다음</text>
+
+  <!-- ===== 2단계: 학습 ===== -->
+  <rect x="295" y="68" width="210" height="210" rx="14" fill="white" filter="url(#cardShadow)"/>
+  <rect x="295" y="68" width="210" height="40" rx="14" fill="#43A047"/>
+  <rect x="295" y="90" width="210" height="18" fill="#43A047"/>
+  <text x="400" y="93" text-anchor="middle" font-family="Noto Sans KR" font-size="14" font-weight="700" fill="white">2️⃣ 학습 — CNN 훈련</text>
+
+  <!-- 내용 -->
+  <text x="315" y="128" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#3E2723">⚙️ 학습 설정 (기본값 OK)</text>
+  <text x="315" y="148" font-family="Noto Sans KR" font-size="9" fill="#5D4037">① [▶ 시작] 버튼 클릭</text>
+  <text x="315" y="168" font-family="Noto Sans KR" font-size="9" fill="#5D4037">② 손실 ↓  정확도 ↑  관찰</text>
+  <text x="327" y="183" font-family="Noto Sans KR" font-size="8" fill="#8D6E63">(차트가 움직이는 걸 지켜보세요!)</text>
+
+  <!-- 확인 포인트 -->
+  <rect x="310" y="196" width="180" height="36" rx="8" fill="#E3F2FD"/>
+  <text x="400" y="211" text-anchor="middle" font-family="Noto Sans KR" font-size="8.5" font-weight="600" fill="#1565C0">✅ 확인: "학습 완료" 배지</text>
+  <text x="400" y="226" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#1565C0">정확도 90% 이상이면 🎉</text>
+
+  <!-- 소요 시간 -->
+  <rect x="310" y="240" width="180" height="20" rx="6" fill="#FFF3E0"/>
+  <text x="400" y="254" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#E65100">⏱️ 약 10~15초</text>
+
+  <!-- ===== 화살표 2→3 ===== -->
+  <line x1="513" y1="170" x2="543" y2="170" stroke="#1976D2" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+  <text x="528" y="160" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="#1976D2">다음</text>
+
+  <!-- ===== 3단계: 분류 ===== -->
+  <rect x="550" y="68" width="210" height="210" rx="14" fill="white" filter="url(#cardShadow)"/>
+  <rect x="550" y="68" width="210" height="40" rx="14" fill="#1976D2"/>
+  <rect x="550" y="90" width="210" height="18" fill="#1976D2"/>
+  <text x="655" y="93" text-anchor="middle" font-family="Noto Sans KR" font-size="14" font-weight="700" fill="white">3️⃣ 분류 — 결과 확인</text>
+
+  <!-- 내용 -->
+  <text x="570" y="128" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#3E2723">🔮 분류 모드로 전환</text>
+  <text x="570" y="148" font-family="Noto Sans KR" font-size="9" fill="#5D4037">① 🍎 또는 🍏 사과 선택</text>
+  <text x="570" y="168" font-family="Noto Sans KR" font-size="9" fill="#5D4037">② [🔍 CNN 분류 실행] 클릭</text>
+  <text x="570" y="188" font-family="Noto Sans KR" font-size="9" fill="#5D4037">③ 특성맵 + 확률 바 관찰</text>
+
+  <!-- 확인 포인트 -->
+  <rect x="565" y="200" width="180" height="32" rx="8" fill="#FFEBEE"/>
+  <text x="655" y="215" text-anchor="middle" font-family="Noto Sans KR" font-size="8.5" font-weight="600" fill="#C62828">✅ 확인: 판정 결과 표시</text>
+  <text x="655" y="227" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#C62828">"🍎 익은 사과 ✅ 정답!" 🎉</text>
+
+  <!-- 소요 시간 -->
+  <rect x="565" y="240" width="180" height="20" rx="6" fill="#FFF3E0"/>
+  <text x="655" y="254" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#E65100">⏱️ 약 5초</text>
+
+  <!-- ===== 하단 팁 ===== -->
+  <rect x="60" y="286" width="680" height="26" rx="8" fill="white" filter="url(#shadow)" opacity="0.95"/>
+  <text x="400" y="304" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#5D4037">
+    💡 <tspan font-weight="600">팁:</tspan> 학습률을 바꿔보세요! 0.001(느림) vs 0.1(빠름) → 손실 곡선이 어떻게 달라지나요?
+    <tspan dx="12">🎲 랜덤 샘플로 여러 사과를 분류해보세요!</tspan>
+  </text>
+</svg>

@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 380">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .title { font-family: 'Noto Sans KR', sans-serif; font-size: 16px; font-weight: 700; fill: #3E2723; }
+      .subtitle { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; font-weight: 600; fill: #5D4037; }
+      .label { font-family: 'Noto Sans KR', sans-serif; font-size: 10px; font-weight: 500; fill: #5D4037; }
+      .small { font-family: 'Noto Sans KR', sans-serif; font-size: 9px; fill: #5D4037; }
+      .hint { font-family: 'Noto Sans KR', sans-serif; font-size: 8px; fill: #8D6E63; }
+      .value { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; }
+      .white { fill: #FFFFFF; }
+    </style>
+  </defs>
+  
+  <rect width="800" height="380" fill="url(#bgGrad)"/>
+  
+  <text x="400" y="28" text-anchor="middle" class="title">🔬 탐구 활동 1: 학습률 실험</text>
+  
+  <!-- 실험 절차 -->
+  <rect x="30" y="45" width="740" height="80" rx="10" fill="#FFFFFF" filter="url(#shadow)"/>
+  <text x="400" y="68" text-anchor="middle" class="subtitle">📋 실험 절차</text>
+  
+  <circle cx="80" cy="100" r="15" fill="#9C27B0"/>
+  <text x="80" y="105" text-anchor="middle" class="small white">1</text>
+  <text x="105" y="100" class="hint">🏠 주택 프리셋</text>
+  <text x="105" y="112" class="hint">데이터 30개</text>
+  
+  <line x1="145" y1="100" x2="175" y2="100" stroke="#BCAAA4" stroke-width="2"/>
+  <polygon points="175,97 185,100 175,103" fill="#BCAAA4"/>
+  
+  <circle cx="215" cy="100" r="15" fill="#1565C0"/>
+  <text x="215" y="105" text-anchor="middle" class="small white">2</text>
+  <text x="240" y="100" class="hint">학습률 0.001</text>
+  <text x="240" y="112" class="hint">→ 학습 → 기록</text>
+  
+  <line x1="310" y1="100" x2="340" y2="100" stroke="#BCAAA4" stroke-width="2"/>
+  <polygon points="340,97 350,100 340,103" fill="#BCAAA4"/>
+  
+  <circle cx="380" cy="100" r="15" fill="#43A047"/>
+  <text x="380" y="105" text-anchor="middle" class="small white">3</text>
+  <text x="405" y="100" class="hint">학습률 0.01</text>
+  <text x="405" y="112" class="hint">→ 학습 → 기록</text>
+  
+  <line x1="475" y1="100" x2="505" y2="100" stroke="#BCAAA4" stroke-width="2"/>
+  <polygon points="505,97 515,100 505,103" fill="#BCAAA4"/>
+  
+  <circle cx="545" cy="100" r="15" fill="#E53935"/>
+  <text x="545" y="105" text-anchor="middle" class="small white">4</text>
+  <text x="570" y="100" class="hint">학습률 0.1</text>
+  <text x="570" y="112" class="hint">→ 학습 → 기록</text>
+  
+  <line x1="640" y1="100" x2="670" y2="100" stroke="#BCAAA4" stroke-width="2"/>
+  <polygon points="670,97 680,100 670,103" fill="#BCAAA4"/>
+  
+  <circle cx="720" cy="100" r="15" fill="#FFC107"/>
+  <text x="720" y="105" text-anchor="middle" class="small" style="fill:#3E2723">5</text>
+  <text x="743" y="100" text-anchor="end" class="hint">결과</text>
+  <text x="743" y="112" text-anchor="end" class="hint">비교</text>
+  
+  <!-- 예상 결과 3열 -->
+  <!-- 0.001 -->
+  <rect x="30" y="140" width="240" height="150" rx="10" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="30" y="140" width="240" height="30" rx="10" fill="#1565C0"/>
+  <rect x="30" y="160" width="240" height="10" fill="#1565C0"/>
+  <text x="150" y="162" text-anchor="middle" class="label white">🐢 학습률 0.001</text>
+  
+  <rect x="45" y="180" width="100" height="60" rx="5" fill="#E3F2FD"/>
+  <path d="M 55 230 Q 75 225, 95 220 Q 115 215, 135 212" fill="none" stroke="#1565C0" stroke-width="2"/>
+  <text x="95" y="200" text-anchor="middle" class="hint" style="fill:#1565C0">천천히 감소...</text>
+  
+  <text x="160" y="195" class="small" style="fill:#1565C0;font-weight:600">특징</text>
+  <text x="160" y="210" class="hint">• 매우 느린 학습</text>
+  <text x="160" y="222" class="hint">• 안정적</text>
+  <text x="160" y="234" class="hint">• 시간 부족 위험</text>
+  
+  <rect x="45" y="250" width="210" height="25" rx="5" fill="#FFEBEE"/>
+  <text x="150" y="267" text-anchor="middle" class="hint" style="fill:#C62828">⚠️ 에포크가 부족하면 수렴 못함</text>
+  
+  <!-- 0.01 -->
+  <rect x="280" y="140" width="240" height="150" rx="10" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="280" y="140" width="240" height="30" rx="10" fill="#43A047"/>
+  <rect x="280" y="160" width="240" height="10" fill="#43A047"/>
+  <text x="400" y="162" text-anchor="middle" class="label white">✅ 학습률 0.01 (권장)</text>
+  
+  <rect x="295" y="180" width="100" height="60" rx="5" fill="#E8F5E9"/>
+  <path d="M 305 230 Q 330 210, 355 200 Q 380 195, 385 195" fill="none" stroke="#43A047" stroke-width="2"/>
+  <text x="345" y="200" text-anchor="middle" class="hint" style="fill:#2E7D32">수렴! ✓</text>
+  
+  <text x="410" y="195" class="small" style="fill:#2E7D32;font-weight:600">특징</text>
+  <text x="410" y="210" class="hint">• 적절한 속도</text>
+  <text x="410" y="222" class="hint">• 안정적 수렴</text>
+  <text x="410" y="234" class="hint">• 일반적 기본값</text>
+  
+  <rect x="295" y="250" width="210" height="25" rx="5" fill="#E8F5E9" stroke="#43A047" stroke-width="2"/>
+  <text x="400" y="267" text-anchor="middle" class="hint" style="fill:#2E7D32">💡 대부분의 경우 이 값 사용</text>
+  
+  <!-- 0.1 -->
+  <rect x="530" y="140" width="240" height="150" rx="10" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="530" y="140" width="240" height="30" rx="10" fill="#E53935"/>
+  <rect x="530" y="160" width="240" height="10" fill="#E53935"/>
+  <text x="650" y="162" text-anchor="middle" class="label white">💥 학습률 0.1</text>
+  
+  <rect x="545" y="180" width="100" height="60" rx="5" fill="#FFEBEE"/>
+  <path d="M 555 220 Q 570 200, 585 225 Q 600 195, 615 230 Q 630 190, 635 210" fill="none" stroke="#E53935" stroke-width="2"/>
+  <text x="595" y="200" text-anchor="middle" class="hint" style="fill:#C62828">발산!</text>
+  
+  <text x="660" y="195" class="small" style="fill:#C62828;font-weight:600">특징</text>
+  <text x="660" y="210" class="hint">• 불안정한 진동</text>
+  <text x="660" y="222" class="hint">• 발산 위험</text>
+  <text x="660" y="234" class="hint">• 최적점 놓침</text>
+  
+  <rect x="545" y="250" width="210" height="25" rx="5" fill="#FFEBEE" stroke="#E53935" stroke-width="2"/>
+  <text x="650" y="267" text-anchor="middle" class="hint" style="fill:#C62828">❌ 학습 실패 가능성 높음</text>
+  
+  <!-- 기록표 -->
+  <rect x="30" y="305" width="740" height="60" rx="10" fill="#FFFFFF" filter="url(#shadow)"/>
+  <text x="70" y="330" class="subtitle">📝 기록표</text>
+  
+  <rect x="130" y="315" width="100" height="20" rx="3" fill="#E3F2FD"/>
+  <text x="180" y="330" text-anchor="middle" class="hint">학습률</text>
+  <rect x="230" y="315" width="140" height="20" rx="3" fill="#E3F2FD"/>
+  <text x="300" y="330" text-anchor="middle" class="hint">손실 그래프 모양</text>
+  <rect x="370" y="315" width="80" height="20" rx="3" fill="#E3F2FD"/>
+  <text x="410" y="330" text-anchor="middle" class="hint">최종 손실</text>
+  <rect x="450" y="315" width="60" height="20" rx="3" fill="#E3F2FD"/>
+  <text x="480" y="330" text-anchor="middle" class="hint">R²</text>
+  <rect x="510" y="315" width="250" height="20" rx="3" fill="#E3F2FD"/>
+  <text x="635" y="330" text-anchor="middle" class="hint">관찰 내용</text>
+  
+  <rect x="130" y="340" width="100" height="18" rx="3" fill="#FAFAFA" stroke="#FFCCBC"/>
+  <rect x="230" y="340" width="140" height="18" rx="3" fill="#FAFAFA" stroke="#FFCCBC"/>
+  <rect x="370" y="340" width="80" height="18" rx="3" fill="#FAFAFA" stroke="#FFCCBC"/>
+  <rect x="450" y="340" width="60" height="18" rx="3" fill="#FAFAFA" stroke="#FFCCBC"/>
+  <rect x="510" y="340" width="250" height="18" rx="3" fill="#FAFAFA" stroke="#FFCCBC"/>
+</svg>

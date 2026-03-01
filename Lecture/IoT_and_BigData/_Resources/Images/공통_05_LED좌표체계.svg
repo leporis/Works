@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" font-family="Noto Sans CJK KR">
+  <rect width="400" height="400" fill="white"/>
+
+  <text x="200" y="28" text-anchor="middle" fill="#2c3e50" font-size="14" font-weight="bold">5×5 LED 매트릭스 좌표 체계</text>
+
+  <!-- 열 라벨 -->
+  <text x="120" y="60" text-anchor="middle" fill="#3498db" font-size="11" font-weight="bold">열0</text>
+  <text x="180" y="60" text-anchor="middle" fill="#3498db" font-size="11" font-weight="bold">열1</text>
+  <text x="240" y="60" text-anchor="middle" fill="#3498db" font-size="11" font-weight="bold">열2</text>
+  <text x="300" y="60" text-anchor="middle" fill="#3498db" font-size="11" font-weight="bold">열3</text>
+  <text x="360" y="60" text-anchor="middle" fill="#3498db" font-size="11" font-weight="bold">열4</text>
+
+  <!-- 행 라벨 -->
+  <text x="55" y="100" text-anchor="middle" fill="#e74c3c" font-size="11" font-weight="bold">행0</text>
+  <text x="55" y="160" text-anchor="middle" fill="#e74c3c" font-size="11" font-weight="bold">행1</text>
+  <text x="55" y="220" text-anchor="middle" fill="#e74c3c" font-size="11" font-weight="bold">행2</text>
+  <text x="55" y="280" text-anchor="middle" fill="#e74c3c" font-size="11" font-weight="bold">행3</text>
+  <text x="55" y="340" text-anchor="middle" fill="#e74c3c" font-size="11" font-weight="bold">행4</text>
+
+  <!-- 격자 배경 -->
+  <g stroke="#ddd" stroke-width="1">
+    <rect x="90" y="70" width="60" height="60" fill="#f8f9fa"/><rect x="150" y="70" width="60" height="60" fill="white"/><rect x="210" y="70" width="60" height="60" fill="#f8f9fa"/><rect x="270" y="70" width="60" height="60" fill="white"/><rect x="330" y="70" width="60" height="60" fill="#f8f9fa"/>
+    <rect x="90" y="130" width="60" height="60" fill="white"/><rect x="150" y="130" width="60" height="60" fill="#f8f9fa"/><rect x="210" y="130" width="60" height="60" fill="white"/><rect x="270" y="130" width="60" height="60" fill="#f8f9fa"/><rect x="330" y="130" width="60" height="60" fill="white"/>
+    <rect x="90" y="190" width="60" height="60" fill="#f8f9fa"/><rect x="150" y="190" width="60" height="60" fill="white"/><rect x="210" y="190" width="60" height="60" fill="#f8f9fa"/><rect x="270" y="190" width="60" height="60" fill="white"/><rect x="330" y="190" width="60" height="60" fill="#f8f9fa"/>
+    <rect x="90" y="250" width="60" height="60" fill="white"/><rect x="150" y="250" width="60" height="60" fill="#f8f9fa"/><rect x="210" y="250" width="60" height="60" fill="white"/><rect x="270" y="250" width="60" height="60" fill="#f8f9fa"/><rect x="330" y="250" width="60" height="60" fill="white"/>
+    <rect x="90" y="310" width="60" height="60" fill="#f8f9fa"/><rect x="150" y="310" width="60" height="60" fill="white"/><rect x="210" y="310" width="60" height="60" fill="#f8f9fa"/><rect x="270" y="310" width="60" height="60" fill="white"/><rect x="330" y="310" width="60" height="60" fill="#f8f9fa"/>
+  </g>
+
+  <!-- 원점 강조 배경 (좌표 텍스트보다 먼저) -->
+  <rect x="90" y="70" width="60" height="60" fill="rgba(52,152,219,0.15)" stroke="#3498db" stroke-width="2" rx="2"/>
+
+  <!-- 외곽선 -->
+  <rect x="90" y="70" width="300" height="300" fill="none" stroke="#2c3e50" stroke-width="2" rx="2"/>
+
+  <!-- 좌표 텍스트 - (0,0)은 파란색, 나머지 회색 -->
+  <g font-size="9" text-anchor="middle">
+    <!-- 행0: (0,0)만 파란색 강조 -->
+    <text x="120" y="105" fill="#3498db" font-weight="bold" font-size="10">(0,0)</text>
+    <text x="180" y="100" fill="#555">(1,0)</text>
+    <text x="240" y="100" fill="#555">(2,0)</text>
+    <text x="300" y="100" fill="#555">(3,0)</text>
+    <text x="360" y="100" fill="#555">(4,0)</text>
+    <!-- 행1 -->
+    <text x="120" y="160" fill="#555">(0,1)</text>
+    <text x="180" y="160" fill="#555">(1,1)</text>
+    <text x="240" y="160" fill="#555">(2,1)</text>
+    <text x="300" y="160" fill="#555">(3,1)</text>
+    <text x="360" y="160" fill="#555">(4,1)</text>
+    <!-- 행2 -->
+    <text x="120" y="220" fill="#555">(0,2)</text>
+    <text x="180" y="220" fill="#555">(1,2)</text>
+    <text x="240" y="220" fill="#555">(2,2)</text>
+    <text x="300" y="220" fill="#555">(3,2)</text>
+    <text x="360" y="220" fill="#555">(4,2)</text>
+    <!-- 행3 -->
+    <text x="120" y="280" fill="#555">(0,3)</text>
+    <text x="180" y="280" fill="#555">(1,3)</text>
+    <text x="240" y="280" fill="#555">(2,3)</text>
+    <text x="300" y="280" fill="#555">(3,3)</text>
+    <text x="360" y="280" fill="#555">(4,3)</text>
+    <!-- 행4 -->
+    <text x="120" y="340" fill="#555">(0,4)</text>
+    <text x="180" y="340" fill="#555">(1,4)</text>
+    <text x="240" y="340" fill="#555">(2,4)</text>
+    <text x="300" y="340" fill="#555">(3,4)</text>
+    <text x="360" y="340" fill="#555">(4,4)</text>
+  </g>
+
+  <!-- 범례 -->
+  <text x="200" y="392" text-anchor="middle" fill="#999" font-size="9">좌표: (열, 행) — 좌상단 (0,0)부터 시작</text>
+</svg>

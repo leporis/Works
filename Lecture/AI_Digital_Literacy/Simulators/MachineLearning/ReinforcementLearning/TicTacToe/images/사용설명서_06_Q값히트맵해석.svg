@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 310">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadowSm">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.5" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="310" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="28" text-anchor="middle" font-family="Noto Sans KR" font-size="17" font-weight="700" fill="#1a1a2e">Q-값 히트맵 읽는 법</text>
+  <text x="400" y="44" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#888">AI의 판단 근거를 색상과 숫자로 이해하기</text>
+
+  <!-- ===== STEP 1: Current Board ===== -->
+  <g transform="translate(35, 60)">
+    <rect x="-8" y="-8" width="166" height="210" rx="10" fill="white" stroke="#ddd" stroke-width="1" filter="url(#shadow)"/>
+    <text x="75" y="12" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="600" fill="#555">❶ 현재 보드</text>
+
+    <!-- Board -->
+    <g transform="translate(10, 24)">
+      <rect x="0" y="0" width="46" height="46" rx="4" fill="#D6EAF8" stroke="#2980b9" stroke-width="1.2"/>
+      <rect x="50" y="0" width="46" height="46" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="0.8"/>
+      <rect x="100" y="0" width="46" height="46" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="0.8"/>
+
+      <rect x="0" y="50" width="46" height="46" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="0.8"/>
+      <rect x="50" y="50" width="46" height="46" rx="4" fill="#FADBD8" stroke="#c0392b" stroke-width="1.2"/>
+      <rect x="100" y="50" width="46" height="46" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="0.8"/>
+
+      <rect x="0" y="100" width="46" height="46" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="0.8"/>
+      <rect x="50" y="100" width="46" height="46" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="0.8"/>
+      <rect x="100" y="100" width="46" height="46" rx="4" fill="#FADBD8" stroke="#c0392b" stroke-width="1.2"/>
+
+      <!-- Marks -->
+      <text x="23" y="30" text-anchor="middle" font-family="JetBrains Mono" font-size="22" font-weight="700" fill="#2980b9">X</text>
+      <text x="73" y="80" text-anchor="middle" font-family="JetBrains Mono" font-size="22" font-weight="700" fill="#c0392b">O</text>
+      <text x="123" y="130" text-anchor="middle" font-family="JetBrains Mono" font-size="22" font-weight="700" fill="#c0392b">O</text>
+    </g>
+
+    <text x="75" y="185" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#888">X 차례 (빈 칸 6개)</text>
+  </g>
+
+  <!-- Arrow 1→2 -->
+  <text x="215" y="170" text-anchor="middle" font-family="Noto Sans KR" font-size="20" fill="#888">→</text>
+
+  <!-- ===== STEP 2: Q-Value Heatmap ===== -->
+  <g transform="translate(245, 60)">
+    <rect x="-8" y="-8" width="186" height="210" rx="10" fill="white" stroke="#2980b9" stroke-width="1.5" filter="url(#shadow)"/>
+    <text x="85" y="12" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="600" fill="#2980b9">❷ Q-값 히트맵</text>
+
+    <g transform="translate(18, 24)">
+      <!-- Row 0 -->
+      <rect x="0" y="0" width="46" height="46" rx="4" fill="#bbb" stroke="#999" stroke-width="0.8"/>
+      <!-- cell (0,1): high Q -->
+      <rect x="50" y="0" width="46" height="46" rx="4" fill="#27ae60" stroke="#1e8449" stroke-width="1.2"/>
+      <!-- cell (0,2): medium Q -->
+      <rect x="100" y="0" width="46" height="46" rx="4" fill="#82E0AA" stroke="#27ae60" stroke-width="0.8"/>
+
+      <!-- Row 1 -->
+      <!-- cell (1,0): best Q! -->
+      <rect x="0" y="50" width="46" height="46" rx="4" fill="#196F3D" stroke="#f39c12" stroke-width="2.5"/>
+      <rect x="50" y="50" width="46" height="46" rx="4" fill="#bbb" stroke="#999" stroke-width="0.8"/>
+      <!-- cell (1,2): low Q -->
+      <rect x="100" y="50" width="46" height="46" rx="4" fill="#F5B7B1" stroke="#e74c3c" stroke-width="0.8"/>
+
+      <!-- Row 2 -->
+      <!-- cell (2,0): medium-low Q -->
+      <rect x="0" y="100" width="46" height="46" rx="4" fill="#ABEBC6" stroke="#27ae60" stroke-width="0.8"/>
+      <!-- cell (2,1): negative Q -->
+      <rect x="50" y="100" width="46" height="46" rx="4" fill="#E74C3C" stroke="#c0392b" stroke-width="1.2"/>
+      <rect x="100" y="100" width="46" height="46" rx="4" fill="#bbb" stroke="#999" stroke-width="0.8"/>
+
+      <!-- Q-values text -->
+      <text x="23" y="27" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="white">X</text>
+      <text x="73" y="27" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="700" fill="white">0.42</text>
+      <text x="123" y="27" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="700" fill="#1e8449">0.28</text>
+
+      <text x="23" y="77" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="700" fill="white">0.65</text>
+      <text x="10" y="92" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="700" fill="#f39c12">⭐최선</text>
+      <text x="73" y="77" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="white">O</text>
+      <text x="123" y="77" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="700" fill="#c0392b">0.08</text>
+
+      <text x="23" y="127" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="700" fill="#1e8449">0.22</text>
+      <text x="73" y="127" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="700" fill="white">-0.15</text>
+      <text x="123" y="127" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="white">O</text>
+    </g>
+
+    <text x="85" y="185" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#888">빈 칸별 Q-값 (AI의 평가)</text>
+  </g>
+
+  <!-- Arrow 2→3 -->
+  <text x="445" y="170" text-anchor="middle" font-family="Noto Sans KR" font-size="20" fill="#888">→</text>
+
+  <!-- ===== STEP 3: Interpretation ===== -->
+  <g transform="translate(470, 60)">
+    <rect x="-8" y="-8" width="310" height="210" rx="10" fill="white" stroke="#ddd" stroke-width="1" filter="url(#shadow)"/>
+    <text x="147" y="12" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="600" fill="#555">❸ 해석하기</text>
+
+    <!-- Interpretation items -->
+    <g transform="translate(10, 28)">
+      <!-- Best -->
+      <rect x="0" y="0" width="280" height="34" rx="6" fill="#eafaf1" stroke="#27ae60" stroke-width="1"/>
+      <rect x="6" y="6" width="22" height="22" rx="3" fill="#196F3D" stroke="#f39c12" stroke-width="2"/>
+      <text x="17" y="22" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="white">.65</text>
+      <text x="40" y="14" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#196F3D">⭐ 0.65 = 최선의 수</text>
+      <text x="40" y="28" font-family="Noto Sans KR" font-size="9" fill="#555">"여기 두면 이길 확률이 가장 높아!"</text>
+
+      <!-- High -->
+      <rect x="0" y="40" width="280" height="34" rx="6" fill="#eafaf1"/>
+      <rect x="6" y="46" width="22" height="22" rx="3" fill="#27ae60"/>
+      <text x="17" y="62" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="white">.42</text>
+      <text x="40" y="54" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#27ae60">🟢 0.42 = 좋은 수</text>
+      <text x="40" y="68" font-family="Noto Sans KR" font-size="9" fill="#555">"여기도 꽤 유리하다고 판단해"</text>
+
+      <!-- Medium -->
+      <rect x="0" y="80" width="280" height="34" rx="6" fill="#fef9e7"/>
+      <rect x="6" y="86" width="22" height="22" rx="3" fill="#ABEBC6" stroke="#27ae60" stroke-width="0.5"/>
+      <text x="17" y="102" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="#1e8449">.22</text>
+      <text x="40" y="94" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#b7950b">🟡 0.22 = 보통</text>
+      <text x="40" y="108" font-family="Noto Sans KR" font-size="9" fill="#555">"나쁘지 않지만 최선은 아냐"</text>
+
+      <!-- Negative -->
+      <rect x="0" y="120" width="280" height="34" rx="6" fill="#fdedec"/>
+      <rect x="6" y="126" width="22" height="22" rx="3" fill="#E74C3C"/>
+      <text x="17" y="142" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="700" fill="white">-.15</text>
+      <text x="40" y="134" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#e74c3c">🔴 -0.15 = 나쁜 수</text>
+      <text x="40" y="148" font-family="Noto Sans KR" font-size="9" fill="#555">"여기 두면 불리해질 것 같아..."</text>
+
+      <!-- Gray = occupied -->
+      <rect x="0" y="160" width="280" height="22" rx="6" fill="#f0f0f0"/>
+      <rect x="6" y="163" width="14" height="14" rx="2" fill="#bbb"/>
+      <text x="30" y="176" font-family="Noto Sans KR" font-size="9" fill="#888">회색 칸 = 이미 돌이 놓인 위치 (선택 불가)</text>
+    </g>
+  </g>
+
+  <!-- Color scale bar -->
+  <g transform="translate(250, 278)">
+    <text x="0" y="0" font-family="Noto Sans KR" font-size="9" fill="#888">색상 스케일:</text>
+    <rect x="70" y="-10" width="30" height="14" rx="2" fill="#E74C3C"/>
+    <rect x="102" y="-10" width="30" height="14" rx="2" fill="#F5B7B1"/>
+    <rect x="134" y="-10" width="30" height="14" rx="2" fill="#FDEBD0"/>
+    <rect x="166" y="-10" width="30" height="14" rx="2" fill="#ABEBC6"/>
+    <rect x="198" y="-10" width="30" height="14" rx="2" fill="#82E0AA"/>
+    <rect x="230" y="-10" width="30" height="14" rx="2" fill="#27ae60"/>
+    <rect x="262" y="-10" width="30" height="14" rx="2" fill="#196F3D"/>
+    <text x="70" y="14" font-family="Noto Sans KR" font-size="8" fill="#e74c3c">나쁨</text>
+    <text x="292" y="14" text-anchor="end" font-family="Noto Sans KR" font-size="8" fill="#196F3D">좋음</text>
+  </g>
+
+  <!-- Bottom caption -->
+  <text x="400" y="303" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#999">그림 6. Q-값 히트맵 해석 가이드 — 색상이 진한 초록일수록 AI가 유리하다고 판단하는 위치</text>
+</svg>

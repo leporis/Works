@@ -1,0 +1,2477 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 KNN 분류 시뮬레이터 v1.2.0.1</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* ===== 1단계: 기본 색상 팔레트 ===== */
+            --color-red-500: #E53935;
+            --color-red-700: #C62828;
+            --color-red-100: rgba(229, 57, 53, 0.1);
+            --color-red-300: rgba(229, 57, 53, 0.3);
+            --color-green-500: #43A047;
+            --color-green-700: #2E7D32;
+            --color-green-200: rgba(67, 160, 71, 0.2);
+            --color-yellow-500: #FFC107;
+            --color-blue-500: #2196F3;
+            --color-blue-700: #1976D2;
+            --color-blue-100: rgba(33, 150, 243, 0.1);
+            --color-blue-300: rgba(33, 150, 243, 0.3);
+            --color-purple-500: #9C27B0;
+            --color-purple-700: #7B1FA2;
+            --color-orange-500: #FF9800;
+            --color-gray-500: #757575;
+            --color-cream-100: #FFFBF5;
+            --color-cream-200: #FFF3E0;
+            --color-brown-900: #3E2723;
+            --color-brown-700: #5D4037;
+            --color-brown-500: #8D6E63;
+            --color-brown-300: #BCAAA4;
+            --color-peach-200: #FFCCBC;
+            --color-white: #FFFFFF;
+            --color-black: #000000;
+            
+            /* ===== 2단계: 의미적 색상 ===== */
+            --primary: var(--color-blue-500);
+            --primary-dark: var(--color-blue-700);
+            --success: var(--color-green-500);
+            --success-dark: var(--color-green-700);
+            --success-light: var(--color-green-200);
+            --danger: var(--color-red-500);
+            --danger-light: var(--color-red-100);
+            --highlight: var(--color-yellow-500);
+            --class-a: var(--color-red-500);
+            --class-a-dark: var(--color-red-700);
+            --class-a-light: var(--color-red-300);
+            --class-a-bg: var(--color-red-100);
+            --class-b: var(--color-blue-500);
+            --class-b-dark: var(--color-blue-700);
+            --class-b-light: var(--color-blue-300);
+            --class-b-bg: var(--color-blue-100);
+            --bg-light: var(--color-cream-100);
+            --bg-medium: var(--color-cream-200);
+            --bg-white: var(--color-white);
+            --text-dark: var(--color-brown-900);
+            --text-medium: var(--color-brown-700);
+            --text-light: var(--color-brown-500);
+            --axis-color: var(--color-brown-300);
+            --border-color: var(--color-peach-200);
+            
+            /* ===== 3단계: 컴포넌트별 색상 ===== */
+            --chart-axis: var(--axis-color);
+            --chart-label: var(--text-medium);
+            --chart-tick: var(--text-light);
+            --neighbor-line: var(--color-orange-500);
+            --test-correct: var(--success);
+            --test-wrong: var(--danger);
+            --prediction-marker: var(--color-black);
+            --point-stroke: var(--color-white);
+            --tab-active-bg: var(--primary);
+            --tab-inactive-bg: var(--bg-medium);
+            
+            /* ===== 4단계: 상태별 색상 ===== */
+            --status-good-bg: var(--success-light);
+            --status-bad-bg: var(--danger-light);
+            
+            /* ===== 간격 시스템 ===== */
+            --spacing-2xs: 2px;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --spacing-xl: 20px;
+            
+            /* ===== 폰트 크기 ===== */
+            --font-2xs: 0.65rem;
+            --font-xs: 0.75rem;
+            --font-sm: 0.85rem;
+            --font-md: 0.9rem;
+            --font-lg: 1rem;
+            --font-xl: 1.2rem;
+            --font-2xl: 1.4rem;
+            --font-3xl: 1.6rem;
+            --font-chart-label: 12px;
+            --font-chart-tick: 10px;
+            --font-chart-marker: 10px;
+            
+            /* ===== 폰트 가중치 ===== */
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            
+            /* ===== 라인 높이 ===== */
+            --line-height-normal: 1.5;
+            --line-height-relaxed: 1.6;
+            
+            /* ===== 불투명도 ===== */
+            --opacity-muted: 0.5;
+            --opacity-soft: 0.9;
+            
+            /* ===== 레이아웃 ===== */
+            --container-max-width: 1400px;
+            --sidebar-left-width: 260px;
+            --sidebar-right-width: 260px;
+            --panel-padding: 16px;
+            --panel-radius: 16px;
+            --btn-radius: 8px;
+            --badge-radius: 20px;
+            --badge-radius-small: 10px;
+            --circle-radius: 50%;
+            
+            /* ===== 특정 컴포넌트 크기 ===== */
+            --slider-height: 8px;
+            --slider-thumb-size: 20px;
+            --checkbox-size: 18px;
+            --data-table-max-height: 120px;
+            --chart-aspect-ratio: 1.2;
+            
+            /* ===== 시각화 수치 ===== */
+            --point-radius: 6;
+            --point-radius-small: 4;
+            --point-radius-test-extra: 2;
+            --highlight-radius: 12;
+            --line-width-axis: 1;
+            --line-width-point-stroke: 2;
+            --line-width-neighbor: 2;
+            --line-width-test-stroke: 3;
+            --dash-pattern: 5;
+            
+            /* ===== 차트 레이아웃 ===== */
+            --chart-padding: 50;
+            --chart-tick-offset-x: 15;
+            --chart-tick-offset-y: 5;
+            --chart-label-offset: 10;
+            --chart-y-label-x: 15;
+            
+            /* ===== 데이터 범위 ===== */
+            --data-min: 5;
+            --data-max: 95;
+            --data-scale: 100;
+            --tick-count: 5;
+            --tick-interval: 25;
+            
+            /* ===== 반응형 브레이크포인트 ===== */
+            --breakpoint-tablet: 1024px;
+            
+            /* ===== 애니메이션 ===== */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            
+            /* ===== 그림자 ===== */
+            --shadow-soft: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-medium: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-medium) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: var(--line-height-relaxed);
+        }
+
+        .container {
+            max-width: var(--container-max-width);
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        /* 헤더 */
+        .header {
+            text-align: center;
+            padding: var(--panel-padding);
+            background: var(--bg-white);
+            border-radius: var(--panel-radius);
+            box-shadow: var(--shadow-soft);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .header h1 {
+            font-size: var(--font-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .header p {
+            color: var(--text-medium);
+            font-size: var(--font-md);
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--bg-white);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--badge-radius);
+            font-size: var(--font-xs);
+            font-weight: var(--font-weight-medium);
+            margin-left: var(--spacing-sm);
+        }
+
+        .model-badge {
+            display: inline-block;
+            background: var(--color-purple-500);
+            color: var(--bg-white);
+            padding: var(--spacing-2xs) var(--spacing-sm);
+            border-radius: var(--badge-radius);
+            font-size: var(--font-2xs);
+            font-weight: var(--font-weight-medium);
+            margin-left: var(--spacing-sm);
+        }
+
+        /* 모드 탭 */
+        .mode-tabs {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .mode-tab {
+            padding: var(--spacing-md) 28px;
+            border: none;
+            border-radius: var(--badge-radius-small);
+            font-size: var(--font-md);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            font-family: inherit;
+        }
+
+        .mode-tab.active {
+            background: var(--primary);
+            color: var(--bg-white);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .mode-tab:not(.active) {
+            background: var(--bg-white);
+            color: var(--text-medium);
+            border: 2px solid var(--border-color);
+        }
+
+        .mode-tab:not(.active):hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* 메인 레이아웃 */
+        .main-layout {
+            display: grid;
+            grid-template-columns: var(--sidebar-left-width) 1fr var(--sidebar-right-width);
+            gap: var(--spacing-lg);
+            align-items: start;
+        }
+
+        /* 패널 공통 */
+        .panel {
+            background: var(--bg-white);
+            border-radius: var(--panel-radius);
+            padding: var(--panel-padding);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .panel-title {
+            font-size: var(--font-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--bg-medium);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        /* 데이터 탭 시스템 */
+        .data-tabs {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin-bottom: var(--spacing-md);
+            background: var(--bg-medium);
+            padding: var(--spacing-xs);
+            border-radius: var(--btn-radius);
+        }
+
+        .data-tab {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-xs);
+            border: none;
+            border-radius: var(--spacing-xs);
+            font-size: var(--font-xs);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: inherit;
+            background: transparent;
+            color: var(--text-medium);
+        }
+
+        .data-tab.active {
+            background: var(--bg-white);
+            color: var(--primary);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .data-tab-content {
+            display: none;
+        }
+
+        .data-tab-content.active {
+            display: block;
+        }
+
+        /* 사이드바 */
+        .sidebar-left, .sidebar-right {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        /* 입력 그룹 */
+        .input-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .input-group label {
+            display: block;
+            font-size: var(--font-sm);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-medium);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .input-group select {
+            width: 100%;
+            padding: var(--spacing-sm);
+            border-radius: var(--btn-radius);
+            border: 1px solid var(--border-color);
+            font-family: inherit;
+            font-size: var(--font-sm);
+            background: var(--bg-white);
+        }
+
+        .input-group input[type="range"] {
+            width: 100%;
+            height: var(--slider-height);
+            border-radius: var(--spacing-xs);
+            background: var(--bg-medium);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .input-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: var(--slider-thumb-size);
+            height: var(--slider-thumb-size);
+            border-radius: var(--circle-radius);
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .value-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-sm);
+            color: var(--text-light);
+            margin-top: var(--spacing-xs);
+        }
+
+        .value-display .current {
+            font-weight: var(--font-weight-semibold);
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* 버튼 */
+        .btn {
+            padding: var(--spacing-md) var(--spacing-xl);
+            border: none;
+            border-radius: var(--btn-radius);
+            font-size: var(--font-md);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--bg-white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--bg-white);
+        }
+
+        .btn-success:hover {
+            background: var(--success-dark);
+        }
+
+        .btn-outline {
+            background: var(--bg-white);
+            color: var(--text-medium);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-sm {
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-sm);
+        }
+
+        .btn:disabled {
+            opacity: var(--opacity-muted);
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        /* 프리셋 버튼 그룹 */
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .preset-btn {
+            padding: var(--spacing-sm);
+            border: 2px solid var(--border-color);
+            border-radius: var(--btn-radius);
+            background: var(--bg-white);
+            cursor: pointer;
+            text-align: center;
+            font-size: var(--font-xs);
+            transition: all var(--transition-fast);
+            font-family: inherit;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .preset-btn.active {
+            border-color: var(--primary);
+            background: var(--color-blue-100);
+        }
+
+        .preset-btn .emoji {
+            font-size: var(--font-xl);
+            display: block;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        /* 내장 데이터셋 버튼 */
+        .builtin-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .builtin-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--btn-radius);
+            background: var(--bg-white);
+            cursor: pointer;
+            font-size: var(--font-sm);
+            text-align: left;
+            transition: all var(--transition-fast);
+            font-family: inherit;
+        }
+
+        .builtin-btn:hover {
+            border-color: var(--primary);
+            background: var(--color-blue-100);
+        }
+
+        .builtin-btn .emoji {
+            font-size: var(--font-lg);
+        }
+
+        /* CSV 업로드 */
+        .file-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--btn-radius);
+            padding: var(--spacing-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: var(--color-blue-100);
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-upload .emoji {
+            font-size: var(--font-2xl);
+            display: block;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .file-upload .text {
+            font-size: var(--font-sm);
+            color: var(--text-medium);
+        }
+
+        /* 직접 입력 */
+        .manual-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .manual-inputs input {
+            width: 100%;
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            border-radius: var(--btn-radius);
+            font-size: var(--font-sm);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .class-selector {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .class-btn {
+            flex: 1;
+            padding: var(--spacing-sm);
+            border: 2px solid var(--border-color);
+            border-radius: var(--btn-radius);
+            background: var(--bg-white);
+            cursor: pointer;
+            font-size: var(--font-sm);
+            transition: all var(--transition-fast);
+            font-family: inherit;
+        }
+
+        .class-btn.class-a.active {
+            border-color: var(--class-a);
+            background: var(--class-a-bg);
+            color: var(--class-a);
+        }
+
+        .class-btn.class-b.active {
+            border-color: var(--class-b);
+            background: var(--class-b-bg);
+            color: var(--class-b);
+        }
+
+        /* 차트 영역 */
+        .chart-area {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .chart-container {
+            background: var(--bg-white);
+            border-radius: var(--panel-radius);
+            padding: var(--panel-padding);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .chart-title {
+            font-size: var(--font-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: var(--chart-aspect-ratio);
+        }
+
+        .canvas-wrapper canvas {
+            width: 100% !important;
+            height: 100% !important;
+            cursor: crosshair;
+        }
+
+        .chart-hint {
+            text-align: center;
+            font-size: var(--font-xs);
+            color: var(--text-light);
+            margin-top: var(--spacing-sm);
+        }
+
+        /* 결과 패널 */
+        .train-result-panel {
+            background: var(--bg-white);
+            border-radius: var(--panel-radius);
+            padding: var(--panel-padding);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-lg);
+        }
+
+        .result-section {
+            background: var(--bg-medium);
+            border-radius: var(--spacing-md);
+            padding: var(--spacing-md);
+        }
+
+        .result-section h4 {
+            font-size: var(--font-md);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        /* 결과 테이블 */
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--font-sm);
+        }
+
+        .result-table th, .result-table td {
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .result-table th {
+            background: var(--bg-white);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .status-good { color: var(--success); font-weight: var(--font-weight-semibold); }
+        .status-ok { color: var(--highlight); font-weight: var(--font-weight-semibold); }
+        .status-bad { color: var(--danger); font-weight: var(--font-weight-semibold); }
+
+        /* 혼동 행렬 */
+        .confusion-matrix {
+            display: grid;
+            grid-template-columns: auto repeat(2, 1fr);
+            grid-template-rows: auto repeat(2, 1fr);
+            gap: var(--spacing-2xs);
+            font-size: var(--font-sm);
+            margin-top: var(--spacing-sm);
+        }
+
+        .cm-cell {
+            padding: var(--spacing-sm);
+            text-align: center;
+            border-radius: var(--spacing-xs);
+        }
+
+        .cm-header {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-medium);
+        }
+
+        .cm-correct {
+            background: var(--status-good-bg);
+            color: var(--success);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .cm-wrong {
+            background: var(--status-bad-bg);
+            color: var(--danger);
+            font-weight: var(--font-weight-bold);
+        }
+
+        /* K값 재생 */
+        .k-playback {
+            margin-top: var(--spacing-md);
+        }
+
+        .playback-controls {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+        }
+
+        .playback-btn {
+            flex: 1;
+            padding: var(--spacing-sm);
+            border: none;
+            border-radius: var(--btn-radius);
+            font-size: var(--font-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: inherit;
+        }
+
+        .playback-btn.play {
+            background: var(--primary);
+            color: var(--bg-white);
+        }
+
+        .playback-btn.stop {
+            background: var(--color-gray-500);
+            color: var(--bg-white);
+        }
+
+        .playback-btn:disabled {
+            opacity: var(--opacity-muted);
+            cursor: not-allowed;
+        }
+
+        /* 알고리즘 설명 */
+        .algorithm-info {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: var(--spacing-sm);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+
+        .algorithm-info h4 {
+            color: #1565C0;
+            margin-bottom: var(--spacing-sm);
+            font-size: var(--font-sm);
+        }
+
+        .algorithm-info p {
+            font-size: var(--font-xs);
+            color: var(--text-medium);
+            line-height: var(--line-height-relaxed);
+        }
+
+        .algorithm-info .step {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+            align-items: flex-start;
+        }
+
+        .algorithm-info .step-num {
+            width: 20px;
+            height: 20px;
+            background: #1565C0;
+            color: var(--bg-white);
+            border-radius: var(--circle-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-2xs);
+            font-weight: var(--font-weight-bold);
+            flex-shrink: 0;
+        }
+
+        .algorithm-info code {
+            background: var(--bg-white);
+            padding: var(--spacing-2xs) var(--spacing-xs);
+            border-radius: var(--spacing-xs);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: var(--font-xs);
+        }
+
+        /* 예측 결과 */
+        .prediction-result {
+            padding: var(--panel-padding);
+            border-radius: var(--spacing-md);
+            text-align: center;
+            margin-top: var(--spacing-md);
+        }
+
+        .prediction-result.class-a {
+            background: linear-gradient(135deg, var(--class-a) 0%, var(--class-a-dark) 100%);
+            color: var(--bg-white);
+        }
+
+        .prediction-result.class-b {
+            background: linear-gradient(135deg, var(--class-b) 0%, var(--class-b-dark) 100%);
+            color: var(--bg-white);
+        }
+
+        .prediction-result .label {
+            font-size: var(--font-sm);
+            opacity: var(--opacity-soft);
+        }
+
+        .prediction-result .value {
+            font-size: var(--font-2xl);
+            font-weight: var(--font-weight-bold);
+        }
+
+        /* 이웃 정보 */
+        .neighbors-info {
+            margin-top: var(--spacing-md);
+        }
+
+        .neighbors-info h4 {
+            font-size: var(--font-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .neighbor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-xs) 0;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: var(--font-sm);
+        }
+
+        .neighbor-item-footer {
+            margin-top: var(--spacing-sm);
+            padding-top: var(--spacing-sm);
+            border-top: 2px solid var(--border-color);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .neighbor-class {
+            display: inline-block;
+            width: var(--spacing-sm);
+            height: var(--spacing-sm);
+            border-radius: var(--circle-radius);
+            margin-right: var(--spacing-xs);
+        }
+
+        .neighbor-class.class-a { background: var(--class-a); }
+        .neighbor-class.class-b { background: var(--class-b); }
+
+        .neighbor-distance {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: var(--font-xs);
+        }
+
+        /* 정보 박스 */
+        .info-box {
+            background: var(--bg-medium);
+            border-radius: var(--spacing-sm);
+            padding: var(--spacing-md);
+            font-size: var(--font-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .info-box h4 {
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .info-box p {
+            color: var(--text-medium);
+            line-height: var(--line-height-normal);
+        }
+
+        .info-box code {
+            background: var(--bg-white);
+            padding: var(--spacing-2xs) var(--spacing-xs);
+            border-radius: var(--spacing-xs);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: var(--font-xs);
+        }
+
+        /* 데이터 테이블 */
+        .data-table-wrapper {
+            max-height: var(--data-table-max-height);
+            overflow-y: auto;
+            margin-top: var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--btn-radius);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--font-xs);
+        }
+
+        .data-table th, .data-table td {
+            padding: var(--spacing-sm);
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background: var(--bg-medium);
+            position: sticky;
+            top: 0;
+            font-weight: var(--font-weight-medium);
+        }
+
+        /* 현재 변수 표시 */
+        .current-vars {
+            background: var(--bg-medium);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--btn-radius);
+            font-size: var(--font-xs);
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+        }
+
+        .current-vars .var-label {
+            color: var(--text-medium);
+        }
+
+        .current-vars .var-value {
+            color: var(--primary);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        /* 유틸리티 */
+        .hidden { display: none !important; }
+        .text-mono { font-family: 'JetBrains Mono', monospace; }
+        .text-sm { font-size: var(--font-sm); }
+        .text-xs { font-size: var(--font-xs); }
+        .text-light { color: var(--text-light); }
+        .text-medium { color: var(--text-medium); }
+        .font-semibold { font-weight: var(--font-weight-semibold); }
+        .mt-sm { margin-top: var(--spacing-sm); }
+        .mt-md { margin-top: var(--spacing-md); }
+
+        /* 반응형 */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr !important;
+            }
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+            .sidebar-right {
+                order: -1;
+            }
+        }
+
+        /* K값 분석 아이템 (v1.2.0.1 추가) */
+        .k-analysis-item {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-xs) 0;
+        }
+
+        .k-analysis-current {
+            font-weight: var(--font-weight-bold);
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <h1>🎯 KNN 분류 시뮬레이터 <span class="version-badge">v1.2.0.1</span></h1>
+            <p>K-최근접 이웃 알고리즘으로 2D 데이터를 분류해보세요! <span class="model-badge">Claude Opus 4.5</span></p>
+        </header>
+
+        <!-- 모드 탭 -->
+        <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="train" onclick="switchMode('train')">🧠 학습 모드</button>
+            <button class="mode-tab" data-mode="inference" onclick="switchMode('inference')">🔮 추론 모드</button>
+        </div>
+
+        <!-- 메인 레이아웃 -->
+        <div class="main-layout" id="mainLayout">
+            <!-- 왼쪽 사이드바 -->
+            <aside class="sidebar-left">
+                <!-- 학습 모드: 데이터 패널 -->
+                <div class="panel" id="dataPanel">
+                    <h3 class="panel-title">📊 데이터 입력</h3>
+                    
+                    <!-- 데이터 탭 -->
+                    <div class="data-tabs">
+                        <button class="data-tab active" data-tab="preset" onclick="switchDataTab('preset')">프리셋</button>
+                        <button class="data-tab" data-tab="builtin" onclick="switchDataTab('builtin')">내장</button>
+                        <button class="data-tab" data-tab="manual" onclick="switchDataTab('manual')">직접</button>
+                    </div>
+
+                    <!-- 현재 변수 표시 -->
+                    <div class="current-vars" id="currentVars">
+                        <span class="var-label">X₁:</span> <span class="var-value" id="varX1Label">특성1</span>
+                        <span class="var-label">, X₂:</span> <span class="var-value" id="varX2Label">특성2</span>
+                        <span class="var-label"> → </span>
+                        <span class="var-value" id="varYLabel">클래스</span>
+                    </div>
+
+                    <!-- 프리셋 탭 -->
+                    <div class="data-tab-content active" id="presetContent">
+                        <div class="preset-buttons">
+                            <button class="preset-btn active" onclick="selectPreset('separated')">
+                                <span class="emoji">🎯</span>
+                                잘 분리됨
+                            </button>
+                            <button class="preset-btn" onclick="selectPreset('overlap')">
+                                <span class="emoji">🔀</span>
+                                약간 겹침
+                            </button>
+                            <button class="preset-btn" onclick="selectPreset('mixed')">
+                                <span class="emoji">🌀</span>
+                                많이 겹침
+                            </button>
+                            <button class="preset-btn" onclick="selectPreset('random')">
+                                <span class="emoji">🎲</span>
+                                랜덤
+                            </button>
+                        </div>
+
+                        <div class="input-group">
+                            <label>클래스별 데이터 개수</label>
+                            <input type="range" id="dataCount" min="10" max="50" step="5" value="20">
+                            <div class="value-display">
+                                <span>10</span>
+                                <span class="current" id="dataCountValue">20개</span>
+                                <span>50</span>
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-primary btn-sm" onclick="generatePresetData()">✨ 생성</button>
+                            <button class="btn btn-outline btn-sm" onclick="resetAll()">🗑️ 초기화</button>
+                        </div>
+                    </div>
+
+                    <!-- 내장 데이터셋 탭 -->
+                    <div class="data-tab-content" id="builtinContent">
+                        <div class="builtin-buttons">
+                            <button class="builtin-btn" onclick="loadBuiltinDataset('fruit')">
+                                <span class="emoji">🍎🫐</span>
+                                <span>과일 (당도, 크기)</span>
+                            </button>
+                            <button class="builtin-btn" onclick="loadBuiltinDataset('animal')">
+                                <span class="emoji">🐕🐈</span>
+                                <span>동물 (키, 무게)</span>
+                            </button>
+                            <button class="builtin-btn" onclick="loadBuiltinDataset('student')">
+                                <span class="emoji">📚✅</span>
+                                <span>학생 (공부, 수면)</span>
+                            </button>
+                            <button class="builtin-btn" onclick="loadBuiltinDataset('iris')">
+                                <span class="emoji">🌸🌺</span>
+                                <span>아이리스 (꽃잎)</span>
+                            </button>
+                        </div>
+                        <p class="text-xs text-light">내장 데이터셋을 선택하면 자동으로 로드됩니다.</p>
+                    </div>
+
+                    <!-- 직접 입력 탭 -->
+                    <div class="data-tab-content" id="manualContent">
+                        <p class="text-xs text-light mt-sm">📌 차트를 클릭하여 데이터를 추가하세요</p>
+                        
+                        <div class="class-selector mt-md">
+                            <button class="class-btn class-a active" id="classABtn" onclick="selectManualClass('A')">🍎 클래스 A</button>
+                            <button class="class-btn class-b" id="classBBtn" onclick="selectManualClass('B')">🫐 클래스 B</button>
+                        </div>
+
+                        <div class="manual-inputs">
+                            <input type="number" id="manualX1" placeholder="X₁" min="0" max="100">
+                            <input type="number" id="manualX2" placeholder="X₂" min="0" max="100">
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-primary btn-sm" onclick="addManualData()">➕ 추가</button>
+                            <button class="btn btn-outline btn-sm" onclick="removeLastData()">↩️ 실행취소</button>
+                        </div>
+
+                        <p class="text-xs text-light mt-sm">데이터: <span id="manualDataCount">0</span>개</p>
+                    </div>
+
+                    <!-- 데이터 테이블 -->
+                    <div class="data-table-wrapper" id="dataTableWrapper" style="display: none;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th id="tableX1Header">X₁</th>
+                                    <th id="tableX2Header">X₂</th>
+                                    <th>클래스</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dataTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- 알고리즘 설명 -->
+                    <div class="algorithm-info">
+                        <h4>📖 KNN 알고리즘이란?</h4>
+                        <p>새로운 데이터가 들어오면 <strong>가장 가까운 K개의 이웃</strong>을 찾아 다수결로 분류합니다.</p>
+                        <div class="step">
+                            <span class="step-num">1</span>
+                            <span>모든 학습 데이터까지의 거리 계산</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">2</span>
+                            <span>거리가 가장 가까운 K개 선택</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">3</span>
+                            <span>K개 이웃 중 다수 클래스로 분류</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 추론 모드: 입력 패널 -->
+                <div class="panel hidden" id="inferencePanel">
+                    <h3 class="panel-title">🎯 예측 입력</h3>
+                    
+                    <div class="input-group">
+                        <label id="infX1Label">X₁ 값</label>
+                        <input type="range" id="predX1" min="0" max="100" value="50">
+                        <div class="value-display">
+                            <span>0</span>
+                            <span class="current" id="predX1Value">50</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label id="infX2Label">X₂ 값</label>
+                        <input type="range" id="predX2" min="0" max="100" value="50">
+                        <div class="value-display">
+                            <span>0</span>
+                            <span class="current" id="predX2Value">50</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>📐 거리 공식</h4>
+                        <p id="distanceFormula">
+                            <strong>유클리드:</strong><br>
+                            <code>d = √[(x₁-a₁)² + (x₂-a₂)²]</code>
+                        </p>
+                    </div>
+
+                    <div class="algorithm-info">
+                        <h4>🔮 추론 과정</h4>
+                        <div class="step">
+                            <span class="step-num">1</span>
+                            <span>입력점에서 모든 데이터까지 거리 계산</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">2</span>
+                            <span>가장 가까운 K개 이웃 선택</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">3</span>
+                            <span>이웃들의 다수 클래스로 예측</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 중앙: 차트 영역 -->
+            <div class="chart-area">
+                <div class="chart-container">
+                    <div class="chart-title" id="chartTitle">📈 2D 분류 데이터</div>
+                    <div class="canvas-wrapper">
+                        <canvas id="mainChart" onclick="handleChartClick(event)"></canvas>
+                    </div>
+                    <p class="chart-hint" id="chartHint">데이터를 생성하거나 직접 입력 탭에서 차트를 클릭하여 데이터를 추가하세요</p>
+                </div>
+
+                <!-- 결과 패널 -->
+                <div class="train-result-panel hidden" id="trainResultPanel">
+                    <div class="result-grid">
+                        <!-- 학습 결과 -->
+                        <div class="result-section">
+                            <h4>📊 평가 결과</h4>
+                            <table class="result-table">
+                                <thead>
+                                    <tr>
+                                        <th>K값</th>
+                                        <th>정확도</th>
+                                        <th>상태</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultTableBody">
+                                    <tr>
+                                        <td id="resultK">-</td>
+                                        <td id="resultAccuracy">-</td>
+                                        <td id="resultStatus">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="confusion-matrix mt-md">
+                                <div class="cm-cell"></div>
+                                <div class="cm-cell cm-header">예측 A</div>
+                                <div class="cm-cell cm-header">예측 B</div>
+                                <div class="cm-cell cm-header">실제 A</div>
+                                <div class="cm-cell cm-correct" id="cmAA">0</div>
+                                <div class="cm-cell cm-wrong" id="cmAB">0</div>
+                                <div class="cm-cell cm-header">실제 B</div>
+                                <div class="cm-cell cm-wrong" id="cmBA">0</div>
+                                <div class="cm-cell cm-correct" id="cmBB">0</div>
+                            </div>
+                        </div>
+
+                        <!-- K값 분석 -->
+                        <div class="result-section">
+                            <h4>🔍 K값 영향 분석</h4>
+                            <p class="text-xs text-medium">K값에 따른 정확도 변화:</p>
+                            <div id="kAnalysis" class="mt-sm">
+                                <!-- 동적 생성 -->
+                            </div>
+                        </div>
+
+                        <!-- K값 재생 -->
+                        <div class="result-section">
+                            <h4>📽️ K값 변화 재생</h4>
+                            <p class="text-xs text-medium">K=1부터 K=15까지 결정 경계 변화를 확인하세요</p>
+                            <div class="playback-controls mt-md">
+                                <button class="playback-btn play" id="btnPlayK" onclick="playKChange()">▶️ 재생</button>
+                                <button class="playback-btn stop" id="btnStopK" onclick="stopKChange()" disabled>⏹️ 정지</button>
+                            </div>
+                            <p class="text-xs text-light mt-sm" id="playbackStatus">현재 K: <span id="currentPlayK">-</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 오른쪽 사이드바 -->
+            <aside class="sidebar-right" id="sidebarRight">
+                <!-- 학습 설정 패널 -->
+                <div class="panel" id="trainSettingsPanel">
+                    <h3 class="panel-title">⚙️ KNN 설정</h3>
+                    
+                    <div class="input-group">
+                        <label>K 값 (이웃 수)</label>
+                        <input type="range" id="kValue" min="1" max="15" step="2" value="5">
+                        <div class="value-display">
+                            <span>1</span>
+                            <span class="current" id="kValueDisplay">5</span>
+                            <span>15</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>거리 함수</label>
+                        <select id="distanceFunction">
+                            <option value="euclidean">유클리드 거리</option>
+                            <option value="manhattan">맨해튼 거리</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>테스트 데이터 비율</label>
+                        <input type="range" id="testRatio" min="10" max="40" step="5" value="20">
+                        <div class="value-display">
+                            <span>10%</span>
+                            <span class="current" id="testRatioValue">20%</span>
+                            <span>40%</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" style="width: 100%; margin-top: var(--spacing-md);" id="btnTrain" onclick="runKNN()">
+                        ⚡ 학습 및 평가
+                    </button>
+
+                    <div class="checkbox-row mt-md">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="showDecisionBoundary" checked onchange="toggleDecisionBoundary()">
+                            <span>결정 경계 표시</span>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-row">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="showTestResults" onchange="toggleTestResults()">
+                            <span>테스트 결과 표시</span>
+                        </label>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>💡 K값 선택 가이드</h4>
+                        <p>
+                            • <strong>K=1</strong>: 가장 가까운 1개만 참조 (과적합 위험)<br>
+                            • <strong>K=5~7</strong>: 일반적으로 좋은 성능<br>
+                            • <strong>K가 큼</strong>: 더 부드러운 경계 (언더피팅 위험)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 추론 결과 패널 -->
+                <div class="panel hidden" id="inferenceResultPanel">
+                    <h3 class="panel-title">💡 예측 결과</h3>
+                    
+                    <div class="prediction-result class-a" id="predictionResult">
+                        <div class="label">예측 클래스</div>
+                        <div class="value" id="predictionValue">--</div>
+                    </div>
+
+                    <div class="neighbors-info" id="neighborsInfo">
+                        <h4>🔗 K개 최근접 이웃</h4>
+                        <div id="neighborsList">
+                            <!-- 동적 생성 -->
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>📊 투표 결과</h4>
+                        <p>
+                            <span style="color: var(--class-a);">🍎 클래스 A:</span> <span id="voteA">0</span>표<br>
+                            <span style="color: var(--class-b);">🫐 클래스 B:</span> <span id="voteB">0</span>표
+                        </p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        // ========== 설정 상수 ==========
+        const CONFIG = {
+            // 데이터 설정
+            DATA: {
+                COUNT_MIN: 10,
+                COUNT_MAX: 50,
+                COUNT_DEFAULT: 20,
+                CLAMP_MIN: 5,
+                CLAMP_MAX: 95,
+                TABLE_MAX_ROWS: 20
+            },
+            
+            // KNN 설정
+            KNN: {
+                K_MIN: 1,
+                K_MAX: 15,
+                K_DEFAULT: 5
+            },
+            
+            // 시각화 설정
+            VIS: {
+                POINT_RADIUS: 6,
+                POINT_RADIUS_SMALL: 4,
+                POINT_RADIUS_TEST_EXTRA: 2,
+                HIGHLIGHT_RADIUS: 12,
+                LINE_WIDTH_AXIS: 1,
+                LINE_WIDTH_POINT_STROKE: 2,
+                LINE_WIDTH_NEIGHBOR: 2,
+                LINE_WIDTH_TEST_STROKE: 3,
+                LINE_WIDTH_PREDICTION: 2,        // v1.2.0.1 추가
+                DASH_PATTERN: [5, 5],
+                // 폰트 크기 (v1.2.0.1 추가)
+                FONT_SIZE_LABEL: 14,
+                FONT_SIZE_TICK: 10,
+                FONT_SIZE_PREDICTION: 12
+            },
+            
+            // 차트 설정
+            CHART: {
+                PADDING: 50,
+                TICK_OFFSET_X: 15,
+                TICK_OFFSET_Y: 5,
+                Y_LABEL_X: 15
+            },
+            
+            // 결정 경계 설정
+            DECISION_BOUNDARY: {
+                RESOLUTION: 30
+            },
+            
+            // 성능 기준
+            THRESHOLD: {
+                GOOD: 0.85,
+                OK: 0.70
+            },
+            
+            // 데이터 분포 설정
+            DISTRIBUTION: {
+                separated: { centerA: { x: 25, y: 75 }, centerB: { x: 75, y: 25 }, spread: 10 },
+                overlap: { centerA: { x: 35, y: 65 }, centerB: { x: 65, y: 35 }, spread: 15 },
+                mixed: { centerA: { x: 45, y: 55 }, centerB: { x: 55, y: 45 }, spread: 20 },
+                random: { centerA: { x: 30, y: 70 }, centerB: { x: 70, y: 30 }, spread: 25 }
+            },
+            
+            // K 재생 설정
+            PLAYBACK: {
+                DELAY: 500
+            }
+        };
+
+        // UI 텍스트 상수
+        const UI_TEXT = {
+            STATUS: {
+                GOOD: '✅ 우수',
+                OK: '⚠️ 양호',
+                BAD: '❌ 개선필요'
+            },
+            BTN: {
+                RUN: '⚡ 학습 및 평가',
+                RUNNING: '⏳ 계산 중...'
+            },
+            MSG: {
+                PLACEHOLDER_NO_DATA: '데이터를 생성해주세요',
+                ERROR_NO_DATA: '먼저 데이터를 생성해주세요!',
+                // v1.2.0.1 추가
+                CHART_CLICK_HINT: '📌 차트를 클릭하여 데이터를 추가하세요',
+                INPUT_REQUIRED: 'X₁과 X₂ 값을 입력해주세요',
+                MORE_DATA_PREFIX: '... 외 ',
+                MORE_DATA_SUFFIX: '개'
+            },
+            CLASS: {
+                A: '클래스 A (🍎)',
+                B: '클래스 B (🫐)'
+            },
+            CHART: {
+                AXIS_X: 'X₁',
+                AXIS_Y: 'X₂',
+                TITLE_TRAIN: '📈 2D 분류 데이터',
+                TITLE_INFERENCE: '🔮 예측 시각화'
+            }
+        };
+
+        // 내장 데이터셋
+        const BUILTIN_DATASETS = {
+            fruit: {
+                name: '과일 분류',
+                x1Label: '당도(Brix)',
+                x2Label: '크기(cm)',
+                yLabel: '과일종류',
+                classAName: '🍎 사과',
+                classBName: '🫐 블루베리',
+                data: [
+                    // 사과 (당도 높고 크기 큼)
+                    { x1: 70, x2: 75, label: 'A' }, { x1: 65, x2: 80, label: 'A' },
+                    { x1: 75, x2: 70, label: 'A' }, { x1: 68, x2: 85, label: 'A' },
+                    { x1: 72, x2: 78, label: 'A' }, { x1: 78, x2: 72, label: 'A' },
+                    { x1: 66, x2: 82, label: 'A' }, { x1: 74, x2: 76, label: 'A' },
+                    { x1: 71, x2: 79, label: 'A' }, { x1: 69, x2: 81, label: 'A' },
+                    { x1: 76, x2: 74, label: 'A' }, { x1: 67, x2: 77, label: 'A' },
+                    { x1: 73, x2: 83, label: 'A' }, { x1: 77, x2: 71, label: 'A' },
+                    { x1: 64, x2: 84, label: 'A' },
+                    // 블루베리 (당도 높고 크기 작음)
+                    { x1: 75, x2: 20, label: 'B' }, { x1: 80, x2: 25, label: 'B' },
+                    { x1: 70, x2: 15, label: 'B' }, { x1: 85, x2: 22, label: 'B' },
+                    { x1: 78, x2: 18, label: 'B' }, { x1: 72, x2: 28, label: 'B' },
+                    { x1: 82, x2: 20, label: 'B' }, { x1: 76, x2: 24, label: 'B' },
+                    { x1: 79, x2: 16, label: 'B' }, { x1: 74, x2: 26, label: 'B' },
+                    { x1: 81, x2: 19, label: 'B' }, { x1: 77, x2: 23, label: 'B' },
+                    { x1: 83, x2: 21, label: 'B' }, { x1: 73, x2: 17, label: 'B' },
+                    { x1: 84, x2: 27, label: 'B' }
+                ]
+            },
+            animal: {
+                name: '동물 분류',
+                x1Label: '키(cm)',
+                x2Label: '무게(kg)',
+                yLabel: '동물종류',
+                classAName: '🐕 개',
+                classBName: '🐈 고양이',
+                data: [
+                    // 개 (키 크고 무게 많음)
+                    { x1: 60, x2: 70, label: 'A' }, { x1: 65, x2: 75, label: 'A' },
+                    { x1: 55, x2: 65, label: 'A' }, { x1: 70, x2: 80, label: 'A' },
+                    { x1: 58, x2: 68, label: 'A' }, { x1: 62, x2: 72, label: 'A' },
+                    { x1: 68, x2: 78, label: 'A' }, { x1: 56, x2: 66, label: 'A' },
+                    { x1: 64, x2: 74, label: 'A' }, { x1: 59, x2: 69, label: 'A' },
+                    { x1: 67, x2: 77, label: 'A' }, { x1: 61, x2: 71, label: 'A' },
+                    { x1: 63, x2: 73, label: 'A' }, { x1: 57, x2: 67, label: 'A' },
+                    { x1: 66, x2: 76, label: 'A' },
+                    // 고양이 (키 작고 무게 적음)
+                    { x1: 25, x2: 30, label: 'B' }, { x1: 30, x2: 35, label: 'B' },
+                    { x1: 20, x2: 25, label: 'B' }, { x1: 35, x2: 40, label: 'B' },
+                    { x1: 28, x2: 33, label: 'B' }, { x1: 22, x2: 27, label: 'B' },
+                    { x1: 32, x2: 37, label: 'B' }, { x1: 26, x2: 31, label: 'B' },
+                    { x1: 24, x2: 29, label: 'B' }, { x1: 33, x2: 38, label: 'B' },
+                    { x1: 21, x2: 26, label: 'B' }, { x1: 29, x2: 34, label: 'B' },
+                    { x1: 27, x2: 32, label: 'B' }, { x1: 31, x2: 36, label: 'B' },
+                    { x1: 23, x2: 28, label: 'B' }
+                ]
+            },
+            student: {
+                name: '학생 합격 예측',
+                x1Label: '공부시간(h)',
+                x2Label: '수면시간(h)',
+                yLabel: '합격여부',
+                classAName: '✅ 합격',
+                classBName: '❌ 불합격',
+                data: [
+                    // 합격 (공부시간 많고 수면시간 적당)
+                    { x1: 70, x2: 50, label: 'A' }, { x1: 75, x2: 55, label: 'A' },
+                    { x1: 80, x2: 45, label: 'A' }, { x1: 65, x2: 60, label: 'A' },
+                    { x1: 85, x2: 50, label: 'A' }, { x1: 72, x2: 52, label: 'A' },
+                    { x1: 78, x2: 48, label: 'A' }, { x1: 68, x2: 58, label: 'A' },
+                    { x1: 82, x2: 46, label: 'A' }, { x1: 74, x2: 54, label: 'A' },
+                    { x1: 76, x2: 51, label: 'A' }, { x1: 71, x2: 57, label: 'A' },
+                    { x1: 79, x2: 49, label: 'A' }, { x1: 67, x2: 53, label: 'A' },
+                    { x1: 83, x2: 47, label: 'A' },
+                    // 불합격 (공부시간 적음)
+                    { x1: 20, x2: 80, label: 'B' }, { x1: 25, x2: 75, label: 'B' },
+                    { x1: 15, x2: 85, label: 'B' }, { x1: 30, x2: 70, label: 'B' },
+                    { x1: 18, x2: 78, label: 'B' }, { x1: 22, x2: 82, label: 'B' },
+                    { x1: 28, x2: 72, label: 'B' }, { x1: 16, x2: 88, label: 'B' },
+                    { x1: 24, x2: 76, label: 'B' }, { x1: 19, x2: 81, label: 'B' },
+                    { x1: 26, x2: 74, label: 'B' }, { x1: 21, x2: 79, label: 'B' },
+                    { x1: 27, x2: 73, label: 'B' }, { x1: 17, x2: 83, label: 'B' },
+                    { x1: 23, x2: 77, label: 'B' }
+                ]
+            },
+            iris: {
+                name: '아이리스 분류',
+                x1Label: '꽃잎길이(cm)',
+                x2Label: '꽃잎너비(cm)',
+                yLabel: '품종',
+                classAName: '🌸 Setosa',
+                classBName: '🌺 Versicolor',
+                data: [
+                    // Setosa (작은 꽃잎)
+                    { x1: 14, x2: 10, label: 'A' }, { x1: 15, x2: 12, label: 'A' },
+                    { x1: 13, x2: 8, label: 'A' }, { x1: 16, x2: 14, label: 'A' },
+                    { x1: 12, x2: 11, label: 'A' }, { x1: 17, x2: 13, label: 'A' },
+                    { x1: 14, x2: 9, label: 'A' }, { x1: 15, x2: 15, label: 'A' },
+                    { x1: 13, x2: 10, label: 'A' }, { x1: 16, x2: 12, label: 'A' },
+                    { x1: 11, x2: 8, label: 'A' }, { x1: 18, x2: 14, label: 'A' },
+                    { x1: 14, x2: 11, label: 'A' }, { x1: 15, x2: 13, label: 'A' },
+                    { x1: 12, x2: 9, label: 'A' },
+                    // Versicolor (큰 꽃잎)
+                    { x1: 70, x2: 60, label: 'B' }, { x1: 65, x2: 55, label: 'B' },
+                    { x1: 75, x2: 65, label: 'B' }, { x1: 60, x2: 50, label: 'B' },
+                    { x1: 72, x2: 62, label: 'B' }, { x1: 68, x2: 58, label: 'B' },
+                    { x1: 78, x2: 68, label: 'B' }, { x1: 63, x2: 53, label: 'B' },
+                    { x1: 74, x2: 64, label: 'B' }, { x1: 66, x2: 56, label: 'B' },
+                    { x1: 76, x2: 66, label: 'B' }, { x1: 62, x2: 52, label: 'B' },
+                    { x1: 71, x2: 61, label: 'B' }, { x1: 67, x2: 57, label: 'B' },
+                    { x1: 73, x2: 63, label: 'B' }
+                ]
+            }
+        };
+
+        // 색상 상수
+        const COLORS = {
+            CLASS_A: '#E53935',
+            CLASS_B: '#2196F3',
+            CLASS_A_LIGHT: 'rgba(229, 57, 53, 0.3)',
+            CLASS_B_LIGHT: 'rgba(33, 150, 243, 0.3)',
+            CLASS_A_BG: 'rgba(229, 57, 53, 0.1)',
+            CLASS_B_BG: 'rgba(33, 150, 243, 0.1)',
+            AXIS: '#BCAAA4',
+            LABEL: '#5D4037',
+            TICK: '#8D6E63',
+            POINT_STROKE: '#FFFFFF',
+            HIGHLIGHT: '#FFC107',
+            NEIGHBOR_LINE: '#FF9800',
+            TEST_CORRECT: '#43A047',
+            TEST_WRONG: '#E53935',
+            PREDICTION_MARKER: '#000000'
+        };
+
+        // ========== 전역 변수 ==========
+        let trainData = [];
+        let testData = [];
+        let model = {
+            k: CONFIG.KNN.K_DEFAULT,
+            distanceFunction: 'euclidean',
+            trained: false
+        };
+        let predictions = [];
+        let confusionMatrix = { aa: 0, ab: 0, ba: 0, bb: 0 };
+        let currentPreset = 'separated';
+        let currentDataTab = 'preset';
+        let manualClass = 'A';
+        let varLabels = { x1: '특성1', x2: '특성2', y: '클래스' };
+        let classNames = { A: '🍎 클래스 A', B: '🫐 클래스 B' };
+        
+        // 결정 경계 캐시
+        let decisionBoundaryCache = {
+            k: null,
+            distanceFunction: null,
+            trainDataHash: null,
+            data: null
+        };
+
+        // K 재생 관련
+        let isPlayingK = false;
+        let playbackTimer = null;
+
+        // ========== 초기화 ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                initSliders();
+                drawEmptyChart();
+            } catch (error) {
+                console.error('초기화 오류:', error);
+            }
+        });
+
+        function initSliders() {
+            // 데이터 개수
+            document.getElementById('dataCount').addEventListener('input', (e) => {
+                document.getElementById('dataCountValue').textContent = e.target.value + '개';
+            });
+
+            // K값
+            document.getElementById('kValue').addEventListener('input', (e) => {
+                document.getElementById('kValueDisplay').textContent = e.target.value;
+                invalidateDecisionBoundaryCache();
+            });
+
+            // 테스트 비율
+            document.getElementById('testRatio').addEventListener('input', (e) => {
+                document.getElementById('testRatioValue').textContent = e.target.value + '%';
+            });
+
+            // 거리 함수 변경 시 캐시 무효화
+            document.getElementById('distanceFunction').addEventListener('change', () => {
+                invalidateDecisionBoundaryCache();
+                updateDistanceFormula();
+            });
+
+            // 추론 슬라이더
+            document.getElementById('predX1').addEventListener('input', (e) => {
+                document.getElementById('predX1Value').textContent = e.target.value;
+                updatePrediction();
+            });
+            
+            document.getElementById('predX2').addEventListener('input', (e) => {
+                document.getElementById('predX2Value').textContent = e.target.value;
+                updatePrediction();
+            });
+        }
+
+        function updateDistanceFormula() {
+            const func = document.getElementById('distanceFunction').value;
+            const formulaEl = document.getElementById('distanceFormula');
+            if (func === 'euclidean') {
+                formulaEl.innerHTML = '<strong>유클리드:</strong><br><code>d = √[(x₁-a₁)² + (x₂-a₂)²]</code>';
+            } else {
+                formulaEl.innerHTML = '<strong>맨해튼:</strong><br><code>d = |x₁-a₁| + |x₂-a₂|</code>';
+            }
+        }
+
+        // ========== 결정 경계 캐시 관리 ==========
+        function invalidateDecisionBoundaryCache() {
+            decisionBoundaryCache.data = null;
+        }
+
+        function getTrainDataHash() {
+            if (trainData.length === 0) return null;
+            const first = trainData[0];
+            const last = trainData[trainData.length - 1];
+            return `${trainData.length}_${first.x1.toFixed(2)}_${last.x2.toFixed(2)}`;
+        }
+
+        function isDecisionBoundaryCacheValid() {
+            return decisionBoundaryCache.data !== null &&
+                   decisionBoundaryCache.k === model.k &&
+                   decisionBoundaryCache.distanceFunction === model.distanceFunction &&
+                   decisionBoundaryCache.trainDataHash === getTrainDataHash();
+        }
+
+        // ========== 유틸리티 함수 ==========
+        function clamp(value, min, max) {
+            return Math.max(min, Math.min(max, value));
+        }
+
+        function gaussianRandom() {
+            let u = 0, v = 0;
+            while (u === 0) u = Math.random();
+            while (v === 0) v = Math.random();
+            return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+        }
+
+        function shuffle(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // ========== 모드 전환 ==========
+        function switchMode(mode) {
+            try {
+                document.querySelectorAll('.mode-tab').forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.mode === mode);
+                });
+
+                const isTrainMode = mode === 'train';
+                
+                document.getElementById('dataPanel').classList.toggle('hidden', !isTrainMode);
+                document.getElementById('inferencePanel').classList.toggle('hidden', isTrainMode);
+                document.getElementById('trainSettingsPanel').classList.toggle('hidden', !isTrainMode);
+                document.getElementById('inferenceResultPanel').classList.toggle('hidden', isTrainMode);
+                
+                document.getElementById('chartTitle').textContent = 
+                    isTrainMode ? UI_TEXT.CHART.TITLE_TRAIN : UI_TEXT.CHART.TITLE_INFERENCE;
+
+                if (isTrainMode) {
+                    drawMainChart();
+                } else if (model.trained) {
+                    updatePrediction();
+                }
+            } catch (error) {
+                console.error('모드 전환 오류:', error);
+            }
+        }
+
+        // ========== 데이터 탭 전환 ==========
+        function switchDataTab(tab) {
+            currentDataTab = tab;
+            document.querySelectorAll('.data-tab').forEach(t => {
+                t.classList.toggle('active', t.dataset.tab === tab);
+            });
+            document.querySelectorAll('.data-tab-content').forEach(c => {
+                c.classList.remove('active');
+            });
+            document.getElementById(tab + 'Content').classList.add('active');
+            
+            // 직접 입력 탭일 때 힌트 표시
+            if (tab === 'manual') {
+                document.getElementById('chartHint').textContent = UI_TEXT.MSG.CHART_CLICK_HINT + ' (현재 클래스: ' + (manualClass === 'A' ? '🍎' : '🫐') + ')';
+            } else {
+                document.getElementById('chartHint').textContent = '';
+            }
+        }
+
+        // ========== 프리셋 선택 ==========
+        function selectPreset(preset) {
+            currentPreset = preset;
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.preset-btn').classList.add('active');
+        }
+
+        // ========== 프리셋 데이터 생성 ==========
+        function generatePresetData() {
+            try {
+                const countPerClass = parseInt(document.getElementById('dataCount').value);
+                
+                trainData = [];
+                testData = [];
+                
+                const distConfig = CONFIG.DISTRIBUTION[currentPreset];
+                const { centerA, centerB, spread } = distConfig;
+
+                // 클래스 A 데이터 생성
+                for (let i = 0; i < countPerClass; i++) {
+                    trainData.push({
+                        x1: clamp(centerA.x + gaussianRandom() * spread, CONFIG.DATA.CLAMP_MIN, CONFIG.DATA.CLAMP_MAX),
+                        x2: clamp(centerA.y + gaussianRandom() * spread, CONFIG.DATA.CLAMP_MIN, CONFIG.DATA.CLAMP_MAX),
+                        label: 'A'
+                    });
+                }
+
+                // 클래스 B 데이터 생성
+                for (let i = 0; i < countPerClass; i++) {
+                    trainData.push({
+                        x1: clamp(centerB.x + gaussianRandom() * spread, CONFIG.DATA.CLAMP_MIN, CONFIG.DATA.CLAMP_MAX),
+                        x2: clamp(centerB.y + gaussianRandom() * spread, CONFIG.DATA.CLAMP_MIN, CONFIG.DATA.CLAMP_MAX),
+                        label: 'B'
+                    });
+                }
+
+                trainData = shuffle(trainData);
+                
+                // 기본 레이블 설정
+                varLabels = { x1: '특성1', x2: '특성2', y: '클래스' };
+                classNames = { A: '🍎 클래스 A', B: '🫐 클래스 B' };
+                updateVariableLabels();
+                
+                displayDataTable();
+                drawMainChart();
+                
+                document.getElementById('trainResultPanel').classList.add('hidden');
+                model.trained = false;
+                invalidateDecisionBoundaryCache();
+            } catch (error) {
+                console.error('데이터 생성 오류:', error);
+            }
+        }
+
+        // ========== 내장 데이터셋 로드 ==========
+        function loadBuiltinDataset(key) {
+            try {
+                const dataset = BUILTIN_DATASETS[key];
+                if (!dataset) return;
+
+                trainData = dataset.data.map(d => ({ ...d }));
+                trainData = shuffle(trainData);
+                testData = [];
+
+                // 레이블 설정
+                varLabels = { x1: dataset.x1Label, x2: dataset.x2Label, y: dataset.yLabel };
+                classNames = { A: dataset.classAName, B: dataset.classBName };
+                updateVariableLabels();
+
+                displayDataTable();
+                drawMainChart();
+                
+                document.getElementById('trainResultPanel').classList.add('hidden');
+                model.trained = false;
+                invalidateDecisionBoundaryCache();
+            } catch (error) {
+                console.error('내장 데이터셋 로드 오류:', error);
+            }
+        }
+
+        // ========== 직접 입력 ==========
+        function selectManualClass(cls) {
+            manualClass = cls;
+            document.getElementById('classABtn').classList.toggle('active', cls === 'A');
+            document.getElementById('classBBtn').classList.toggle('active', cls === 'B');
+            document.getElementById('chartHint').textContent = UI_TEXT.MSG.CHART_CLICK_HINT + ' (현재 클래스: ' + (cls === 'A' ? '🍎' : '🫐') + ')';
+        }
+
+        function addManualData() {
+            const x1 = parseFloat(document.getElementById('manualX1').value);
+            const x2 = parseFloat(document.getElementById('manualX2').value);
+            
+            if (isNaN(x1) || isNaN(x2)) {
+                alert(UI_TEXT.MSG.INPUT_REQUIRED);
+                return;
+            }
+
+            trainData.push({
+                x1: clamp(x1, 0, 100),
+                x2: clamp(x2, 0, 100),
+                label: manualClass
+            });
+
+            document.getElementById('manualX1').value = '';
+            document.getElementById('manualX2').value = '';
+            document.getElementById('manualDataCount').textContent = trainData.length;
+
+            displayDataTable();
+            drawMainChart();
+            model.trained = false;
+            invalidateDecisionBoundaryCache();
+        }
+
+        function removeLastData() {
+            if (trainData.length > 0) {
+                trainData.pop();
+                document.getElementById('manualDataCount').textContent = trainData.length;
+                displayDataTable();
+                drawMainChart();
+                model.trained = false;
+                invalidateDecisionBoundaryCache();
+            }
+        }
+
+        function handleChartClick(event) {
+            if (currentDataTab !== 'manual') return;
+            
+            const canvas = event.target;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            const clickX = (event.clientX - rect.left) * scaleX;
+            const clickY = (event.clientY - rect.top) * scaleY;
+            
+            const padding = CONFIG.CHART.PADDING * window.devicePixelRatio;
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // 클릭 위치를 데이터 좌표로 변환
+            const x1 = ((clickX - padding) / (width - 2 * padding)) * 100;
+            const x2 = (1 - (clickY - padding) / (height - 2 * padding)) * 100;
+            
+            if (x1 >= 0 && x1 <= 100 && x2 >= 0 && x2 <= 100) {
+                trainData.push({
+                    x1: clamp(x1, 0, 100),
+                    x2: clamp(x2, 0, 100),
+                    label: manualClass
+                });
+                
+                document.getElementById('manualDataCount').textContent = trainData.length;
+                displayDataTable();
+                drawMainChart();
+                model.trained = false;
+                invalidateDecisionBoundaryCache();
+            }
+        }
+
+        // ========== 변수 레이블 업데이트 ==========
+        function updateVariableLabels() {
+            document.getElementById('varX1Label').textContent = varLabels.x1;
+            document.getElementById('varX2Label').textContent = varLabels.x2;
+            document.getElementById('varYLabel').textContent = varLabels.y;
+            document.getElementById('tableX1Header').textContent = varLabels.x1;
+            document.getElementById('tableX2Header').textContent = varLabels.x2;
+            document.getElementById('infX1Label').textContent = varLabels.x1;
+            document.getElementById('infX2Label').textContent = varLabels.x2;
+        }
+
+        // ========== 데이터 테이블 표시 ==========
+        function displayDataTable() {
+            try {
+                const wrapper = document.getElementById('dataTableWrapper');
+                const tbody = document.getElementById('dataTableBody');
+                
+                if (trainData.length === 0) {
+                    wrapper.style.display = 'none';
+                    return;
+                }
+                
+                const displayData = trainData.slice(0, CONFIG.DATA.TABLE_MAX_ROWS);
+                
+                tbody.innerHTML = displayData.map((d, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${d.x1.toFixed(1)}</td>
+                        <td>${d.x2.toFixed(1)}</td>
+                        <td style="color: ${d.label === 'A' ? COLORS.CLASS_A : COLORS.CLASS_B}; font-weight: 600;">
+                            ${d.label === 'A' ? '🍎' : '🫐'}
+                        </td>
+                    </tr>
+                `).join('');
+                
+                if (trainData.length > CONFIG.DATA.TABLE_MAX_ROWS) {
+                    tbody.innerHTML += `<tr><td colspan="4" class="text-light">... 외 ${trainData.length - CONFIG.DATA.TABLE_MAX_ROWS}개</td></tr>`;
+                }
+                
+                wrapper.style.display = 'block';
+            } catch (error) {
+                console.error('데이터 테이블 표시 오류:', error);
+            }
+        }
+
+        // ========== KNN 실행 ==========
+        function runKNN() {
+            try {
+                if (trainData.length === 0) {
+                    alert(UI_TEXT.MSG.ERROR_NO_DATA);
+                    return;
+                }
+
+                model.k = parseInt(document.getElementById('kValue').value);
+                model.distanceFunction = document.getElementById('distanceFunction').value;
+                
+                const testRatio = parseInt(document.getElementById('testRatio').value) / 100;
+                
+                // 데이터 분할
+                const shuffled = shuffle([...trainData]);
+                const splitIdx = Math.floor(shuffled.length * (1 - testRatio));
+                const trainSet = shuffled.slice(0, splitIdx);
+                const testSet = shuffled.slice(splitIdx);
+                
+                trainData = trainSet;
+                testData = testSet;
+
+                // 예측 수행
+                predictions = [];
+                confusionMatrix = { aa: 0, ab: 0, ba: 0, bb: 0 };
+                
+                testData.forEach(point => {
+                    const predicted = predict(point.x1, point.x2, trainData, model.k, model.distanceFunction);
+                    predictions.push({
+                        ...point,
+                        predicted: predicted.label,
+                        correct: predicted.label === point.label
+                    });
+                    
+                    if (point.label === 'A' && predicted.label === 'A') confusionMatrix.aa++;
+                    else if (point.label === 'A' && predicted.label === 'B') confusionMatrix.ab++;
+                    else if (point.label === 'B' && predicted.label === 'A') confusionMatrix.ba++;
+                    else confusionMatrix.bb++;
+                });
+
+                model.trained = true;
+                invalidateDecisionBoundaryCache();
+                
+                displayResults();
+                analyzeKValues();
+                drawMainChart();
+            } catch (error) {
+                console.error('KNN 실행 오류:', error);
+            }
+        }
+
+        // ========== 예측 함수 ==========
+        function predict(x1, x2, data, k, distFunc) {
+            const distances = data.map(point => ({
+                ...point,
+                distance: calculateDistance(x1, x2, point.x1, point.x2, distFunc)
+            }));
+            
+            distances.sort((a, b) => a.distance - b.distance);
+            const neighbors = distances.slice(0, k);
+            
+            const countA = neighbors.filter(n => n.label === 'A').length;
+            const countB = neighbors.filter(n => n.label === 'B').length;
+            
+            return {
+                label: countA >= countB ? 'A' : 'B',
+                neighbors: neighbors,
+                votes: { A: countA, B: countB }
+            };
+        }
+
+        function calculateDistance(x1, y1, x2, y2, func) {
+            if (func === 'manhattan') {
+                return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+            }
+            return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
+        }
+
+        // ========== 결과 표시 ==========
+        function displayResults() {
+            const accuracy = predictions.length > 0 
+                ? predictions.filter(p => p.correct).length / predictions.length 
+                : 0;
+
+            document.getElementById('resultK').textContent = model.k;
+            document.getElementById('resultAccuracy').textContent = (accuracy * 100).toFixed(1) + '%';
+            
+            const statusEl = document.getElementById('resultStatus');
+            if (accuracy >= CONFIG.THRESHOLD.GOOD) {
+                statusEl.textContent = UI_TEXT.STATUS.GOOD;
+                statusEl.className = 'status-good';
+            } else if (accuracy >= CONFIG.THRESHOLD.OK) {
+                statusEl.textContent = UI_TEXT.STATUS.OK;
+                statusEl.className = 'status-ok';
+            } else {
+                statusEl.textContent = UI_TEXT.STATUS.BAD;
+                statusEl.className = 'status-bad';
+            }
+
+            // 혼동 행렬
+            document.getElementById('cmAA').textContent = confusionMatrix.aa;
+            document.getElementById('cmAB').textContent = confusionMatrix.ab;
+            document.getElementById('cmBA').textContent = confusionMatrix.ba;
+            document.getElementById('cmBB').textContent = confusionMatrix.bb;
+
+            document.getElementById('trainResultPanel').classList.remove('hidden');
+        }
+
+        // ========== K값 분석 ==========
+        function analyzeKValues() {
+            const kAnalysis = document.getElementById('kAnalysis');
+            let html = '';
+            
+            for (let k = 1; k <= 9; k += 2) {
+                let correct = 0;
+                testData.forEach(point => {
+                    const pred = predict(point.x1, point.x2, trainData, k, model.distanceFunction);
+                    if (pred.label === point.label) correct++;
+                });
+                const acc = testData.length > 0 ? (correct / testData.length * 100).toFixed(1) : 0;
+                const isCurrentK = k === model.k;
+                
+                html += `<div class="k-analysis-item ${isCurrentK ? 'k-analysis-current' : ''}">
+                    <span>K=${k}${isCurrentK ? ' ←' : ''}</span>
+                    <span>${acc}%</span>
+                </div>`;
+            }
+            
+            kAnalysis.innerHTML = html;
+        }
+
+        // ========== K값 변화 재생 ==========
+        function playKChange() {
+            if (trainData.length === 0) {
+                alert(UI_TEXT.MSG.ERROR_NO_DATA);
+                return;
+            }
+
+            isPlayingK = true;
+            document.getElementById('btnPlayK').disabled = true;
+            document.getElementById('btnStopK').disabled = false;
+            
+            let currentK = 1;
+            
+            function step() {
+                if (!isPlayingK || currentK > 15) {
+                    stopKChange();
+                    return;
+                }
+                
+                model.k = currentK;
+                document.getElementById('kValue').value = currentK;
+                document.getElementById('kValueDisplay').textContent = currentK;
+                document.getElementById('currentPlayK').textContent = currentK;
+                
+                invalidateDecisionBoundaryCache();
+                drawMainChart();
+                
+                currentK += 2;
+                playbackTimer = setTimeout(step, CONFIG.PLAYBACK.DELAY);
+            }
+            
+            step();
+        }
+
+        function stopKChange() {
+            isPlayingK = false;
+            if (playbackTimer) {
+                clearTimeout(playbackTimer);
+                playbackTimer = null;
+            }
+            document.getElementById('btnPlayK').disabled = false;
+            document.getElementById('btnStopK').disabled = true;
+        }
+
+        // ========== 차트 그리기 ==========
+        function drawEmptyChart() {
+            const canvas = document.getElementById('mainChart');
+            const ctx = canvas.getContext('2d');
+            
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            const width = rect.width;
+            const height = rect.height;
+            
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = COLORS.TICK;
+            ctx.font = '14px Noto Sans KR';
+            ctx.textAlign = 'center';
+            ctx.fillText(UI_TEXT.MSG.PLACEHOLDER_NO_DATA, width / 2, height / 2);
+        }
+
+        function drawMainChart() {
+            const canvas = document.getElementById('mainChart');
+            const ctx = canvas.getContext('2d');
+            
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            const width = rect.width;
+            const height = rect.height;
+            const padding = CONFIG.CHART.PADDING;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            if (trainData.length === 0) {
+                ctx.fillStyle = COLORS.TICK;
+                ctx.font = '14px Noto Sans KR';
+                ctx.textAlign = 'center';
+                ctx.fillText(UI_TEXT.MSG.PLACEHOLDER_NO_DATA, width / 2, height / 2);
+                return;
+            }
+
+            const scaleX = (v) => padding + (v / 100) * (width - 2 * padding);
+            const scaleY = (v) => height - padding - (v / 100) * (height - 2 * padding);
+
+            // 결정 경계 그리기
+            if (model.trained && document.getElementById('showDecisionBoundary').checked) {
+                drawDecisionBoundary(ctx, width, height, padding, scaleX, scaleY);
+            }
+
+            // 축 그리기
+            ctx.strokeStyle = COLORS.AXIS;
+            ctx.lineWidth = CONFIG.VIS.LINE_WIDTH_AXIS;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // 축 레이블
+            ctx.fillStyle = COLORS.LABEL;
+            ctx.font = `${CONFIG.VIS.POINT_RADIUS * 2}px Noto Sans KR`;
+            ctx.textAlign = 'center';
+            ctx.fillText(varLabels.x1, width / 2, height - 10);
+            
+            ctx.save();
+            ctx.translate(CONFIG.CHART.Y_LABEL_X, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText(varLabels.x2, 0, 0);
+            ctx.restore();
+
+            // 눈금
+            ctx.fillStyle = COLORS.TICK;
+            ctx.font = '10px JetBrains Mono';
+            for (let i = 0; i <= 4; i++) {
+                const v = i * 25;
+                ctx.textAlign = 'center';
+                ctx.fillText(v, scaleX(v), height - padding + CONFIG.CHART.TICK_OFFSET_X);
+                ctx.textAlign = 'right';
+                ctx.fillText(v, padding - 5, scaleY(v) + CONFIG.CHART.TICK_OFFSET_Y);
+            }
+
+            // 학습 데이터 점 그리기
+            trainData.forEach(point => {
+                ctx.beginPath();
+                ctx.arc(scaleX(point.x1), scaleY(point.x2), CONFIG.VIS.POINT_RADIUS, 0, Math.PI * 2);
+                ctx.fillStyle = point.label === 'A' ? COLORS.CLASS_A : COLORS.CLASS_B;
+                ctx.fill();
+                ctx.strokeStyle = COLORS.POINT_STROKE;
+                ctx.lineWidth = CONFIG.VIS.LINE_WIDTH_POINT_STROKE;
+                ctx.stroke();
+            });
+
+            // 테스트 결과 표시
+            if (model.trained && document.getElementById('showTestResults').checked) {
+                predictions.forEach(point => {
+                    const x = scaleX(point.x1);
+                    const y = scaleY(point.x2);
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, CONFIG.VIS.POINT_RADIUS + CONFIG.VIS.POINT_RADIUS_TEST_EXTRA, 0, Math.PI * 2);
+                    ctx.strokeStyle = point.correct ? COLORS.TEST_CORRECT : COLORS.TEST_WRONG;
+                    ctx.lineWidth = CONFIG.VIS.LINE_WIDTH_TEST_STROKE;
+                    ctx.stroke();
+                });
+            }
+        }
+
+        function drawDecisionBoundary(ctx, width, height, padding, scaleX, scaleY) {
+            const resolution = CONFIG.DECISION_BOUNDARY.RESOLUTION;
+            
+            // 캐시 확인
+            if (!isDecisionBoundaryCacheValid()) {
+                const boundaryData = [];
+                for (let i = 0; i <= resolution; i++) {
+                    for (let j = 0; j <= resolution; j++) {
+                        const x1 = (i / resolution) * 100;
+                        const x2 = (j / resolution) * 100;
+                        const pred = predict(x1, x2, trainData, model.k, model.distanceFunction);
+                        boundaryData.push({ x1, x2, label: pred.label });
+                    }
+                }
+                
+                decisionBoundaryCache = {
+                    k: model.k,
+                    distanceFunction: model.distanceFunction,
+                    trainDataHash: getTrainDataHash(),
+                    data: boundaryData
+                };
+            }
+
+            const cellWidth = (width - 2 * padding) / resolution;
+            const cellHeight = (height - 2 * padding) / resolution;
+            
+            decisionBoundaryCache.data.forEach(point => {
+                const x = scaleX(point.x1) - cellWidth / 2;
+                const y = scaleY(point.x2) - cellHeight / 2;
+                ctx.fillStyle = point.label === 'A' ? COLORS.CLASS_A_BG : COLORS.CLASS_B_BG;
+                ctx.fillRect(x, y, cellWidth, cellHeight);
+            });
+        }
+
+        // ========== 토글 함수 ==========
+        function toggleDecisionBoundary() {
+            if (model.trained) {
+                drawMainChart();
+            }
+        }
+
+        function toggleTestResults() {
+            if (model.trained) {
+                drawMainChart();
+            }
+        }
+
+        // ========== 추론 ==========
+        function updatePrediction() {
+            if (!model.trained || trainData.length === 0) {
+                document.getElementById('predictionValue').textContent = '--';
+                return;
+            }
+
+            const x1 = parseFloat(document.getElementById('predX1').value);
+            const x2 = parseFloat(document.getElementById('predX2').value);
+            
+            const result = predict(x1, x2, trainData, model.k, model.distanceFunction);
+            
+            // 결과 표시
+            const resultEl = document.getElementById('predictionResult');
+            resultEl.className = 'prediction-result ' + (result.label === 'A' ? 'class-a' : 'class-b');
+            document.getElementById('predictionValue').textContent = 
+                result.label === 'A' ? classNames.A : classNames.B;
+
+            // 이웃 정보
+            const neighborsHtml = result.neighbors.map((n, i) => `
+                <div class="neighbor-item">
+                    <span>
+                        <span class="neighbor-class ${n.label === 'A' ? 'class-a' : 'class-b'}"></span>
+                        #${i + 1}
+                    </span>
+                    <span class="neighbor-distance">${n.distance.toFixed(2)}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('neighborsList').innerHTML = neighborsHtml + `
+                <div class="neighbor-item neighbor-item-footer">
+                    <span>다수결 결과</span>
+                    <span>${result.label === 'A' ? '🍎' : '🫐'}</span>
+                </div>
+            `;
+
+            // 투표 결과
+            document.getElementById('voteA').textContent = result.votes.A;
+            document.getElementById('voteB').textContent = result.votes.B;
+
+            // 추론 차트 그리기
+            drawInferenceChart(x1, x2, result);
+        }
+
+        function drawInferenceChart(predX1, predX2, result) {
+            const canvas = document.getElementById('mainChart');
+            const ctx = canvas.getContext('2d');
+            
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            const width = rect.width;
+            const height = rect.height;
+            const padding = CONFIG.CHART.PADDING;
+            
+            ctx.clearRect(0, 0, width, height);
+
+            const scaleX = (v) => padding + (v / 100) * (width - 2 * padding);
+            const scaleY = (v) => height - padding - (v / 100) * (height - 2 * padding);
+
+            // 결정 경계
+            if (document.getElementById('showDecisionBoundary').checked) {
+                drawDecisionBoundary(ctx, width, height, padding, scaleX, scaleY);
+            }
+
+            // 축
+            ctx.strokeStyle = COLORS.AXIS;
+            ctx.lineWidth = CONFIG.VIS.LINE_WIDTH_AXIS;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // 축 레이블
+            ctx.fillStyle = COLORS.LABEL;
+            ctx.font = `${CONFIG.VIS.POINT_RADIUS * 2}px Noto Sans KR`;
+            ctx.textAlign = 'center';
+            ctx.fillText(varLabels.x1, width / 2, height - 10);
+            
+            ctx.save();
+            ctx.translate(CONFIG.CHART.Y_LABEL_X, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText(varLabels.x2, 0, 0);
+            ctx.restore();
+
+            // 눈금
+            ctx.fillStyle = COLORS.TICK;
+            ctx.font = '10px JetBrains Mono';
+            for (let i = 0; i <= 4; i++) {
+                const v = i * 25;
+                ctx.textAlign = 'center';
+                ctx.fillText(v, scaleX(v), height - padding + CONFIG.CHART.TICK_OFFSET_X);
+                ctx.textAlign = 'right';
+                ctx.fillText(v, padding - 5, scaleY(v) + CONFIG.CHART.TICK_OFFSET_Y);
+            }
+
+            // 학습 데이터 (흐리게)
+            trainData.forEach(point => {
+                ctx.beginPath();
+                ctx.arc(scaleX(point.x1), scaleY(point.x2), CONFIG.VIS.POINT_RADIUS_SMALL, 0, Math.PI * 2);
+                ctx.fillStyle = point.label === 'A' ? COLORS.CLASS_A_LIGHT : COLORS.CLASS_B_LIGHT;
+                ctx.fill();
+            });
+
+            const px = scaleX(predX1);
+            const py = scaleY(predX2);
+
+            // K개 이웃 연결선
+            result.neighbors.forEach(n => {
+                ctx.beginPath();
+                ctx.setLineDash(CONFIG.VIS.DASH_PATTERN);
+                ctx.strokeStyle = COLORS.NEIGHBOR_LINE;
+                ctx.lineWidth = CONFIG.VIS.LINE_WIDTH_NEIGHBOR;
+                ctx.moveTo(px, py);
+                ctx.lineTo(scaleX(n.x1), scaleY(n.x2));
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // 이웃 점 강조
+                ctx.beginPath();
+                ctx.arc(scaleX(n.x1), scaleY(n.x2), CONFIG.VIS.POINT_RADIUS, 0, Math.PI * 2);
+                ctx.fillStyle = n.label === 'A' ? COLORS.CLASS_A : COLORS.CLASS_B;
+                ctx.fill();
+                ctx.strokeStyle = COLORS.POINT_STROKE;
+                ctx.lineWidth = CONFIG.VIS.LINE_WIDTH_POINT_STROKE;
+                ctx.stroke();
+            });
+
+            // 예측점
+            ctx.beginPath();
+            ctx.arc(px, py, CONFIG.VIS.HIGHLIGHT_RADIUS, 0, Math.PI * 2);
+            ctx.fillStyle = COLORS.HIGHLIGHT;
+            ctx.fill();
+            ctx.strokeStyle = COLORS.PREDICTION_MARKER;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 예측 레이블
+            ctx.fillStyle = COLORS.PREDICTION_MARKER;
+            ctx.font = 'bold 12px JetBrains Mono';
+            ctx.textAlign = 'center';
+            ctx.fillText(`(${predX1}, ${predX2})`, px, py - 20);
+        }
+
+        // ========== 초기화 ==========
+        function resetAll() {
+            trainData = [];
+            testData = [];
+            predictions = [];
+            model.trained = false;
+            confusionMatrix = { aa: 0, ab: 0, ba: 0, bb: 0 };
+            
+            document.getElementById('dataTableWrapper').style.display = 'none';
+            document.getElementById('trainResultPanel').classList.add('hidden');
+            document.getElementById('manualDataCount').textContent = '0';
+            
+            invalidateDecisionBoundaryCache();
+            drawEmptyChart();
+        }
+
+        // ========== 리사이즈 ==========
+        window.addEventListener('resize', () => {
+            if (trainData.length > 0) {
+                drawMainChart();
+            } else {
+                drawEmptyChart();
+            }
+        });
+    </script>
+</body>
+</html>

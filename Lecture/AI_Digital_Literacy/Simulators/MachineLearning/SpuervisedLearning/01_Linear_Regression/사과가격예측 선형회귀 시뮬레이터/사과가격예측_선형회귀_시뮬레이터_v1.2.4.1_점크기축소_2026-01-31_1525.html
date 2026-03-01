@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍎 사과 가격 예측 - 선형 회귀 시뮬레이터</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --apple-red: #E53935;
+            --apple-red-dark: #C62828;
+            --apple-green: #43A047;
+            --apple-green-dark: #2E7D32;
+            --honey-yellow: #FFC107;
+            --warm-cream: #FFFBF5;
+            --warm-cream-dark: #FFF3E0;
+            --text-dark: #3E2723;
+            --text-medium: #5D4037;
+            --text-light: #8D6E63;
+            --border-color: #FFCCBC;
+            --shadow-soft: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-medium: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, var(--warm-cream) 0%, var(--warm-cream-dark) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 헤더 */
+        .header {
+            text-align: center;
+            padding: 16px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--apple-red);
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            color: var(--text-medium);
+            font-size: 0.9rem;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: var(--apple-red);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        /* 모드 탭 */
+        .mode-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .mode-tab {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .mode-tab.active {
+            background: var(--apple-red);
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .mode-tab:not(.active) {
+            background: white;
+            color: var(--text-medium);
+            border: 2px solid var(--border-color);
+        }
+
+        .mode-tab:not(.active):hover {
+            border-color: var(--apple-red);
+            color: var(--apple-red);
+        }
+
+        /* 메인 레이아웃 */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr 260px;
+            gap: 16px;
+            align-items: start;
+        }
+
+        /* 학습 모드: 3열 레이아웃 */
+        .main-layout.train-mode {
+            grid-template-columns: 240px 1fr 260px;
+        }
+
+        /* 추론 모드: 3열 레이아웃 */
+        .main-layout.inference-mode {
+            grid-template-columns: 240px 1fr 260px;
+        }
+
+        /* 패널 공통 */
+        .panel {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .panel-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--warm-cream-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 왼쪽 사이드바 */
+        .sidebar-left {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 오른쪽 사이드바 */
+        .sidebar-right {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 입력 그룹 */
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-medium);
+            margin-bottom: 6px;
+        }
+
+        .input-group input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--warm-cream-dark);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .input-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--apple-red);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .value-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .value-display .current {
+            font-weight: 600;
+            color: var(--apple-red);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* 버튼 */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--apple-red);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--apple-red-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-success {
+            background: var(--apple-green);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: var(--apple-green-dark);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--text-medium);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--apple-red);
+            color: var(--apple-red);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* 학습 버튼 */
+        .train-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 0.95rem;
+            margin-top: 12px;
+        }
+
+        /* 재생 컨트롤 */
+        .playback-controls {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .playback-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .playback-btn.play {
+            background: #2196F3;
+            color: white;
+        }
+
+        .playback-btn.stop {
+            background: #757575;
+            color: white;
+        }
+
+        .playback-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 재생 진행바 */
+        .playback-progress {
+            margin-top: 12px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--warm-cream-dark);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2196F3, #1976D2);
+            border-radius: 4px;
+            transition: width 0.1s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* 결과 테이블 */
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 0.85rem;
+        }
+
+        .result-table th, .result-table td {
+            padding: 8px 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .result-table th {
+            background: var(--warm-cream-dark);
+            font-weight: 500;
+        }
+
+        .status-good { color: var(--apple-green); font-weight: 600; }
+        .status-ok { color: var(--honey-yellow); font-weight: 600; }
+        .status-bad { color: var(--apple-red); font-weight: 600; }
+
+        /* 차트 영역 */
+        .chart-area {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .chart-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1.3;
+        }
+
+        .canvas-wrapper canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* 추론 모드 큰 차트 */
+        .chart-large {
+            grid-column: 1 / -1;
+        }
+
+        .chart-large .canvas-wrapper {
+            aspect-ratio: 2;
+        }
+
+        /* 추론 결과 */
+        .prediction-result {
+            background: linear-gradient(135deg, var(--apple-red) 0%, var(--apple-red-dark) 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        .prediction-result .label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .prediction-result .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* 품질 구성 */
+        .quality-breakdown {
+            background: var(--warm-cream-dark);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .quality-breakdown h4 {
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .quality-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--border-color);
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
+        }
+
+        .quality-item.active {
+            opacity: 1;
+        }
+
+        .quality-item:last-child {
+            border-bottom: none;
+            padding-top: 8px;
+            margin-top: 4px;
+            border-top: 2px solid var(--apple-red);
+            font-weight: 700;
+            color: var(--apple-red);
+        }
+
+        .quality-item .label {
+            font-size: 0.8rem;
+        }
+
+        .quality-item .value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        /* 추론 과정 */
+        .inference-process {
+            background: var(--warm-cream-dark);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        .inference-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dashed var(--border-color);
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
+        }
+
+        .inference-row.active {
+            opacity: 1;
+        }
+
+        .inference-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: var(--apple-red);
+            padding-top: 8px;
+            margin-top: 4px;
+            border-top: 2px solid var(--apple-red);
+        }
+
+        /* 데이터 테이블 */
+        .data-table-wrapper {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .data-table th, .data-table td {
+            padding: 6px 8px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background: var(--warm-cream-dark);
+            position: sticky;
+            top: 0;
+            font-weight: 500;
+        }
+
+        /* 숨김 */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 회귀식 표시 */
+        .equation-display {
+            background: var(--warm-cream-dark);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 10px;
+            color: var(--text-dark);
+        }
+
+        /* 품질 공식 설명 */
+        .quality-formula {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.8rem;
+        }
+
+        .quality-formula h4 {
+            color: #1565C0;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+        }
+
+        .quality-formula code {
+            background: white;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        /* 추론 버튼 */
+        .inference-btn {
+            width: 100%;
+            padding: 10px;
+            margin-top: 12px;
+            background: #9C27B0;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .inference-btn:hover {
+            background: #7B1FA2;
+        }
+
+        .inference-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 오차선 토글 */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .toggle-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--apple-red);
+        }
+
+        .toggle-text {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .error-stats {
+            background: var(--warm-cream-dark);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 8px;
+        }
+
+        .error-stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.8rem;
+        }
+
+        .error-stat-item .stat-label {
+            color: var(--text-medium);
+        }
+
+        .error-stat-item .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--apple-red);
+        }
+
+        .error-hint {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 8px;
+            padding: 6px 8px;
+            background: #E3F2FD;
+            border-radius: 6px;
+        }
+
+        /* 학습 결과 패널 (차트 아래) */
+        .train-result-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow-soft);
+            margin-top: 16px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .result-section {
+            background: var(--warm-cream-dark);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .result-section h4 {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .result-section .result-table {
+            margin-bottom: 10px;
+        }
+
+        .result-section .equation-display {
+            margin-top: 10px;
+        }
+
+        .result-section .input-group {
+            margin-bottom: 10px;
+        }
+
+        .result-section .toggle-row {
+            margin-bottom: 10px;
+        }
+
+        .result-section .error-stats {
+            background: white;
+            margin-top: 10px;
+        }
+
+        .result-section .error-hint {
+            margin-top: 10px;
+        }
+
+        /* 반응형 */
+        @media (max-width: 1200px) {
+            .main-layout.train-mode {
+                grid-template-columns: 220px 1fr 220px;
+            }
+            
+            .result-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .main-layout.inference-mode {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .chart-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar-right {
+                order: -1;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <h1>🍎 사과 가격 예측 시뮬레이터 <span class="version-badge">v1.2.4.1</span></h1>
+            <p>당도와 무게로 계산된 <strong>품질 점수</strong>로 사과 가격을 예측해보세요!</p>
+        </header>
+
+        <!-- 모드 탭 -->
+        <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="train" onclick="switchMode('train')">🧠 학습 모드</button>
+            <button class="mode-tab" data-mode="inference" onclick="switchMode('inference')">🔮 추론 모드</button>
+        </div>
+
+        <!-- 메인 레이아웃 -->
+        <div class="main-layout train-mode" id="mainLayout">
+            <!-- 왼쪽 사이드바 -->
+            <aside class="sidebar-left">
+                <!-- 학습 모드: 데이터 패널 -->
+                <div class="panel" id="dataPanel">
+                    <h3 class="panel-title">📊 데이터 생성</h3>
+                    
+                    <div class="input-group">
+                        <label>데이터 개수</label>
+                        <input type="range" id="dataCount" min="5" max="100" value="30">
+                        <div class="value-display">
+                            <span>5</span>
+                            <span class="current" id="dataCountValue">30개</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>노이즈 수준</label>
+                        <select id="noiseLevel" style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <option value="0.05">5% (낮음)</option>
+                            <option value="0.10" selected>10% (보통)</option>
+                            <option value="0.20">20% (높음)</option>
+                        </select>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="generateData()">✨ 데이터 생성</button>
+                        <button class="btn btn-outline" onclick="resetAll()">🗑️ 초기화</button>
+                    </div>
+
+                    <div class="quality-formula">
+                        <h4>📐 품질 점수 계산식</h4>
+                        <p><code>품질 = 당도점수(50%) + 무게점수(50%)</code></p>
+                        <p style="margin-top: 8px; color: #5D4037;">
+                            • 당도: 10~18 Brix → 0~50점<br>
+                            • 무게: 150~350g → 0~50점
+                        </p>
+                    </div>
+
+                    <div class="data-table-wrapper" id="dataTableWrapper" style="display: none;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>🍯 당도</th>
+                                    <th>⚖️ 무게</th>
+                                    <th>⭐ 품질</th>
+                                    <th>💰 가격</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dataTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 추론 모드: 예측 입력 패널 (왼쪽) -->
+                <div class="panel hidden" id="inferencePanel">
+                    <h3 class="panel-title">🎯 예측 입력</h3>
+                    
+                    <div class="input-group">
+                        <label>🍯 당도 (Brix)</label>
+                        <input type="range" id="predSweetness" min="10" max="18" step="0.1" value="14">
+                        <div class="value-display">
+                            <span>10</span>
+                            <span class="current" id="predSweetnessValue">14.0 Brix</span>
+                            <span>18</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>⚖️ 무게 (g)</label>
+                        <input type="range" id="predWeight" min="150" max="350" step="1" value="250">
+                        <div class="value-display">
+                            <span>150</span>
+                            <span class="current" id="predWeightValue">250 g</span>
+                            <span>350</span>
+                        </div>
+                    </div>
+
+                    <div class="quality-breakdown" id="qualityBreakdown">
+                        <h4>⭐ 품질 점수 계산</h4>
+                        <div class="quality-item active" id="qiSweetness">
+                            <span class="label">🍯 당도 점수</span>
+                            <span class="value" id="sweetnessScore">25.0점</span>
+                        </div>
+                        <div class="quality-item active" id="qiWeight">
+                            <span class="label">⚖️ 무게 점수</span>
+                            <span class="value" id="weightScore">25.0점</span>
+                        </div>
+                        <div class="quality-item active" id="qiTotal">
+                            <span class="label">⭐ 총 품질 점수</span>
+                            <span class="value" id="totalQuality">50.0점</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 차트 영역 -->
+            <div class="chart-area">
+                <!-- 학습 모드 차트 (한 줄에 두 개) -->
+                <div class="chart-row" id="trainCharts">
+                    <div class="chart-container">
+                        <div class="chart-title">📉 손실 그래프 (MSE)</div>
+                        <div class="canvas-wrapper">
+                            <canvas id="lossChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title" id="scatterTitle">📈 품질 vs 가격</div>
+                        <div class="canvas-wrapper">
+                            <canvas id="scatterChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 추론 모드 차트 (큰 차트) -->
+                <div class="chart-row hidden" id="inferenceCharts">
+                    <div class="chart-container chart-large">
+                        <div class="chart-title" id="inferenceChartTitle">🔮 예측 시각화</div>
+                        <div class="canvas-wrapper">
+                            <canvas id="inferenceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 학습 결과 패널 (차트 아래) -->
+                <div class="train-result-panel" id="trainResultPanel" style="display: none;">
+                    <div class="result-grid">
+                        <!-- 결과 요약 -->
+                        <div class="result-section">
+                            <h4>📊 학습 결과</h4>
+                            <div id="trainResult">
+                                <table class="result-table">
+                                    <thead>
+                                        <tr>
+                                            <th>에포크</th>
+                                            <th>손실(MSE)</th>
+                                            <th>R²</th>
+                                            <th>상태</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="trainResultBody"></tbody>
+                                </table>
+                            </div>
+                            <div class="equation-display" id="equationDisplay">
+                                가격 = <span id="eqW">?</span> × 품질 + <span id="eqB">?</span>
+                            </div>
+                        </div>
+
+                        <!-- 오차선 표시 -->
+                        <div class="result-section" id="errorLineSection">
+                            <h4>📏 오차 분석</h4>
+                            <div class="toggle-row">
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="showErrorLines" onchange="toggleErrorLines()">
+                                    <span class="toggle-text">오차선 표시</span>
+                                </label>
+                            </div>
+                            <div id="errorStats" class="error-stats" style="display: none;">
+                                <div class="error-stat-item">
+                                    <span class="stat-label">평균 오차</span>
+                                    <span class="stat-value" id="meanError">--</span>
+                                </div>
+                                <div class="error-stat-item">
+                                    <span class="stat-label">최대 오차</span>
+                                    <span class="stat-value" id="maxError">--</span>
+                                </div>
+                                <div class="error-stat-item">
+                                    <span class="stat-label">MSE</span>
+                                    <span class="stat-value" id="mseValue">--</span>
+                                </div>
+                            </div>
+                            <p class="error-hint">💡 오차선 = 실제값과 예측값의 차이</p>
+                        </div>
+
+                        <!-- 학습 과정 재생 -->
+                        <div class="result-section" id="playbackSection">
+                            <h4>📽️ 학습 과정 재생</h4>
+                            <div class="input-group">
+                                <label>재생 속도</label>
+                                <input type="range" id="playbackSpeed" min="1" max="10" value="5">
+                                <div class="value-display">
+                                    <span>느림</span>
+                                    <span class="current" id="playbackSpeedValue">보통</span>
+                                    <span>빠름</span>
+                                </div>
+                            </div>
+                            <div class="playback-controls">
+                                <button class="playback-btn play" id="btnPlay" onclick="playTrainingHistory()">▶️ 재생</button>
+                                <button class="playback-btn stop" id="btnStop" onclick="stopPlayback()" disabled>⏹️ 정지</button>
+                            </div>
+                            <div class="playback-progress" id="playbackProgress" style="display: none;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                                </div>
+                                <div class="progress-label">
+                                    <span id="currentEpochLabel">에포크: 0</span>
+                                    <span id="totalEpochLabel">/ 500</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 오른쪽 사이드바: 학습 설정 (학습 모드만) -->
+            <aside class="sidebar-right" id="sidebarRight">
+                <div class="panel" id="trainPanel">
+                    <h3 class="panel-title">⚙️ 학습 설정</h3>
+                    
+                    <div class="input-group">
+                        <label>학습률 (Learning Rate)</label>
+                        <input type="range" id="learningRate" min="0.001" max="0.1" step="0.001" value="0.01">
+                        <div class="value-display">
+                            <span>0.001</span>
+                            <span class="current" id="learningRateValue">0.01</span>
+                            <span>0.1</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>에포크 (Epochs)</label>
+                        <input type="range" id="epochs" min="100" max="2000" step="100" value="500">
+                        <div class="value-display">
+                            <span>100</span>
+                            <span class="current" id="epochsValue">500회</span>
+                            <span>2000</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success train-btn" id="btnTrain" onclick="runTraining()">
+                        ⚡ 학습 실행
+                    </button>
+                </div>
+
+                <!-- 추론 모드: 예측 결과 패널 (오른쪽) -->
+                <div class="panel hidden" id="inferenceResultPanel">
+                    <h3 class="panel-title">💰 예측 결과</h3>
+                    
+                    <div class="prediction-result" id="predictionResult">
+                        <div class="label">예측 가격</div>
+                        <div class="value" id="predictionValue">--</div>
+                    </div>
+
+                    <div class="inference-process" id="inferenceProcess">
+                        <div class="inference-row active" id="irBase">
+                            <span>🏷️ 기본 가격 (b)</span>
+                            <span id="infBase">--</span>
+                        </div>
+                        <div class="inference-row active" id="irQuality">
+                            <span>⭐ 품질 기여 (w × 품질)</span>
+                            <span id="infQuality">--</span>
+                        </div>
+                        <div class="inference-row active" id="irTotal">
+                            <span>💰 최종 가격</span>
+                            <span id="infTotal">--</span>
+                        </div>
+                    </div>
+
+                    <div class="equation-display" id="inferenceEquation" style="margin-top: 12px;">
+                        가격 = <span id="infEqW">?</span> × 품질 + <span id="infEqB">?</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        // ========== 전역 변수 ==========
+        let data = [];
+        let model = {
+            w: 0,
+            b: 0,
+            wReal: 0,
+            bReal: 0,
+            trained: false
+        };
+        let normParams = {
+            quality: { mean: 0, std: 1 },
+            price: { mean: 0, std: 1 }
+        };
+        let lossHistory = [];
+        let trainingHistory = []; // 학습 과정 저장 [{epoch, w, b, wReal, bReal, loss}]
+        let lossChart;
+        let isPlayingBack = false;
+        let playbackTimer = null;
+        let showErrorLines = false; // 오차선 표시 여부
+
+        // ========== 품질 계산 ==========
+        function calculateQuality(sweetness, weight) {
+            const sweetnessScore = ((sweetness - 10) / 8) * 50;
+            const weightScore = ((weight - 150) / 200) * 50;
+            return sweetnessScore + weightScore;
+        }
+
+        function getSweetnessScore(sweetness) {
+            return ((sweetness - 10) / 8) * 50;
+        }
+
+        function getWeightScore(weight) {
+            return ((weight - 150) / 200) * 50;
+        }
+
+        // ========== 초기화 ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            initSliders();
+            initCharts();
+        });
+
+        function initSliders() {
+            document.getElementById('dataCount').addEventListener('input', (e) => {
+                document.getElementById('dataCountValue').textContent = e.target.value + '개';
+            });
+
+            document.getElementById('learningRate').addEventListener('input', (e) => {
+                document.getElementById('learningRateValue').textContent = parseFloat(e.target.value).toFixed(3);
+            });
+
+            document.getElementById('epochs').addEventListener('input', (e) => {
+                document.getElementById('epochsValue').textContent = e.target.value + '회';
+            });
+
+            document.getElementById('playbackSpeed').addEventListener('input', (e) => {
+                const speeds = ['매우 느림', '느림', '약간 느림', '보통보다 느림', '보통', '보통보다 빠름', '약간 빠름', '빠름', '매우 빠름', '최고속'];
+                document.getElementById('playbackSpeedValue').textContent = speeds[parseInt(e.target.value) - 1];
+            });
+
+            document.getElementById('predSweetness').addEventListener('input', (e) => {
+                document.getElementById('predSweetnessValue').textContent = parseFloat(e.target.value).toFixed(1) + ' Brix';
+                updatePrediction();
+            });
+
+            document.getElementById('predWeight').addEventListener('input', (e) => {
+                document.getElementById('predWeightValue').textContent = e.target.value + ' g';
+                updatePrediction();
+            });
+        }
+
+        function initCharts() {
+            const lossCtx = document.getElementById('lossChart').getContext('2d');
+            lossChart = new Chart(lossCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'MSE 손실',
+                        data: [],
+                        borderColor: '#E53935',
+                        backgroundColor: 'rgba(229, 57, 53, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: '에포크' } },
+                        y: { title: { display: true, text: '손실 (MSE)' }, beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // ========== 모드 전환 ==========
+        function switchMode(mode) {
+            document.querySelectorAll('.mode-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.mode === mode);
+            });
+
+            const mainLayout = document.getElementById('mainLayout');
+
+            if (mode === 'train') {
+                mainLayout.classList.remove('inference-mode');
+                mainLayout.classList.add('train-mode');
+                
+                document.getElementById('dataPanel').classList.remove('hidden');
+                document.getElementById('inferencePanel').classList.add('hidden');
+                document.getElementById('trainCharts').classList.remove('hidden');
+                document.getElementById('inferenceCharts').classList.add('hidden');
+                document.getElementById('trainPanel').classList.remove('hidden');
+                document.getElementById('inferenceResultPanel').classList.add('hidden');
+            } else {
+                mainLayout.classList.remove('train-mode');
+                mainLayout.classList.add('inference-mode');
+                
+                document.getElementById('dataPanel').classList.add('hidden');
+                document.getElementById('inferencePanel').classList.remove('hidden');
+                document.getElementById('trainCharts').classList.add('hidden');
+                document.getElementById('inferenceCharts').classList.remove('hidden');
+                document.getElementById('trainPanel').classList.add('hidden');
+                document.getElementById('inferenceResultPanel').classList.remove('hidden');
+                
+                if (model.trained) {
+                    updatePrediction(); // 자동 추론
+                }
+            }
+        }
+
+        // ========== 데이터 생성 ==========
+        function generateData() {
+            const count = parseInt(document.getElementById('dataCount').value);
+            const noiseLevel = parseFloat(document.getElementById('noiseLevel').value);
+            
+            data = [];
+            
+            for (let i = 0; i < count; i++) {
+                const sweetness = 10 + Math.random() * 8;
+                const weight = 150 + Math.random() * 200;
+                const quality = calculateQuality(sweetness, weight);
+                const basePrice = 1000 + 30 * quality;
+                const noise = basePrice * noiseLevel * (Math.random() - 0.5) * 2;
+                const price = Math.max(0, basePrice + noise);
+                
+                data.push({ sweetness, weight, quality, price });
+            }
+
+            calculateNormParams();
+            displayDataTable();
+            drawScatterChart();
+            resetModel();
+        }
+
+        function calculateNormParams() {
+            const qualities = data.map(d => d.quality);
+            const prices = data.map(d => d.price);
+
+            normParams.quality = { mean: mean(qualities), std: std(qualities) };
+            normParams.price = { mean: mean(prices), std: std(prices) };
+        }
+
+        function mean(arr) {
+            return arr.reduce((a, b) => a + b, 0) / arr.length;
+        }
+
+        function std(arr) {
+            const m = mean(arr);
+            return Math.sqrt(arr.reduce((a, b) => a + (b - m) ** 2, 0) / arr.length) || 1;
+        }
+
+        function displayDataTable() {
+            const wrapper = document.getElementById('dataTableWrapper');
+            const tbody = document.getElementById('dataTableBody');
+            
+            tbody.innerHTML = data.map((d, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${d.sweetness.toFixed(1)}</td>
+                    <td>${d.weight.toFixed(0)}</td>
+                    <td>${d.quality.toFixed(1)}</td>
+                    <td>${d.price.toFixed(0)}</td>
+                </tr>
+            `).join('');
+            
+            wrapper.style.display = 'block';
+        }
+
+        // ========== 산점도 그리기 ==========
+        function drawScatterChart(currentW = null, currentB = null) {
+            const canvas = document.getElementById('scatterChart');
+            const ctx = canvas.getContext('2d');
+            
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            const width = rect.width;
+            const height = rect.height;
+            const padding = 50;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            if (data.length === 0) {
+                ctx.fillStyle = '#8D6E63';
+                ctx.font = '14px Noto Sans KR';
+                ctx.textAlign = 'center';
+                ctx.fillText('데이터를 생성해주세요', width / 2, height / 2);
+                return;
+            }
+
+            const minQuality = Math.min(...data.map(d => d.quality));
+            const maxQuality = Math.max(...data.map(d => d.quality));
+            const minPrice = Math.min(...data.map(d => d.price));
+            const maxPrice = Math.max(...data.map(d => d.price));
+
+            const qualityPadding = (maxQuality - minQuality) * 0.1;
+            const pricePadding = (maxPrice - minPrice) * 0.1;
+
+            const scaleX = (v) => padding + (v - (minQuality - qualityPadding)) / ((maxQuality + qualityPadding) - (minQuality - qualityPadding)) * (width - 2 * padding);
+            const scaleY = (v) => height - padding - (v - (minPrice - pricePadding)) / ((maxPrice + pricePadding) - (minPrice - pricePadding)) * (height - 2 * padding);
+
+            // 축 그리기
+            ctx.strokeStyle = '#BCAAA4';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // 축 레이블
+            ctx.fillStyle = '#5D4037';
+            ctx.font = '12px Noto Sans KR';
+            ctx.textAlign = 'center';
+            ctx.fillText('품질 점수 (0~100)', width / 2, height - 10);
+            
+            ctx.save();
+            ctx.translate(15, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('가격 (원)', 0, 0);
+            ctx.restore();
+
+            // 회귀선 그리기
+            const w = currentW !== null ? currentW : model.wReal;
+            const b = currentB !== null ? currentB : model.bReal;
+            
+            if (model.trained || currentW !== null) {
+                ctx.strokeStyle = '#E53935';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                
+                const x1 = minQuality - qualityPadding;
+                const x2 = maxQuality + qualityPadding;
+                const y1 = w * x1 + b;
+                const y2 = w * x2 + b;
+                
+                ctx.moveTo(scaleX(x1), scaleY(y1));
+                ctx.lineTo(scaleX(x2), scaleY(y2));
+                ctx.stroke();
+                
+                const titleEl = document.getElementById('scatterTitle');
+                titleEl.innerHTML = `📈 품질 vs 가격<br><small style="font-weight:normal;color:#666;">가격 = ${w.toFixed(1)} × 품질 + ${b.toFixed(0)}</small>`;
+
+                // 오차선 그리기 (showErrorLines가 true일 때만)
+                if (showErrorLines) {
+                    const errors = [];
+                    const maxAbsError = Math.max(...data.map(d => Math.abs(d.price - (w * d.quality + b))));
+                    
+                    data.forEach(d => {
+                        const predictedPrice = w * d.quality + b;
+                        const error = d.price - predictedPrice;
+                        errors.push(Math.abs(error));
+                        
+                        const dataX = scaleX(d.quality);
+                        const dataY = scaleY(d.price);
+                        const predY = scaleY(predictedPrice);
+                        
+                        // 오차 크기에 따른 색상 (녹색 → 빨강)
+                        const normalizedError = Math.abs(error) / maxAbsError;
+                        const red = Math.round(67 + normalizedError * (229 - 67));
+                        const green = Math.round(160 - normalizedError * (160 - 57));
+                        const blue = Math.round(71 - normalizedError * (71 - 53));
+                        
+                        // 오차선 그리기
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(${red}, ${green}, ${blue}, 0.6)`;
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([4, 4]);
+                        ctx.moveTo(dataX, dataY);
+                        ctx.lineTo(dataX, predY);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                        
+                        // 회귀선 위 예측점 (작은 점)
+                        ctx.beginPath();
+                        ctx.arc(dataX, predY, 0.75, 0, Math.PI * 2);
+                        ctx.fillStyle = '#E53935';
+                        ctx.fill();
+                    });
+                    
+                    // 오차 통계 업데이트
+                    updateErrorStats(errors, w, b);
+                }
+            }
+
+            // 데이터 점 그리기
+            data.forEach(d => {
+                const x = scaleX(d.quality);
+                const y = scaleY(d.price);
+                const normalizedQuality = (d.quality - minQuality) / (maxQuality - minQuality);
+                
+                const r = Math.round(67 + normalizedQuality * (229 - 67));
+                const g = Math.round(160 - normalizedQuality * (160 - 57));
+                const b = Math.round(71 - normalizedQuality * (71 - 53));
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.7)`;
+                ctx.fill();
+                ctx.strokeStyle = `rgb(${r}, ${g}, ${b})`;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            });
+
+            // 축 눈금
+            ctx.fillStyle = '#8D6E63';
+            ctx.font = '10px JetBrains Mono';
+            ctx.textAlign = 'center';
+            
+            for (let i = 0; i <= 4; i++) {
+                const v = (minQuality - qualityPadding) + ((maxQuality + qualityPadding) - (minQuality - qualityPadding)) * i / 4;
+                ctx.fillText(v.toFixed(0), scaleX(v), height - padding + 15);
+            }
+            
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 4; i++) {
+                const v = (minPrice - pricePadding) + ((maxPrice + pricePadding) - (minPrice - pricePadding)) * i / 4;
+                ctx.fillText(v.toFixed(0), padding - 5, scaleY(v) + 4);
+            }
+        }
+
+        // ========== 오차선 토글 ==========
+        function toggleErrorLines() {
+            showErrorLines = document.getElementById('showErrorLines').checked;
+            
+            if (showErrorLines) {
+                document.getElementById('errorStats').style.display = 'block';
+            } else {
+                document.getElementById('errorStats').style.display = 'none';
+            }
+            
+            drawScatterChart();
+        }
+
+        function updateErrorStats(errors, w, b) {
+            const meanError = errors.reduce((a, b) => a + b, 0) / errors.length;
+            const maxError = Math.max(...errors);
+            
+            // MSE 계산
+            const mse = data.reduce((sum, d) => {
+                const pred = w * d.quality + b;
+                return sum + (d.price - pred) ** 2;
+            }, 0) / data.length;
+            
+            document.getElementById('meanError').textContent = Math.round(meanError).toLocaleString() + ' 원';
+            document.getElementById('maxError').textContent = Math.round(maxError).toLocaleString() + ' 원';
+            document.getElementById('mseValue').textContent = mse.toFixed(0).toLocaleString();
+        }
+
+        // ========== 모델 학습 ==========
+        function resetModel() {
+            model.w = Math.random() * 0.1 - 0.05;
+            model.b = 0;
+            model.wReal = 0;
+            model.bReal = 0;
+            model.trained = false;
+            lossHistory = [];
+            trainingHistory = [];
+            
+            lossChart.data.labels = [];
+            lossChart.data.datasets[0].data = [];
+            lossChart.update();
+            
+            // 학습 결과 패널 숨기기
+            document.getElementById('trainResultPanel').style.display = 'none';
+            document.getElementById('showErrorLines').checked = false;
+            showErrorLines = false;
+            
+            const titleEl = document.getElementById('scatterTitle');
+            titleEl.textContent = '📈 품질 vs 가격';
+        }
+
+        // 빠른 학습 (시각화 없이)
+        function runTraining() {
+            if (data.length === 0) {
+                alert('먼저 데이터를 생성해주세요!');
+                return;
+            }
+
+            // 모델 초기화
+            model.w = Math.random() * 0.1 - 0.05;
+            model.b = 0;
+            lossHistory = [];
+            trainingHistory = [];
+
+            const lr = parseFloat(document.getElementById('learningRate').value);
+            const maxEpochs = parseInt(document.getElementById('epochs').value);
+            const recordInterval = Math.max(1, Math.floor(maxEpochs / 100)); // 100개 프레임 저장
+
+            document.getElementById('btnTrain').disabled = true;
+            document.getElementById('btnTrain').textContent = '⏳ 학습 중...';
+
+            // 비동기로 학습 실행
+            setTimeout(() => {
+                for (let epoch = 0; epoch < maxEpochs; epoch++) {
+                    const loss = trainOneEpoch(lr);
+                    lossHistory.push(loss);
+
+                    // 주기적으로 히스토리 저장
+                    if (epoch % recordInterval === 0 || epoch === maxEpochs - 1) {
+                        const wReal = model.w * normParams.price.std / normParams.quality.std;
+                        const bReal = model.b * normParams.price.std + normParams.price.mean 
+                                    - wReal * normParams.quality.mean;
+                        
+                        trainingHistory.push({
+                            epoch: epoch + 1,
+                            w: model.w,
+                            b: model.b,
+                            wReal: wReal,
+                            bReal: bReal,
+                            loss: loss
+                        });
+                    }
+                }
+
+                // 최종 가중치 계산
+                model.wReal = model.w * normParams.price.std / normParams.quality.std;
+                model.bReal = model.b * normParams.price.std + normParams.price.mean 
+                            - model.wReal * normParams.quality.mean;
+                model.trained = true;
+
+                // UI 업데이트
+                finishTraining();
+            }, 50);
+        }
+
+        function trainOneEpoch(lr) {
+            const n = data.length;
+            let gradW = 0, gradB = 0;
+            let totalLoss = 0;
+
+            data.forEach(d => {
+                const normQ = (d.quality - normParams.quality.mean) / normParams.quality.std;
+                const normP = (d.price - normParams.price.mean) / normParams.price.std;
+
+                const pred = model.w * normQ + model.b;
+                const error = pred - normP;
+
+                gradW += error * normQ;
+                gradB += error;
+
+                totalLoss += error ** 2;
+            });
+
+            model.w -= lr * gradW / n;
+            model.b -= lr * gradB / n;
+
+            return totalLoss / n;
+        }
+
+        function finishTraining() {
+            document.getElementById('btnTrain').disabled = false;
+            document.getElementById('btnTrain').textContent = '⚡ 학습 실행';
+
+            // 손실 차트 업데이트
+            lossChart.data.labels = lossHistory.map((_, i) => i + 1);
+            lossChart.data.datasets[0].data = lossHistory;
+            lossChart.update();
+
+            // 산점도 업데이트
+            drawScatterChart();
+
+            // 회귀식 표시
+            document.getElementById('eqW').textContent = model.wReal.toFixed(1);
+            document.getElementById('eqB').textContent = model.bReal.toFixed(0);
+
+            // R² 계산 및 결과 표시
+            const r2 = calculateR2();
+            const resultBody = document.getElementById('trainResultBody');
+            const status = r2 > 0.8 ? '✅ 양호' : (r2 > 0.5 ? '⚠️ 보통' : '❌ 부족');
+            const statusClass = r2 > 0.8 ? 'status-good' : (r2 > 0.5 ? 'status-ok' : 'status-bad');
+            
+            resultBody.innerHTML = `
+                <tr>
+                    <td>${lossHistory.length}</td>
+                    <td>${lossHistory[lossHistory.length - 1].toFixed(4)}</td>
+                    <td>${r2.toFixed(4)}</td>
+                    <td class="${statusClass}">${status}</td>
+                </tr>
+            `;
+            
+            // 재생 컨트롤 에포크 표시
+            document.getElementById('totalEpochLabel').textContent = '/ ' + lossHistory.length;
+
+            // 학습 결과 패널 전체 표시 (차트 아래)
+            document.getElementById('trainResultPanel').style.display = 'block';
+        }
+
+        function calculateR2() {
+            const predictions = data.map(d => model.wReal * d.quality + model.bReal);
+            const actuals = data.map(d => d.price);
+            const meanActual = mean(actuals);
+
+            const ssRes = actuals.reduce((sum, a, i) => sum + (a - predictions[i]) ** 2, 0);
+            const ssTot = actuals.reduce((sum, a) => sum + (a - meanActual) ** 2, 0);
+
+            return 1 - ssRes / ssTot;
+        }
+
+        // ========== 학습 과정 재생 ==========
+        function playTrainingHistory() {
+            if (trainingHistory.length === 0) return;
+
+            isPlayingBack = true;
+            document.getElementById('btnPlay').disabled = true;
+            document.getElementById('btnStop').disabled = false;
+            document.getElementById('playbackProgress').style.display = 'block';
+
+            const speed = parseInt(document.getElementById('playbackSpeed').value);
+            const delay = Math.max(20, 200 - speed * 20); // 20ms ~ 180ms
+
+            let currentIndex = 0;
+
+            function playFrame() {
+                if (!isPlayingBack || currentIndex >= trainingHistory.length) {
+                    stopPlayback();
+                    return;
+                }
+
+                const frame = trainingHistory[currentIndex];
+                
+                // 산점도 업데이트
+                drawScatterChart(frame.wReal, frame.bReal);
+                
+                // 손실 차트 업데이트 (현재까지만)
+                const epochIndex = frame.epoch;
+                lossChart.data.labels = lossHistory.slice(0, epochIndex).map((_, i) => i + 1);
+                lossChart.data.datasets[0].data = lossHistory.slice(0, epochIndex);
+                lossChart.update();
+
+                // 진행바 업데이트
+                const progress = (currentIndex / (trainingHistory.length - 1)) * 100;
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('currentEpochLabel').textContent = '에포크: ' + frame.epoch;
+
+                // 회귀식 업데이트
+                document.getElementById('eqW').textContent = frame.wReal.toFixed(1);
+                document.getElementById('eqB').textContent = frame.bReal.toFixed(0);
+
+                currentIndex++;
+                playbackTimer = setTimeout(playFrame, delay);
+            }
+
+            playFrame();
+        }
+
+        function stopPlayback() {
+            isPlayingBack = false;
+            if (playbackTimer) {
+                clearTimeout(playbackTimer);
+                playbackTimer = null;
+            }
+            document.getElementById('btnPlay').disabled = false;
+            document.getElementById('btnStop').disabled = true;
+
+            // 최종 상태로 복원
+            drawScatterChart();
+            lossChart.data.labels = lossHistory.map((_, i) => i + 1);
+            lossChart.data.datasets[0].data = lossHistory;
+            lossChart.update();
+
+            document.getElementById('eqW').textContent = model.wReal.toFixed(1);
+            document.getElementById('eqB').textContent = model.bReal.toFixed(0);
+        }
+
+        // ========== 실시간 추론 ==========
+        function updatePrediction() {
+            if (!model.trained) {
+                // 학습되지 않은 경우 기본값 표시
+                document.getElementById('sweetnessScore').textContent = '--';
+                document.getElementById('weightScore').textContent = '--';
+                document.getElementById('totalQuality').textContent = '--';
+                document.getElementById('predictionValue').textContent = '--';
+                document.getElementById('infBase').textContent = '--';
+                document.getElementById('infQuality').textContent = '--';
+                document.getElementById('infTotal').textContent = '--';
+                document.getElementById('infEqW').textContent = '?';
+                document.getElementById('infEqB').textContent = '?';
+                drawInferenceChart(0, 0, 0);
+                return;
+            }
+
+            const sweetness = parseFloat(document.getElementById('predSweetness').value);
+            const weight = parseFloat(document.getElementById('predWeight').value);
+            const sweetnessScore = getSweetnessScore(sweetness);
+            const weightScore = getWeightScore(weight);
+            const quality = sweetnessScore + weightScore;
+
+            // 품질 점수 표시
+            document.getElementById('sweetnessScore').textContent = sweetnessScore.toFixed(1) + '점';
+            document.getElementById('weightScore').textContent = weightScore.toFixed(1) + '점';
+            document.getElementById('totalQuality').textContent = quality.toFixed(1) + '점';
+
+            // 예측 계산
+            const baseContrib = model.bReal;
+            const qualityContrib = model.wReal * quality;
+            const prediction = baseContrib + qualityContrib;
+
+            // 추론 과정 표시
+            document.getElementById('infBase').textContent = Math.round(baseContrib).toLocaleString() + ' 원';
+            document.getElementById('infQuality').textContent = (qualityContrib >= 0 ? '+' : '') + Math.round(qualityContrib).toLocaleString() + ' 원';
+            document.getElementById('infTotal').textContent = Math.round(prediction).toLocaleString() + ' 원';
+
+            // 예측 결과 표시
+            document.getElementById('predictionValue').textContent = Math.round(prediction).toLocaleString() + ' 원';
+
+            // 회귀식 표시
+            document.getElementById('infEqW').textContent = model.wReal.toFixed(1);
+            document.getElementById('infEqB').textContent = model.bReal.toFixed(0);
+
+            // 차트 그리기 (모든 요소 표시)
+            drawInferenceChart(3, quality, prediction);
+        }
+
+        function drawInferenceChart(stage, quality = 0, prediction = 0) {
+            const canvas = document.getElementById('inferenceChart');
+            const ctx = canvas.getContext('2d');
+            
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            const width = rect.width;
+            const height = rect.height;
+            const padding = 60;
+
+            ctx.clearRect(0, 0, width, height);
+
+            if (!model.trained) {
+                ctx.fillStyle = '#8D6E63';
+                ctx.font = '14px Noto Sans KR';
+                ctx.textAlign = 'center';
+                ctx.fillText('학습을 먼저 실행해주세요', width / 2, height / 2);
+                return;
+            }
+
+            // 스케일
+            const minQuality = 0;
+            const maxQuality = 100;
+            const allPrices = data.map(d => d.price);
+            const minPrice = Math.min(...allPrices) * 0.9;
+            const maxPrice = Math.max(...allPrices) * 1.1;
+
+            const scaleX = (v) => padding + (v - minQuality) / (maxQuality - minQuality) * (width - 2 * padding);
+            const scaleY = (v) => height - padding - (v - minPrice) / (maxPrice - minPrice) * (height - 2 * padding);
+
+            // 축 그리기
+            ctx.strokeStyle = '#BCAAA4';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // 축 레이블
+            ctx.fillStyle = '#5D4037';
+            ctx.font = '14px Noto Sans KR';
+            ctx.textAlign = 'center';
+            ctx.fillText('품질 점수 (0~100)', width / 2, height - 15);
+            
+            ctx.save();
+            ctx.translate(20, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('가격 (원)', 0, 0);
+            ctx.restore();
+
+            // 회귀선
+            ctx.strokeStyle = '#E53935';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            const y1 = model.wReal * minQuality + model.bReal;
+            const y2 = model.wReal * maxQuality + model.bReal;
+            ctx.moveTo(scaleX(minQuality), scaleY(y1));
+            ctx.lineTo(scaleX(maxQuality), scaleY(y2));
+            ctx.stroke();
+
+            // 데이터 점
+            data.forEach(d => {
+                const x = scaleX(d.quality);
+                const y = scaleY(d.price);
+                const normalizedQuality = d.quality / 100;
+                
+                const r = Math.round(67 + normalizedQuality * (229 - 67));
+                const g = Math.round(160 - normalizedQuality * (160 - 57));
+                const b = Math.round(71 - normalizedQuality * (71 - 53));
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 1.25, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.5)`;
+                ctx.fill();
+            });
+
+            const predX = scaleX(quality);
+            const predY = scaleY(prediction);
+
+            // Stage 1: 수직선 (품질 → 회귀선)
+            if (stage >= 1) {
+                ctx.strokeStyle = '#FF5722';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(predX, height - padding);
+                ctx.lineTo(predX, predY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // 품질 라벨
+                ctx.fillStyle = '#FF5722';
+                ctx.font = 'bold 11px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.fillText(`품질: ${quality.toFixed(1)}`, predX, height - padding + 25);
+            }
+
+            // Stage 2: 수평선 (회귀선 → 가격 축)
+            if (stage >= 2) {
+                ctx.strokeStyle = '#FF5722';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(predX, predY);
+                ctx.lineTo(padding, predY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // 가격 라벨
+                ctx.fillStyle = '#FF5722';
+                ctx.font = 'bold 11px JetBrains Mono';
+                ctx.textAlign = 'right';
+                ctx.fillText(`${Math.round(prediction).toLocaleString()}원`, padding - 5, predY - 5);
+            }
+
+            // Stage 3: 예측점 표시
+            if (stage >= 3) {
+                ctx.beginPath();
+                ctx.arc(predX, predY, 12, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFC107';
+                ctx.fill();
+                ctx.strokeStyle = '#FF9800';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // 예측점 라벨
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 12px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${Math.round(prediction).toLocaleString()}원`, predX, predY - 20);
+            }
+
+            // 회귀식 표시
+            const titleEl = document.getElementById('inferenceChartTitle');
+            titleEl.innerHTML = `🔮 예측 시각화<br><small style="font-weight:normal;color:#666;">가격 = ${model.wReal.toFixed(1)} × 품질 + ${model.bReal.toFixed(0)}</small>`;
+
+            // 축 눈금
+            ctx.fillStyle = '#8D6E63';
+            ctx.font = '11px JetBrains Mono';
+            ctx.textAlign = 'center';
+            ctx.setLineDash([]);
+            
+            for (let i = 0; i <= 5; i++) {
+                const v = minQuality + (maxQuality - minQuality) * i / 5;
+                ctx.fillText(v.toFixed(0), scaleX(v), height - padding + 20);
+            }
+            
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 5; i++) {
+                const v = minPrice + (maxPrice - minPrice) * i / 5;
+                ctx.fillText(v.toFixed(0), padding - 8, scaleY(v) + 4);
+            }
+        }
+
+        // ========== 초기화 ==========
+        function resetAll() {
+            data = [];
+            resetModel();
+            document.getElementById('dataTableWrapper').style.display = 'none';
+            drawScatterChart();
+        }
+
+        window.addEventListener('resize', () => {
+            drawScatterChart();
+            if (model.trained) {
+                drawInferenceChart(0);
+            }
+        });
+    </script>
+</body>
+</html>

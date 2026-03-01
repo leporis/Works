@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1976D2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#43A047;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#388E3C;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FB8C00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F57C00;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7B1FA2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6A1B9A;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="900" height="500" fill="#F5F7FA"/>
+  
+  <!-- 제목 -->
+  <text x="450" y="45" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="28" font-weight="bold" fill="#1A237E">📋 실습 4단계 진행 흐름</text>
+  
+  <!-- 1단계: 프롬프트 설계 -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="100" width="180" height="280" rx="15" fill="url(#blueGrad)"/>
+    <circle cx="130" cy="135" r="25" fill="white" fill-opacity="0.2"/>
+    <text x="130" y="143" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="24" font-weight="bold" fill="white">1</text>
+    <text x="130" y="185" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="bold" fill="white">프롬프트</text>
+    <text x="130" y="210" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="bold" fill="white">설계</text>
+    <text x="130" y="250" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" fill="white" fill-opacity="0.9">• 자료 유형 선택</text>
+    <text x="130" y="275" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" fill="white" fill-opacity="0.9">• 내용 구체화</text>
+    <text x="130" y="300" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" fill="white" fill-opacity="0.9">• 초안 작성</text>
+    <rect x="60" y="340" width="140" height="30" rx="15" fill="white" fill-opacity="0.2"/>
+    <text x="130" y="360" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" font-weight="bold" fill="white">⏱️ 5분</text>
+  </g>
+  
+  <!-- 화살표 1→2 -->
+  <path d="M230 240 L260 240" stroke="#455A64" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  <polygon points="260,235 275,240 260,245" fill="#455A64"/>
+  
+  <!-- 2단계: 1차 시도 -->
+  <g filter="url(#shadow)">
+    <rect x="280" y="100" width="180" height="280" rx="15" fill="url(#greenGrad)"/>
+    <circle cx="370" cy="135" r="25" fill="white" fill-opacity="0.2"/>
+    <text x="370" y="143" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="24" font-weight="bold" fill="white">2</text>
+    <text x="370" y="185" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="bold" fill="white">1차 시도</text>
+    <text x="370" y="210" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="bold" fill="white">및 확인</text>
+    <text x="370" y="250" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" fill="white" fill-opacity="0.9">• AI에게 입력</text>
+    <text x="370" y="275" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" fill="white" fill-opacity="0.9">• 결과물 확인</text>
+    <text x="370" y="300" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" fill="white" fill-opacity="0.9">• 문제점 파악</text>
+    <rect x="300" y="340" width="140" height="30" rx="15" fill="white" fill-opacity="0.2"/>
+    <text x="370" y="360" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" font-weight="bold" fill="white">⏱️ 10분</text>
+  </g>
+  
+  <!-- 화살표 2→3 -->
+  <path d="M470 240 L500 240" stroke="#455A64" stroke-width="3" fill="none"/>
+  <polygon points="500,235 515,240 500,245" fill="#455A64"/>
+  
+  <!-- 3단계: 개선 -->
+  <g filter="url(#shadow)">
+    <rect x="520" y="100" width="180" height="280" rx="15" fill="url(#orangeGrad)"/>
+    <circle cx="610" cy="135" r="25" fill="white" fill-opacity="0.2"/>
+    <text x="610" y="143" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="24" font-weight="bold" fill="white">3</text>
+    <text x="610" y="185" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="bold" fill="white">프롬프트</text>
+    <text x="610" y="210" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="bold" fill="white">개선</text>
+    <text x="610" y="250" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" fill="white" fill-opacity="0.9">• 문제점 해결</text>
+    <text x="610" y="275" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" fill="white" fill-opacity="0.9">• 프롬프트 수정</text>
+    <text x="610" y="300" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" fill="white" fill-opacity="0.9">• 반복 시도</text>
+    <rect x="540" y="340" width="140" height="30" rx="15" fill="white" fill-opacity="0.2"/>
+    <text x="610" y="360" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" font-weight="bold" fill="white">⏱️ 15분</text>
+  </g>
+  
+  <!-- 화살표 3→4 -->
+  <path d="M710 240 L740 240" stroke="#455A64" stroke-width="3" fill="none"/>
+  <polygon points="740,235 755,240 740,245" fill="#455A64"/>
+  
+  <!-- 4단계: 다듬기 -->
+  <g filter="url(#shadow)">
+    <rect x="760" y="100" width="120" height="280" rx="15" fill="url(#purpleGrad)"/>
+    <circle cx="820" cy="135" r="25" fill="white" fill-opacity="0.2"/>
+    <text x="820" y="143" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="24" font-weight="bold" fill="white">4</text>
+    <text x="820" y="185" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="bold" fill="white">결과물</text>
+    <text x="820" y="210" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="bold" fill="white">다듬기</text>
+    <text x="820" y="250" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" fill="white" fill-opacity="0.9">• 오류 수정</text>
+    <text x="820" y="275" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" fill="white" fill-opacity="0.9">• 형식 정리</text>
+    <text x="820" y="300" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" fill="white" fill-opacity="0.9">• 완성</text>
+    <rect x="770" y="340" width="100" height="30" rx="15" fill="white" fill-opacity="0.2"/>
+    <text x="820" y="360" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" font-weight="bold" fill="white">⏱️ 5분</text>
+  </g>
+  
+  <!-- 반복 화살표 (3→2) -->
+  <path d="M610 390 L610 430 L370 430 L370 390" stroke="#FF7043" stroke-width="2" stroke-dasharray="5,5" fill="none"/>
+  <polygon points="365,390 370,375 375,390" fill="#FF7043"/>
+  <text x="490" y="450" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#FF7043">🔄 필요 시 반복</text>
+  
+  <!-- 총 시간 -->
+  <rect x="320" y="470" width="260" height="25" rx="12" fill="#1976D2"/>
+  <text x="450" y="488" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" font-weight="bold" fill="white">⏱️ 총 35분</text>
+</svg>

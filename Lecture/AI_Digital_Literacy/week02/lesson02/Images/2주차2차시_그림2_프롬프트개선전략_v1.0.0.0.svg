@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 550">
+  <defs>
+    <linearGradient id="centerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1976D2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="900" height="550" fill="#F5F7FA"/>
+  
+  <!-- 제목 -->
+  <text x="450" y="45" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="28" font-weight="bold" fill="#1A237E">🔧 프롬프트 개선 4가지 전략</text>
+  
+  <!-- 중앙 원 -->
+  <g filter="url(#shadow2)">
+    <circle cx="450" cy="280" r="80" fill="url(#centerGrad)"/>
+    <text x="450" y="270" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" font-weight="bold" fill="white">프롬프트</text>
+    <text x="450" y="295" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" font-weight="bold" fill="white">개선</text>
+  </g>
+  
+  <!-- 전략 1: 구체성 높이기 (상단) -->
+  <g filter="url(#shadow2)">
+    <rect x="310" y="80" width="280" height="100" rx="15" fill="white" stroke="#43A047" stroke-width="3"/>
+    <circle cx="350" cy="130" r="28" fill="#43A047"/>
+    <text x="350" y="137" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="bold" fill="white">1</text>
+    <text x="460" y="115" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" font-weight="bold" fill="#2E7D32">구체성 높이기</text>
+    <text x="460" y="140" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#455A64">"학습지 만들어줘" →</text>
+    <text x="460" y="160" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#43A047">"3학년 수학, 분수, 10문항"</text>
+  </g>
+  <!-- 연결선 1 -->
+  <line x1="450" y1="180" x2="450" y2="200" stroke="#43A047" stroke-width="2"/>
+  
+  <!-- 전략 2: 구조화하기 (좌측) -->
+  <g filter="url(#shadow2)">
+    <rect x="50" y="220" width="250" height="120" rx="15" fill="white" stroke="#1976D2" stroke-width="3"/>
+    <circle cx="90" cy="280" r="28" fill="#1976D2"/>
+    <text x="90" y="287" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="bold" fill="white">2</text>
+    <text x="185" y="255" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" font-weight="bold" fill="#1565C0">구조화하기</text>
+    <text x="185" y="280" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#455A64">긴 문장 →</text>
+    <text x="185" y="300" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#1976D2">[기본 정보]</text>
+    <text x="185" y="320" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#1976D2">[문항 구성] [형식]</text>
+  </g>
+  <!-- 연결선 2 -->
+  <line x1="300" y1="280" x2="370" y2="280" stroke="#1976D2" stroke-width="2"/>
+  
+  <!-- 전략 3: 예시 제공하기 (우측) -->
+  <g filter="url(#shadow2)">
+    <rect x="600" y="220" width="250" height="120" rx="15" fill="white" stroke="#FB8C00" stroke-width="3"/>
+    <circle cx="810" cy="280" r="28" fill="#FB8C00"/>
+    <text x="810" y="287" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="bold" fill="white">3</text>
+    <text x="715" y="255" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" font-weight="bold" fill="#EF6C00">예시 제공하기</text>
+    <text x="715" y="280" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#455A64">"적절한 형식으로" →</text>
+    <text x="715" y="300" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#FB8C00">"예시: ① 3/4 + 1/4 = □"</text>
+    <text x="715" y="320" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#FB8C00">(Few-shot)</text>
+  </g>
+  <!-- 연결선 3 -->
+  <line x1="530" y1="280" x2="600" y2="280" stroke="#FB8C00" stroke-width="2"/>
+  
+  <!-- 전략 4: 단계별 요청하기 (하단) -->
+  <g filter="url(#shadow2)">
+    <rect x="290" y="380" width="320" height="130" rx="15" fill="white" stroke="#7B1FA2" stroke-width="3"/>
+    <circle cx="330" cy="445" r="28" fill="#7B1FA2"/>
+    <text x="330" y="452" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="bold" fill="white">4</text>
+    <text x="470" y="415" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" font-weight="bold" fill="#6A1B9A">단계별 요청하기</text>
+    <text x="470" y="445" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#455A64">복잡한 요청을 나누어서</text>
+    <text x="470" y="470" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#7B1FA2">1단계: 구성 → 2단계: 문제 →</text>
+    <text x="470" y="490" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#7B1FA2">3단계: 정답</text>
+  </g>
+  <!-- 연결선 4 -->
+  <line x1="450" y1="360" x2="450" y2="380" stroke="#7B1FA2" stroke-width="2"/>
+  
+  <!-- 팁 박스 -->
+  <rect x="650" y="460" width="220" height="60" rx="10" fill="#E3F2FD" stroke="#1976D2" stroke-width="1"/>
+  <text x="760" y="485" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#1565C0">💡 Tip: 여러 전략을</text>
+  <text x="760" y="505" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#1565C0">조합하면 더 효과적!</text>
+</svg>

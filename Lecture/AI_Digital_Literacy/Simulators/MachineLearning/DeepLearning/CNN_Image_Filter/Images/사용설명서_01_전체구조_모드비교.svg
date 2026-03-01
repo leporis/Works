@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+  <rect width="800" height="450" fill="url(#bgGrad)" rx="12"/>
+
+  <text x="400" y="26" text-anchor="middle" font-family="Noto Sans KR" font-size="15" font-weight="700" fill="#3E2723">전체 구조 — 학습 모드 vs 분류 모드 비교</text>
+  <text x="400" y="42" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#8D6E63">모드에 따라 표시되는 패널이 달라집니다</text>
+
+  <!-- 공통 헤더 -->
+  <rect x="200" y="54" width="400" height="24" rx="6" fill="white" filter="url(#shadow)"/>
+  <text x="400" y="70" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#E53935">🍎 CNN 사과 분류 시뮬레이터 v1.1.1 — 공통 헤더</text>
+
+  <!-- 모드 탭 (공통) -->
+  <rect x="310" y="82" width="80" height="18" rx="4" fill="#E53935"/>
+  <text x="350" y="95" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="white">🧠 학습</text>
+  <rect x="394" y="82" width="80" height="18" rx="4" fill="white" stroke="#FFCCBC" stroke-width="1"/>
+  <text x="434" y="95" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#5D4037">🔮 분류</text>
+  <text x="400" y="80" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#8D6E63">공통 모드 탭</text>
+
+  <!-- 구분선 -->
+  <line x1="400" y1="108" x2="400" y2="430" stroke="#FFCCBC" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="200" y="118" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="#E53935">🧠 학습 모드</text>
+  <text x="600" y="118" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="#1976D2">🔮 분류 모드</text>
+
+  <!-- ===== 학습 모드 (좌) ===== -->
+  <!-- 3열 미니 -->
+  <rect x="20" y="128" width="100" height="176" rx="6" fill="white" filter="url(#shadow)" opacity="0.9"/>
+  <rect x="126" y="128" width="156" height="176" rx="6" fill="white" filter="url(#shadow)" opacity="0.9"/>
+  <rect x="288" y="128" width="100" height="176" rx="6" fill="white" filter="url(#shadow)" opacity="0.9"/>
+
+  <!-- 좌열: 학습데이터 + 레이어 -->
+  <rect x="26" y="134" width="88" height="56" rx="4" fill="white" stroke="#E53935" stroke-width="1"/>
+  <text x="70" y="148" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#E53935">📦 학습 데이터</text>
+  <text x="70" y="162" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">슬라이더 ×3</text>
+  <text x="70" y="174" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">데이터 생성 버튼</text>
+  <text x="70" y="186" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#1565C0">★ 학습 전용</text>
+
+  <rect x="26" y="196" width="88" height="56" rx="4" fill="white" stroke="#7B1FA2" stroke-width="1"/>
+  <text x="70" y="210" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#7B1FA2">📖 레이어 설명</text>
+  <text x="70" y="224" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">8개 레이어 카드</text>
+  <text x="70" y="236" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">수식 박스</text>
+  <text x="70" y="248" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#43A047">○ 공통</text>
+
+  <!-- 중앙열 -->
+  <rect x="132" y="134" width="68" height="36" rx="4" fill="white" stroke="#E53935" stroke-width="0.8"/>
+  <text x="166" y="152" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" font-weight="600" fill="#E53935">📉 Loss</text>
+  <text x="166" y="164" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#1565C0">★ 학습</text>
+  <rect x="206" y="134" width="68" height="36" rx="4" fill="white" stroke="#43A047" stroke-width="0.8"/>
+  <text x="240" y="152" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" font-weight="600" fill="#43A047">📈 Acc</text>
+  <text x="240" y="164" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#1565C0">★ 학습</text>
+
+  <rect x="132" y="176" width="144" height="36" rx="4" fill="white" stroke="#5D4037" stroke-width="0.8"/>
+  <text x="204" y="194" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#3E2723">🏗️ CNN 아키텍처</text>
+  <text x="204" y="206" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#43A047">○ 공통</text>
+
+  <rect x="132" y="218" width="144" height="34" rx="4" fill="white" stroke="#8D6E63" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <text x="204" y="236" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" fill="#8D6E63">📊 학습 결과 (완료 시)</text>
+  <text x="204" y="248" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#1565C0">★ 학습</text>
+
+  <!-- 우열 -->
+  <rect x="294" y="134" width="88" height="66" rx="4" fill="white" stroke="#43A047" stroke-width="1"/>
+  <text x="338" y="148" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#43A047">⚙️ 학습 설정</text>
+  <text x="338" y="162" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">학습률/에포크</text>
+  <text x="338" y="174" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">▶⏸⏭ 컨트롤</text>
+  <text x="338" y="186" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">진행률 + 상태</text>
+  <text x="338" y="196" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#1565C0">★ 학습 전용</text>
+
+  <rect x="294" y="206" width="88" height="42" rx="4" fill="white" stroke="#F57C00" stroke-width="1"/>
+  <text x="338" y="220" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#F57C00">📊 학습 현황</text>
+  <text x="338" y="234" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">통계 4칸 + 로그</text>
+  <text x="338" y="244" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#43A047">○ 공통</text>
+
+  <rect x="294" y="254" width="88" height="30" rx="4" fill="white" stroke="#2196F3" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <text x="338" y="272" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" fill="#2196F3">📽️ 재생 (완료 시)</text>
+  <text x="338" y="282" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#1565C0">★ 학습</text>
+
+  <!-- ===== 분류 모드 (우) ===== -->
+  <rect x="412" y="128" width="100" height="176" rx="6" fill="white" filter="url(#shadow)" opacity="0.9"/>
+  <rect x="518" y="128" width="156" height="176" rx="6" fill="white" filter="url(#shadow)" opacity="0.9"/>
+  <rect x="680" y="128" width="100" height="176" rx="6" fill="white" filter="url(#shadow)" opacity="0.9"/>
+
+  <!-- 좌열: 입력이미지 -->
+  <rect x="418" y="134" width="88" height="110" rx="4" fill="white" stroke="#1976D2" stroke-width="1"/>
+  <text x="462" y="148" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#1976D2">🖼️ 입력 이미지</text>
+  <rect x="430" y="156" width="52" height="36" rx="4" fill="#FFF3E0"/>
+  <text x="456" y="178" text-anchor="middle" font-size="18">🍎</text>
+  <text x="462" y="206" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">사과 선택 + 슬라이더</text>
+  <text x="462" y="218" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">랜덤 + 분류 실행</text>
+  <text x="462" y="232" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#E53935">★ 분류 전용</text>
+
+  <rect x="418" y="250" width="88" height="34" rx="4" fill="white" stroke="#7B1FA2" stroke-width="1"/>
+  <text x="462" y="264" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#7B1FA2">📖 레이어 설명</text>
+  <text x="462" y="278" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#43A047">○ 공통</text>
+
+  <!-- 중앙열 -->
+  <rect x="524" y="134" width="144" height="36" rx="4" fill="white" stroke="#5D4037" stroke-width="0.8"/>
+  <text x="596" y="152" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#3E2723">🏗️ CNN 아키텍처</text>
+  <text x="596" y="164" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#43A047">○ 공통</text>
+
+  <rect x="524" y="176" width="144" height="56" rx="4" fill="white" stroke="#7B1FA2" stroke-width="1"/>
+  <text x="596" y="192" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#7B1FA2">🔬 특성맵 시각화</text>
+  <text x="596" y="206" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">Conv1/Pool1/Conv2/Pool2</text>
+  <text x="596" y="218" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">4블록 × 8필터 = 32맵</text>
+  <text x="596" y="228" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#E53935">★ 분류 전용</text>
+
+  <rect x="524" y="238" width="144" height="50" rx="4" fill="white" stroke="#E53935" stroke-width="1"/>
+  <text x="596" y="254" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#E53935">📋 분류 결과</text>
+  <text x="596" y="268" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">확률 바 (익은/덜 익은)</text>
+  <text x="596" y="280" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">판정 결과 + 정답 여부</text>
+  <text x="596" y="286" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#E53935">★ 분류 전용</text>
+
+  <!-- 우열 -->
+  <rect x="686" y="134" width="88" height="42" rx="4" fill="white" stroke="#F57C00" stroke-width="1"/>
+  <text x="730" y="148" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#F57C00">📊 학습 현황</text>
+  <text x="730" y="162" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">통계 4칸 + 로그</text>
+  <text x="730" y="172" text-anchor="middle" font-family="JetBrains Mono" font-size="5.5" fill="#43A047">○ 공통</text>
+
+  <!-- ===== 하단: 범례 ===== -->
+  <rect x="40" y="320" width="720" height="120" rx="10" fill="white" filter="url(#shadow)"/>
+  <text x="400" y="340" text-anchor="middle" font-family="Noto Sans KR" font-size="10" font-weight="700" fill="#3E2723">📊 패널 표시 비교 요약</text>
+
+  <!-- 테이블 -->
+  <line x1="60" y1="350" x2="740" y2="350" stroke="#FFCCBC" stroke-width="1"/>
+  <!-- 헤더 -->
+  <text x="200" y="364" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="#3E2723">패널</text>
+  <text x="440" y="364" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="#E53935">🧠 학습 모드</text>
+  <text x="620" y="364" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="600" fill="#1976D2">🔮 분류 모드</text>
+  <line x1="60" y1="370" x2="740" y2="370" stroke="#FFCCBC" stroke-width="0.5"/>
+
+  <!-- 행들 -->
+  <text x="80" y="384" font-family="Noto Sans KR" font-size="7.5" fill="#5D4037">📦 학습 데이터</text>
+  <text x="440" y="384" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#43A047">✅ 표시</text>
+  <text x="620" y="384" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#E53935">❌ 숨김</text>
+  <text x="80" y="398" font-family="Noto Sans KR" font-size="7.5" fill="#5D4037">🖼️ 입력 이미지</text>
+  <text x="440" y="398" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#E53935">❌ 숨김</text>
+  <text x="620" y="398" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#43A047">✅ 표시</text>
+  <text x="80" y="412" font-family="Noto Sans KR" font-size="7.5" fill="#5D4037">📉📈 차트 (Loss/Acc)</text>
+  <text x="440" y="412" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#43A047">✅ 표시</text>
+  <text x="620" y="412" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#E53935">❌ 숨김</text>
+  <text x="80" y="426" font-family="Noto Sans KR" font-size="7.5" fill="#5D4037">🔬📋 특성맵 + 분류결과</text>
+  <text x="440" y="426" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#E53935">❌ 숨김</text>
+  <text x="620" y="426" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#43A047">✅ 표시</text>
+  <text x="440" y="440" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#8D6E63">📖 레이어설명, 🏗️ 아키텍처, 📊 현황: 양쪽 모드에서 공통 표시</text>
+</svg>

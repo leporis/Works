@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.08"/>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="300" rx="12" fill="#FAFAFA"/>
+
+  <!-- 제목 -->
+  <text x="400" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#333">📝 활동지 A: 학습률(Learning Rate) 실험</text>
+  <text x="400" y="40" text-anchor="middle" font-size="8" fill="#888">이름: ______________   데이터셋: 💼 경력과 연봉   에포크: 500 고정</text>
+
+  <!-- 미션 박스 -->
+  <rect x="30" y="50" width="740" height="22" rx="4" fill="#E3F2FD"/>
+  <text x="400" y="64" text-anchor="middle" font-size="8" font-weight="600" fill="#1565C0">📋 미션: 학습률을 바꿔가며 손실 그래프를 관찰하고, R²와 MSE를 기록하세요.</text>
+
+  <!-- 테이블 헤더 -->
+  <rect x="30" y="82" width="740" height="24" rx="0" fill="#1976D2"/>
+  <text x="90" y="98" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">학습률</text>
+  <text x="218" y="98" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">R²</text>
+  <text x="340" y="98" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">MSE</text>
+  <text x="530" y="98" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">손실 그래프 모양 (해당 항목에 ✓)</text>
+  <text x="730" y="98" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">관찰 메모</text>
+
+  <!-- 구분선들 -->
+  <line x1="155" y1="82" x2="155" y2="262" stroke="#E0E0E0" stroke-width="1"/>
+  <line x1="280" y1="82" x2="280" y2="262" stroke="#E0E0E0" stroke-width="1"/>
+  <line x1="400" y1="82" x2="400" y2="262" stroke="#E0E0E0" stroke-width="1"/>
+  <line x1="660" y1="82" x2="660" y2="262" stroke="#E0E0E0" stroke-width="1"/>
+
+  <!-- Row 1: lr=0.001 -->
+  <rect x="30" y="106" width="740" height="38" fill="#FFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="90" y="130" text-anchor="middle" font-size="10" font-weight="600" fill="#1976D2">0.001</text>
+  <rect x="170" y="114" width="56" height="20" rx="3" fill="#FAFAFA" stroke="#DDD" stroke-width="0.8"/>
+  <rect x="296" y="114" width="56" height="20" rx="3" fill="#FAFAFA" stroke="#DDD" stroke-width="0.8"/>
+  <text x="440" y="128" font-size="7" fill="#555">□ 느리게 수렴</text>
+  <text x="540" y="128" font-size="7" fill="#555">□ 빠르게 수렴</text>
+  <text x="620" y="128" font-size="7" fill="#555">□ 발산</text>
+  <rect x="670" y="114" width="90" height="20" rx="3" fill="#FAFAFA" stroke="#DDD" stroke-width="0.8"/>
+
+  <!-- Row 2: lr=0.01 -->
+  <rect x="30" y="144" width="740" height="38" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="90" y="168" text-anchor="middle" font-size="10" font-weight="600" fill="#1976D2">0.01</text>
+  <rect x="170" y="152" width="56" height="20" rx="3" fill="#FAFAFA" stroke="#DDD" stroke-width="0.8"/>
+  <rect x="296" y="152" width="56" height="20" rx="3" fill="#FAFAFA" stroke="#DDD" stroke-width="0.8"/>
+  <text x="440" y="166" font-size="7" fill="#555">□ 느리게 수렴</text>
+  <text x="540" y="166" font-size="7" fill="#555">□ 빠르게 수렴</text>
+  <text x="620" y="166" font-size="7" fill="#555">□ 발산</text>
+  <rect x="670" y="152" width="90" height="20" rx="3" fill="#FAFAFA" stroke="#DDD" stroke-width="0.8"/>
+
+  <!-- Row 3: lr=0.05 -->
+  <rect x="30" y="182" width="740" height="38" fill="#FFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="90" y="206" text-anchor="middle" font-size="10" font-weight="600" fill="#1976D2">0.05</text>
+  <rect x="170" y="190" width="56" height="20" rx="3" fill="#FAFAFA" stroke="#DDD" stroke-width="0.8"/>
+  <rect x="296" y="190" width="56" height="20" rx="3" fill="#FAFAFA" stroke="#DDD" stroke-width="0.8"/>
+  <text x="440" y="204" font-size="7" fill="#555">□ 느리게 수렴</text>
+  <text x="540" y="204" font-size="7" fill="#555">□ 빠르게 수렴</text>
+  <text x="620" y="204" font-size="7" fill="#555">□ 발산</text>
+  <rect x="670" y="190" width="90" height="20" rx="3" fill="#FAFAFA" stroke="#DDD" stroke-width="0.8"/>
+
+  <!-- Row 4: lr=0.1 -->
+  <rect x="30" y="220" width="740" height="38" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="90" y="244" text-anchor="middle" font-size="10" font-weight="600" fill="#1976D2">0.1</text>
+  <rect x="170" y="228" width="56" height="20" rx="3" fill="#FAFAFA" stroke="#DDD" stroke-width="0.8"/>
+  <rect x="296" y="228" width="56" height="20" rx="3" fill="#FAFAFA" stroke="#DDD" stroke-width="0.8"/>
+  <text x="440" y="242" font-size="7" fill="#555">□ 느리게 수렴</text>
+  <text x="540" y="242" font-size="7" fill="#555">□ 빠르게 수렴</text>
+  <text x="620" y="242" font-size="7" fill="#555">□ 발산</text>
+  <rect x="670" y="228" width="90" height="20" rx="3" fill="#FAFAFA" stroke="#DDD" stroke-width="0.8"/>
+
+  <!-- 하단: 결론 -->
+  <rect x="30" y="268" width="740" height="24" rx="4" fill="#FFF8E1"/>
+  <text x="50" y="284" font-size="8" font-weight="600" fill="#E65100">💡 결론:</text>
+  <text x="105" y="284" font-size="8" fill="#555">가장 좋은 학습률은 (             )이다.  이유: ___________________________________________________</text>
+</svg>

@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFF8E1"/>
+      <stop offset="100%" style="stop-color:#FFECB3"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <filter id="shadowLight" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.06"/>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="450" rx="12" fill="url(#bgGrad)"/>
+
+  <rect x="16" y="12" width="768" height="52" rx="10" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <text x="300" y="34" text-anchor="middle" font-size="15" font-weight="700" fill="#5C6BC0">🤖 RL 틱택토 시뮬레이터</text>
+  <rect x="480" y="23" width="62" height="20" rx="10" fill="#5C6BC0"/>
+  <text x="511" y="37" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">v3.0.0.0</text>
+  <rect x="560" y="23" width="50" height="20" rx="6" fill="#FFF" stroke="#DDD" stroke-width="1"/>
+  <text x="585" y="36" text-anchor="middle" font-size="8" fill="#888">❓도움말</text>
+  <rect x="620" y="23" width="50" height="20" rx="6" fill="#FFF" stroke="#DDD" stroke-width="1"/>
+  <text x="645" y="36" text-anchor="middle" font-size="8" fill="#888">📋보고서</text>
+  <rect x="680" y="23" width="40" height="20" rx="6" fill="#FFF" stroke="#DDD" stroke-width="1"/>
+  <text x="700" y="36" text-anchor="middle" font-size="8" fill="#888">☀️</text>
+
+  <!-- 모드 탭 -->
+  <rect x="200" y="72" width="120" height="28" rx="14" fill="#5C6BC0"/>
+  <text x="260" y="90" text-anchor="middle" font-size="10" font-weight="600" fill="#FFF">📊 대시보드</text>
+  <rect x="326" y="72" width="110" height="28" rx="14" fill="#FFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="381" y="90" text-anchor="middle" font-size="10" font-weight="500" fill="#888">👤 사람 대전</text>
+  <rect x="442" y="72" width="100" height="28" rx="14" fill="#FFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="492" y="90" text-anchor="middle" font-size="10" font-weight="500" fill="#888">⚔️ AI 대전</text>
+
+  <!-- 레이블 -->
+  <rect x="16" y="98" width="180" height="16" rx="8" fill="#5C6BC0" opacity="0.9"/>
+  <text x="106" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">① 학습 설정</text>
+  <rect x="206" y="98" width="280" height="16" rx="8" fill="#26A69A" opacity="0.9"/>
+  <text x="346" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">② 학습 진행 상황</text>
+  <rect x="496" y="98" width="288" height="16" rx="8" fill="#FF9800" opacity="0.9"/>
+  <text x="640" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">③ Q-Table 시각화</text>
+
+  <!-- 좌측: 학습 설정 -->
+  <rect x="16" y="118" width="180" height="320" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="16" y="118" width="180" height="30" rx="10" fill="#E8EAF6"/>
+  <rect x="16" y="138" width="180" height="10" fill="#E8EAF6"/>
+  <text x="106" y="137" text-anchor="middle" font-size="11" font-weight="600" fill="#5C6BC0">📋 학습 설정</text>
+
+  <!-- 미니보드 -->
+  <rect x="58" y="152" width="72" height="72" rx="4" fill="#E8EAF6" stroke="#C5CAE9" stroke-width="1"/>
+  <line x1="82" y1="152" x2="82" y2="224" stroke="#C5CAE9" stroke-width="1"/>
+  <line x1="106" y1="152" x2="106" y2="224" stroke="#C5CAE9" stroke-width="1"/>
+  <line x1="58" y1="176" x2="130" y2="176" stroke="#C5CAE9" stroke-width="1"/>
+  <line x1="58" y1="200" x2="130" y2="200" stroke="#C5CAE9" stroke-width="1"/>
+
+  <!-- 학습 방식 -->
+  <text x="28" y="242" font-size="9" font-weight="600" fill="#555">학습 방식</text>
+  <text x="28" y="258" font-size="8" fill="#5C6BC0">● 🔄 자기대국</text>
+  <text x="28" y="272" font-size="8" fill="#888">○ 🔵 X 단독</text>
+  <text x="28" y="286" font-size="8" fill="#888">○ 🔴 O 단독</text>
+
+  <!-- 파라미터 -->
+  <text x="28" y="306" font-size="9" font-weight="600" fill="#555">⚙️ 파라미터</text>
+  <text x="28" y="322" font-size="8" fill="#555">α: 0.30</text>
+  <text x="28" y="336" font-size="8" fill="#555">γ: 0.90</text>
+  <text x="28" y="350" font-size="8" fill="#555">ε감소: 0.9995</text>
+
+  <!-- 버튼 -->
+  <rect x="28" y="364" width="156" height="26" rx="6" fill="#5C6BC0"/>
+  <text x="106" y="381" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">▶ 학습 시작</text>
+  <rect x="28" y="396" width="74" height="22" rx="4" fill="#26A69A"/>
+  <text x="65" y="411" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">👤사람대전</text>
+  <rect x="110" y="396" width="74" height="22" rx="4" fill="#FF9800"/>
+  <text x="147" y="411" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">⚔️AI대전</text>
+
+  <!-- 중앙: 학습 진행 -->
+  <rect x="206" y="118" width="280" height="320" rx="10" fill="#FFF" filter="url(#shadow)"/>
+
+  <!-- 성장 단계 바 -->
+  <rect x="220" y="128" width="252" height="20" rx="4" fill="#E8EAF6"/>
+  <text x="240" y="142" font-size="7" fill="#5C6BC0">🌱초기</text>
+  <text x="282" y="142" font-size="7" fill="#888">→ 🔍탐색</text>
+  <text x="324" y="142" font-size="7" fill="#888">→ 📚학습</text>
+  <text x="370" y="142" font-size="7" fill="#888">→ 🎯응용</text>
+  <text x="416" y="142" font-size="7" fill="#888">→ 🏆숙련</text>
+
+  <!-- 승률 차트들 -->
+  <rect x="220" y="156" width="120" height="80" rx="6" fill="#F5F5F5"/>
+  <text x="280" y="172" text-anchor="middle" font-size="8" font-weight="600" fill="#1565C0">🔵 X 승률 (%)</text>
+  <polyline points="230,220 245,218 260,215 275,210 290,205 305,200 320,195 335,190" fill="none" stroke="#1565C0" stroke-width="1.5"/>
+  
+  <rect x="348" y="156" width="120" height="80" rx="6" fill="#F5F5F5"/>
+  <text x="408" y="172" text-anchor="middle" font-size="8" font-weight="600" fill="#26A69A">🤝 무승부율 (%)</text>
+  <polyline points="358,220 373,218 388,210 403,200 418,195 433,192 448,190 463,188" fill="none" stroke="#26A69A" stroke-width="1.5"/>
+
+  <rect x="220" y="244" width="120" height="80" rx="6" fill="#F5F5F5"/>
+  <text x="280" y="260" text-anchor="middle" font-size="8" font-weight="600" fill="#E53935">🔴 O 승률 (%)</text>
+  <polyline points="230,310 245,308 260,305 275,300 290,296 305,292 320,290 335,288" fill="none" stroke="#E53935" stroke-width="1.5"/>
+
+  <rect x="348" y="244" width="120" height="80" rx="6" fill="#F5F5F5"/>
+  <text x="408" y="260" text-anchor="middle" font-size="8" font-weight="600" fill="#FF9800">🎲 탐험률 ε (%)</text>
+  <polyline points="358,270 373,275 388,280 403,288 418,296 433,302 448,308 463,312" fill="none" stroke="#FF9800" stroke-width="1.5"/>
+
+  <!-- 강도·통계 -->
+  <rect x="220" y="332" width="120" height="48" rx="6" fill="#E8EAF6"/>
+  <text x="280" y="348" text-anchor="middle" font-size="8" font-weight="600" fill="#5C6BC0">⭐ X 강도</text>
+  <text x="280" y="370" text-anchor="middle" font-size="14" font-weight="700" fill="#5C6BC0">45</text>
+
+  <rect x="348" y="332" width="120" height="48" rx="6" fill="#E8EAF6"/>
+  <text x="408" y="348" text-anchor="middle" font-size="8" font-weight="600" fill="#5C6BC0">📊 학습 통계</text>
+  <text x="408" y="364" text-anchor="middle" font-size="7" fill="#555">Q-상태: 5,840</text>
+  <text x="408" y="376" text-anchor="middle" font-size="7" fill="#555">속도: 1,200/sec</text>
+
+  <!-- 우측: 첫 수 선호도 + Q-Table -->
+  <rect x="496" y="118" width="288" height="320" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <text x="640" y="140" text-anchor="middle" font-size="11" font-weight="600" fill="#333">🧠 Q-Table 시각화</text>
+
+  <!-- 첫수 선호도 히트맵 -->
+  <text x="640" y="162" text-anchor="middle" font-size="9" font-weight="600" fill="#5C6BC0">X의 첫수 선호도</text>
+  <rect x="580" y="170" width="40" height="40" rx="3" fill="#C5CAE9"/>
+  <rect x="622" y="170" width="40" height="40" rx="3" fill="#E8EAF6"/>
+  <rect x="664" y="170" width="40" height="40" rx="3" fill="#C5CAE9"/>
+  <rect x="580" y="212" width="40" height="40" rx="3" fill="#E8EAF6"/>
+  <rect x="622" y="212" width="40" height="40" rx="3" fill="#5C6BC0"/>
+  <text x="642" y="237" text-anchor="middle" font-size="10" font-weight="700" fill="#FFF">48%</text>
+  <rect x="664" y="212" width="40" height="40" rx="3" fill="#E8EAF6"/>
+  <rect x="580" y="254" width="40" height="40" rx="3" fill="#C5CAE9"/>
+  <rect x="622" y="254" width="40" height="40" rx="3" fill="#E8EAF6"/>
+  <rect x="664" y="254" width="40" height="40" rx="3" fill="#C5CAE9"/>
+
+  <!-- Q-상태 정보 -->
+  <rect x="510" y="310" width="260" height="116" rx="6" fill="#F5F5F5"/>
+  <text x="640" y="330" text-anchor="middle" font-size="9" font-weight="600" fill="#333">📊 Q-값 상세</text>
+  <text x="520" y="350" font-size="8" fill="#555">X Q-상태 수: 5,840</text>
+  <text x="520" y="366" font-size="8" fill="#555">O Q-상태 수: 5,120</text>
+  <text x="520" y="382" font-size="8" fill="#555">X ε: 0.85</text>
+  <text x="520" y="398" font-size="8" fill="#555">O ε: 0.85</text>
+  <text x="520" y="414" font-size="8" fill="#555">에피소드: #1,200</text>
+</svg>

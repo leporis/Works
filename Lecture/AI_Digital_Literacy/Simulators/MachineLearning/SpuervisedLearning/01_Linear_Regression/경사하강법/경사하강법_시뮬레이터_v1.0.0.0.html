@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📉 경사하강법 시뮬레이터</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --apple-red: #E53935;
+            --apple-red-dark: #C62828;
+            --apple-green: #43A047;
+            --apple-green-dark: #2E7D32;
+            --honey-yellow: #FFC107;
+            --warm-cream: #FFFBF5;
+            --warm-cream-dark: #FFF3E0;
+            --text-dark: #3E2723;
+            --text-medium: #5D4037;
+            --text-light: #8D6E63;
+            --border-color: #FFCCBC;
+            --shadow-soft: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-medium: 0 4px 16px rgba(0,0,0,0.12);
+            --step-green: #43A047;
+            --step-blue: #1976D2;
+            --step-purple: #9C27B0;
+            --step-red: #E53935;
+            --step-orange: #FF9800;
+            --step-yellow: #FFC107;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, var(--warm-cream) 0%, var(--warm-cream-dark) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* 헤더 */
+        .header {
+            text-align: center;
+            padding: 14px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 12px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--apple-red);
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            color: var(--text-medium);
+            font-size: 0.85rem;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: var(--apple-red);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        /* 단계 진행 표시 */
+        .step-progress {
+            background: white;
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 12px;
+        }
+
+        .step-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            opacity: 0.4;
+        }
+
+        .step-item.active {
+            opacity: 1;
+            transform: scale(1.05);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .step-item.completed {
+            opacity: 0.8;
+        }
+
+        .step-item .step-num {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .step-item.step-1 { background: #E8F5E9; }
+        .step-item.step-1 .step-num { background: var(--step-green); }
+        .step-item.step-2 { background: #E3F2FD; }
+        .step-item.step-2 .step-num { background: var(--step-blue); }
+        .step-item.step-3 { background: #F3E5F5; }
+        .step-item.step-3 .step-num { background: var(--step-purple); }
+        .step-item.step-4 { background: #FFEBEE; }
+        .step-item.step-4 .step-num { background: var(--step-red); }
+        .step-item.step-5 { background: #FFEBEE; }
+        .step-item.step-5 .step-num { background: var(--step-red); }
+        .step-item.step-6 { background: #FFF3E0; }
+        .step-item.step-6 .step-num { background: var(--step-orange); }
+        .step-item.step-7 { background: #FFF8E1; }
+        .step-item.step-7 .step-num { background: var(--step-green); }
+
+        .step-arrow {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .loop-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: #FFEBEE;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            color: var(--apple-red);
+            font-weight: 600;
+        }
+
+        /* 메인 레이아웃 */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr 280px;
+            gap: 12px;
+            align-items: start;
+        }
+
+        /* 패널 공통 */
+        .panel {
+            background: white;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .panel-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--warm-cream-dark);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 사이드바 */
+        .sidebar-left, .sidebar-right {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* 입력 그룹 */
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-medium);
+            margin-bottom: 4px;
+        }
+
+        .input-group input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--warm-cream-dark);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .input-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--apple-red);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .value-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 3px;
+        }
+
+        .value-display .current {
+            font-weight: 600;
+            color: var(--apple-red);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* 버튼 */
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--apple-red);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--apple-red-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--apple-green);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: var(--apple-green-dark);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--text-medium);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--apple-red);
+            color: var(--apple-red);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        /* 단계 컨트롤 */
+        .step-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .step-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .step-btn.prev {
+            background: #E3F2FD;
+            color: var(--step-blue);
+        }
+
+        .step-btn.next {
+            background: var(--apple-green);
+            color: white;
+        }
+
+        .step-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .step-btn.next:not(:disabled):hover {
+            background: var(--apple-green-dark);
+        }
+
+        /* 단계 설명 */
+        .step-description {
+            background: var(--warm-cream-dark);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .step-description h4 {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .step-description p {
+            font-size: 0.8rem;
+            color: var(--text-medium);
+            line-height: 1.5;
+        }
+
+        .step-description code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+        }
+
+        /* 차트 영역 */
+        .chart-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .chart-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1.2;
+        }
+
+        .canvas-wrapper canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* 손실 그래프 */
+        .loss-chart-container {
+            grid-column: 1 / -1;
+        }
+
+        .loss-chart-container .canvas-wrapper {
+            aspect-ratio: 3;
+        }
+
+        /* 파라미터 표시 */
+        .param-display {
+            background: var(--warm-cream-dark);
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .param-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .param-row:last-child {
+            border-bottom: none;
+        }
+
+        .param-label {
+            font-size: 0.8rem;
+            color: var(--text-medium);
+        }
+
+        .param-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--apple-red);
+        }
+
+        .param-value.positive {
+            color: var(--apple-green);
+        }
+
+        .param-value.negative {
+            color: var(--apple-red);
+        }
+
+        /* 회귀식 표시 */
+        .equation-display {
+            background: linear-gradient(135deg, #FFEBEE 0%, #FCE4EC 100%);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .equation-display .eq-w {
+            color: var(--step-orange);
+            font-weight: 700;
+        }
+
+        .equation-display .eq-b {
+            color: var(--step-blue);
+            font-weight: 700;
+        }
+
+        /* 에포크 정보 */
+        .epoch-info {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 10px;
+            padding: 10px 12px;
+            text-align: center;
+        }
+
+        .epoch-info .epoch-num {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--step-blue);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .epoch-info .epoch-label {
+            font-size: 0.75rem;
+            color: var(--text-medium);
+        }
+
+        /* 기울기 표시 */
+        .gradient-display {
+            background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-top: 10px;
+        }
+
+        .gradient-display h5 {
+            font-size: 0.8rem;
+            color: var(--step-red);
+            margin-bottom: 8px;
+        }
+
+        .gradient-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.8rem;
+        }
+
+        .gradient-item .label {
+            color: var(--text-medium);
+        }
+
+        .gradient-item .value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        /* 자동 학습 컨트롤 */
+        .auto-controls {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 2px dashed var(--border-color);
+        }
+
+        .auto-controls h4 {
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .auto-btn-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .auto-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .auto-btn.play {
+            background: #2196F3;
+            color: white;
+        }
+
+        .auto-btn.pause {
+            background: #FF9800;
+            color: white;
+        }
+
+        .auto-btn.reset {
+            background: #757575;
+            color: white;
+        }
+
+        /* 숨김 */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 데이터 테이블 */
+        .data-table-wrapper {
+            max-height: 120px;
+            overflow-y: auto;
+            margin-top: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+
+        .data-table th, .data-table td {
+            padding: 4px 6px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background: var(--warm-cream-dark);
+            position: sticky;
+            top: 0;
+            font-weight: 500;
+        }
+
+        /* 반복 표시 */
+        .iteration-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: #FFEBEE;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            color: var(--apple-red);
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* 반응형 */
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-row {
+                grid-template-columns: 1fr;
+            }
+
+            .step-flow {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <h1>📉 경사하강법 시뮬레이터 <span class="version-badge">v1.0.0</span></h1>
+            <p>선형 회귀의 학습 과정을 <strong>7단계</strong>로 직접 체험해보세요!</p>
+        </header>
+
+        <!-- 단계 진행 표시 -->
+        <div class="step-progress">
+            <div class="step-flow">
+                <div class="step-item step-1" data-step="1" onclick="goToStep(1)">
+                    <span class="step-num">1</span>
+                    <span>데이터 준비</span>
+                </div>
+                <span class="step-arrow">→</span>
+                <div class="step-item step-2" data-step="2" onclick="goToStep(2)">
+                    <span class="step-num">2</span>
+                    <span>가중치 초기화</span>
+                </div>
+                <span class="step-arrow">→</span>
+                <div class="step-item step-3" data-step="3" onclick="goToStep(3)">
+                    <span class="step-num">3</span>
+                    <span>예측 계산</span>
+                </div>
+                <span class="step-arrow">→</span>
+                <div class="step-item step-4" data-step="4" onclick="goToStep(4)">
+                    <span class="step-num">4</span>
+                    <span>손실 계산</span>
+                </div>
+                <span class="step-arrow">→</span>
+                <div class="step-item step-5" data-step="5" onclick="goToStep(5)">
+                    <span class="step-num">5</span>
+                    <span>기울기 계산</span>
+                </div>
+                <span class="step-arrow">→</span>
+                <div class="step-item step-6" data-step="6" onclick="goToStep(6)">
+                    <span class="step-num">6</span>
+                    <span>가중치 업데이트</span>
+                </div>
+                <span class="step-arrow">→</span>
+                <div class="step-item step-7" data-step="7" onclick="goToStep(7)">
+                    <span class="step-num">7</span>
+                    <span>학습 완료!</span>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 8px;">
+                <span class="loop-indicator">🔄 3~6단계 반복 (에포크)</span>
+            </div>
+        </div>
+
+        <!-- 메인 레이아웃 -->
+        <div class="main-layout">
+            <!-- 왼쪽: 데이터 & 단계 설명 -->
+            <aside class="sidebar-left">
+                <div class="panel">
+                    <h3 class="panel-title">📊 데이터 설정</h3>
+                    
+                    <div class="input-group">
+                        <label>데이터 개수</label>
+                        <input type="range" id="dataCount" min="5" max="50" value="20">
+                        <div class="value-display">
+                            <span>5</span>
+                            <span class="current" id="dataCountValue">20개</span>
+                            <span>50</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>노이즈 수준</label>
+                        <input type="range" id="noiseLevel" min="0" max="50" value="15">
+                        <div class="value-display">
+                            <span>0%</span>
+                            <span class="current" id="noiseLevelValue">15%</span>
+                            <span>50%</span>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary btn-sm" onclick="generateData()">✨ 데이터 생성</button>
+                        <button class="btn btn-outline btn-sm" onclick="resetAll()">🗑️ 초기화</button>
+                    </div>
+
+                    <div class="data-table-wrapper" id="dataTableWrapper" style="display: none;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>X</th>
+                                    <th>Y</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dataTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 단계 설명 -->
+                <div class="panel">
+                    <h3 class="panel-title">📖 현재 단계</h3>
+                    <div class="step-description" id="stepDescription">
+                        <h4><span class="step-num" style="background: var(--step-green); width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">1</span> 데이터 준비</h4>
+                        <p>학습에 사용할 (X, Y) 데이터를 준비합니다. 데이터 생성 버튼을 눌러 시작하세요!</p>
+                    </div>
+
+                    <div class="step-controls">
+                        <button class="step-btn prev" id="btnPrev" onclick="prevStep()" disabled>◀ 이전</button>
+                        <button class="step-btn next" id="btnNext" onclick="nextStep()" disabled>다음 ▶</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 중앙: 시각화 -->
+            <div class="chart-area">
+                <div class="chart-row">
+                    <!-- 데이터 & 회귀선 -->
+                    <div class="chart-container">
+                        <div class="chart-title" id="scatterTitle">📈 데이터 & 회귀선</div>
+                        <div class="canvas-wrapper">
+                            <canvas id="scatterChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 손실 곡면 (등고선) -->
+                    <div class="chart-container">
+                        <div class="chart-title">🗺️ 손실 곡면 (w, b → MSE)</div>
+                        <div class="canvas-wrapper">
+                            <canvas id="contourChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 손실 그래프 -->
+                <div class="chart-row">
+                    <div class="chart-container loss-chart-container">
+                        <div class="chart-title">📉 손실 변화 (에포크별 MSE)</div>
+                        <div class="canvas-wrapper">
+                            <canvas id="lossChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 오른쪽: 학습 설정 & 파라미터 -->
+            <aside class="sidebar-right">
+                <div class="panel">
+                    <h3 class="panel-title">⚙️ 학습 설정</h3>
+                    
+                    <div class="input-group">
+                        <label>학습률 (η)</label>
+                        <input type="range" id="learningRate" min="0.001" max="0.5" step="0.001" value="0.1">
+                        <div class="value-display">
+                            <span>0.001</span>
+                            <span class="current" id="learningRateValue">0.1</span>
+                            <span>0.5</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>목표 에포크</label>
+                        <input type="range" id="targetEpochs" min="10" max="500" step="10" value="100">
+                        <div class="value-display">
+                            <span>10</span>
+                            <span class="current" id="targetEpochsValue">100회</span>
+                            <span>500</span>
+                        </div>
+                    </div>
+
+                    <div class="epoch-info">
+                        <div class="epoch-label">현재 에포크</div>
+                        <div class="epoch-num" id="currentEpoch">0</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3 class="panel-title">📊 모델 파라미터</h3>
+                    
+                    <div class="param-display">
+                        <div class="param-row">
+                            <span class="param-label">가중치 (w)</span>
+                            <span class="param-value" id="paramW">0.000</span>
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">편향 (b)</span>
+                            <span class="param-value" id="paramB">0.000</span>
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">손실 (MSE)</span>
+                            <span class="param-value" id="paramLoss">--</span>
+                        </div>
+                    </div>
+
+                    <div class="equation-display">
+                        ŷ = <span class="eq-w" id="eqW">?</span> × x + <span class="eq-b" id="eqB">?</span>
+                    </div>
+
+                    <div class="gradient-display" id="gradientDisplay" style="display: none;">
+                        <h5>∇ 기울기 (Gradient)</h5>
+                        <div class="gradient-item">
+                            <span class="label">∂MSE/∂w</span>
+                            <span class="value" id="gradW">--</span>
+                        </div>
+                        <div class="gradient-item">
+                            <span class="label">∂MSE/∂b</span>
+                            <span class="value" id="gradB">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 자동 학습 -->
+                <div class="panel">
+                    <h3 class="panel-title">🎬 자동 학습</h3>
+                    <div class="input-group">
+                        <label>재생 속도</label>
+                        <input type="range" id="playSpeed" min="1" max="10" value="5">
+                        <div class="value-display">
+                            <span>느림</span>
+                            <span class="current" id="playSpeedValue">보통</span>
+                            <span>빠름</span>
+                        </div>
+                    </div>
+                    <div class="auto-btn-group">
+                        <button class="auto-btn play" id="btnAutoPlay" onclick="autoPlay()">▶ 재생</button>
+                        <button class="auto-btn pause" id="btnAutoPause" onclick="autoPause()" disabled>⏸ 일시정지</button>
+                        <button class="auto-btn reset" onclick="resetTraining()">↺ 리셋</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        // ========== 전역 변수 ==========
+        let data = [];
+        let model = {
+            w: 0,
+            b: 0,
+            gradW: 0,
+            gradB: 0
+        };
+        let currentStep = 1;
+        let currentEpoch = 0;
+        let lossHistory = [];
+        let trajectoryHistory = []; // 가중치 궤적
+        let lossChart;
+        let isAutoPlaying = false;
+        let autoPlayTimer = null;
+
+        // 단계 정보
+        const stepInfo = {
+            1: {
+                title: '데이터 준비',
+                color: '#43A047',
+                description: '학습에 사용할 (X, Y) 데이터를 준비합니다.<br><code>Y = 실제값 (우리가 예측하고 싶은 것)</code>'
+            },
+            2: {
+                title: '가중치 초기화',
+                color: '#1976D2',
+                description: '가중치(w)와 편향(b)을 0 또는 랜덤값으로 초기화합니다.<br><code>w = 0, b = 0</code>'
+            },
+            3: {
+                title: '예측 계산',
+                color: '#9C27B0',
+                description: '현재 가중치로 예측값을 계산합니다.<br><code>ŷ = w × x + b</code>'
+            },
+            4: {
+                title: '손실 계산',
+                color: '#E53935',
+                description: '실제값과 예측값의 차이(오차)를 측정합니다.<br><code>MSE = Σ(y - ŷ)² / n</code>'
+            },
+            5: {
+                title: '기울기 계산',
+                color: '#E53935',
+                description: '손실을 줄이는 방향(기울기)을 계산합니다.<br><code>∇w = ∂MSE/∂w</code><br><code>∇b = ∂MSE/∂b</code>'
+            },
+            6: {
+                title: '가중치 업데이트',
+                color: '#FF9800',
+                description: '기울기 방향으로 가중치를 조정합니다.<br><code>w = w - η × ∇w</code><br><code>b = b - η × ∇b</code>'
+            },
+            7: {
+                title: '학습 완료!',
+                color: '#43A047',
+                description: '손실이 충분히 작아지면 학습 완료!<br><code>가격 = w × 품질 + b</code><br>이제 예측할 준비가 되었습니다!'
+            }
+        };
+
+        // ========== 초기화 ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            initSliders();
+            initCharts();
+            updateStepUI();
+            drawScatterChart();
+            drawContourChart();
+        });
+
+        function initSliders() {
+            document.getElementById('dataCount').addEventListener('input', (e) => {
+                document.getElementById('dataCountValue').textContent = e.target.value + '개';
+            });
+
+            document.getElementById('noiseLevel').addEventListener('input', (e) => {
+                document.getElementById('noiseLevelValue').textContent = e.target.value + '%';
+            });
+
+            document.getElementById('learningRate').addEventListener('input', (e) => {
+                document.getElementById('learningRateValue').textContent = parseFloat(e.target.value).toFixed(3);
+            });
+
+            document.getElementById('targetEpochs').addEventListener('input', (e) => {
+                document.getElementById('targetEpochsValue').textContent = e.target.value + '회';
+            });
+
+            document.getElementById('playSpeed').addEventListener('input', (e) => {
+                const speeds = ['매우 느림', '느림', '약간 느림', '보통-', '보통', '보통+', '약간 빠름', '빠름', '매우 빠름', '최고속'];
+                document.getElementById('playSpeedValue').textContent = speeds[parseInt(e.target.value) - 1];
+            });
+        }
+
+        function initCharts() {
+            const lossCtx = document.getElementById('lossChart').getContext('2d');
+            lossChart = new Chart(lossCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'MSE 손실',
+                        data: [],
+                        borderColor: '#E53935',
+                        backgroundColor: 'rgba(229, 57, 53, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { 
+                            title: { display: true, text: '에포크' },
+                            ticks: { maxTicksLimit: 10 }
+                        },
+                        y: { 
+                            title: { display: true, text: '손실 (MSE)' }, 
+                            beginAtZero: true 
+                        }
+                    }
+                }
+            });
+        }
+
+        // ========== 데이터 생성 ==========
+        function generateData() {
+            const count = parseInt(document.getElementById('dataCount').value);
+            const noisePercent = parseInt(document.getElementById('noiseLevel').value);
+            
+            data = [];
+            
+            // 실제 관계: Y = 2X + 10 (+ 노이즈)
+            const trueW = 2;
+            const trueB = 10;
+            
+            for (let i = 0; i < count; i++) {
+                const x = Math.random() * 10; // X: 0~10
+                const noise = (Math.random() - 0.5) * 2 * (noisePercent / 100) * 20;
+                const y = trueW * x + trueB + noise;
+                data.push({ x, y });
+            }
+
+            displayDataTable();
+            
+            // 단계 1 완료 → 다음 단계 활성화
+            currentStep = 1;
+            updateStepUI();
+            document.getElementById('btnNext').disabled = false;
+            
+            drawScatterChart();
+            drawContourChart();
+        }
+
+        function displayDataTable() {
+            const wrapper = document.getElementById('dataTableWrapper');
+            const tbody = document.getElementById('dataTableBody');
+            
+            tbody.innerHTML = data.map((d, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${d.x.toFixed(2)}</td>
+                    <td>${d.y.toFixed(2)}</td>
+                </tr>
+            `).join('');
+            
+            wrapper.style.display = 'block';
+        }
+
+        // ========== 단계 관리 ==========
+        function updateStepUI() {
+            // 단계 아이템 업데이트
+            document.querySelectorAll('.step-item').forEach(item => {
+                const step = parseInt(item.dataset.step);
+                item.classList.remove('active', 'completed');
+                
+                if (step === currentStep) {
+                    item.classList.add('active');
+                } else if (step < currentStep) {
+                    item.classList.add('completed');
+                }
+            });
+
+            // 단계 설명 업데이트
+            const info = stepInfo[currentStep];
+            document.getElementById('stepDescription').innerHTML = `
+                <h4>
+                    <span class="step-num" style="background: ${info.color}; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">${currentStep}</span>
+                    ${info.title}
+                </h4>
+                <p>${info.description}</p>
+                ${currentStep >= 3 && currentStep <= 6 ? `<span class="iteration-badge">🔄 에포크 ${currentEpoch + 1}</span>` : ''}
+            `;
+
+            // 버튼 상태
+            document.getElementById('btnPrev').disabled = currentStep <= 1 || (currentStep === 1 && data.length === 0);
+            
+            // 다음 버튼: 데이터 있고, 7단계 미만일 때 활성화
+            const canGoNext = data.length > 0 && currentStep < 7;
+            document.getElementById('btnNext').disabled = !canGoNext;
+
+            // 기울기 표시
+            document.getElementById('gradientDisplay').style.display = (currentStep >= 5) ? 'block' : 'none';
+        }
+
+        function goToStep(step) {
+            if (data.length === 0 && step > 1) return;
+            if (step > currentStep + 1) return; // 한 단계씩만 진행 가능
+            
+            currentStep = step;
+            executeStep(step);
+            updateStepUI();
+        }
+
+        function nextStep() {
+            if (currentStep < 7) {
+                currentStep++;
+                executeStep(currentStep);
+                updateStepUI();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepUI();
+                drawScatterChart();
+                drawContourChart();
+            }
+        }
+
+        function executeStep(step) {
+            switch(step) {
+                case 2:
+                    initializeWeights();
+                    break;
+                case 3:
+                    calculatePredictions();
+                    break;
+                case 4:
+                    calculateLoss();
+                    break;
+                case 5:
+                    calculateGradients();
+                    break;
+                case 6:
+                    updateWeights();
+                    break;
+                case 7:
+                    finishTraining();
+                    break;
+            }
+        }
+
+        // ========== 학습 단계 ==========
+        function initializeWeights() {
+            model.w = 0;
+            model.b = 0;
+            model.gradW = 0;
+            model.gradB = 0;
+            currentEpoch = 0;
+            lossHistory = [];
+            trajectoryHistory = [{ w: model.w, b: model.b }];
+            
+            updateParamDisplay();
+            drawScatterChart();
+            drawContourChart();
+            
+            lossChart.data.labels = [];
+            lossChart.data.datasets[0].data = [];
+            lossChart.update();
+        }
+
+        function calculatePredictions() {
+            // 시각화만 - 실제 계산은 drawScatterChart에서
+            drawScatterChart();
+        }
+
+        function calculateLoss() {
+            if (data.length === 0) return;
+            
+            let totalError = 0;
+            data.forEach(d => {
+                const pred = model.w * d.x + model.b;
+                totalError += (d.y - pred) ** 2;
+            });
+            
+            const mse = totalError / data.length;
+            document.getElementById('paramLoss').textContent = mse.toFixed(4);
+            
+            drawScatterChart();
+        }
+
+        function calculateGradients() {
+            if (data.length === 0) return;
+            
+            let gradW = 0, gradB = 0;
+            const n = data.length;
+            
+            data.forEach(d => {
+                const pred = model.w * d.x + model.b;
+                const error = pred - d.y;
+                gradW += error * d.x;
+                gradB += error;
+            });
+            
+            model.gradW = (2 / n) * gradW;
+            model.gradB = (2 / n) * gradB;
+            
+            document.getElementById('gradW').textContent = model.gradW.toFixed(4);
+            document.getElementById('gradB').textContent = model.gradB.toFixed(4);
+            
+            drawContourChart();
+        }
+
+        function updateWeights() {
+            const lr = parseFloat(document.getElementById('learningRate').value);
+            
+            model.w -= lr * model.gradW;
+            model.b -= lr * model.gradB;
+            
+            // 궤적 저장
+            trajectoryHistory.push({ w: model.w, b: model.b });
+            
+            // 손실 기록
+            let totalError = 0;
+            data.forEach(d => {
+                const pred = model.w * d.x + model.b;
+                totalError += (d.y - pred) ** 2;
+            });
+            const mse = totalError / data.length;
+            lossHistory.push(mse);
+            
+            currentEpoch++;
+            document.getElementById('currentEpoch').textContent = currentEpoch;
+            
+            updateParamDisplay();
+            updateLossChart();
+            drawScatterChart();
+            drawContourChart();
+            
+            // 다음 반복을 위해 3단계로 돌아감 (자동 모드에서)
+        }
+
+        function finishTraining() {
+            drawScatterChart();
+            drawContourChart();
+        }
+
+        function updateParamDisplay() {
+            document.getElementById('paramW').textContent = model.w.toFixed(4);
+            document.getElementById('paramB').textContent = model.b.toFixed(4);
+            document.getElementById('eqW').textContent = model.w.toFixed(2);
+            document.getElementById('eqB').textContent = model.b.toFixed(2);
+            
+            // 손실 업데이트
+            if (data.length > 0) {
+                let totalError = 0;
+                data.forEach(d => {
+                    const pred = model.w * d.x + model.b;
+                    totalError += (d.y - pred) ** 2;
+                });
+                const mse = totalError / data.length;
+                document.getElementById('paramLoss').textContent = mse.toFixed(4);
+            }
+        }
+
+        function updateLossChart() {
+            lossChart.data.labels = lossHistory.map((_, i) => i + 1);
+            lossChart.data.datasets[0].data = lossHistory;
+            lossChart.update();
+        }
+
+        // ========== 자동 학습 ==========
+        function autoPlay() {
+            if (data.length === 0) {
+                alert('먼저 데이터를 생성해주세요!');
+                return;
+            }
+            
+            isAutoPlaying = true;
+            document.getElementById('btnAutoPlay').disabled = true;
+            document.getElementById('btnAutoPause').disabled = false;
+            
+            // 처음이면 초기화부터
+            if (currentStep === 1) {
+                currentStep = 2;
+                executeStep(2);
+                updateStepUI();
+            }
+            
+            runAutoStep();
+        }
+
+        function runAutoStep() {
+            if (!isAutoPlaying) return;
+            
+            const targetEpochs = parseInt(document.getElementById('targetEpochs').value);
+            const speed = parseInt(document.getElementById('playSpeed').value);
+            const delay = Math.max(20, 300 - speed * 30);
+            
+            // 3 → 4 → 5 → 6 반복
+            if (currentStep === 7 || currentEpoch >= targetEpochs) {
+                autoPause();
+                currentStep = 7;
+                updateStepUI();
+                return;
+            }
+            
+            // 단계 진행
+            if (currentStep < 6) {
+                currentStep++;
+            } else {
+                currentStep = 3; // 다시 3단계로
+            }
+            
+            executeStep(currentStep);
+            updateStepUI();
+            
+            autoPlayTimer = setTimeout(runAutoStep, delay);
+        }
+
+        function autoPause() {
+            isAutoPlaying = false;
+            document.getElementById('btnAutoPlay').disabled = false;
+            document.getElementById('btnAutoPause').disabled = true;
+            
+            if (autoPlayTimer) {
+                clearTimeout(autoPlayTimer);
+                autoPlayTimer = null;
+            }
+        }
+
+        function resetTraining() {
+            autoPause();
+            currentStep = 1;
+            currentEpoch = 0;
+            model.w = 0;
+            model.b = 0;
+            model.gradW = 0;
+            model.gradB = 0;
+            lossHistory = [];
+            trajectoryHistory = [];
+            
+            document.getElementById('currentEpoch').textContent = '0';
+            document.getElementById('paramW').textContent = '0.000';
+            document.getElementById('paramB').textContent = '0.000';
+            document.getElementById('paramLoss').textContent = '--';
+            document.getElementById('eqW').textContent = '?';
+            document.getElementById('eqB').textContent = '?';
+            document.getElementById('gradW').textContent = '--';
+            document.getElementById('gradB').textContent = '--';
+            
+            lossChart.data.labels = [];
+            lossChart.data.datasets[0].data = [];
+            lossChart.update();
+            
+            updateStepUI();
+            drawScatterChart();
+            drawContourChart();
+        }
+
+        // ========== 산점도 & 회귀선 ==========
+        function drawScatterChart() {
+            const canvas = document.getElementById('scatterChart');
+            const ctx = canvas.getContext('2d');
+            
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            const width = rect.width;
+            const height = rect.height;
+            const padding = 45;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            if (data.length === 0) {
+                ctx.fillStyle = '#8D6E63';
+                ctx.font = '13px Noto Sans KR';
+                ctx.textAlign = 'center';
+                ctx.fillText('데이터를 생성해주세요', width / 2, height / 2);
+                return;
+            }
+
+            // 스케일 계산
+            const xs = data.map(d => d.x);
+            const ys = data.map(d => d.y);
+            const minX = Math.min(...xs) - 1;
+            const maxX = Math.max(...xs) + 1;
+            const minY = Math.min(...ys) - 5;
+            const maxY = Math.max(...ys) + 5;
+
+            const scaleX = (v) => padding + (v - minX) / (maxX - minX) * (width - 2 * padding);
+            const scaleY = (v) => height - padding - (v - minY) / (maxY - minY) * (height - 2 * padding);
+
+            // 축 그리기
+            ctx.strokeStyle = '#BCAAA4';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // 축 레이블
+            ctx.fillStyle = '#5D4037';
+            ctx.font = '11px Noto Sans KR';
+            ctx.textAlign = 'center';
+            ctx.fillText('X', width / 2, height - 8);
+            
+            ctx.save();
+            ctx.translate(12, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Y', 0, 0);
+            ctx.restore();
+
+            // 회귀선 (2단계 이상)
+            if (currentStep >= 2) {
+                ctx.strokeStyle = '#E53935';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                const y1 = model.w * minX + model.b;
+                const y2 = model.w * maxX + model.b;
+                ctx.moveTo(scaleX(minX), scaleY(y1));
+                ctx.lineTo(scaleX(maxX), scaleY(y2));
+                ctx.stroke();
+            }
+
+            // 오차선 (4단계 이상)
+            if (currentStep >= 4) {
+                data.forEach(d => {
+                    const pred = model.w * d.x + model.b;
+                    const dataX = scaleX(d.x);
+                    const dataY = scaleY(d.y);
+                    const predY = scaleY(pred);
+                    
+                    // 오차 색상
+                    const error = Math.abs(d.y - pred);
+                    const maxError = Math.max(...data.map(d => Math.abs(d.y - (model.w * d.x + model.b))));
+                    const normalizedError = error / (maxError || 1);
+                    const r = Math.round(67 + normalizedError * (229 - 67));
+                    const g = Math.round(160 - normalizedError * (160 - 57));
+                    const b = Math.round(71 - normalizedError * (71 - 53));
+                    
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.5)`;
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([3, 3]);
+                    ctx.moveTo(dataX, dataY);
+                    ctx.lineTo(dataX, predY);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                });
+            }
+
+            // 데이터 점
+            data.forEach(d => {
+                const x = scaleX(d.x);
+                const y = scaleY(d.y);
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(25, 118, 210, 0.7)';
+                ctx.fill();
+                ctx.strokeStyle = '#1976D2';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            });
+
+            // 축 눈금
+            ctx.fillStyle = '#8D6E63';
+            ctx.font = '9px JetBrains Mono';
+            ctx.textAlign = 'center';
+            
+            for (let i = 0; i <= 4; i++) {
+                const v = minX + (maxX - minX) * i / 4;
+                ctx.fillText(v.toFixed(1), scaleX(v), height - padding + 12);
+            }
+            
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 4; i++) {
+                const v = minY + (maxY - minY) * i / 4;
+                ctx.fillText(v.toFixed(1), padding - 4, scaleY(v) + 3);
+            }
+
+            // 회귀식 표시
+            const title = document.getElementById('scatterTitle');
+            if (currentStep >= 2) {
+                title.innerHTML = `📈 데이터 & 회귀선<br><small style="font-weight:normal;color:#666;">ŷ = ${model.w.toFixed(2)} × x + ${model.b.toFixed(2)}</small>`;
+            } else {
+                title.textContent = '📈 데이터 & 회귀선';
+            }
+        }
+
+        // ========== 손실 곡면 (등고선) ==========
+        function drawContourChart() {
+            const canvas = document.getElementById('contourChart');
+            const ctx = canvas.getContext('2d');
+            
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            const width = rect.width;
+            const height = rect.height;
+            const padding = 45;
+            
+            ctx.clearRect(0, 0, width, height);
+
+            if (data.length === 0) {
+                ctx.fillStyle = '#8D6E63';
+                ctx.font = '13px Noto Sans KR';
+                ctx.textAlign = 'center';
+                ctx.fillText('데이터를 생성해주세요', width / 2, height / 2);
+                return;
+            }
+
+            // w, b 범위 설정
+            const wRange = [-1, 5];
+            const bRange = [-5, 25];
+            
+            const scaleW = (w) => padding + (w - wRange[0]) / (wRange[1] - wRange[0]) * (width - 2 * padding);
+            const scaleB = (b) => height - padding - (b - bRange[0]) / (bRange[1] - bRange[0]) * (height - 2 * padding);
+
+            // MSE 계산 함수
+            function calcMSE(w, b) {
+                if (data.length === 0) return 0;
+                let total = 0;
+                data.forEach(d => {
+                    const pred = w * d.x + b;
+                    total += (d.y - pred) ** 2;
+                });
+                return total / data.length;
+            }
+
+            // 등고선 그리기 (히트맵 스타일)
+            const resolution = 50;
+            const cellW = (width - 2 * padding) / resolution;
+            const cellH = (height - 2 * padding) / resolution;
+            
+            let maxMSE = 0;
+            const mseGrid = [];
+            
+            for (let i = 0; i < resolution; i++) {
+                mseGrid[i] = [];
+                for (let j = 0; j < resolution; j++) {
+                    const w = wRange[0] + (wRange[1] - wRange[0]) * i / resolution;
+                    const b = bRange[0] + (bRange[1] - bRange[0]) * j / resolution;
+                    const mse = calcMSE(w, b);
+                    mseGrid[i][j] = mse;
+                    maxMSE = Math.max(maxMSE, mse);
+                }
+            }
+
+            // 히트맵 그리기
+            for (let i = 0; i < resolution; i++) {
+                for (let j = 0; j < resolution; j++) {
+                    const mse = mseGrid[i][j];
+                    const normalized = Math.min(1, mse / (maxMSE * 0.5));
+                    
+                    // 파랑(낮음) → 빨강(높음) 색상
+                    const r = Math.round(normalized * 229);
+                    const g = Math.round((1 - normalized) * 100 + 50);
+                    const b = Math.round((1 - normalized) * 200);
+                    
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.6)`;
+                    ctx.fillRect(
+                        padding + i * cellW,
+                        padding + (resolution - 1 - j) * cellH,
+                        cellW + 1,
+                        cellH + 1
+                    );
+                }
+            }
+
+            // 등고선 (선으로)
+            const contourLevels = [10, 50, 100, 200, 500];
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.lineWidth = 1;
+            
+            // 축 그리기
+            ctx.strokeStyle = '#3E2723';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // 축 레이블
+            ctx.fillStyle = '#5D4037';
+            ctx.font = '11px Noto Sans KR';
+            ctx.textAlign = 'center';
+            ctx.fillText('w (가중치)', width / 2, height - 8);
+            
+            ctx.save();
+            ctx.translate(12, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('b (편향)', 0, 0);
+            ctx.restore();
+
+            // 궤적 그리기
+            if (trajectoryHistory.length > 1) {
+                ctx.strokeStyle = '#FFC107';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                
+                trajectoryHistory.forEach((point, i) => {
+                    const x = scaleW(point.w);
+                    const y = scaleB(point.b);
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                ctx.stroke();
+                
+                // 궤적 점들
+                trajectoryHistory.forEach((point, i) => {
+                    const x = scaleW(point.w);
+                    const y = scaleB(point.b);
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, i === trajectoryHistory.length - 1 ? 6 : 3, 0, Math.PI * 2);
+                    ctx.fillStyle = i === trajectoryHistory.length - 1 ? '#FFC107' : 'rgba(255, 193, 7, 0.5)';
+                    ctx.fill();
+                    ctx.strokeStyle = '#FF9800';
+                    ctx.lineWidth = i === trajectoryHistory.length - 1 ? 2 : 1;
+                    ctx.stroke();
+                });
+            }
+
+            // 현재 위치 표시 (2단계 이상)
+            if (currentStep >= 2) {
+                const curX = scaleW(model.w);
+                const curY = scaleB(model.b);
+                
+                ctx.beginPath();
+                ctx.arc(curX, curY, 8, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFC107';
+                ctx.fill();
+                ctx.strokeStyle = '#FF9800';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // 기울기 벡터 (5단계 이상)
+                if (currentStep >= 5 && (model.gradW !== 0 || model.gradB !== 0)) {
+                    const lr = parseFloat(document.getElementById('learningRate').value);
+                    const arrowScale = 20;
+                    
+                    // 기울기 방향 (음의 기울기 방향이 업데이트 방향)
+                    const gradMag = Math.sqrt(model.gradW ** 2 + model.gradB ** 2);
+                    if (gradMag > 0) {
+                        const normGradW = model.gradW / gradMag;
+                        const normGradB = model.gradB / gradMag;
+                        
+                        const endX = curX - normGradW * arrowScale;
+                        const endY = curY + normGradB * arrowScale; // Y축 반전
+                        
+                        // 화살표
+                        ctx.strokeStyle = '#E53935';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.moveTo(curX, curY);
+                        ctx.lineTo(endX, endY);
+                        ctx.stroke();
+                        
+                        // 화살표 머리
+                        const angle = Math.atan2(endY - curY, endX - curX);
+                        ctx.beginPath();
+                        ctx.moveTo(endX, endY);
+                        ctx.lineTo(endX - 8 * Math.cos(angle - Math.PI/6), endY - 8 * Math.sin(angle - Math.PI/6));
+                        ctx.moveTo(endX, endY);
+                        ctx.lineTo(endX - 8 * Math.cos(angle + Math.PI/6), endY - 8 * Math.sin(angle + Math.PI/6));
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // 최적점 표시 (참고용)
+            const optW = 2, optB = 10; // 실제 값
+            const optX = scaleW(optW);
+            const optY = scaleB(optB);
+            
+            ctx.beginPath();
+            ctx.arc(optX, optY, 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#43A047';
+            ctx.fill();
+            ctx.strokeStyle = '#2E7D32';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 축 눈금
+            ctx.fillStyle = '#8D6E63';
+            ctx.font = '9px JetBrains Mono';
+            ctx.textAlign = 'center';
+            
+            for (let i = 0; i <= 4; i++) {
+                const v = wRange[0] + (wRange[1] - wRange[0]) * i / 4;
+                ctx.fillText(v.toFixed(1), scaleW(v), height - padding + 12);
+            }
+            
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 4; i++) {
+                const v = bRange[0] + (bRange[1] - bRange[0]) * i / 4;
+                ctx.fillText(v.toFixed(0), padding - 4, scaleB(v) + 3);
+            }
+        }
+
+        // ========== 초기화 ==========
+        function resetAll() {
+            autoPause();
+            data = [];
+            currentStep = 1;
+            currentEpoch = 0;
+            model = { w: 0, b: 0, gradW: 0, gradB: 0 };
+            lossHistory = [];
+            trajectoryHistory = [];
+            
+            document.getElementById('dataTableWrapper').style.display = 'none';
+            document.getElementById('currentEpoch').textContent = '0';
+            document.getElementById('paramW').textContent = '0.000';
+            document.getElementById('paramB').textContent = '0.000';
+            document.getElementById('paramLoss').textContent = '--';
+            document.getElementById('eqW').textContent = '?';
+            document.getElementById('eqB').textContent = '?';
+            document.getElementById('gradW').textContent = '--';
+            document.getElementById('gradB').textContent = '--';
+            document.getElementById('btnNext').disabled = true;
+            
+            lossChart.data.labels = [];
+            lossChart.data.datasets[0].data = [];
+            lossChart.update();
+            
+            updateStepUI();
+            drawScatterChart();
+            drawContourChart();
+        }
+
+        window.addEventListener('resize', () => {
+            drawScatterChart();
+            drawContourChart();
+        });
+    </script>
+</body>
+</html>

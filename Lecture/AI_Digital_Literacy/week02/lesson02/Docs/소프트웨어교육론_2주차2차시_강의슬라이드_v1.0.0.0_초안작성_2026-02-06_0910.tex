@@ -1,0 +1,511 @@
+% LuaLaTeX 컴파일 필요
+% 문서 버전: v1.0.0.0
+
+\documentclass[aspectratio=169, 11pt]{beamer}
+
+% === 필수 패키지 ===
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{emoji}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{fancyvrb}
+
+% === 폰트 설정 ===
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setemojifont{Noto Color Emoji}
+
+% === 테마 설정 ===
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% === 색상 정의 ===
+\definecolor{primary}{HTML}{1976D2}
+\definecolor{darkblue}{HTML}{1A237E}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{green}{HTML}{43A047}
+\definecolor{lightgreen}{HTML}{E8F5E9}
+\definecolor{orange}{HTML}{FB8C00}
+\definecolor{lightorange}{HTML}{FFF3E0}
+\definecolor{purple}{HTML}{7B1FA2}
+\definecolor{red}{HTML}{E53935}
+\definecolor{lightred}{HTML}{FFEBEE}
+\definecolor{gray}{HTML}{455A64}
+
+% === Beamer 색상 설정 ===
+\setbeamercolor{palette primary}{bg=primary,fg=white}
+\setbeamercolor{palette secondary}{bg=darkblue,fg=white}
+\setbeamercolor{palette tertiary}{bg=darkblue,fg=white}
+\setbeamercolor{title}{fg=darkblue}
+\setbeamercolor{frametitle}{fg=darkblue,bg=lightblue}
+\setbeamercolor{block title}{bg=primary,fg=white}
+\setbeamercolor{block body}{bg=lightblue,fg=black}
+\setbeamercolor{block title alerted}{bg=red,fg=white}
+\setbeamercolor{block body alerted}{bg=lightred,fg=black}
+\setbeamercolor{block title example}{bg=green,fg=white}
+\setbeamercolor{block body example}{bg=lightgreen,fg=black}
+
+% === 네비게이션 심볼 제거 ===
+\setbeamertemplate{navigation symbols}{}
+
+% === 문서 정보 ===
+\title{자료 제작 실습}
+\subtitle{소프트웨어교육론 2주차 2차시}
+\author{교육대학교}
+\date{2026학년도 1학기}
+\institute{}
+
+\begin{document}
+
+% === 표지 ===
+\begin{frame}
+\titlepage
+\end{frame}
+
+% === 학습 목표 ===
+\begin{frame}{학습 목표}
+\begin{block}{\emoji{dart} 이 수업을 마치면...}
+\begin{enumerate}
+  \item 생성형 AI를 활용하여 다양한 형태의 교육 자료를 제작할 수 있다.
+  \item 프롬프트 작성 원칙을 실제 자료 제작에 적용할 수 있다.
+  \item 결과물의 품질을 평가하고 프롬프트를 개선할 수 있다.
+  \item AI 결과물의 한계를 인식하고 직접 수정·보완할 수 있다.
+\end{enumerate}
+\end{block}
+\end{frame}
+
+% === 오늘의 과제 ===
+\begin{frame}{오늘의 과제}
+\begin{alertblock}{\emoji{clipboard} 실습 과제}
+\centering
+\Large
+초등학교 수업에 활용할 수 있는 자료를\\
+\textbf{생성형 AI}로 제작하세요!
+\end{alertblock}
+
+\vspace{0.5cm}
+
+\begin{center}
+\emoji{graduation-cap} 오늘 여러분은 \textbf{예비교사}에서 \textbf{현직 교사}가 됩니다!
+\end{center}
+\end{frame}
+
+% === 자료 유형 선택 ===
+\begin{frame}{자료 유형 선택}
+\begin{center}
+\Large 4가지 유형 중 \textbf{하나}를 선택하세요!
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{block}{\emoji{memo} 학습지}
+학생들이 직접 풀어볼 수 있는 문제지
+\begin{itemize}
+  \item 단원 복습, 형성평가
+  \item 예: 3학년 수학 분수 학습지
+\end{itemize}
+\end{block}
+
+\begin{block}{\emoji{loudspeaker} 안내문}
+학부모나 학생에게 전달하는 공지
+\begin{itemize}
+  \item 행사 안내, 준비물 안내
+  \item 예: 현장학습 안내문
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{block}{\emoji{check-mark-button} 평가 문항}
+단원평가, 형성평가 문제
+\begin{itemize}
+  \item 단원 마무리, 수행평가
+  \item 예: 과학 단원평가 10문항
+\end{itemize}
+\end{block}
+
+\begin{block}{\emoji{bar-chart} 표/데이터}
+정보를 정리한 표
+\begin{itemize}
+  \item 학급 관리, 기록 관리
+  \item 예: 독서 기록표
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+% === 평가 기준 ===
+\begin{frame}{평가 기준}
+\begin{center}
+\begin{tabular}{|c|c|l|}
+\hline
+\textbf{평가 영역} & \textbf{배점} & \textbf{평가 요소} \\
+\hline
+프롬프트 질 & 5점 & 명확성, 구체성, 형식 지정, 맥락 제공 \\
+\hline
+결과물 품질 & 10점 & 목표 달성도(5), 완성도(3), 활용 가능성(2) \\
+\hline
+\textbf{합계} & \textbf{15점} & \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{alertblock}{\emoji{warning} 제출 시 주의사항}
+\begin{itemize}
+  \item 제출물: \textbf{프롬프트 전문} + \textbf{최종 결과물}
+  \item 제출 기한: 수업 종료 후 \textbf{10분 이내}
+  \item 프롬프트 없이 결과물만 제출 시 $\rightarrow$ \textcolor{red}{프롬프트 점수 0점}
+\end{itemize}
+\end{alertblock}
+\end{frame}
+
+% === 실습 4단계 ===
+\begin{frame}{실습 4단계}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{images/2주차2차시_그림1_실습4단계흐름_v1.0.0.0.png}
+\end{center}
+\end{frame}
+
+% === 1단계: 프롬프트 설계 ===
+\begin{frame}{1단계: 프롬프트 설계 (5분)}
+\begin{exampleblock}{\emoji{pencil} 할 일}
+\begin{enumerate}
+  \item 4가지 자료 유형 중 하나를 선택
+  \item 어떤 내용을 만들지 구체적으로 결정
+  \item 프롬프트 초안을 메모장에 작성
+\end{enumerate}
+\end{exampleblock}
+
+\vspace{0.3cm}
+
+\begin{block}{\emoji{light-bulb} Tip}
+어떤 유형을 선택할지 고민된다면 \textbf{학습지}를 추천!\\
+구조가 명확해서 프롬프트를 작성하기 가장 쉬워요.
+\end{block}
+\end{frame}
+
+% === 학습지 필수 포함 요소 ===
+\begin{frame}{학습지 프롬프트 필수 포함 요소}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{요소} & \textbf{설명} & \textbf{예시} \\
+\hline
+학년 & 대상 학년 & 초등학교 3학년 \\
+\hline
+과목 & 교과목 & 수학 \\
+\hline
+단원/주제 & 학습 내용 & 분수의 이해 \\
+\hline
+문항 수 & 문제 개수 & 10문항 \\
+\hline
+난이도 & 어려움 정도 & 하, 중, 상 \\
+\hline
+형식 & 문제 유형 & 빈칸 채우기, 선택형 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% === 나쁜 vs 좋은 프롬프트 ===
+\begin{frame}{나쁜 프롬프트 vs 좋은 프롬프트}
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+\begin{alertblock}{\emoji{cross-mark} 나쁜 프롬프트}
+\small
+\texttt{수학 학습지 만들어줘}
+
+\vspace{0.2cm}
+
+문제점:
+\begin{itemize}
+  \item 어떤 학년인지 모름
+  \item 어떤 단원인지 모름
+  \item 몇 문항인지 모름
+  \item 형식 미지정
+\end{itemize}
+\end{alertblock}
+\end{column}
+
+\begin{column}{0.52\textwidth}
+\begin{exampleblock}{\emoji{check-mark-button} 좋은 프롬프트}
+\scriptsize
+\texttt{초등학교 3학년 수학 학습지를 만들어줘.}\\
+\texttt{[기본 정보]}\\
+\texttt{- 단원: 분수의 이해}\\
+\texttt{- 분량: A4 1장}\\
+\texttt{[문제 구성]}\\
+\texttt{1. 그림 보고 분수 쓰기 (3문제)}\\
+\texttt{2. 분수 크기 비교 (3문제)}\\
+\texttt{[형식]}\\
+\texttt{- 문제 번호는 ①②③ 사용}
+\end{exampleblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+% === 2단계: 1차 시도 ===
+\begin{frame}{2단계: 1차 시도 및 확인 (10분)}
+\begin{exampleblock}{\emoji{pencil} 할 일}
+\begin{enumerate}
+  \item 작성한 프롬프트를 AI에게 입력
+  \item 결과물을 꼼꼼히 확인
+  \item 문제점 파악 및 메모
+\end{enumerate}
+\end{exampleblock}
+
+\vspace{0.3cm}
+
+\begin{block}{\emoji{clipboard} 결과물 확인 체크리스트}
+\begin{itemize}
+  \item \emoji{check-mark-button} 완성도: 요청한 내용이 모두 포함되어 있는가?
+  \item \emoji{check-mark-button} 정확성: 내용에 오류가 없는가?
+  \item \emoji{check-mark-button} 형식: 요청한 형식대로 작성되었는가?
+  \item \emoji{check-mark-button} 적절성: 대상 학년에 맞는 수준인가?
+\end{itemize}
+\end{block}
+\end{frame}
+
+% === 3단계: 프롬프트 개선 ===
+\begin{frame}{3단계: 프롬프트 개선 (15분)}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{images/2주차2차시_그림2_프롬프트개선전략_v1.0.0.0.png}
+\end{center}
+\end{frame}
+
+% === 전략 1: 구체성 높이기 ===
+\begin{frame}{전략 1: 구체성 높이기}
+\begin{center}
+모호한 표현을 구체적인 표현으로 바꾸세요!
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{\textcolor{red}{모호한 표현}} & \textbf{\textcolor{green}{구체적인 표현}} \\
+\hline
+"학습지 만들어줘" & "초등 3학년 수학, 분수 단원, 10문항" \\
+\hline
+"쉽게 만들어줘" & "초등 3학년이 이해할 수 있는 수준" \\
+\hline
+"예쁘게 만들어줘" & "이모지 포함, 표 형식, 구분선 사용" \\
+\hline
+"적당히" & 구체적인 수치나 기준 제시 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% === 전략 2: 구조화하기 ===
+\begin{frame}{전략 2: 구조화하기}
+긴 문장을 항목별로 정리하세요!
+
+\vspace{0.3cm}
+
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+\begin{alertblock}{Before}
+\scriptsize
+\texttt{초등학교 3학년 수학 분수 학습지를 만들어주는데 문항은 10개 정도로 하고 빈칸 채우기랑 선택형이랑 서술형 섞어서 하고...}
+\end{alertblock}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\begin{exampleblock}{After}
+\scriptsize
+\texttt{[기본 정보]}\\
+\texttt{- 단원: 분수}\\
+\texttt{- 문항 수: 10문항}\\
+\texttt{[문항 구성]}\\
+\texttt{- 빈칸 채우기 4문항}\\
+\texttt{- 선택형 4문항}\\
+\texttt{- 서술형 2문항}
+\end{exampleblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+% === 전략 3: 예시 제공하기 ===
+\begin{frame}{전략 3: 예시 제공하기 (Few-shot)}
+원하는 결과의 예시를 보여주세요!
+
+\vspace{0.5cm}
+
+\begin{exampleblock}{예시 제공 프롬프트}
+\small
+\texttt{다음 예시와 같은 형식으로 문제를 만들어줘.}\\
+\vspace{0.2cm}
+\texttt{[예시]}\\
+\texttt{① 다음 그림에서 색칠된 부분을 분수로 나타내면?}\\
+\texttt{   [원을 4등분한 그림, 1칸 색칠]}\\
+\texttt{   답: (    )}
+\end{exampleblock}
+\end{frame}
+
+% === 전략 4: 단계별 요청 ===
+\begin{frame}{전략 4: 단계별 요청하기}
+복잡한 자료는 한 번에 요청하지 말고 나누어서!
+
+\vspace{0.5cm}
+
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline
+\textbf{단계} & \textbf{요청 내용} \\
+\hline
+1단계 & "분수 학습지의 전체 구성을 먼저 제안해줘" \\
+\hline
+2단계 & "1번~5번 문제를 작성해줘" \\
+\hline
+3단계 & "6번~10번 문제를 작성해줘" \\
+\hline
+4단계 & "정답과 해설을 추가해줘" \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% === 4단계: 결과물 다듬기 ===
+\begin{frame}{4단계: 결과물 다듬기 (5분)}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{images/2주차2차시_그림3_AI결과물검토_v1.0.0.0.png}
+\end{center}
+\end{frame}
+
+% === AI 결과물의 한계 ===
+\begin{frame}{AI 결과물의 한계}
+\begin{alertblock}{\emoji{warning} AI가 만든 결과물을 100\% 신뢰하면 안 돼요!}
+\end{alertblock}
+
+\vspace{0.3cm}
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{한계} & \textbf{대응 방법} \\
+\hline
+\emoji{rotating-light} 교과 내용 오류 가능 & 반드시 팩트체크 \\
+\hline
+\emoji{rotating-light} 최신 정보 미반영 & 직접 확인 \\
+\hline
+\emoji{rotating-light} 학교 실정과 다름 & 학교에 맞게 수정 \\
+\hline
+\emoji{rotating-light} 기계적인 표현 & 자연스럽게 다듬기 \\
+\hline
+\emoji{rotating-light} 환각 (Hallucination) & 의심스러운 내용 확인 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{block}{\emoji{light-bulb} 핵심 메시지}
+\centering
+AI는 \textbf{초안 작성 도우미}! 최종 검토와 수정은 \textbf{교사의 몫}!
+\end{block}
+\end{frame}
+
+% === 1차시 복습 ===
+\begin{frame}{1차시 복습: 프롬프트 작성 5원칙}
+\begin{center}
+\begin{tabular}{|c|l|l|}
+\hline
+\textbf{\#} & \textbf{원칙} & \textbf{예시} \\
+\hline
+1 & 명확하고 구체적으로 & "3학년", "10문항" \\
+\hline
+2 & 맥락과 배경 제공 & "현장학습 안내용" \\
+\hline
+3 & 원하는 형식 지정 & "표 형식", "번호 매기기" \\
+\hline
+4 & 단계별로 요청 & "먼저 구성 → 문제 작성" \\
+\hline
+5 & 예시 제공 & "예시: ① 3/4 + 1/4 = □" \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{block}{오늘의 관점: 증강}
+AI가 초안 작성 $\rightarrow$ 교사가 수정·보완
+\end{block}
+\end{frame}
+
+% === 제출 안내 ===
+\begin{frame}{제출 안내}
+\begin{block}{\emoji{clipboard} 제출물 구성}
+\begin{enumerate}
+  \item \textbf{프롬프트 전문}: 최종 사용한 프롬프트 전체 복사 (필수)
+  \item \textbf{결과물}: AI가 생성한 최종 결과물 (필수)
+  \item \textbf{개선 과정}: 여러 번 시도한 경우 중간 과정 (가산점)
+\end{enumerate}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{\emoji{alarm-clock} 제출 기한}
+\centering
+\Large
+수업 종료 후 \textbf{10분 이내}\\
+LMS 파일 업로드
+\end{alertblock}
+\end{frame}
+
+% === 실습 시작 ===
+\begin{frame}
+\begin{center}
+\Huge
+\emoji{rocket} 실습 시작!
+
+\vspace{1cm}
+
+\Large
+35분간 개별 실습\\
+궁금한 점은 언제든 질문하세요!
+\end{center}
+\end{frame}
+
+% === 다음 차시 예고 ===
+\begin{frame}{다음 차시 예고}
+\begin{block}{3주차 1차시: 자동화의 개념과 활용}
+\begin{itemize}
+  \item \textbf{핵심 질문}: "반복되는 업무, 어떻게 줄일 수 있을까?"
+  \item \textbf{주요 내용}: 자동화란 무엇인가, 프롬프트를 활용한 자동화 기법
+\end{itemize}
+\end{block}
+
+\vspace{0.5cm}
+
+\begin{exampleblock}{\emoji{light-bulb} 예고}
+\centering
+오늘은 자료 \textbf{하나}를 정성껏 만들었다면,\\
+다음 시간에는 비슷한 자료를 \textbf{한꺼번에 여러 개} 만드는 방법을 배울 거예요!
+\end{exampleblock}
+\end{frame}
+
+% === 마무리 ===
+\begin{frame}
+\begin{center}
+\Huge
+수고하셨습니다!
+
+\vspace{1cm}
+
+\Large
+\emoji{stopwatch} 10분 안에 과제 제출해 주세요!
+\end{center}
+\end{frame}
+
+\end{document}

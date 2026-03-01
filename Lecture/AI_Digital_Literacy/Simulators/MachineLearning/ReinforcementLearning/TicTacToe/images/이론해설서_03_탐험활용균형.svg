@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadowSm">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.5" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrowDown" markerWidth="8" markerHeight="6" refX="4" refY="6" orient="auto">
+      <polygon points="0 0, 8 0, 4 6" fill="#555"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="8" markerHeight="6" refX="4" refY="6" orient="auto">
+      <polygon points="0 0, 8 0, 4 6" fill="#e67e22"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="4" refY="6" orient="auto">
+      <polygon points="0 0, 8 0, 4 6" fill="#27ae60"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="360" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-family="Noto Sans KR" font-size="17" font-weight="700" fill="#1a1a2e">ε-greedy: 탐험과 활용의 균형</text>
+  <text x="400" y="47" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#888">Exploration vs Exploitation Balance</text>
+
+  <!-- Divider line -->
+  <line x1="380" y1="58" x2="380" y2="340" stroke="#ddd" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- ===== LEFT: Decision Tree ===== -->
+  <text x="195" y="70" text-anchor="middle" font-family="Noto Sans KR" font-size="12" font-weight="600" fill="#555">매 수마다의 선택 과정</text>
+
+  <!-- State box -->
+  <rect x="120" y="82" width="150" height="42" rx="8" fill="white" stroke="#2980b9" stroke-width="1.5" filter="url(#shadowSm)"/>
+  <text x="195" y="100" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="600" fill="#2980b9">현재 보드 상태</text>
+  <text x="195" y="116" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#888">빈 칸 중 어디에 둘까?</text>
+
+  <!-- Decision diamond -->
+  <polygon points="195,140 240,165 195,190 150,165" fill="white" stroke="#555" stroke-width="1.5" filter="url(#shadowSm)"/>
+  <text x="195" y="162" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#555">랜덤 수</text>
+  <text x="195" y="174" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#555">&lt; ε ?</text>
+
+  <!-- Left branch: Exploration -->
+  <line x1="150" y1="165" x2="80" y2="165" stroke="#e67e22" stroke-width="1.5"/>
+  <line x1="80" y1="165" x2="80" y2="215" stroke="#e67e22" stroke-width="1.5"/>
+  <polygon points="76,215 84,215 80,222" fill="#e67e22"/>
+  <text x="110" y="158" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#27ae60">예 (ε)</text>
+
+  <rect x="25" y="224" width="110" height="80" rx="10" fill="#e67e22" filter="url(#shadow)"/>
+  <text x="80" y="248" text-anchor="middle" font-family="Noto Sans KR" font-size="18" fill="white">🎲</text>
+  <text x="80" y="268" text-anchor="middle" font-family="Noto Sans KR" font-size="12" font-weight="700" fill="white">탐험</text>
+  <text x="80" y="283" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="rgba(255,255,255,0.85)">Exploration</text>
+  <text x="80" y="298" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="rgba(255,255,255,0.7)">무작위 선택</text>
+
+  <!-- Right branch: Exploitation -->
+  <line x1="240" y1="165" x2="310" y2="165" stroke="#27ae60" stroke-width="1.5"/>
+  <line x1="310" y1="165" x2="310" y2="215" stroke="#27ae60" stroke-width="1.5"/>
+  <polygon points="306,215 314,215 310,222" fill="#27ae60"/>
+  <text x="280" y="158" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#e74c3c">아니오 (1-ε)</text>
+
+  <rect x="255" y="224" width="110" height="80" rx="10" fill="#27ae60" filter="url(#shadow)"/>
+  <text x="310" y="248" text-anchor="middle" font-family="Noto Sans KR" font-size="18" fill="white">🎯</text>
+  <text x="310" y="268" text-anchor="middle" font-family="Noto Sans KR" font-size="12" font-weight="700" fill="white">활용</text>
+  <text x="310" y="283" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="rgba(255,255,255,0.85)">Exploitation</text>
+  <text x="310" y="298" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="rgba(255,255,255,0.7)">Q-값 최대 선택</text>
+
+  <!-- Callout -->
+  <rect x="40" y="316" width="300" height="24" rx="6" fill="#1a1a2e" opacity="0.06"/>
+  <text x="190" y="332" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#555">💡 학습 초기: 탐험 많이 → 후기: 활용 위주</text>
+
+  <!-- ===== RIGHT: ε Decay Curve ===== -->
+  <text x="590" y="70" text-anchor="middle" font-family="Noto Sans KR" font-size="12" font-weight="600" fill="#555">ε (탐험률) 감소 곡선</text>
+
+  <!-- Graph area -->
+  <g transform="translate(420, 82)">
+    <!-- Background -->
+    <rect width="340" height="220" rx="6" fill="white" stroke="#ddd" stroke-width="1" filter="url(#shadowSm)"/>
+
+    <!-- Exploration zone (orange tint) -->
+    <rect x="40" y="5" width="80" height="200" rx="0" fill="#e67e22" opacity="0.06"/>
+    <text x="80" y="18" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#e67e22">탐험 위주</text>
+
+    <!-- Exploitation zone (green tint) -->
+    <rect x="200" y="5" width="130" height="200" rx="0" fill="#27ae60" opacity="0.06"/>
+    <text x="265" y="18" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#27ae60">활용 위주</text>
+
+    <!-- Y axis -->
+    <line x1="40" y1="25" x2="40" y2="205" stroke="#888" stroke-width="1"/>
+    <text x="20" y="35" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#888">100%</text>
+    <text x="20" y="75" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#888">75%</text>
+    <text x="20" y="115" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#888">50%</text>
+    <text x="20" y="155" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#888">25%</text>
+    <text x="20" y="205" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#888">0%</text>
+    <text x="8" y="115" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#555" transform="rotate(-90 8 115)">ε</text>
+
+    <!-- Grid lines -->
+    <line x1="40" y1="70" x2="325" y2="70" stroke="#eee" stroke-width="0.5"/>
+    <line x1="40" y1="110" x2="325" y2="110" stroke="#eee" stroke-width="0.5"/>
+    <line x1="40" y1="150" x2="325" y2="150" stroke="#eee" stroke-width="0.5"/>
+
+    <!-- X axis -->
+    <line x1="40" y1="205" x2="325" y2="205" stroke="#888" stroke-width="1"/>
+    <text x="40" y="218" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">0</text>
+    <text x="100" y="218" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">2k</text>
+    <text x="160" y="218" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">5k</text>
+    <text x="220" y="218" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">10k</text>
+    <text x="280" y="218" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">20k</text>
+    <text x="320" y="218" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">50k</text>
+
+    <!-- Epsilon decay curve (exponential: 0.9995^x) -->
+    <polyline fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-linecap="round"
+      points="40,30 50,38 60,47 70,56 80,65 90,74 100,83 
+              110,92 120,100 130,108 140,115 150,122 
+              160,129 170,135 180,140 190,148 
+              200,155 210,161 220,167 230,172 
+              240,177 250,181 260,185 270,188 
+              280,191 290,193 300,195 310,197 320,199"/>
+
+    <!-- Min epsilon line -->
+    <line x1="40" y1="199" x2="325" y2="199" stroke="#e74c3c" stroke-width="1" stroke-dasharray="3,3"/>
+    <text x="332" y="202" font-family="JetBrains Mono" font-size="8" fill="#e74c3c">1%</text>
+
+    <!-- Annotation: key point -->
+    <circle cx="160" cy="129" r="4" fill="#e74c3c"/>
+    <line x1="164" y1="126" x2="190" y2="105" stroke="#e74c3c" stroke-width="0.8"/>
+    <text x="192" y="102" font-family="Noto Sans KR" font-size="8" fill="#e74c3c">~5,000판에서</text>
+    <text x="192" y="112" font-family="Noto Sans KR" font-size="8" fill="#e74c3c">ε ≈ 8%</text>
+
+    <!-- Annotation: convergence -->
+    <circle cx="280" cy="191" r="4" fill="#27ae60"/>
+    <line x1="276" y1="188" x2="255" y2="170" stroke="#27ae60" stroke-width="0.8"/>
+    <text x="234" y="166" font-family="Noto Sans KR" font-size="8" fill="#27ae60">거의 활용만</text>
+
+    <!-- X axis label -->
+    <text x="182" y="218" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#555">에피소드 수 (판)</text>
+  </g>
+
+  <!-- Bottom note -->
+  <text x="590" y="320" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#888">감소율 = 0.9995 (기본값)</text>
+  <text x="590" y="335" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#888">매 배치마다: ε ← max(0.01, ε × 0.9995)</text>
+
+  <!-- Bottom caption -->
+  <text x="400" y="355" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#999">그림 3. ε-greedy 전략 — 탐험(랜덤)과 활용(최적) 선택 과정 및 ε 감소 곡선</text>
+</svg>

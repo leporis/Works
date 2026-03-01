@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신경망 학습 원리 - 과일 분류</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #ff6b6b, #ffa502);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr 300px;
+            gap: 20px;
+        }
+        
+        .panel {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .panel h3 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: #ffa502;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .panel h3::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: #ffa502;
+            border-radius: 2px;
+        }
+        
+        /* 문제 설명 */
+        .problem-intro {
+            background: rgba(255,165,2,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffa502;
+        }
+        
+        .problem-intro p {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #ccc;
+        }
+        
+        /* 과일 범례 */
+        .fruit-legend {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+        
+        .fruit-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .fruit-icon {
+            font-size: 1.2rem;
+        }
+        
+        /* 데이터 테이블 */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 0.8rem;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 8px 6px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .data-table th {
+            background: rgba(255,165,2,0.2);
+            font-size: 0.75rem;
+        }
+        
+        .data-table tr.current-data {
+            background: rgba(255,193,7,0.3);
+        }
+        
+        .data-table .apple {
+            color: #ff6b6b;
+        }
+        
+        .data-table .orange {
+            color: #ffa502;
+        }
+        
+        .pred-correct {
+            color: #00b894;
+            font-weight: bold;
+        }
+        
+        .pred-wrong {
+            color: #e17055;
+            font-weight: bold;
+        }
+        
+        /* 산점도 */
+        .scatter-container {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        
+        #scatterPlot {
+            width: 100%;
+            height: 200px;
+        }
+        
+        /* 신경망 캔버스 */
+        .network-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #networkCanvas {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+        
+        /* 단계 표시 */
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .step {
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            font-size: 0.7rem;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .step.active {
+            background: #ffa502;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .step.completed {
+            background: rgba(255,165,2,0.3);
+        }
+        
+        /* 설명 박스 */
+        .explanation-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            min-height: 120px;
+            border-left: 4px solid #ffa502;
+        }
+        
+        .explanation-box h4 {
+            color: #ffa502;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .explanation-box p {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #ccc;
+        }
+        
+        .highlight {
+            background: rgba(255,165,2,0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #ffa502;
+        }
+        
+        .math-box {
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            overflow-x: auto;
+        }
+        
+        /* 버튼 */
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ffa502, #ff6b6b);
+            color: #fff;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: #fff;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            color: #000;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* 현재 예측 */
+        .current-prediction {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        .current-prediction .fruit-display {
+            font-size: 3rem;
+            margin: 10px 0;
+        }
+        
+        .current-prediction .confidence {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .current-prediction .result-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .current-prediction .result-text.correct {
+            color: #00b894;
+        }
+        
+        .current-prediction .result-text.wrong {
+            color: #e17055;
+        }
+        
+        /* 통계 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-item {
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffa502;
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 4px;
+        }
+        
+        /* 오차 그래프 */
+        .chart-container {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        
+        #errorChart {
+            width: 100%;
+            height: 120px;
+        }
+        
+        /* 가중치 */
+        .weights-display {
+            font-size: 0.75rem;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .weight-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .weight-label {
+            color: #888;
+        }
+        
+        .weight-change {
+            font-size: 0.65rem;
+            padding: 1px 4px;
+            border-radius: 3px;
+            margin-left: 4px;
+        }
+        
+        .weight-change.positive {
+            background: rgba(0,184,148,0.3);
+            color: #00b894;
+        }
+        
+        .weight-change.negative {
+            background: rgba(225,112,85,0.3);
+            color: #e17055;
+        }
+        
+        /* 파라미터 */
+        .param-control {
+            margin-bottom: 12px;
+        }
+        
+        .param-control label {
+            display: block;
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        
+        .param-control input[type="range"] {
+            width: 100%;
+            accent-color: #ffa502;
+        }
+        
+        .param-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .param-value {
+            font-size: 0.85rem;
+            color: #ffa502;
+            font-weight: bold;
+        }
+        
+        /* 반응형 */
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍎 신경망 학습 원리 - 과일 분류 🍊</h1>
+        <p class="subtitle">인공지능이 과일의 특징을 보고 사과인지 오렌지인지 구분하는 방법을 배웁니다</p>
+        
+        <div class="main-layout">
+            <!-- 왼쪽 패널: 데이터 -->
+            <div class="panel">
+                <h3>🎯 문제 상황</h3>
+                <div class="problem-intro">
+                    <p>과일 가게에서 <strong>크기</strong>와 <strong>빨간 정도</strong>만 보고 사과와 오렌지를 자동으로 분류하는 기계를 만들려고 합니다.</p>
+                    <p style="margin-top:8px;">사람은 쉽게 구분하지만, 컴퓨터에게 <strong>"어떻게 구분해"</strong>라고 정확한 규칙을 말하기 어렵습니다.</p>
+                    <p style="margin-top:8px;">→ 신경망에게 <strong>예시 데이터를 보여주고 스스로 규칙을 찾게</strong> 합니다!</p>
+                </div>
+                
+                <div class="fruit-legend">
+                    <div class="fruit-item">
+                        <span class="fruit-icon">🍎</span>
+                        <span>사과 (크고 빨강)</span>
+                    </div>
+                    <div class="fruit-item">
+                        <span class="fruit-icon">🍊</span>
+                        <span>오렌지 (작고 주황)</span>
+                    </div>
+                </div>
+                
+                <h3>📊 학습 데이터</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>과일</th>
+                            <th>크기</th>
+                            <th>빨간정도</th>
+                            <th>정답</th>
+                            <th>예측</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTable">
+                    </tbody>
+                </table>
+                
+                <h3>📈 데이터 분포</h3>
+                <div class="scatter-container">
+                    <canvas id="scatterPlot"></canvas>
+                </div>
+                
+                <h3>⚙️ 학습 설정</h3>
+                <div class="param-control">
+                    <div class="param-row">
+                        <label>학습률 (배우는 속도)</label>
+                        <span class="param-value" id="lrValue">0.5</span>
+                    </div>
+                    <input type="range" id="learningRate" min="0.1" max="2" step="0.1" value="0.5">
+                </div>
+                <div class="param-control">
+                    <div class="param-row">
+                        <label>애니메이션 속도</label>
+                        <span class="param-value" id="speedValue">5</span>
+                    </div>
+                    <input type="range" id="speed" min="1" max="10" value="5">
+                </div>
+            </div>
+            
+            <!-- 중앙: 신경망 -->
+            <div class="panel network-container">
+                <div class="step-indicator">
+                    <div class="step" data-step="1">1. 특징 입력</div>
+                    <div class="step" data-step="2">2. 계산 (순전파)</div>
+                    <div class="step" data-step="3">3. 예측 출력</div>
+                    <div class="step" data-step="4">4. 오차 확인</div>
+                    <div class="step" data-step="5">5. 원인 분석 (역전파)</div>
+                    <div class="step" data-step="6">6. 가중치 수정</div>
+                </div>
+                
+                <canvas id="networkCanvas" width="650" height="350"></canvas>
+                
+                <div class="controls">
+                    <button class="btn btn-secondary" id="resetBtn">🔄 초기화</button>
+                    <button class="btn btn-primary" id="stepBtn">▶️ 한 단계</button>
+                    <button class="btn btn-success" id="epochBtn">🔁 전체 1회</button>
+                    <button class="btn btn-warning" id="trainBtn">⚡ 100회 학습</button>
+                </div>
+                
+                <div class="current-prediction">
+                    <div style="font-size:0.85rem; color:#888;">현재 과일 예측</div>
+                    <div class="fruit-display" id="predictionFruit">❓</div>
+                    <div class="confidence" id="confidenceText">학습을 시작하세요</div>
+                    <div class="result-text" id="resultText"></div>
+                </div>
+            </div>
+            
+            <!-- 오른쪽: 설명 -->
+            <div class="panel">
+                <h3>💡 현재 단계 설명</h3>
+                <div class="explanation-box" id="explanationBox">
+                    <h4>🚀 시작하기</h4>
+                    <p>신경망은 처음에 과일을 전혀 구분하지 못합니다. <span class="highlight">가중치</span>가 무작위이기 때문이죠.</p>
+                    <p style="margin-top:8px;">"한 단계" 버튼을 눌러 신경망이 <strong>어떻게 배우는지</strong> 살펴보세요!</p>
+                </div>
+                
+                <h3>📊 학습 통계</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="epochCount">0</div>
+                        <div class="stat-label">학습 횟수</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="accuracy">0%</div>
+                        <div class="stat-label">정확도</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="currentError">-</div>
+                        <div class="stat-label">현재 오차</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalData">8</div>
+                        <div class="stat-label">데이터 개수</div>
+                    </div>
+                </div>
+                
+                <h3>📉 오차 변화</h3>
+                <div class="chart-container">
+                    <canvas id="errorChart"></canvas>
+                </div>
+                
+                <h3>🔧 가중치 (신경망의 지식)</h3>
+                <div class="weights-display" id="weightsDisplay">
+                    학습 전 - 무작위 값
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ========== 학습 데이터 ==========
+            // [크기(0~1), 빨간정도(0~1), 정답(0=오렌지, 1=사과)]
+            var trainingData = [
+                { size: 0.9, red: 0.85, label: 1, name: '사과', icon: '🍎' },
+                { size: 0.85, red: 0.9, label: 1, name: '사과', icon: '🍎' },
+                { size: 0.75, red: 0.8, label: 1, name: '사과', icon: '🍎' },
+                { size: 0.8, red: 0.75, label: 1, name: '사과', icon: '🍎' },
+                { size: 0.3, red: 0.4, label: 0, name: '오렌지', icon: '🍊' },
+                { size: 0.25, red: 0.35, label: 0, name: '오렌지', icon: '🍊' },
+                { size: 0.35, red: 0.3, label: 0, name: '오렌지', icon: '🍊' },
+                { size: 0.4, red: 0.25, label: 0, name: '오렌지', icon: '🍊' }
+            ];
+            
+            // ========== 신경망 ==========
+            var network = {
+                // 구조: 입력 2개 → 은닉 3개 → 출력 1개
+                layers: [2, 3, 1],
+                weights: [],
+                biases: [],
+                activations: [],
+                deltas: [],
+                learningRate: 0.5
+            };
+            
+            // ========== 상태 변수 ==========
+            var currentDataIndex = 0;
+            var currentStep = 0;
+            var epochCount = 0;
+            var errorHistory = [];
+            var predictions = [];
+            var isTraining = false;
+            var previousWeights = [];
+            
+            // ========== 캔버스 ==========
+            var canvas = document.getElementById('networkCanvas');
+            var ctx = canvas.getContext('2d');
+            var scatterCanvas = document.getElementById('scatterPlot');
+            var scatterCtx = scatterCanvas.getContext('2d');
+            var errorCanvas = document.getElementById('errorChart');
+            var errorCtx = errorCanvas.getContext('2d');
+            
+            // ========== 수학 함수 ==========
+            function sigmoid(x) {
+                if (x < -500) return 0;
+                if (x > 500) return 1;
+                return 1 / (1 + Math.exp(-x));
+            }
+            
+            function sigmoidDerivative(x) {
+                return x * (1 - x);
+            }
+            
+            function deepCopy(obj) {
+                return JSON.parse(JSON.stringify(obj));
+            }
+            
+            // ========== 신경망 초기화 ==========
+            function initNetwork() {
+                var layers = network.layers;
+                network.weights = [];
+                network.biases = [];
+                
+                for (var i = 0; i < layers.length - 1; i++) {
+                    var inputSize = layers[i];
+                    var outputSize = layers[i + 1];
+                    
+                    // Xavier 초기화
+                    var scale = Math.sqrt(2.0 / (inputSize + outputSize));
+                    
+                    var layerWeights = [];
+                    var layerBiases = [];
+                    
+                    for (var j = 0; j < outputSize; j++) {
+                        var neuronWeights = [];
+                        for (var k = 0; k < inputSize; k++) {
+                            neuronWeights.push((Math.random() * 2 - 1) * scale);
+                        }
+                        layerWeights.push(neuronWeights);
+                        layerBiases.push((Math.random() * 2 - 1) * 0.1);
+                    }
+                    
+                    network.weights.push(layerWeights);
+                    network.biases.push(layerBiases);
+                }
+                
+                // 상태 초기화
+                currentDataIndex = 0;
+                currentStep = 0;
+                epochCount = 0;
+                errorHistory = [];
+                predictions = [];
+                for (var i = 0; i < trainingData.length; i++) {
+                    predictions.push(null);
+                }
+                previousWeights = deepCopy(network.weights);
+                network.activations = [];
+                network.deltas = [];
+                
+                updateAll();
+                showExplanation('start');
+            }
+            
+            // ========== 순전파 ==========
+            function forwardPass(input) {
+                network.activations = [[input[0], input[1]]];
+                var current = [input[0], input[1]];
+                
+                for (var i = 0; i < network.weights.length; i++) {
+                    var layerOutput = [];
+                    
+                    for (var j = 0; j < network.weights[i].length; j++) {
+                        var sum = network.biases[i][j];
+                        for (var k = 0; k < current.length; k++) {
+                            sum += current[k] * network.weights[i][j][k];
+                        }
+                        layerOutput.push(sigmoid(sum));
+                    }
+                    
+                    network.activations.push(layerOutput);
+                    current = layerOutput;
+                }
+                
+                return current[0];
+            }
+            
+            // ========== 역전파 ==========
+            function backwardPass(target) {
+                var output = network.activations[network.activations.length - 1][0];
+                var error = target - output;
+                
+                network.deltas = [];
+                
+                // 출력층 델타
+                var outputDelta = error * sigmoidDerivative(output);
+                network.deltas.unshift([outputDelta]);
+                
+                // 은닉층 델타
+                for (var i = network.weights.length - 2; i >= 0; i--) {
+                    var layerDeltas = [];
+                    for (var j = 0; j < network.activations[i + 1].length; j++) {
+                        var delta = 0;
+                        for (var k = 0; k < network.deltas[0].length; k++) {
+                            delta += network.deltas[0][k] * network.weights[i + 1][k][j];
+                        }
+                        delta *= sigmoidDerivative(network.activations[i + 1][j]);
+                        layerDeltas.push(delta);
+                    }
+                    network.deltas.unshift(layerDeltas);
+                }
+                
+                return error;
+            }
+            
+            // ========== 가중치 업데이트 ==========
+            function updateWeights() {
+                previousWeights = deepCopy(network.weights);
+                
+                for (var i = 0; i < network.weights.length; i++) {
+                    for (var j = 0; j < network.weights[i].length; j++) {
+                        for (var k = 0; k < network.weights[i][j].length; k++) {
+                            network.weights[i][j][k] += network.learningRate * network.deltas[i][j] * network.activations[i][k];
+                        }
+                        network.biases[i][j] += network.learningRate * network.deltas[i][j];
+                    }
+                }
+            }
+            
+            // ========== 한 단계 진행 ==========
+            function stepForward() {
+                var data = trainingData[currentDataIndex];
+                
+                currentStep++;
+                
+                if (currentStep === 1) {
+                    // 입력
+                    network.activations = [[data.size, data.red]];
+                    showExplanation('input', data);
+                } else if (currentStep === 2) {
+                    // 순전파
+                    forwardPass([data.size, data.red]);
+                    showExplanation('forward', data);
+                } else if (currentStep === 3) {
+                    // 출력
+                    var output = network.activations[network.activations.length - 1][0];
+                    var predicted = output >= 0.5 ? 1 : 0;
+                    predictions[currentDataIndex] = predicted;
+                    showExplanation('output', { data: data, output: output, predicted: predicted });
+                    updatePredictionDisplay(output, predicted, data.label);
+                } else if (currentStep === 4) {
+                    // 오차
+                    var err = backwardPass(data.label);
+                    document.getElementById('currentError').textContent = Math.abs(err).toFixed(3);
+                    showExplanation('error', { data: data, error: err });
+                } else if (currentStep === 5) {
+                    // 역전파
+                    showExplanation('backprop', data);
+                } else if (currentStep === 6) {
+                    // 업데이트
+                    updateWeights();
+                    showExplanation('update', data);
+                    
+                    // 다음 데이터로
+                    currentDataIndex = (currentDataIndex + 1) % trainingData.length;
+                    if (currentDataIndex === 0) {
+                        epochCount++;
+                        recordError();
+                    }
+                    currentStep = 0;
+                }
+                
+                updateAll();
+            }
+            
+            // ========== 오차 기록 ==========
+            function recordError() {
+                var totalError = 0;
+                for (var i = 0; i < trainingData.length; i++) {
+                    var d = trainingData[i];
+                    var pred = forwardPass([d.size, d.red]);
+                    totalError += Math.pow(d.label - pred, 2);
+                }
+                errorHistory.push(totalError / trainingData.length);
+            }
+            
+            // ========== 1 에포크 ==========
+            function trainOneEpoch() {
+                if (isTraining) return;
+                isTraining = true;
+                disableButtons(true);
+                
+                var speed = 11 - parseInt(document.getElementById('speed').value);
+                
+                function doStep() {
+                    if (!isTraining) return;
+                    
+                    stepForward();
+                    
+                    if (currentStep === 0 && currentDataIndex === 0) {
+                        // 에포크 완료
+                        isTraining = false;
+                        disableButtons(false);
+                        return;
+                    }
+                    
+                    setTimeout(doStep, speed * 40);
+                }
+                
+                doStep();
+            }
+            
+            // ========== 100회 학습 ==========
+            function trainMultiple() {
+                if (isTraining) return;
+                isTraining = true;
+                disableButtons(true);
+                
+                var epoch = 0;
+                
+                function doEpoch() {
+                    if (epoch >= 100 || !isTraining) {
+                        currentStep = 0;
+                        // 최종 예측 업데이트
+                        for (var i = 0; i < trainingData.length; i++) {
+                            var d = trainingData[i];
+                            var pred = forwardPass([d.size, d.red]);
+                            predictions[i] = pred >= 0.5 ? 1 : 0;
+                        }
+                        updateAll();
+                        showExplanation('complete');
+                        isTraining = false;
+                        disableButtons(false);
+                        return;
+                    }
+                    
+                    // 한 에포크 학습
+                    for (var i = 0; i < trainingData.length; i++) {
+                        var d = trainingData[i];
+                        forwardPass([d.size, d.red]);
+                        backwardPass(d.label);
+                        updateWeights();
+                    }
+                    
+                    epochCount++;
+                    epoch++;
+                    recordError();
+                    
+                    // 예측 업데이트
+                    for (var i = 0; i < trainingData.length; i++) {
+                        var d = trainingData[i];
+                        var pred = forwardPass([d.size, d.red]);
+                        predictions[i] = pred >= 0.5 ? 1 : 0;
+                    }
+                    
+                    if (epoch % 5 === 0) {
+                        updateAll();
+                    }
+                    
+                    setTimeout(doEpoch, 10);
+                }
+                
+                doEpoch();
+            }
+            
+            // ========== 버튼 제어 ==========
+            function disableButtons(disabled) {
+                document.getElementById('stepBtn').disabled = disabled;
+                document.getElementById('epochBtn').disabled = disabled;
+                document.getElementById('trainBtn').disabled = disabled;
+            }
+            
+            // ========== 예측 표시 ==========
+            function updatePredictionDisplay(output, predicted, actual) {
+                var fruitDisplay = document.getElementById('predictionFruit');
+                var confidenceText = document.getElementById('confidenceText');
+                var resultText = document.getElementById('resultText');
+                
+                var confidence = predicted === 1 ? output : (1 - output);
+                fruitDisplay.textContent = predicted === 1 ? '🍎' : '🍊';
+                confidenceText.textContent = '확신도: ' + (confidence * 100).toFixed(1) + '%';
+                
+                if (predicted === actual) {
+                    resultText.textContent = '✓ 정답!';
+                    resultText.className = 'result-text correct';
+                } else {
+                    resultText.textContent = '✗ 오답';
+                    resultText.className = 'result-text wrong';
+                }
+            }
+            
+            // ========== 설명 표시 ==========
+            function showExplanation(type, data) {
+                var box = document.getElementById('explanationBox');
+                var html = '';
+                
+                if (type === 'start') {
+                    html = '<h4>🚀 시작하기</h4>' +
+                        '<p>신경망은 처음에 과일을 <strong>전혀 구분하지 못합니다</strong>.</p>' +
+                        '<p style="margin-top:8px;"><span class="highlight">가중치</span>가 무작위이기 때문이죠. 마치 아무것도 배우지 않은 상태입니다.</p>' +
+                        '<p style="margin-top:8px;">"한 단계" 버튼을 눌러 학습 과정을 살펴보세요!</p>';
+                } else if (type === 'input') {
+                    html = '<h4>1️⃣ 특징 입력</h4>' +
+                        '<p>현재 과일: <strong>' + data.icon + ' ' + data.name + '</strong></p>' +
+                        '<div class="math-box">' +
+                        '크기: ' + data.size.toFixed(2) + '<br>' +
+                        '빨간 정도: ' + data.red.toFixed(2) +
+                        '</div>' +
+                        '<p>이 두 가지 특징이 신경망의 <span class="highlight">입력 뉴런</span>으로 들어갑니다.</p>';
+                } else if (type === 'forward') {
+                    html = '<h4>2️⃣ 계산 (순전파)</h4>' +
+                        '<p>각 뉴런은 입력값에 <span class="highlight">가중치</span>를 곱하고 더합니다.</p>' +
+                        '<div class="math-box">' +
+                        '합계 = (크기 × 가중치1) + (빨간정도 × 가중치2) + 편향' +
+                        '</div>' +
+                        '<p>그 후 <strong>활성화 함수</strong>를 통해 0~1 사이 값으로 변환합니다.</p>' +
+                        '<p style="margin-top:8px;">신호가 왼쪽에서 오른쪽으로 흘러갑니다.</p>';
+                } else if (type === 'output') {
+                    var outputVal = data.output;
+                    var predName = data.predicted === 1 ? '사과 🍎' : '오렌지 🍊';
+                    var actualName = data.data.label === 1 ? '사과' : '오렌지';
+                    var isCorrect = data.predicted === data.data.label;
+                    
+                    html = '<h4>3️⃣ 예측 출력</h4>' +
+                        '<p>출력값: <strong>' + outputVal.toFixed(4) + '</strong></p>' +
+                        '<div class="math-box">' +
+                        '0.5 이상 → 사과<br>' +
+                        '0.5 미만 → 오렌지' +
+                        '</div>' +
+                        '<p>예측: <strong>' + predName + '</strong></p>' +
+                        '<p>정답: <strong>' + actualName + '</strong></p>' +
+                        '<p style="margin-top:8px;">' + (isCorrect ? '✅ 맞았습니다!' : '❌ 틀렸습니다! 학습이 필요합니다.') + '</p>';
+                } else if (type === 'error') {
+                    var errVal = data.error;
+                    html = '<h4>4️⃣ 오차 확인</h4>' +
+                        '<p>예측이 정답과 얼마나 다른지 계산합니다.</p>' +
+                        '<div class="math-box">' +
+                        '오차 = 정답 - 예측<br>' +
+                        '= ' + data.data.label + ' - ' + (data.data.label - errVal).toFixed(4) + '<br>' +
+                        '= ' + errVal.toFixed(4) +
+                        '</div>' +
+                        '<p>' + (Math.abs(errVal) < 0.3 ? '오차가 작습니다! 잘 배우고 있어요.' : '오차가 큽니다. 가중치 조정이 필요합니다.') + '</p>';
+                } else if (type === 'backprop') {
+                    html = '<h4>5️⃣ 원인 분석 (역전파)</h4>' +
+                        '<p>오차의 <strong>원인</strong>을 찾습니다.</p>' +
+                        '<p style="margin-top:8px;">"어떤 가중치가 이 실수에 얼마나 기여했는가?"</p>' +
+                        '<div class="math-box">' +
+                        '각 가중치의 책임 = 오차 × 해당 경로의 영향력' +
+                        '</div>' +
+                        '<p>출력에서 입력 방향으로 거꾸로 분석합니다. 그래서 <span class="highlight">역전파</span>라고 부릅니다.</p>';
+                } else if (type === 'update') {
+                    html = '<h4>6️⃣ 가중치 수정</h4>' +
+                        '<p>오차를 줄이는 방향으로 가중치를 조정합니다.</p>' +
+                        '<div class="math-box">' +
+                        '새 가중치 = 이전 가중치 + (학습률 × 책임 × 입력)' +
+                        '</div>' +
+                        '<p style="margin-top:8px;">오른쪽 패널에서 가중치 변화를 확인하세요!</p>' +
+                        '<p><span style="color:#00b894;">녹색</span> = 증가, <span style="color:#e17055;">주황</span> = 감소</p>';
+                } else if (type === 'complete') {
+                    var acc = calculateAccuracy();
+                    html = '<h4>✅ 학습 완료!</h4>' +
+                        '<p>100회 반복 학습이 끝났습니다.</p>' +
+                        '<p style="margin-top:8px;">현재 정확도: <strong style="color:#ffa502;">' + acc + '%</strong></p>' +
+                        '<p style="margin-top:8px;">' + (acc === 100 ? '🎉 완벽하게 과일을 구분합니다!' : '더 학습하면 정확도가 올라갈 수 있습니다.') + '</p>' +
+                        '<p style="margin-top:8px;">오차 그래프를 보면 학습이 진행될수록 오차가 줄어드는 것을 확인할 수 있습니다.</p>';
+                }
+                
+                box.innerHTML = html;
+            }
+            
+            // ========== 정확도 계산 ==========
+            function calculateAccuracy() {
+                var correct = 0;
+                var total = 0;
+                for (var i = 0; i < trainingData.length; i++) {
+                    if (predictions[i] !== null) {
+                        total++;
+                        if (predictions[i] === trainingData[i].label) {
+                            correct++;
+                        }
+                    }
+                }
+                return total > 0 ? Math.round(correct / total * 100) : 0;
+            }
+            
+            // ========== UI 업데이트 ==========
+            function updateAll() {
+                updateDataTable();
+                updateStepIndicator();
+                updateStats();
+                updateWeightsDisplay();
+                drawNetwork();
+                drawScatterPlot();
+                drawErrorChart();
+            }
+            
+            function updateDataTable() {
+                var tbody = document.getElementById('dataTable');
+                tbody.innerHTML = '';
+                
+                for (var i = 0; i < trainingData.length; i++) {
+                    var d = trainingData[i];
+                    var tr = document.createElement('tr');
+                    
+                    if (i === currentDataIndex && currentStep > 0) {
+                        tr.className = 'current-data';
+                    }
+                    
+                    var predText = '-';
+                    var predClass = '';
+                    if (predictions[i] !== null) {
+                        predText = predictions[i] === 1 ? '🍎' : '🍊';
+                        predClass = predictions[i] === d.label ? 'pred-correct' : 'pred-wrong';
+                    }
+                    
+                    tr.innerHTML = 
+                        '<td class="' + (d.label === 1 ? 'apple' : 'orange') + '">' + d.icon + '</td>' +
+                        '<td>' + d.size.toFixed(2) + '</td>' +
+                        '<td>' + d.red.toFixed(2) + '</td>' +
+                        '<td>' + (d.label === 1 ? '🍎' : '🍊') + '</td>' +
+                        '<td class="' + predClass + '">' + predText + '</td>';
+                    
+                    tbody.appendChild(tr);
+                }
+            }
+            
+            function updateStepIndicator() {
+                var steps = document.querySelectorAll('.step');
+                for (var i = 0; i < steps.length; i++) {
+                    var step = steps[i];
+                    var stepNum = parseInt(step.getAttribute('data-step'));
+                    step.className = 'step';
+                    if (stepNum === currentStep) {
+                        step.className += ' active';
+                    } else if (stepNum < currentStep) {
+                        step.className += ' completed';
+                    }
+                }
+            }
+            
+            function updateStats() {
+                document.getElementById('epochCount').textContent = epochCount;
+                document.getElementById('accuracy').textContent = calculateAccuracy() + '%';
+            }
+            
+            function updateWeightsDisplay() {
+                var display = document.getElementById('weightsDisplay');
+                var html = '';
+                
+                var labels = [
+                    ['크기→은닉', '빨강→은닉'],
+                    ['은닉→출력']
+                ];
+                
+                for (var i = 0; i < network.weights.length; i++) {
+                    for (var j = 0; j < network.weights[i].length; j++) {
+                        for (var k = 0; k < network.weights[i][j].length; k++) {
+                            var w = network.weights[i][j][k];
+                            var prevW = w;
+                            if (previousWeights[i] && previousWeights[i][j]) {
+                                prevW = previousWeights[i][j][k];
+                            }
+                            var change = w - prevW;
+                            
+                            var changeHtml = '';
+                            if (Math.abs(change) > 0.001) {
+                                var changeClass = change > 0 ? 'positive' : 'negative';
+                                var sign = change > 0 ? '+' : '';
+                                changeHtml = '<span class="weight-change ' + changeClass + '">' + sign + change.toFixed(3) + '</span>';
+                            }
+                            
+                            html += '<div class="weight-row">' +
+                                '<span class="weight-label">w' + i + '_' + j + '_' + k + '</span>' +
+                                '<span>' + w.toFixed(3) + changeHtml + '</span>' +
+                                '</div>';
+                        }
+                    }
+                }
+                
+                display.innerHTML = html;
+            }
+            
+            // ========== 신경망 그리기 ==========
+            function drawNetwork() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                var layers = network.layers;
+                var layerX = [120, 325, 530];
+                var layerLabels = ['입력층', '은닉층', '출력층'];
+                var neuronLabels = [['크기', '빨강'], ['', '', ''], ['결과']];
+                
+                // 뉴런 위치
+                var positions = [];
+                for (var i = 0; i < layers.length; i++) {
+                    var layerPos = [];
+                    var neuronSpacing = 280 / (layers[i] + 1);
+                    for (var j = 0; j < layers[i]; j++) {
+                        layerPos.push({
+                            x: layerX[i],
+                            y: 50 + neuronSpacing * (j + 1)
+                        });
+                    }
+                    positions.push(layerPos);
+                }
+                
+                // 연결선
+                for (var i = 0; i < network.weights.length; i++) {
+                    for (var j = 0; j < network.weights[i].length; j++) {
+                        for (var k = 0; k < network.weights[i][j].length; k++) {
+                            var weight = network.weights[i][j][k];
+                            var from = positions[i][k];
+                            var to = positions[i + 1][j];
+                            
+                            var absWeight = Math.abs(weight);
+                            var lineWidth = Math.min(absWeight * 4, 6) + 1;
+                            
+                            ctx.beginPath();
+                            ctx.moveTo(from.x + 25, from.y);
+                            ctx.lineTo(to.x - 25, to.y);
+                            
+                            var alpha = Math.min(absWeight * 0.8 + 0.2, 1);
+                            if (weight > 0) {
+                                ctx.strokeStyle = 'rgba(0, 184, 148, ' + alpha + ')';
+                            } else {
+                                ctx.strokeStyle = 'rgba(225, 112, 85, ' + alpha + ')';
+                            }
+                            
+                            ctx.lineWidth = lineWidth;
+                            ctx.stroke();
+                        }
+                    }
+                }
+                
+                // 뉴런
+                for (var i = 0; i < positions.length; i++) {
+                    // 층 레이블
+                    ctx.fillStyle = '#888';
+                    ctx.font = '12px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(layerLabels[i], layerX[i], 25);
+                    
+                    for (var j = 0; j < positions[i].length; j++) {
+                        var pos = positions[i][j];
+                        var activation = 0;
+                        if (network.activations[i] && network.activations[i][j] !== undefined) {
+                            activation = network.activations[i][j];
+                        }
+                        
+                        // 뉴런 원
+                        ctx.beginPath();
+                        ctx.arc(pos.x, pos.y, 25, 0, Math.PI * 2);
+                        
+                        // 활성화에 따른 색상
+                        var r = Math.floor(45 + activation * 180);
+                        var g = Math.floor(52 + activation * 130);
+                        var b = Math.floor(54 + activation * 90);
+                        ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
+                        ctx.fill();
+                        
+                        // 테두리
+                        var isActive = currentStep > 0 && currentStep <= 3 && i <= currentStep - 1;
+                        ctx.strokeStyle = isActive ? '#ffa502' : '#555';
+                        ctx.lineWidth = isActive ? 3 : 2;
+                        ctx.stroke();
+                        
+                        // 값 표시
+                        ctx.fillStyle = activation > 0.5 ? '#000' : '#fff';
+                        ctx.font = 'bold 11px monospace';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(activation.toFixed(2), pos.x, pos.y);
+                        
+                        // 뉴런 레이블
+                        if (neuronLabels[i][j]) {
+                            ctx.fillStyle = '#aaa';
+                            ctx.font = '11px sans-serif';
+                            if (i === 0) {
+                                ctx.textAlign = 'right';
+                                ctx.fillText(neuronLabels[i][j], pos.x - 32, pos.y);
+                            } else if (i === 2) {
+                                ctx.textAlign = 'left';
+                                ctx.fillText(neuronLabels[i][j], pos.x + 32, pos.y);
+                            }
+                        }
+                    }
+                }
+                
+                // 출력 해석
+                if (network.activations.length > 0) {
+                    var output = network.activations[network.activations.length - 1];
+                    if (output && output[0] !== undefined) {
+                        var outVal = output[0];
+                        var fruit = outVal >= 0.5 ? '🍎' : '🍊';
+                        ctx.font = '30px sans-serif';
+                        ctx.textAlign = 'left';
+                        ctx.fillText(fruit, 570, positions[2][0].y);
+                    }
+                }
+            }
+            
+            // ========== 산점도 그리기 ==========
+            function drawScatterPlot() {
+                var container = scatterCanvas.parentElement;
+                var width = container.clientWidth - 20;
+                var height = 180;
+                scatterCanvas.width = width;
+                scatterCanvas.height = height;
+                
+                var padding = 35;
+                var plotWidth = width - padding * 2;
+                var plotHeight = height - padding * 2;
+                
+                // 배경
+                scatterCtx.fillStyle = 'rgba(0,0,0,0.3)';
+                scatterCtx.fillRect(0, 0, width, height);
+                
+                // 그리드
+                scatterCtx.strokeStyle = 'rgba(255,255,255,0.1)';
+                scatterCtx.lineWidth = 1;
+                for (var i = 0; i <= 4; i++) {
+                    var x = padding + (plotWidth / 4) * i;
+                    var y = padding + (plotHeight / 4) * i;
+                    
+                    scatterCtx.beginPath();
+                    scatterCtx.moveTo(x, padding);
+                    scatterCtx.lineTo(x, height - padding);
+                    scatterCtx.stroke();
+                    
+                    scatterCtx.beginPath();
+                    scatterCtx.moveTo(padding, y);
+                    scatterCtx.lineTo(width - padding, y);
+                    scatterCtx.stroke();
+                }
+                
+                // 축 레이블
+                scatterCtx.fillStyle = '#888';
+                scatterCtx.font = '10px sans-serif';
+                scatterCtx.textAlign = 'center';
+                scatterCtx.fillText('크기 →', width / 2, height - 5);
+                
+                scatterCtx.save();
+                scatterCtx.translate(10, height / 2);
+                scatterCtx.rotate(-Math.PI / 2);
+                scatterCtx.fillText('빨간 정도 →', 0, 0);
+                scatterCtx.restore();
+                
+                // 데이터 점
+                for (var i = 0; i < trainingData.length; i++) {
+                    var d = trainingData[i];
+                    var x = padding + d.size * plotWidth;
+                    var y = height - padding - d.red * plotHeight;
+                    
+                    // 현재 데이터 강조
+                    if (i === currentDataIndex && currentStep > 0) {
+                        scatterCtx.beginPath();
+                        scatterCtx.arc(x, y, 15, 0, Math.PI * 2);
+                        scatterCtx.strokeStyle = '#ffa502';
+                        scatterCtx.lineWidth = 2;
+                        scatterCtx.stroke();
+                    }
+                    
+                    // 점
+                    scatterCtx.beginPath();
+                    scatterCtx.arc(x, y, 8, 0, Math.PI * 2);
+                    scatterCtx.fillStyle = d.label === 1 ? '#ff6b6b' : '#ffa502';
+                    scatterCtx.fill();
+                    
+                    // 예측 표시
+                    if (predictions[i] !== null) {
+                        scatterCtx.beginPath();
+                        scatterCtx.arc(x, y, 11, 0, Math.PI * 2);
+                        scatterCtx.strokeStyle = predictions[i] === d.label ? '#00b894' : '#e17055';
+                        scatterCtx.lineWidth = 2;
+                        scatterCtx.stroke();
+                    }
+                }
+            }
+            
+            // ========== 오차 그래프 ==========
+            function drawErrorChart() {
+                var container = errorCanvas.parentElement;
+                var width = container.clientWidth - 20;
+                var height = 100;
+                errorCanvas.width = width;
+                errorCanvas.height = height;
+                
+                errorCtx.clearRect(0, 0, width, height);
+                
+                if (errorHistory.length < 2) {
+                    errorCtx.fillStyle = '#555';
+                    errorCtx.font = '11px sans-serif';
+                    errorCtx.textAlign = 'center';
+                    errorCtx.fillText('학습이 진행되면 그래프가 표시됩니다', width / 2, height / 2);
+                    return;
+                }
+                
+                var padding = 20;
+                var graphWidth = width - padding * 2;
+                var graphHeight = height - padding * 2;
+                
+                var maxError = 0.5;
+                for (var i = 0; i < errorHistory.length; i++) {
+                    if (errorHistory[i] > maxError) maxError = errorHistory[i];
+                }
+                
+                var xStep = graphWidth / (errorHistory.length - 1);
+                
+                // 곡선
+                errorCtx.beginPath();
+                errorCtx.strokeStyle = '#ffa502';
+                errorCtx.lineWidth = 2;
+                
+                for (var i = 0; i < errorHistory.length; i++) {
+                    var x = padding + i * xStep;
+                    var y = padding + graphHeight - (errorHistory[i] / maxError) * graphHeight;
+                    
+                    if (i === 0) {
+                        errorCtx.moveTo(x, y);
+                    } else {
+                        errorCtx.lineTo(x, y);
+                    }
+                }
+                errorCtx.stroke();
+                
+                // 레이블
+                errorCtx.fillStyle = '#888';
+                errorCtx.font = '9px sans-serif';
+                errorCtx.textAlign = 'center';
+                errorCtx.fillText('학습 횟수', width / 2, height - 3);
+            }
+            
+            // ========== 이벤트 리스너 ==========
+            document.getElementById('resetBtn').addEventListener('click', initNetwork);
+            document.getElementById('stepBtn').addEventListener('click', stepForward);
+            document.getElementById('epochBtn').addEventListener('click', trainOneEpoch);
+            document.getElementById('trainBtn').addEventListener('click', trainMultiple);
+            
+            document.getElementById('learningRate').addEventListener('input', function() {
+                network.learningRate = parseFloat(this.value);
+                document.getElementById('lrValue').textContent = this.value;
+            });
+            
+            document.getElementById('speed').addEventListener('input', function() {
+                document.getElementById('speedValue').textContent = this.value;
+            });
+            
+            window.addEventListener('resize', function() {
+                drawNetwork();
+                drawScatterPlot();
+                drawErrorChart();
+            });
+            
+            // ========== 초기화 ==========
+            initNetwork();
+        })();
+    </script>
+</body>
+</html>

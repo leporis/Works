@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="800" height="450" fill="url(#bgGrad)"/>
+  
+  <!-- 제목 -->
+  <text x="400" y="32" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="22" font-weight="700" fill="#E53935">📏 탐구활동: 오차선 분석</text>
+  <text x="400" y="52" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#8D6E63">"AI 예측은 왜 항상 정확하지 않을까요?"</text>
+  
+  <!-- 오차선 개념 설명 -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="70" width="350" height="180" rx="12" fill="white" stroke="#E53935" stroke-width="2"/>
+    <text x="205" y="95" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" font-weight="600" fill="#E53935">📐 오차선이란?</text>
+    
+    <!-- 오차선 시각화 -->
+    <rect x="50" y="110" width="160" height="120" rx="6" fill="#FAFAFA" stroke="#E0E0E0" stroke-width="1"/>
+    
+    <!-- 축 -->
+    <line x1="70" y1="210" x2="195" y2="210" stroke="#BCAAA4" stroke-width="1"/>
+    <line x1="70" y1="210" x2="70" y2="120" stroke="#BCAAA4" stroke-width="1"/>
+    
+    <!-- 회귀선 -->
+    <line x1="75" y1="200" x2="190" y2="130" stroke="#E53935" stroke-width="2"/>
+    
+    <!-- 데이터 점과 오차선 -->
+    <circle cx="100" cy="170" r="5" fill="#43A047"/>
+    <line x1="100" y1="170" x2="100" y2="188" stroke="#43A047" stroke-width="2" stroke-dasharray="3,2"/>
+    <circle cx="100" cy="188" r="2" fill="#E53935"/>
+    
+    <circle cx="140" cy="150" r="5" fill="#FFC107"/>
+    <line x1="140" y1="150" x2="140" y2="166" stroke="#FFC107" stroke-width="2" stroke-dasharray="3,2"/>
+    <circle cx="140" cy="166" r="2" fill="#E53935"/>
+    
+    <circle cx="175" cy="155" r="5" fill="#E53935"/>
+    <line x1="175" y1="155" x2="175" y2="140" stroke="#E53935" stroke-width="2" stroke-dasharray="3,2"/>
+    <circle cx="175" cy="140" r="2" fill="#E53935"/>
+    
+    <!-- 설명 박스 -->
+    <rect x="225" y="110" width="140" height="120" rx="6" fill="#FFF3E0"/>
+    <text x="295" y="135" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="500" fill="#5D4037">오차선 = 거리</text>
+    
+    <text x="235" y="160" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">• 실제 데이터 점</text>
+    <circle cx="340" cy="156" r="4" fill="#43A047"/>
+    
+    <text x="235" y="180" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">• 회귀선 위 예측점</text>
+    <circle cx="340" cy="176" r="3" fill="#E53935"/>
+    
+    <text x="235" y="200" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">• 오차선 (점선)</text>
+    <line x1="320" y1="197" x2="350" y2="197" stroke="#5D4037" stroke-width="2" stroke-dasharray="3,2"/>
+    
+    <text x="295" y="222" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#E53935" font-weight="500">거리가 짧을수록 좋음!</text>
+  </g>
+  
+  <!-- 오차 색상 해석 -->
+  <g filter="url(#shadow)">
+    <rect x="400" y="70" width="180" height="180" rx="12" fill="white" stroke="#43A047" stroke-width="2"/>
+    <text x="490" y="95" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" font-weight="600" fill="#43A047">🎨 오차 색상 의미</text>
+    
+    <!-- 색상 그라데이션 바 -->
+    <defs>
+      <linearGradient id="errorGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#43A047"/>
+        <stop offset="50%" style="stop-color:#FFC107"/>
+        <stop offset="100%" style="stop-color:#E53935"/>
+      </linearGradient>
+    </defs>
+    <rect x="420" y="115" width="140" height="20" rx="4" fill="url(#errorGrad)"/>
+    <text x="420" y="150" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#43A047">작은 오차</text>
+    <text x="560" y="150" text-anchor="end" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#E53935">큰 오차</text>
+    
+    <!-- 해석 -->
+    <rect x="420" y="165" width="140" height="70" rx="6" fill="#E8F5E9"/>
+    <text x="430" y="185" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">🟢 녹색: 예측 정확</text>
+    <text x="430" y="205" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#F57F17">🟡 노랑: 보통 오차</text>
+    <text x="430" y="225" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#C62828">🔴 빨강: 큰 오차</text>
+  </g>
+  
+  <!-- 시뮬레이터 조작법 -->
+  <g filter="url(#shadow)">
+    <rect x="600" y="70" width="170" height="180" rx="12" fill="white" stroke="#2196F3" stroke-width="2"/>
+    <text x="685" y="95" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" font-weight="600" fill="#2196F3">🎮 조작 방법</text>
+    
+    <text x="620" y="125" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="500" fill="#E53935">Step 1</text>
+    <text x="620" y="143" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">학습 완료 후</text>
+    
+    <text x="620" y="168" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="500" fill="#E53935">Step 2</text>
+    <text x="620" y="186" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">"📏 오차분석" 패널</text>
+    
+    <text x="620" y="211" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="500" fill="#E53935">Step 3</text>
+    <rect x="620" y="218" width="14" height="14" rx="2" fill="white" stroke="#E53935" stroke-width="2"/>
+    <path d="M 623 225 L 627 229 L 632 221" fill="none" stroke="#E53935" stroke-width="2"/>
+    <text x="640" y="230" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">체크박스 클릭!</text>
+  </g>
+  
+  <!-- 탐구 질문 -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="265" width="350" height="165" rx="12" fill="white" stroke="#9C27B0" stroke-width="2"/>
+    <rect x="30" y="265" width="350" height="35" rx="12" fill="#9C27B0"/>
+    <rect x="30" y="290" width="350" height="10" fill="#9C27B0"/>
+    <text x="205" y="290" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" font-weight="600" fill="white">❓ 탐구 질문</text>
+    
+    <text x="50" y="325" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">Q1. 오차선이 전체적으로 짧은 것이 좋을까요,</text>
+    <text x="70" y="343" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">긴 것이 좋을까요?</text>
+    
+    <text x="50" y="368" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">Q2. 오차선이 빨간색(긴 것)이 많으면</text>
+    <text x="70" y="386" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">어떤 문제가 있을까요?</text>
+    
+    <text x="50" y="411" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">Q3. 노이즈를 높이면 오차선은 어떻게 변할까요?</text>
+  </g>
+  
+  <!-- 오차 통계 해석 -->
+  <g filter="url(#shadow)">
+    <rect x="400" y="265" width="370" height="165" rx="12" fill="white" stroke="#FFC107" stroke-width="2"/>
+    <rect x="400" y="265" width="370" height="35" rx="12" fill="#FFC107"/>
+    <rect x="400" y="290" width="370" height="10" fill="#FFC107"/>
+    <text x="585" y="290" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" font-weight="600" fill="#3E2723">📊 오차 통계 해석하기</text>
+    
+    <!-- 평균 오차 -->
+    <rect x="420" y="315" width="160" height="50" rx="6" fill="#FFF8E1"/>
+    <text x="500" y="335" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="500" fill="#F57F17">평균 오차</text>
+    <text x="500" y="355" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">전체 예측의 평균 실수</text>
+    
+    <!-- 최대 오차 -->
+    <rect x="590" y="315" width="160" height="50" rx="6" fill="#FFEBEE"/>
+    <text x="670" y="335" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="500" fill="#E53935">최대 오차</text>
+    <text x="670" y="355" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">가장 크게 틀린 경우</text>
+    
+    <!-- MSE -->
+    <rect x="420" y="375" width="330" height="45" rx="6" fill="#E3F2FD"/>
+    <text x="585" y="395" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="500" fill="#1976D2">MSE (평균 제곱 오차)</text>
+    <text x="585" y="412" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">오차를 제곱한 평균 → 큰 오차에 더 민감하게 반응</text>
+  </g>
+</svg>

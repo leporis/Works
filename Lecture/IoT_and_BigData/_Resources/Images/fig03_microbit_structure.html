@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>마이크로비트 V2 구조</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: white;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      text-align: center;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #009664;
+      margin-bottom: 30px;
+    }
+    .microbit {
+      position: relative;
+      width: 400px;
+      height: 350px;
+      background: linear-gradient(135deg, #00c896 0%, #009664 100%);
+      border-radius: 30px;
+      margin: 0 auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .usb {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 20px;
+      background: #666;
+      border-radius: 3px 3px 0 0;
+    }
+    .touch-logo {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 25px;
+      height: 25px;
+      background: #ffd700;
+      border-radius: 50%;
+      border: 2px solid #333;
+    }
+    .microphone {
+      position: absolute;
+      top: 30px;
+      right: 40px;
+      width: 15px;
+      height: 15px;
+      background: #000;
+      border-radius: 50%;
+    }
+    .led-grid {
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    .led {
+      width: 14px;
+      height: 14px;
+      background: #ff4444;
+      border-radius: 2px;
+      box-shadow: 0 0 8px #ff4444;
+    }
+    .button {
+      position: absolute;
+      top: 150px;
+      width: 40px;
+      height: 50px;
+      background: #888;
+      border-radius: 8px;
+      border: 2px solid #333;
+    }
+    .button-a {
+      left: 20px;
+    }
+    .button-b {
+      right: 20px;
+    }
+    .edge-connector {
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+    }
+    .pin {
+      width: 30px;
+      height: 35px;
+      background: #ffd700;
+      border-radius: 10px 10px 0 0;
+      border: 2px solid #333;
+    }
+    .label {
+      position: absolute;
+      font-size: 13px;
+      font-weight: bold;
+      color: white;
+      background: rgba(0,0,0,0.6);
+      padding: 4px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .pin-label {
+      position: relative;
+      top: -20px;
+      font-size: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">micro:bit V2 구조</div>
+    <div class="microbit">
+      <!-- USB -->
+      <div class="usb"></div>
+      <div class="label" style="top: -35px; left: 50%; transform: translateX(-50%);">USB 포트</div>
+      
+      <!-- 터치 로고 -->
+      <div class="touch-logo"></div>
+      <div class="label" style="top: 25px; left: 50px;">터치 로고 (V2)</div>
+      
+      <!-- 마이크 -->
+      <div class="microphone"></div>
+      <div class="label" style="top: 20px; right: 60px;">마이크 (V2)</div>
+      
+      <!-- LED 그리드 -->
+      <div class="led-grid">
+        <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
+        <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
+        <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
+        <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
+        <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
+      </div>
+      <div class="label" style="top: 80px; right: 20px;">5×5 LED</div>
+      
+      <!-- 버튼 -->
+      <div class="button button-a"></div>
+      <div class="label" style="top: 150px; left: -15px;">버튼 A</div>
+      
+      <div class="button button-b"></div>
+      <div class="label" style="top: 150px; right: -15px;">버튼 B</div>
+      
+      <!-- 엣지 커넥터 -->
+      <div class="edge-connector">
+        <div class="pin"><div class="pin-label">0</div></div>
+        <div class="pin"><div class="pin-label">1</div></div>
+        <div class="pin"><div class="pin-label">2</div></div>
+        <div class="pin"><div class="pin-label">3V</div></div>
+        <div class="pin"><div class="pin-label">GND</div></div>
+      </div>
+      <div class="label" style="bottom: -35px; left: 50%; transform: translateX(-50%);">엣지 커넥터 (핀)</div>
+    </div>
+    
+    <div style="margin-top: 60px; font-size: 14px; color: #666;">
+      ※ 뒷면에는 가속도 센서, 나침반, 프로세서, 배터리 연결부가 있습니다.
+    </div>
+  </div>
+</body>
+</html>

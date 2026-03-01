@@ -1,0 +1,205 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}마이크로비트 데이터로거 시스템 이론해설서 v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{memo} 마이크로비트 데이터로거 시스템}\\[0.5cm]
+{\Huge\bfseries\color{primary} 이론해설서}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v1.0.3.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 이론해설서는 마이크로비트 데이터로거 시스템이 다루는 핵심 개념과 원리를 설명합니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{1. 이 문서의 목적}
+
+이 이론해설서는 \textbf{마이크로비트 데이터로거 시스템}이 다루는 핵심 개념과 원리를 설명합니다. 시뮬레이터를 사용하기 전에 배경 지식을 쌓거나, 사용 후 깊이 있는 이해를 위해 참조합니다.
+
+
+\begin{tcolorbox}[summarybox]
+\textbf{핵심 주제}: 데이터 수집과 데이터 파이프라인
+
+\end{tcolorbox}
+
+
+\section*{2. 핵심 개념}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.6cm}|p{11.4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{개념} & \textbf{설명} \\
+\hline
+\textbf{데이터 로깅} & 센서에서 읽은 값을 시각(timestamp)과 함께 저장하는 과정 \\
+\hline
+\textbf{RTC} & Real-Time Clock. 전원이 꺼져도 시각을 유지하는 시계 칩 \\
+\hline
+\textbf{CSV 파일} & Comma-Separated Values. 표 형태 데이터를 쉼표로 구분한 텍스트 파일 \\
+\hline
+\textbf{샘플링 주기} & 센서 데이터를 읽는 시간 간격 (예: 1초, 5초, 1분) \\
+\hline
+\textbf{데이터 파이프라인} & 데이터가 생성·수집·저장·분석되기까지의 전체 흐름 \\
+\hline
+\textbf{타임스탬프} & 데이터가 기록된 정확한 날짜와 시각 (YYYY-MM-DD HH:MM:SS) \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{3. 원리 상세}
+
+\subsection*{데이터 수집의 5단계}
+
+IoT 프로젝트의 데이터 수집은 다음 5단계로 진행됩니다:
+
+
+\begin{tcolorbox}[formulabox]
+\begin{verbatim}
+1. 감지 → 2. 변환 → 3. 기록 → 4. 저장 → 5. 분석
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{7.4cm}|p{6.1cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{설명} & \textbf{도구/장치} \\
+\hline
+감지 & 물리적 현상을 전기 신호로 변환 & 센서 (SHT40, BMP280 등) \\
+\hline
+변환 & 전기 신호를 숫자 데이터로 변환 & ADC, I2C 프로토콜 \\
+\hline
+기록 & 데이터에 시각(timestamp) 추가 & RTC (DS3231) \\
+\hline
+저장 & 시각+데이터를 파일로 저장 & SD카드 (CSV 형식) \\
+\hline
+분석 & 저장된 데이터로 패턴 발견 & PC (엑셀, Python) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{샘플링 주기의 선택}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.7cm}|p{3.0cm}|p{8.3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{측정 대상} & \textbf{권장 주기} & \textbf{이유} \\
+\hline
+온도·습도 & 1\textasciitilde{}5분 & 느리게 변하는 환경 데이터 \\
+\hline
+소음 수준 & 1\textasciitilde{}10초 & 비교적 빠르게 변화 \\
+\hline
+가속도·진동 & 10\textasciitilde{}100ms & 빠른 물리적 변화 감지 \\
+\hline
+기압 & 5\textasciitilde{}15분 & 매우 느리게 변화 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{주의}: 주기가 짧을수록 데이터 양이 급증합니다.
+
+$\bullet$ 1초 간격 \texttimes{} 8시간 = 28,800건
+
+$\bullet$ 1분 간격 \texttimes{} 8시간 = 480건
+
+
+
+\section*{4. 실생활 응용 사례}
+
+\textbf{사례 1}: 기상청: 전국 AWS(자동기상관측장비)가 1분 간격으로 데이터 수집
+
+
+\textbf{사례 2}: 자동차 블랙박스: 가속도·GPS·영상을 초 단위로 기록
+
+
+\textbf{사례 3}: 피트니스 트래커: 걸음수·심박·칼로리를 하루종일 로깅
+
+
+\textbf{사례 4}: 공장 MES: 생산라인 센서 데이터를 실시간 수집·분석
+
+
+
+\section*{5. 더 알아보기}
+
+$\bullet$ \textbf{시계열 분석}: 시간에 따른 데이터 변화 패턴을 분석하는 통계 기법
+
+$\bullet$ \textbf{데이터 전처리}: 결측치, 이상치 처리 등 분석 전 데이터 정리
+
+$\bullet$ \textbf{MQTT 프로토콜}: IoT에서 널리 사용되는 경량 메시지 전송 프로토콜
+
+$\bullet$ \textbf{클라우드 IoT}: AWS IoT, Azure IoT 등 클라우드 기반 데이터 수집·분석
+
+
+
+\section*{6. 핵심 용어 사전}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.1cm}|p{1.7cm}|p{10.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{용어} & \textbf{학술 용어} & \textbf{쉬운 설명} \\
+\hline
+데이터 로깅 & — & 센서에서 읽은 값을 시각(timestamp)과 함께 저장하는 과정 \\
+\hline
+RTC & RTC & Real-Time Clock \\
+\hline
+CSV 파일 & CSV 파일 & Comma-Separated Values \\
+\hline
+샘플링 주기 & — & 센서 데이터를 읽는 시간 간격 (예: 1초, 5초, 1분) \\
+\hline
+데이터 파이프라인 & — & 데이터가 생성·수집·저장·분석되기까지의 전체 흐름 \\
+\hline
+타임스탬프 & — & 데이터가 기록된 정확한 날짜와 시각 (YYYY-MM-DD HH:MM:SS \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{7. 참고자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{6.9cm}|p{6.6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{비고} \\
+\hline
+1 & 마이크로비트데이터로거\_퀵가이드 & 소프트웨어 사용 중 빠른 참조 \\
+\hline
+2 & 마이크로비트데이터로거\_사용설명서 & 전체 기능 상세 \\
+\hline
+3 & 마이크로비트데이터로거\_활용가이드 & 수업 적용 \\
+\hline
+4 & 마이크로비트데이터로거\_개발참조 & 기술 사양 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{마이크로비트 데이터로거 시스템 이론해설서}
+\end{center}
+\end{document}

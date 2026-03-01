@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadowSm">
+      <feDropShadow dx="1" dy="1" stdDeviation="1" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="260" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="26" text-anchor="middle" font-family="Noto Sans KR" font-size="17" font-weight="700" fill="#1a1a2e">학습 5단계 타임라인</text>
+  <text x="400" y="42" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#888">에피소드 수에 따른 AI 성장 과정</text>
+
+  <!-- Timeline bar background -->
+  <rect x="50" y="70" width="700" height="28" rx="14" fill="#eee" stroke="#ddd" stroke-width="1"/>
+
+  <!-- Stage 1: 초기 (0-500) = ~7px width mapped from 700px for 0-100k -->
+  <rect x="50" y="70" width="4" height="28" rx="14" fill="#e74c3c"/>
+  <!-- Stage 2: 탐색 (500-5000) -->
+  <rect x="54" y="70" width="31" height="28" fill="#e67e22"/>
+  <!-- Stage 3: 학습 (5000-20000) -->
+  <rect x="85" y="70" width="105" height="28" fill="#f1c40f"/>
+  <!-- Stage 4: 응용 (20000-50000) -->
+  <rect x="190" y="70" width="210" height="28" fill="#27ae60"/>
+  <!-- Stage 5: 숙련 (50000-100000) -->
+  <rect x="400" y="70" width="350" height="28" rx="0 14 14 0" fill="#2980b9"/>
+  <!-- Fix right end rounded -->
+  <rect x="736" y="70" width="14" height="28" rx="14" fill="#2980b9"/>
+
+  <!-- Stage markers on bar -->
+  <line x1="54" y1="66" x2="54" y2="102" stroke="white" stroke-width="1.5" opacity="0.8"/>
+  <line x1="85" y1="66" x2="85" y2="102" stroke="white" stroke-width="1.5" opacity="0.8"/>
+  <line x1="190" y1="66" x2="190" y2="102" stroke="white" stroke-width="1.5" opacity="0.8"/>
+  <line x1="400" y1="66" x2="400" y2="102" stroke="white" stroke-width="1.5" opacity="0.8"/>
+
+  <!-- Episode labels below bar -->
+  <text x="50" y="115" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">0</text>
+  <text x="54" y="115" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">500</text>
+  <text x="85" y="115" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">5k</text>
+  <text x="190" y="115" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">20k</text>
+  <text x="400" y="115" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#888">50k</text>
+  <text x="750" y="115" text-anchor="end" font-family="JetBrains Mono" font-size="8" fill="#888">100k+</text>
+
+  <!-- ===== Stage Cards ===== -->
+
+  <!-- Stage 1: 초기 -->
+  <g transform="translate(20, 125)">
+    <rect width="140" height="105" rx="8" fill="white" stroke="#e74c3c" stroke-width="1.5" filter="url(#shadowSm)"/>
+    <rect width="140" height="24" rx="8" fill="#e74c3c"/>
+    <rect x="0" y="12" width="140" height="12" fill="#e74c3c"/>
+    <text x="70" y="17" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="white">🌱 초기</text>
+    <text x="70" y="43" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#e74c3c">ε ≈ 100%</text>
+    <text x="70" y="57" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#555">거의 랜덤 행동</text>
+    <text x="70" y="72" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#555">Q-테이블 비어 있음</text>
+    <text x="70" y="90" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">X/O 승률 비슷</text>
+    <text x="70" y="100" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">무승부 ~30%</text>
+  </g>
+
+  <!-- Stage 2: 탐색 -->
+  <g transform="translate(170, 125)">
+    <rect width="140" height="105" rx="8" fill="white" stroke="#e67e22" stroke-width="1.5" filter="url(#shadowSm)"/>
+    <rect width="140" height="24" rx="8" fill="#e67e22"/>
+    <rect x="0" y="12" width="140" height="12" fill="#e67e22"/>
+    <text x="70" y="17" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="white">🔍 탐색</text>
+    <text x="70" y="43" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#e67e22">ε: 100% → 20%</text>
+    <text x="70" y="57" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#555">기본 패턴 발견</text>
+    <text x="70" y="72" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#555">탐험 감소 시작</text>
+    <text x="70" y="90" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">X 승률 서서히 ↑</text>
+    <text x="70" y="100" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">무승부 ~40%</text>
+  </g>
+
+  <!-- Stage 3: 학습 -->
+  <g transform="translate(320, 125)">
+    <rect width="140" height="105" rx="8" fill="white" stroke="#f1c40f" stroke-width="1.5" filter="url(#shadowSm)"/>
+    <rect width="140" height="24" rx="8" fill="#f1c40f"/>
+    <rect x="0" y="12" width="140" height="12" fill="#f1c40f"/>
+    <text x="70" y="17" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="white">📚 학습</text>
+    <text x="70" y="43" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#b7950b">ε &lt; 20%</text>
+    <text x="70" y="57" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#555">전략이 구체화</text>
+    <text x="70" y="72" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#555">무승부율 급상승</text>
+    <text x="70" y="90" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">강도 50+ 달성</text>
+    <text x="70" y="100" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">무승부 ~65%</text>
+  </g>
+
+  <!-- Stage 4: 응용 -->
+  <g transform="translate(470, 125)">
+    <rect width="140" height="105" rx="8" fill="white" stroke="#27ae60" stroke-width="1.5" filter="url(#shadowSm)"/>
+    <rect width="140" height="24" rx="8" fill="#27ae60"/>
+    <rect x="0" y="12" width="140" height="12" fill="#27ae60"/>
+    <text x="70" y="17" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="white">🎯 응용</text>
+    <text x="70" y="43" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#27ae60">ε → 1%</text>
+    <text x="70" y="57" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#555">안정 전략 형성</text>
+    <text x="70" y="72" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#555">미세 조정 단계</text>
+    <text x="70" y="90" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">강도 80+ 달성</text>
+    <text x="70" y="100" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">무승부 80%+</text>
+  </g>
+
+  <!-- Stage 5: 숙련 -->
+  <g transform="translate(620, 125)">
+    <rect width="140" height="105" rx="8" fill="white" stroke="#2980b9" stroke-width="1.5" filter="url(#shadowSm)"/>
+    <rect width="140" height="24" rx="8" fill="#2980b9"/>
+    <rect x="0" y="12" width="140" height="12" fill="#2980b9"/>
+    <text x="70" y="17" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="white">🏆 숙련</text>
+    <text x="70" y="43" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#2980b9">ε = 1% (최소)</text>
+    <text x="70" y="57" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#555">이론적 최적 근접</text>
+    <text x="70" y="72" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#555">등급 S~S+ 달성</text>
+    <text x="70" y="90" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">강도 95+ 달성</text>
+    <text x="70" y="100" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">무승부 ~100%</text>
+  </g>
+
+  <!-- Bottom caption -->
+  <text x="400" y="252" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#999">그림 7. 학습 5단계 타임라인 — 에피소드가 진행될수록 AI가 성장하는 과정</text>
+</svg>

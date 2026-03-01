@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-auto">
+      <path d="M 0 0 L 10 3.5 L 0 7 z" fill="#666"/>
+    </marker>
+    <marker id="arrowDown" viewBox="0 0 7 10" refX="3.5" refY="10" markerWidth="7" markerHeight="10" orient="auto-start-auto">
+      <path d="M 0 0 L 3.5 10 L 7 0 z" fill="#666"/>
+    </marker>
+    <marker id="arrowGreenUp" viewBox="0 0 7 10" refX="3.5" refY="0" markerWidth="7" markerHeight="10">
+      <path d="M 0 10 L 3.5 0 L 7 10 z" fill="#43A047"/>
+    </marker>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="250" rx="12" fill="url(#bgGrad)"/>
+  <text x="400" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#333">🎬 AI 사과 농장 이야기 — 자동 재생 흐름</text>
+  <text x="400" y="46" text-anchor="middle" font-size="9" fill="#795548">장면 시작부터 다음 장면 자동 전환까지의 타임라인</text>
+
+  <!-- Step 1: 장면 시작 -->
+  <rect x="30" y="66" width="100" height="56" rx="8" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="30" y="66" width="100" height="20" rx="8" fill="#E53935" opacity="0.15"/>
+  <rect x="30" y="80" width="100" height="6" fill="#E53935" opacity="0.15"/>
+  <text x="80" y="81" text-anchor="middle" font-size="8" font-weight="600" fill="#E53935">장면 시작</text>
+  <text x="80" y="102" text-anchor="middle" font-size="7" fill="#555">🎬 전환 효과</text>
+  <text x="80" y="114" text-anchor="middle" font-size="7" fill="#888">2.5초</text>
+
+  <line x1="130" y1="94" x2="156" y2="94" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 2: 대기 -->
+  <rect x="158" y="66" width="100" height="56" rx="8" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="158" y="66" width="100" height="20" rx="8" fill="#FF9800" opacity="0.15"/>
+  <rect x="158" y="80" width="100" height="6" fill="#FF9800" opacity="0.15"/>
+  <text x="208" y="81" text-anchor="middle" font-size="8" font-weight="600" fill="#FF9800">대기</text>
+  <text x="208" y="102" text-anchor="middle" font-size="7" fill="#555">내레이션 준비</text>
+  <text x="208" y="114" text-anchor="middle" font-size="7" fill="#888">0.5초</text>
+
+  <line x1="258" y1="94" x2="284" y2="94" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 3: 대사 반복 루프 -->
+  <rect x="286" y="58" width="230" height="110" rx="10" fill="#FFF" stroke="#43A047" stroke-width="1.5" stroke-dasharray="5,3" filter="url(#shadow)"/>
+  <text x="401" y="74" text-anchor="middle" font-size="8" font-weight="700" fill="#43A047">🔄 대사 반복 재생</text>
+
+  <rect x="300" y="82" width="90" height="42" rx="6" fill="#E8F5E9"/>
+  <text x="345" y="98" text-anchor="middle" font-size="8" font-weight="600" fill="#2E7D32">대사 N 재생</text>
+  <text x="345" y="112" text-anchor="middle" font-size="7" fill="#555">🔊 TTS</text>
+
+  <line x1="390" y1="103" x2="410" y2="103" stroke="#666" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <rect x="412" y="82" width="90" height="42" rx="6" fill="#FFF8E1"/>
+  <text x="457" y="98" text-anchor="middle" font-size="8" font-weight="600" fill="#E65100">대기</text>
+  <text x="457" y="112" text-anchor="middle" font-size="7" fill="#555">1~1.5초</text>
+
+  <!-- 루프 화살표 -->
+  <path d="M457,124 L457,148 L345,148 L345,124" fill="none" stroke="#43A047" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrowGreenUp)"/>
+  <text x="401" y="160" text-anchor="middle" font-size="7" fill="#43A047">다음 대사 있으면 반복</text>
+
+  <line x1="516" y1="94" x2="548" y2="94" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 4: 마지막 대사 완료 -->
+  <rect x="550" y="66" width="100" height="56" rx="8" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="550" y="66" width="100" height="20" rx="8" fill="#43A047" opacity="0.15"/>
+  <rect x="550" y="80" width="100" height="6" fill="#43A047" opacity="0.15"/>
+  <text x="600" y="81" text-anchor="middle" font-size="8" font-weight="600" fill="#2E7D32">대사 완료</text>
+  <text x="600" y="102" text-anchor="middle" font-size="7" fill="#555">마지막 대사</text>
+  <text x="600" y="114" text-anchor="middle" font-size="7" fill="#888">재생 종료</text>
+
+  <line x1="650" y1="94" x2="676" y2="94" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 5: 다음 장면 -->
+  <rect x="678" y="66" width="100" height="56" rx="8" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="678" y="66" width="100" height="20" rx="8" fill="#1976D2" opacity="0.15"/>
+  <rect x="678" y="80" width="100" height="6" fill="#1976D2" opacity="0.15"/>
+  <text x="728" y="81" text-anchor="middle" font-size="8" font-weight="600" fill="#1565C0">자동 전환</text>
+  <text x="728" y="102" text-anchor="middle" font-size="7" fill="#555">➡️ 다음 장면</text>
+  <text x="728" y="114" text-anchor="middle" font-size="7" fill="#888">시작으로</text>
+
+  <!-- 하단 안내 -->
+  <rect x="80" y="196" width="640" height="36" rx="8" fill="#FFF8E1" opacity="0.6"/>
+  <text x="400" y="214" text-anchor="middle" font-size="8" fill="#795548">💡 같은 화자 연속 = 1초 대기 / 다른 화자 전환 = 1.5초 대기 — 일시정지 시 흐름 중단</text>
+  <text x="400" y="226" text-anchor="middle" font-size="7" fill="#999">전환 효과음(2.5초) → 내레이션 시작 대기(0.5초) → 대사 반복 → 다음 장면</text>
+</svg>

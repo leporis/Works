@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍕 나만의 분수 조리실 v1.5.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pizza-color: #FF9800;
+            --choco-color: #795548;
+            --highlight: #FFEB3B;
+            --text-dark: #3E2723;
+            --bg-kitchen: #FFF8E1;
+            --sidebar-w: 300px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body { 
+            font-family: 'Nanum Gothic', sans-serif; 
+            background: var(--bg-kitchen); 
+            color: var(--text-dark); 
+            margin: 0; 
+            padding: 15px; 
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: var(--sidebar-w) 1fr var(--sidebar-w);
+            gap: 15px;
+            min-height: 85vh;
+        }
+
+        .panel { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 20px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        header { 
+            text-align: center; 
+            margin-bottom: 15px; 
+        }
+
+        .badge { 
+            font-size: 0.7rem; 
+            background: #efebe9; 
+            padding: 3px 8px; 
+            border-radius: 5px; 
+            margin-left: 10px;
+        }
+
+        .control-box { 
+            background: #fdf5e6; 
+            padding: 15px; 
+            border-radius: 12px; 
+            margin-bottom: 15px; 
+            border: 2px dashed #d7ccc8; 
+        }
+
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        input[type=range] { 
+            width: 100%; 
+            cursor: pointer; 
+            margin: 5px 0;
+            height: 6px;
+            border-radius: 3px;
+            background: #d7ccc8;
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--pizza-color);
+            cursor: pointer;
+        }
+
+        input[type=range]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--pizza-color);
+            cursor: pointer;
+            border: none;
+        }
+
+        .shape-btn { 
+            flex: 1; 
+            padding: 12px; 
+            border: 2px solid #d7ccc8; 
+            border-radius: 10px; 
+            background: white; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .shape-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .shape-btn.active { 
+            background: var(--pizza-color); 
+            color: white; 
+            border-color: var(--pizza-color); 
+        }
+
+        canvas { 
+            width: 100% !important; 
+            height: 100% !important;
+            border-radius: 15px; 
+            background: #fafafa;
+        }
+
+        .fraction-view { 
+            font-size: 2.5rem; 
+            font-weight: 800; 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+
+        .fraction-line { 
+            width: 60px; 
+            height: 4px; 
+            background: var(--text-dark); 
+            margin: 8px 0; 
+        }
+        
+        .compare-symbol { 
+            font-size: 3.5rem; 
+            font-weight: bold;
+            text-align: center; 
+            margin: 10px 0; 
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .msg-box {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        .msg-equal {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .msg-greater {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .msg-less {
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+
+        .value-badge {
+            display: inline-block;
+            background: var(--pizza-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .decimal-display {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .operation-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .op-btn {
+            padding: 10px;
+            border: 2px solid #d7ccc8;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .op-btn:hover {
+            background: #f5f5f5;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .fraction-view {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>👩‍🍳 나만의 분수 조리실<span class="badge">v1.5.1</span></h1>
+    <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">분수를 피자와 초콜릿으로 쉽게 배워요!</p>
+</header>
+
+<div class="main-layout">
+    <aside class="panel">
+        <h3>🍕 요리 재료 선택</h3>
+        <div style="display:flex; gap:8px; margin-bottom:20px;">
+            <button id="btnCircle" class="shape-btn active" onclick="SimApp.ui.setShape('circle')">⭕ 피자</button>
+            <button id="btnRect" class="shape-btn" onclick="SimApp.ui.setShape('rect')">🍫 초콜릿</button>
+        </div>
+
+        <div class="control-box">
+            <strong style="color:var(--pizza-color); font-size: 1.1rem;">🅰️ 분수 A</strong>
+            <div class="control-row">
+                <span>전체 조각 (분모):</span>
+                <span class="value-badge" id="n1Val">4</span>
+            </div>
+            <input type="range" id="n1" min="1" max="12" value="4" oninput="SimApp.ui.update('a')">
+            
+            <div class="control-row" style="margin-top: 12px;">
+                <span>색칠한 조각 (분자):</span>
+                <span class="value-badge" id="m1Val">1</span>
+            </div>
+            <input type="range" id="m1" min="0" max="4" value="1" oninput="SimApp.ui.update('a')">
+            
+            <div class="decimal-display">
+                소수로 표현: <strong id="decimal1">0.25</strong>
+            </div>
+        </div>
+
+        <div class="control-box" style="border-color: #a1887f;">
+            <strong style="color:var(--choco-color); font-size: 1.1rem;">🅱️ 분수 B</strong>
+            <div class="control-row">
+                <span>전체 조각 (분모):</span>
+                <span class="value-badge" id="n2Val" style="background: var(--choco-color);">4</span>
+            </div>
+            <input type="range" id="n2" min="1" max="12" value="4" oninput="SimApp.ui.update('b')">
+            
+            <div class="control-row" style="margin-top: 12px;">
+                <span>색칠한 조각 (분자):</span>
+                <span class="value-badge" id="m2Val" style="background: var(--choco-color);">1</span>
+            </div>
+            <input type="range" id="m2" min="0" max="4" value="1" oninput="SimApp.ui.update('b')">
+            
+            <div class="decimal-display">
+                소수로 표현: <strong id="decimal2">0.25</strong>
+            </div>
+        </div>
+
+        <div class="operation-buttons">
+            <button class="op-btn" onclick="SimApp.ui.simplify('a')">🔢 A 약분하기</button>
+            <button class="op-btn" onclick="SimApp.ui.simplify('b')">🔢 B 약분하기</button>
+            <button class="op-btn" onclick="SimApp.ui.randomize('a')">🎲 A 랜덤</button>
+            <button class="op-btn" onclick="SimApp.ui.randomize('b')">🎲 B 랜덤</button>
+        </div>
+
+        <hr style="margin: 20px 0; border: none; border-top: 2px dashed #d7ccc8;">
+
+        <div style="background: #fff3e0; padding: 15px; border-radius: 12px; border: 2px solid #ffb74d;">
+            <h3 style="margin-top: 0; color: #e65100;">🎯 퀴즈 모드</h3>
+            <button class="op-btn" style="width: 100%; background: #ff9800; color: white; border-color: #ff9800; font-size: 1.1rem; padding: 12px;" onclick="SimApp.quiz.start()">
+                📝 새 문제 시작하기
+            </button>
+            <div id="quizStatus" style="margin-top: 10px; font-size: 0.9rem; text-align: center; color: #666;">
+                문제를 풀어볼까요?
+            </div>
+        </div>
+    </aside>
+
+    <main class="panel">
+        <canvas id="mathCanvas"></canvas>
+    </main>
+
+    <aside class="panel">
+        <h3>📊 크기 비교하기</h3>
+        <div style="display:flex; justify-content:space-around; align-items:center; margin: 20px 0;">
+            <div class="fraction-view" style="color: var(--pizza-color);">
+                <div id="dispM1">1</div>
+                <div class="fraction-line"></div>
+                <div id="dispN1">4</div>
+            </div>
+            <div id="compareIcon" class="compare-symbol" style="color: #4CAF50;">=</div>
+            <div class="fraction-view" style="color: var(--choco-color);">
+                <div id="dispM2">1</div>
+                <div class="fraction-line"></div>
+                <div id="dispN2">4</div>
+            </div>
+        </div>
+        
+        <div id="msgBox" class="msg-box msg-equal">
+            🎉 두 분수의 크기가 같아요!
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 10px;">
+            <h4 style="margin-top: 0;">💡 분수 팁</h4>
+            <div id="tipBox" style="font-size: 0.9rem; line-height: 1.6;">
+                분모가 같으면 분자가 큰 쪽이 더 큰 분수예요!
+            </div>
+        </div>
+
+        <div id="quizAnswerSection" style="display: none; margin-top: 15px; padding: 15px; background: #e3f2fd; border-radius: 10px; border: 2px solid #2196f3;">
+            <h4 style="margin-top: 0; color: #1976d2;">✍️ 정답을 입력하세요</h4>
+            <div id="quizQuestion" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; text-align: center;">
+            </div>
+            
+            <div style="display: flex; gap: 10px; align-items: center; justify-content: center; margin-bottom: 15px;">
+                <button class="op-btn" style="flex: 1; font-size: 1.5rem;" onclick="SimApp.quiz.answer('>')">
+                    &gt;
+                </button>
+                <button class="op-btn" style="flex: 1; font-size: 1.5rem;" onclick="SimApp.quiz.answer('=')">
+                    =
+                </button>
+                <button class="op-btn" style="flex: 1; font-size: 1.5rem;" onclick="SimApp.quiz.answer('<')">
+                    &lt;
+                </button>
+            </div>
+
+            <div id="quizResult" style="font-size: 1rem; padding: 10px; border-radius: 5px; text-align: center; display: none;">
+            </div>
+
+            <div id="quizExplanation" style="margin-top: 10px; font-size: 0.85rem; line-height: 1.6; display: none;">
+            </div>
+
+            <button class="op-btn" id="quizNextBtn" style="width: 100%; margin-top: 10px; display: none; background: #4caf50; color: white; border-color: #4caf50;" onclick="SimApp.quiz.next()">
+                ➡️ 다음 문제
+            </button>
+        </div>
+
+        <div style="margin-top: 15px; padding: 12px; background: #e8f5e9; border-radius: 8px; font-size: 0.85rem;">
+            <strong>🧮 통분 과정 설명</strong>
+            <div id="commonDenomExplanation" style="margin-top: 10px; line-height: 1.8;">
+                <!-- 통분 단계별 설명이 여기에 표시됩니다 -->
+            </div>
+        </div>
+
+        <button class="op-btn" style="width: 100%; margin-top: 10px;" onclick="SimApp.ui.showDetailedSteps()">
+            📖 자세한 통분 과정 보기
+        </button>
+    </aside>
+</div>
+
+<script>
+/**
+ * Fraction Kitchen Simulator v1.5.1
+ * Enhanced version with better visuals and educational features
+ */
+const SimApp = {
+    CONFIG: {
+        A_COLOR: '#FF9800',
+        B_COLOR: '#795548',
+        HIGHLIGHT: '#FFEB3B',
+        BG_COLOR: '#fafafa'
+    },
+
+    state: {
+        a: { n: 4, m: 1 },
+        b: { n: 4, m: 1 },
+        shape: 'circle',
+        quiz: {
+            active: false,
+            problem: null,
+            correctAnswer: null,
+            attempts: 0,
+            score: { correct: 0, total: 0 }
+        }
+    },
+
+    engine: {
+        compare() {
+            const valA = SimApp.state.a.m / SimApp.state.a.n;
+            const valB = SimApp.state.b.m / SimApp.state.b.n;
+            if (Math.abs(valA - valB) < 0.0001) return '=';
+            if (valA > valB) return '>';
+            return '<';
+        },
+
+        gcd(a, b) {
+            return b === 0 ? a : this.gcd(b, a % b);
+        },
+
+        simplify(frac) {
+            if (frac.m === 0) return { n: frac.n, m: 0 };
+            const divisor = this.gcd(frac.m, frac.n);
+            return { m: frac.m / divisor, n: frac.n / divisor };
+        },
+
+        lcm(a, b) {
+            return (a * b) / this.gcd(a, b);
+        },
+
+        getCommonDenominator() {
+            return this.lcm(SimApp.state.a.n, SimApp.state.b.n);
+        },
+
+        convertToCommonDenom(frac, commonDenom) {
+            const multiplier = commonDenom / frac.n;
+            return { m: frac.m * multiplier, n: commonDenom };
+        }
+    },
+
+    viz: {
+        ctx: null,
+        
+        init() {
+            const canvas = document.getElementById('mathCanvas');
+            this.ctx = canvas.getContext('2d');
+            this.resize();
+            window.addEventListener('resize', () => this.resize());
+            this.draw();
+        },
+
+        resize() {
+            const canvas = this.ctx.canvas;
+            const parent = canvas.parentElement;
+            canvas.width = parent.clientWidth - 40;
+            canvas.height = parent.clientHeight - 40;
+        },
+
+        draw() {
+            const { ctx } = this;
+            const { width: w, height: h } = ctx.canvas;
+            ctx.clearRect(0, 0, w, h);
+
+            // 배경
+            ctx.fillStyle = SimApp.CONFIG.BG_COLOR;
+            ctx.fillRect(0, 0, w, h);
+
+            // 제목 그리기
+            ctx.fillStyle = SimApp.CONFIG.A_COLOR;
+            ctx.font = 'bold 20px Nanum Gothic';
+            ctx.textAlign = 'center';
+            ctx.fillText('분수 A', w * 0.3, 30);
+
+            ctx.fillStyle = SimApp.CONFIG.B_COLOR;
+            ctx.fillText('분수 B', w * 0.7, 30);
+
+            if (SimApp.state.shape === 'circle') {
+                this.drawCircleFraction(ctx, w * 0.3, h * 0.5, SimApp.state.a, SimApp.CONFIG.A_COLOR);
+                this.drawCircleFraction(ctx, w * 0.7, h * 0.5, SimApp.state.b, SimApp.CONFIG.B_COLOR);
+            } else {
+                this.drawRectFraction(ctx, w * 0.05, h * 0.2, w * 0.4, h * 0.6, SimApp.state.a, SimApp.CONFIG.A_COLOR);
+                this.drawRectFraction(ctx, w * 0.55, h * 0.2, w * 0.4, h * 0.6, SimApp.state.b, SimApp.CONFIG.B_COLOR);
+            }
+
+            // 분수 표기 그리기
+            this.drawFractionLabel(ctx, w * 0.3, h - 30, SimApp.state.a, SimApp.CONFIG.A_COLOR);
+            this.drawFractionLabel(ctx, w * 0.7, h - 30, SimApp.state.b, SimApp.CONFIG.B_COLOR);
+        },
+
+        drawCircleFraction(ctx, x, y, data, color) {
+            const radius = Math.min(120, this.ctx.canvas.height * 0.25);
+            const sliceAngle = (2 * Math.PI) / data.n;
+
+            // 그림자 효과
+            ctx.shadowColor = 'rgba(0,0,0,0.2)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 3;
+            ctx.shadowOffsetY = 3;
+
+            // 전체 원 (배경)
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fill();
+
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+            // 색칠된 조각들
+            for (let i = 0; i < data.m; i++) {
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.arc(x, y, radius, i * sliceAngle - Math.PI/2, (i + 1) * sliceAngle - Math.PI/2);
+                ctx.closePath();
+                
+                // 그라데이션 효과
+                const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+                gradient.addColorStop(0, this.lightenColor(color, 20));
+                gradient.addColorStop(1, color);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+
+            // 모든 분할선
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < data.n; i++) {
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                const angle = i * sliceAngle - Math.PI/2;
+                ctx.lineTo(x + radius * Math.cos(angle), y + radius * Math.sin(angle));
+                ctx.stroke();
+            }
+
+            // 외곽선
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+        },
+
+        drawRectFraction(ctx, x, y, w, h, data, color) {
+            const unitW = w / data.n;
+
+            // 그림자
+            ctx.shadowColor = 'rgba(0,0,0,0.2)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 3;
+            ctx.shadowOffsetY = 3;
+
+            // 배경
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(x, y, w, h);
+
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+            // 색칠된 부분
+            for (let i = 0; i < data.m; i++) {
+                const gradient = ctx.createLinearGradient(x + i * unitW, y, x + (i + 1) * unitW, y);
+                gradient.addColorStop(0, this.lightenColor(color, 20));
+                gradient.addColorStop(1, color);
+                ctx.fillStyle = gradient;
+                ctx.fillRect(x + i * unitW, y, unitW, h);
+            }
+
+            // 격자선
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            for (let i = 1; i < data.n; i++) {
+                ctx.beginPath();
+                ctx.moveTo(x + i * unitW, y);
+                ctx.lineTo(x + i * unitW, y + h);
+                ctx.stroke();
+            }
+
+            // 외곽선
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(x, y, w, h);
+        },
+
+        drawFractionLabel(ctx, x, y, data, color) {
+            ctx.fillStyle = color;
+            ctx.font = 'bold 18px Nanum Gothic';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${data.m}/${data.n}`, x, y);
+            
+            const decimal = (data.m / data.n).toFixed(3);
+            ctx.font = '14px Nanum Gothic';
+            ctx.fillStyle = '#666';
+            ctx.fillText(`= ${decimal}`, x, y + 20);
+        },
+
+        lightenColor(color, percent) {
+            const num = parseInt(color.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                (B < 255 ? B < 1 ? 0 : B : 255))
+                .toString(16).slice(1);
+        }
+    },
+
+    ui: {
+        update(target) {
+            // 값 읽기
+            const n1 = parseInt(document.getElementById('n1').value);
+            const m1 = document.getElementById('m1');
+            m1.max = n1;
+            if (parseInt(m1.value) > n1) m1.value = n1;
+
+            const n2 = parseInt(document.getElementById('n2').value);
+            const m2 = document.getElementById('m2');
+            m2.max = n2;
+            if (parseInt(m2.value) > n2) m2.value = n2;
+
+            // 상태 업데이트
+            SimApp.state.a = { n: n1, m: parseInt(m1.value) };
+            SimApp.state.b = { n: n2, m: parseInt(m2.value) };
+
+            // UI 업데이트
+            this.updateDisplay();
+        },
+
+        updateDisplay() {
+            const { a, b } = SimApp.state;
+
+            // 값 표시
+            document.getElementById('n1Val').innerText = a.n;
+            document.getElementById('m1Val').innerText = a.m;
+            document.getElementById('n2Val').innerText = b.n;
+            document.getElementById('m2Val').innerText = b.m;
+
+            document.getElementById('dispN1').innerText = a.n;
+            document.getElementById('dispM1').innerText = a.m;
+            document.getElementById('dispN2').innerText = b.n;
+            document.getElementById('dispM2').innerText = b.m;
+
+            // 소수 표시
+            document.getElementById('decimal1').innerText = (a.m / a.n).toFixed(3);
+            document.getElementById('decimal2').innerText = (b.m / b.n).toFixed(3);
+
+            // 비교 결과
+            const res = SimApp.engine.compare();
+            const icon = document.getElementById('compareIcon');
+            icon.innerText = res;
+            
+            let msg, msgClass, iconColor;
+            if (res === '=') {
+                msg = '🎉 두 분수의 크기가 같아요!';
+                msgClass = 'msg-equal';
+                iconColor = '#4CAF50';
+            } else if (res === '>') {
+                msg = '📊 왼쪽 분수(A)가 더 커요!';
+                msgClass = 'msg-greater';
+                iconColor = '#FF9800';
+            } else {
+                msg = '📊 오른쪽 분수(B)가 더 커요!';
+                msgClass = 'msg-less';
+                iconColor = '#795548';
+            }
+            
+            const msgBox = document.getElementById('msgBox');
+            msgBox.innerText = msg;
+            msgBox.className = 'msg-box ' + msgClass;
+            icon.style.color = iconColor;
+
+            // 팁 업데이트
+            this.updateTip();
+
+            // 통분 정보
+            this.updateCommonDenominator();
+
+            // 그리기
+            SimApp.viz.draw();
+        },
+
+        updateTip() {
+            const { a, b } = SimApp.state;
+            let tip = '';
+
+            if (a.n === b.n) {
+                tip = '분모가 같으면 분자가 큰 쪽이 더 큰 분수예요!';
+            } else if (a.m === b.m) {
+                tip = '분자가 같으면 분모가 작은 쪽이 더 큰 분수예요!';
+            } else {
+                tip = '분모가 다를 때는 통분해서 비교하면 쉬워요!';
+            }
+
+            document.getElementById('tipBox').innerText = tip;
+        },
+
+        updateCommonDenominator() {
+            const commonDenom = SimApp.engine.getCommonDenominator();
+            const aConverted = SimApp.engine.convertToCommonDenom(SimApp.state.a, commonDenom);
+            const bConverted = SimApp.engine.convertToCommonDenom(SimApp.state.b, commonDenom);
+
+            // 간단한 요약 표시
+            const explanationDiv = document.getElementById('commonDenomExplanation');
+            explanationDiv.innerHTML = `
+                <div style="background: white; padding: 10px; border-radius: 5px; margin-bottom: 8px;">
+                    <strong>공통 분모:</strong> ${commonDenom}
+                </div>
+                <div style="background: white; padding: 10px; border-radius: 5px; margin-bottom: 5px;">
+                    <span style="color: ${SimApp.CONFIG.A_COLOR}; font-weight: bold;">분수 A:</span> 
+                    ${SimApp.state.a.m}/${SimApp.state.a.n} = ${aConverted.m}/${aConverted.n}
+                </div>
+                <div style="background: white; padding: 10px; border-radius: 5px;">
+                    <span style="color: ${SimApp.CONFIG.B_COLOR}; font-weight: bold;">분수 B:</span> 
+                    ${SimApp.state.b.m}/${SimApp.state.b.n} = ${bConverted.m}/${bConverted.n}
+                </div>
+            `;
+        },
+
+        showDetailedSteps() {
+            const { a, b } = SimApp.state;
+            const commonDenom = SimApp.engine.getCommonDenominator();
+            const aConverted = SimApp.engine.convertToCommonDenom(a, commonDenom);
+            const bConverted = SimApp.engine.convertToCommonDenom(b, commonDenom);
+            
+            const multiplierA = commonDenom / a.n;
+            const multiplierB = commonDenom / b.n;
+
+            let explanation = `📚 통분 과정 완벽 가이드\n\n`;
+            explanation += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            // 1단계: 공통 분모 찾기 - 더 상세하게
+            explanation += `📌 1단계: 공통 분모 찾기 (최소공배수 구하기)\n`;
+            explanation += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            explanation += `🔍 분모 확인:\n`;
+            explanation += `   분수 A의 분모: ${a.n}\n`;
+            explanation += `   분수 B의 분모: ${b.n}\n\n`;
+            
+            if (a.n === b.n) {
+                explanation += `✅ 두 분모가 이미 같으므로 통분이 필요 없어요!\n`;
+                explanation += `   공통 분모 = ${commonDenom}\n\n`;
+            } else {
+                // 배수 나열하기
+                explanation += `📊 각 수의 배수를 나열해볼까요?\n\n`;
+                
+                const multiplesA = [];
+                const multiplesB = [];
+                for (let i = 1; i <= 12; i++) {
+                    multiplesA.push(a.n * i);
+                    multiplesB.push(b.n * i);
+                }
+                
+                explanation += `   ${a.n}의 배수: ${multiplesA.slice(0, 8).join(', ')}...\n`;
+                explanation += `   ${b.n}의 배수: ${multiplesB.slice(0, 8).join(', ')}...\n\n`;
+                
+                // 공통 배수 찾기
+                const commonMultiples = multiplesA.filter(x => multiplesB.includes(x)).slice(0, 3);
+                explanation += `🎯 공통으로 나타나는 배수:\n`;
+                explanation += `   ${commonMultiples.join(', ')}...\n\n`;
+                
+                explanation += `✅ 이 중에서 가장 작은 수 = ${commonDenom}\n`;
+                explanation += `   → 최소공배수(LCM) = ${commonDenom}\n`;
+                explanation += `   → 공통 분모 = ${commonDenom}\n\n`;
+            }
+
+            explanation += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            // 2단계: 분수 A 통분
+            explanation += `📌 2단계: 분수 A를 공통 분모로 바꾸기\n`;
+            explanation += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            explanation += `🔢 원래 분수 A: ${a.m}/${a.n}\n`;
+            explanation += `🎯 목표 분모: ${commonDenom}\n\n`;
+            
+            if (multiplierA === 1) {
+                explanation += `✅ 분모가 이미 ${commonDenom}이므로 변환 불필요!\n`;
+                explanation += `   결과: ${a.m}/${a.n}\n\n`;
+            } else {
+                explanation += `💭 질문: ${a.n}에 무엇을 곱해야 ${commonDenom}이 될까요?\n`;
+                explanation += `   ${a.n} × ? = ${commonDenom}\n`;
+                explanation += `   ? = ${commonDenom} ÷ ${a.n}\n`;
+                explanation += `   ? = ${multiplierA}\n\n`;
+                
+                explanation += `✏️ 계산 과정:\n`;
+                explanation += `   분자: ${a.m} × ${multiplierA} = ${aConverted.m}\n`;
+                explanation += `   분모: ${a.n} × ${multiplierA} = ${aConverted.n}\n\n`;
+                
+                explanation += `📝 분수 형태로 표현:\n`;
+                explanation += `\n`;
+                explanation += `        ${a.m}       ${multiplierA}       ${aConverted.m}\n`;
+                explanation += `       ───  ×  ───  =  ───\n`;
+                explanation += `        ${a.n}       ${multiplierA}       ${aConverted.n}\n`;
+                explanation += `\n`;
+                
+                explanation += `✅ 변환 완료: ${a.m}/${a.n} → ${aConverted.m}/${aConverted.n}\n\n`;
+                
+                explanation += `💡 왜 같은 수를 곱하나요?\n`;
+                explanation += `   분자와 분모에 같은 수를 곱하면\n`;
+                explanation += `   분수의 크기는 변하지 않아요!\n`;
+                explanation += `   예: 1/2 = 2/4 = 3/6 (모두 같은 크기)\n\n`;
+            }
+
+            explanation += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            // 3단계: 분수 B 통분
+            explanation += `📌 3단계: 분수 B를 공통 분모로 바꾸기\n`;
+            explanation += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            explanation += `🔢 원래 분수 B: ${b.m}/${b.n}\n`;
+            explanation += `🎯 목표 분모: ${commonDenom}\n\n`;
+            
+            if (multiplierB === 1) {
+                explanation += `✅ 분모가 이미 ${commonDenom}이므로 변환 불필요!\n`;
+                explanation += `   결과: ${b.m}/${b.n}\n\n`;
+            } else {
+                explanation += `💭 질문: ${b.n}에 무엇을 곱해야 ${commonDenom}이 될까요?\n`;
+                explanation += `   ${b.n} × ? = ${commonDenom}\n`;
+                explanation += `   ? = ${commonDenom} ÷ ${b.n}\n`;
+                explanation += `   ? = ${multiplierB}\n\n`;
+                
+                explanation += `✏️ 계산 과정:\n`;
+                explanation += `   분자: ${b.m} × ${multiplierB} = ${bConverted.m}\n`;
+                explanation += `   분모: ${b.n} × ${multiplierB} = ${bConverted.n}\n\n`;
+                
+                explanation += `📝 분수 형태로 표현:\n`;
+                explanation += `\n`;
+                explanation += `        ${b.m}       ${multiplierB}       ${bConverted.m}\n`;
+                explanation += `       ───  ×  ───  =  ───\n`;
+                explanation += `        ${b.n}       ${multiplierB}       ${bConverted.n}\n`;
+                explanation += `\n`;
+                
+                explanation += `✅ 변환 완료: ${b.m}/${b.n} → ${bConverted.m}/${bConverted.n}\n\n`;
+            }
+
+            explanation += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            // 4단계: 크기 비교
+            explanation += `📌 4단계: 통분한 분수로 크기 비교하기\n`;
+            explanation += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            explanation += `📊 통분 전:\n`;
+            explanation += `   분수 A: ${a.m}/${a.n}\n`;
+            explanation += `   분수 B: ${b.m}/${b.n}\n`;
+            explanation += `   (분모가 다르면 크기 비교가 어려워요)\n\n`;
+            
+            explanation += `📊 통분 후:\n`;
+            explanation += `   분수 A: ${aConverted.m}/${aConverted.n}\n`;
+            explanation += `   분수 B: ${bConverted.m}/${bConverted.n}\n`;
+            explanation += `   (분모가 같으면 비교가 쉬워요!)\n\n`;
+            
+            explanation += `🔍 비교 방법:\n`;
+            explanation += `   분모가 ${commonDenom}으로 같으므로\n`;
+            explanation += `   분자만 비교하면 됩니다!\n\n`;
+            
+            explanation += `   분자 비교: ${aConverted.m} vs ${bConverted.m}\n`;
+            
+            if (aConverted.m > bConverted.m) {
+                explanation += `   ${aConverted.m} > ${bConverted.m}\n\n`;
+                explanation += `✅ 결론: ${aConverted.m}/${aConverted.n} > ${bConverted.m}/${bConverted.n}\n`;
+                explanation += `   따라서 분수 A(${a.m}/${a.n})가 분수 B(${b.m}/${b.n})보다 큽니다!\n\n`;
+            } else if (aConverted.m < bConverted.m) {
+                explanation += `   ${aConverted.m} < ${bConverted.m}\n\n`;
+                explanation += `✅ 결론: ${aConverted.m}/${aConverted.n} < ${bConverted.m}/${bConverted.n}\n`;
+                explanation += `   따라서 분수 B(${b.m}/${b.n})가 분수 A(${a.m}/${a.n})보다 큽니다!\n\n`;
+            } else {
+                explanation += `   ${aConverted.m} = ${bConverted.m}\n\n`;
+                explanation += `✅ 결론: ${aConverted.m}/${aConverted.n} = ${bConverted.m}/${bConverted.n}\n`;
+                explanation += `   따라서 두 분수(${a.m}/${a.n}와 ${b.m}/${b.n})는 크기가 같습니다!\n\n`;
+            }
+
+            explanation += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            // 요약 정리
+            explanation += `📚 전체 과정 요약\n`;
+            explanation += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            explanation += `1️⃣ 공통 분모 찾기: ${a.n}과 ${b.n}의 최소공배수 = ${commonDenom}\n\n`;
+            explanation += `2️⃣ 분수 A 통분:\n`;
+            explanation += `   ${a.m}/${a.n} × ${multiplierA}/${multiplierA} = ${aConverted.m}/${aConverted.n}\n\n`;
+            explanation += `3️⃣ 분수 B 통분:\n`;
+            explanation += `   ${b.m}/${b.n} × ${multiplierB}/${multiplierB} = ${bConverted.m}/${bConverted.n}\n\n`;
+            explanation += `4️⃣ 분자 비교:\n`;
+            explanation += `   ${aConverted.m} ${aConverted.m > bConverted.m ? '>' : aConverted.m < bConverted.m ? '<' : '='} ${bConverted.m}\n\n`;
+            
+            explanation += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            explanation += `💡 통분의 핵심 원리\n`;
+            explanation += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            explanation += `✔️ 분자와 분모에 같은 수를 곱하면\n`;
+            explanation += `   분수의 크기는 변하지 않아요\n\n`;
+            explanation += `✔️ 분모를 같게 만들면\n`;
+            explanation += `   분자만 비교해서 크기를 알 수 있어요\n\n`;
+            explanation += `✔️ 공통 분모는 두 분모의 최소공배수로\n`;
+            explanation += `   찾는 것이 가장 좋아요\n\n`;
+            explanation += `✔️ 피자나 초콜릿을 같은 크기로 자르면\n`;
+            explanation += `   조각 수를 비교하기 쉬운 것과 같은 원리예요!\n`;
+
+            alert(explanation);
+        },
+
+        setShape(shape) {
+            SimApp.state.shape = shape;
+            document.getElementById('btnCircle').classList.toggle('active', shape === 'circle');
+            document.getElementById('btnRect').classList.toggle('active', shape === 'rect');
+            SimApp.viz.draw();
+        },
+
+        simplify(target) {
+            const frac = target === 'a' ? SimApp.state.a : SimApp.state.b;
+            const simplified = SimApp.engine.simplify(frac);
+            
+            if (simplified.m === frac.m && simplified.n === frac.n) {
+                alert('이미 기약분수예요! 👍');
+                return;
+            }
+
+            if (target === 'a') {
+                document.getElementById('n1').value = simplified.n;
+                document.getElementById('m1').value = simplified.m;
+                document.getElementById('m1').max = simplified.n;
+            } else {
+                document.getElementById('n2').value = simplified.n;
+                document.getElementById('m2').value = simplified.m;
+                document.getElementById('m2').max = simplified.n;
+            }
+
+            this.update(target);
+            alert(`약분 완료! ${frac.m}/${frac.n} → ${simplified.m}/${simplified.n}`);
+        },
+
+        randomize(target) {
+            const n = Math.floor(Math.random() * 11) + 2; // 2-12
+            const m = Math.floor(Math.random() * n) + 1;  // 1-n
+
+            if (target === 'a') {
+                document.getElementById('n1').value = n;
+                document.getElementById('m1').value = m;
+                document.getElementById('m1').max = n;
+            } else {
+                document.getElementById('n2').value = n;
+                document.getElementById('m2').value = m;
+                document.getElementById('m2').max = n;
+            }
+
+            this.update(target);
+        }
+    },
+
+    quiz: {
+        start() {
+            // 문제 생성
+            const problemTypes = ['compare', 'compare', 'compare']; // 비교 문제
+            const type = problemTypes[Math.floor(Math.random() * problemTypes.length)];
+            
+            // 랜덤 분수 생성
+            const n1 = Math.floor(Math.random() * 8) + 2; // 2-9
+            const m1 = Math.floor(Math.random() * n1) + 1; // 1-n1
+            const n2 = Math.floor(Math.random() * 8) + 2; // 2-9
+            const m2 = Math.floor(Math.random() * n2) + 1; // 1-n2
+            
+            // 같은 분수가 나오지 않도록
+            if (m1/n1 === m2/n2 && Math.random() < 0.5) {
+                this.start(); // 재생성
+                return;
+            }
+
+            SimApp.state.quiz.problem = { a: {m: m1, n: n1}, b: {m: m2, n: n2} };
+            SimApp.state.quiz.active = true;
+            SimApp.state.quiz.attempts = 0;
+            
+            // 정답 계산
+            const valA = m1 / n1;
+            const valB = m2 / n2;
+            if (Math.abs(valA - valB) < 0.0001) {
+                SimApp.state.quiz.correctAnswer = '=';
+            } else if (valA > valB) {
+                SimApp.state.quiz.correctAnswer = '>';
+            } else {
+                SimApp.state.quiz.correctAnswer = '<';
+            }
+
+            // 문제를 화면에 표시
+            document.getElementById('n1').value = n1;
+            document.getElementById('m1').value = m1;
+            document.getElementById('m1').max = n1;
+            document.getElementById('n2').value = n2;
+            document.getElementById('m2').value = m2;
+            document.getElementById('m2').max = n2;
+            
+            // 슬라이더 비활성화
+            document.getElementById('n1').disabled = true;
+            document.getElementById('m1').disabled = true;
+            document.getElementById('n2').disabled = true;
+            document.getElementById('m2').disabled = true;
+
+            SimApp.ui.update();
+
+            // 답변 버튼 활성화
+            this.enableAnswerButtons();
+
+            // UI 업데이트
+            document.getElementById('quizAnswerSection').style.display = 'block';
+            document.getElementById('quizQuestion').innerHTML = `
+                <div style="font-size: 1.3rem; color: #1976d2;">
+                    ${m1}/${n1} ⚫ ${m2}/${n2}
+                </div>
+                <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                    ⚫ 안에 들어갈 기호는?
+                </div>
+            `;
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('quizExplanation').style.display = 'none';
+            document.getElementById('quizNextBtn').style.display = 'none';
+            document.getElementById('quizStatus').innerHTML = `
+                <strong style="color: #ff9800;">📊 점수: ${SimApp.state.quiz.score.correct}/${SimApp.state.quiz.score.total}</strong>
+            `;
+        },
+
+        answer(userAnswer) {
+            if (!SimApp.state.quiz.active) return;
+
+            SimApp.state.quiz.attempts++;
+            const correct = userAnswer === SimApp.state.quiz.correctAnswer;
+            const { a, b } = SimApp.state.quiz.problem;
+
+            if (correct) {
+                // 정답!
+                SimApp.state.quiz.score.correct++;
+                SimApp.state.quiz.score.total++;
+                SimApp.state.quiz.active = false; // 문제 종료
+                
+                document.getElementById('quizResult').innerHTML = `
+                    <strong style="color: #4caf50; font-size: 1.2rem;">🎉 정답입니다!</strong>
+                `;
+                document.getElementById('quizResult').style.background = '#c8e6c9';
+                document.getElementById('quizResult').style.display = 'block';
+
+                // 답변 버튼 비활성화
+                this.disableAnswerButtons();
+
+                // 설명 표시
+                this.showExplanation(true);
+                
+            } else {
+                // 오답
+                SimApp.state.quiz.score.total++;
+                
+                document.getElementById('quizResult').innerHTML = `
+                    <strong style="color: #f44336; font-size: 1.2rem;">❌ 틀렸어요</strong><br>
+                    <span style="font-size: 0.9rem;">다시 한 번 생각해보세요!</span>
+                `;
+                document.getElementById('quizResult').style.background = '#ffcdd2';
+                document.getElementById('quizResult').style.display = 'block';
+
+                if (SimApp.state.quiz.attempts >= 2) {
+                    // 2번 틀리면 정답 보여주기
+                    SimApp.state.quiz.active = false; // 문제 종료
+                    this.disableAnswerButtons(); // 답변 버튼 비활성화
+                    this.showExplanation(false);
+                } else {
+                    // 한 번 더 기회
+                    setTimeout(() => {
+                        document.getElementById('quizResult').style.display = 'none';
+                    }, 1500);
+                    return;
+                }
+            }
+
+            // 다음 문제 버튼 표시
+            document.getElementById('quizNextBtn').style.display = 'block';
+        },
+
+        disableAnswerButtons() {
+            // 답변 버튼들을 비활성화하고 시각적으로 표시
+            const buttons = document.querySelectorAll('#quizAnswerSection .op-btn');
+            buttons.forEach((btn, index) => {
+                if (index < 3) { // 처음 3개 버튼만 (>, =, <)
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                    btn.style.cursor = 'not-allowed';
+                }
+            });
+        },
+
+        enableAnswerButtons() {
+            // 답변 버튼들을 다시 활성화
+            const buttons = document.querySelectorAll('#quizAnswerSection .op-btn');
+            buttons.forEach((btn, index) => {
+                if (index < 3) { // 처음 3개 버튼만 (>, =, <)
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                }
+            });
+        },
+
+        showExplanation(isCorrect) {
+            const { a, b } = SimApp.state.quiz.problem;
+            const correctAnswer = SimApp.state.quiz.correctAnswer;
+            const commonDenom = SimApp.engine.lcm(a.n, b.n);
+            const aConverted = SimApp.engine.convertToCommonDenom(a, commonDenom);
+            const bConverted = SimApp.engine.convertToCommonDenom(b, commonDenom);
+
+            let explanation = `<div style="background: white; padding: 10px; border-radius: 5px; margin-top: 10px;">`;
+            
+            if (!isCorrect) {
+                explanation += `<strong style="color: #ff5722;">💡 정답: ${a.m}/${a.n} ${correctAnswer} ${b.m}/${b.n}</strong><br><br>`;
+            }
+
+            explanation += `<strong>📝 풀이 과정:</strong><br><br>`;
+
+            if (a.n === b.n) {
+                // 분모가 같은 경우
+                explanation += `분모가 ${a.n}으로 같으므로<br>`;
+                explanation += `분자만 비교하면 됩니다!<br><br>`;
+                explanation += `${a.m} ${correctAnswer} ${b.m}<br>`;
+                explanation += `따라서 ${a.m}/${a.n} ${correctAnswer} ${b.m}/${b.n}`;
+            } else {
+                // 통분이 필요한 경우
+                explanation += `<strong>1단계: 통분하기</strong><br>`;
+                explanation += `공통 분모: ${commonDenom}<br><br>`;
+                
+                explanation += `${a.m}/${a.n} = ${aConverted.m}/${aConverted.n}<br>`;
+                explanation += `(${a.n} × ${commonDenom/a.n} = ${commonDenom}이므로<br>`;
+                explanation += `${a.m} × ${commonDenom/a.n} = ${aConverted.m})<br><br>`;
+                
+                explanation += `${b.m}/${b.n} = ${bConverted.m}/${bConverted.n}<br>`;
+                explanation += `(${b.n} × ${commonDenom/b.n} = ${commonDenom}이므로<br>`;
+                explanation += `${b.m} × ${commonDenom/b.n} = ${bConverted.m})<br><br>`;
+                
+                explanation += `<strong>2단계: 비교하기</strong><br>`;
+                explanation += `${aConverted.m}/${aConverted.n} vs ${bConverted.m}/${bConverted.n}<br>`;
+                explanation += `${aConverted.m} ${correctAnswer} ${bConverted.m}<br>`;
+                explanation += `따라서 ${a.m}/${a.n} ${correctAnswer} ${b.m}/${b.n}`;
+            }
+
+            explanation += `</div>`;
+
+            document.getElementById('quizExplanation').innerHTML = explanation;
+            document.getElementById('quizExplanation').style.display = 'block';
+        },
+
+        next() {
+            // 슬라이더 활성화
+            document.getElementById('n1').disabled = false;
+            document.getElementById('m1').disabled = false;
+            document.getElementById('n2').disabled = false;
+            document.getElementById('m2').disabled = false;
+
+            SimApp.state.quiz.active = false;
+            document.getElementById('quizAnswerSection').style.display = 'none';
+            
+            // 새 문제 시작
+            this.start();
+        }
+    }
+};
+
+// 초기화
+window.onload = () => {
+    SimApp.viz.init();
+    SimApp.ui.update();
+};
+</script>
+</body>
+</html>

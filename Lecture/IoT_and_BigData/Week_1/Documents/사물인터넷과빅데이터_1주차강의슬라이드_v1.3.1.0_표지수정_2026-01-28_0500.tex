@@ -1,0 +1,1102 @@
+%!TEX program = xelatex
+\documentclass[aspectratio=169, 11pt]{beamer}
+
+% 한글 지원
+\usepackage{fontspec}
+\usepackage{kotex}
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+
+% 테마 설정 - 밝은 톤
+\usetheme{default}
+\usecolortheme{default}
+
+% 색상 정의 - 밝은 톤 기반
+\definecolor{MainBlue}{RGB}{41, 98, 163}        % 포인트 파랑
+\definecolor{LightBlue}{RGB}{230, 240, 250}     % 기존 호환용
+\definecolor{LightBg}{RGB}{248, 250, 252}       % 밝은 배경
+\definecolor{AccentOrange}{RGB}{230, 126, 34}   % 포인트 주황
+\definecolor{AccentGreen}{RGB}{39, 174, 96}     % 포인트 녹색
+\definecolor{AccentRed}{RGB}{192, 57, 43}       % 포인트 빨강
+\definecolor{TextDark}{RGB}{44, 62, 80}         % 본문 텍스트
+\definecolor{TableHeader}{RGB}{236, 240, 245}   % 표 헤더 옅은 배경
+\definecolor{BoxBorder}{RGB}{189, 195, 199}     % 박스 테두리
+
+% Beamer 색상 설정 - 밝은 톤
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=TextDark}
+\setbeamercolor{structure}{fg=MainBlue}
+\setbeamercolor{title}{fg=white, bg=MainBlue}
+\setbeamercolor{frametitle}{fg=MainBlue, bg=LightBg}
+\setbeamercolor{framesubtitle}{fg=TextDark}
+
+% 블록 스타일 - 밝은 배경, 선 두께 0.5pt
+\setbeamercolor{block title}{bg=MainBlue!15, fg=MainBlue}
+\setbeamercolor{block body}{bg=MainBlue!5, fg=TextDark}
+\setbeamercolor{block title alerted}{bg=AccentOrange!15, fg=AccentOrange!80!black}
+\setbeamercolor{block body alerted}{bg=AccentOrange!5, fg=TextDark}
+\setbeamercolor{block title example}{bg=AccentGreen!15, fg=AccentGreen!80!black}
+\setbeamercolor{block body example}{bg=AccentGreen!5, fg=TextDark}
+
+% 필수 패키지
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\graphicspath{{/home/claude/}}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows.meta, positioning, calc, shadows}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+
+% tcolorbox 스타일 정의 - 선 두께 0.5pt, 밝은 톤
+\tcbset{
+    basestyle/.style={
+        boxrule=0.5pt,
+        arc=3pt,
+        left=8pt, right=8pt, top=6pt, bottom=6pt,
+        fonttitle=\bfseries
+    }
+}
+
+\newtcolorbox{infobox}[1][]{
+    basestyle,
+    colback=MainBlue!5,
+    colframe=MainBlue!50,
+    coltitle=MainBlue!80!black,
+    title=#1
+}
+
+\newtcolorbox{warnbox}[1][]{
+    basestyle,
+    colback=AccentOrange!5,
+    colframe=AccentOrange!50,
+    coltitle=AccentOrange!80!black,
+    title=#1
+}
+
+\newtcolorbox{tipbox}[1][]{
+    basestyle,
+    colback=AccentGreen!5,
+    colframe=AccentGreen!50,
+    coltitle=AccentGreen!80!black,
+    title=#1
+}
+
+% 리스트 여백 조정
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamercolor{itemize item}{fg=MainBlue}
+\setbeamercolor{enumerate item}{fg=MainBlue}
+
+% 슬라이드 번호
+\setbeamertemplate{footline}{
+    \hfill\usebeamercolor[fg]{page number in head/foot}%
+    \usebeamerfont{page number in head/foot}\insertframenumber\,/\,\inserttotalframenumber\kern1em\vskip4pt%
+}
+\setbeamertemplate{navigation symbols}{}
+
+% 프레임 타이틀 스타일
+\setbeamertemplate{frametitle}{
+    \vspace{0.3cm}
+    \textbf{\Large\insertframetitle}
+    \vspace{0.1cm}
+    \par
+}
+
+% 표 스타일 - 첫 행 가운데정렬 + 옅은 배경
+\newcommand{\tablemark}{\rowcolor{TableHeader}}
+
+% 정보 설정
+\title[사물인터넷과 빅데이터]{\textbf{사물인터넷과 빅데이터}}
+\subtitle{1주차: 오리엔테이션}
+\author{양창모}
+\institute{청주교육대학교 컴퓨터교육과}
+\date{2026학년도 1학기}
+
+\begin{document}
+
+%========================================
+% 표지 - 배경과 보색 + 진하게
+%========================================
+\begin{frame}[plain]
+\begin{tikzpicture}[remember picture, overlay]
+    % 밝은 그라데이션 배경
+    \fill[LightBg] (current page.south west) rectangle (current page.north east);
+    % 상단 포인트 바
+    \fill[MainBlue] ([yshift=-3.8cm]current page.north west) rectangle (current page.north east);
+    % 제목 텍스트 (파란 바 안에 배치)
+    \node[anchor=center, text=white, font=\Huge\bfseries] at ([yshift=-1.5cm]current page.north) {사물인터넷과 빅데이터};
+    \node[anchor=center, text=white, font=\Large] at ([yshift=-2.8cm]current page.north) {1주차: 오리엔테이션};
+\end{tikzpicture}
+
+\vspace{4cm}
+
+\begin{center}
+{\large\color{TextDark} 양창모}\\[0.3em]
+{\color{TextDark} 청주교육대학교 컴퓨터교육과}\\[1em]
+{\color{MainBlue} 2026학년도 1학기}
+\end{center}
+\end{frame}
+
+%========================================
+% 목차
+%========================================
+\begin{frame}{오늘의 학습}
+\tableofcontents
+\end{frame}
+
+%========================================
+\section{강좌 소개}
+%========================================
+
+\begin{frame}{강좌 개요}
+\begin{block}{기본 정보}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{itemize}
+    \item \textbf{강좌명}: 사물인터넷과 빅데이터
+    \item \textbf{시간}: 수요일 6-7교시
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{itemize}
+    \item \textbf{학점}: 2학점 / 주 2시간
+    \item \textbf{대상}: 컴퓨터교육과 4학년
+\end{itemize}
+\end{column}
+\end{columns}
+\end{block}
+
+\vspace{0.5em}
+
+\begin{exampleblock}{목표}
+마이크로비트와 Grove 센서로 \textbf{데이터를 수집}하고, AI와 협업하여 \textbf{분석}하는 전 과정을 경험합니다.
+
+\vspace{0.3em}
+
+\begin{center}
+센서 $\rightarrow$ 데이터 수집 $\rightarrow$ 시각화 $\rightarrow$ 분석 $\rightarrow$ AI 모델
+\end{center}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{왜 이 강좌를 배우는가?}
+\begin{alertblock}{2022 개정 교육과정}
+초등학교 실과에 \textbf{피지컬 컴퓨팅}과 \textbf{데이터 수집·분석}이 포함되었습니다.
+\end{alertblock}
+
+\vspace{0.5em}
+
+\begin{columns}[T, totalwidth=\textwidth]
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{연계 내용}
+\begin{itemize}
+    \item 실과 - 피지컬 컴퓨팅
+    \item 실과 - 데이터 수집·분석
+    \item SW/AI 교육
+    \item 컴퓨팅 사고력
+\end{itemize}
+\end{exampleblock}
+\end{column}
+\hfill
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{본 강좌 활동}
+\begin{itemize}
+    \item 마이크로비트 + Grove 센서
+    \item 센서 데이터 + 설문 분석
+    \item 바이브 코딩, AI 모델 비교
+    \item 문제 정의, 데이터 기반 해결
+\end{itemize}
+\end{exampleblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{핵심 메시지 1}
+\begin{center}
+\vspace{1cm}
+\begin{tikzpicture}
+    \node[draw=MainBlue, fill=MainBlue!10, rounded corners=12pt, 
+          text width=12cm, align=center, inner sep=20pt] (box1) at (0,0) {
+        \Large\bfseries\color{MainBlue}
+        ``데이터는 원인을 말하지 않는다.\\[0.5em]
+        우리가 원인을 '추정'할 뿐이다.''
+    };
+\end{tikzpicture}
+\vspace{1cm}
+
+{\large 센서 데이터는 \textbf{현상}만 보여줍니다.\\[0.3em]
+\textbf{원인}은 우리가 해석해야 합니다.}
+\end{center}
+\end{frame}
+
+\begin{frame}{핵심 메시지 2}
+\begin{center}
+\vspace{1cm}
+\begin{tikzpicture}
+    \node[draw=AccentOrange, fill=AccentOrange!10, rounded corners=12pt, 
+          text width=12cm, align=center, inner sep=20pt] (box2) at (0,0) {
+        \Large\bfseries\color{AccentOrange}
+        ``AI는 집중도를 판단하지 않는다.\\[0.5em]
+        우리가 만든 기준을 계산할 뿐이다.''
+    };
+\end{tikzpicture}
+\vspace{1cm}
+
+{\large AI는 \textbf{도구}입니다.\\[0.3em]
+\textbf{기준}과 \textbf{해석}은 사람의 몫입니다.}
+\end{center}
+\end{frame}
+
+\begin{frame}{핵심 메시지 3}
+\begin{center}
+\vspace{1cm}
+\begin{tikzpicture}
+    \node[draw=AccentGreen, fill=AccentGreen!10, rounded corners=12pt, 
+          text width=12cm, align=center, inner sep=20pt] (box3) at (0,0) {
+        \Large\bfseries\color{AccentGreen}
+        ``이 수업은 코딩을 가르치지 않는다.\\[0.5em]
+        코딩을 의심하는 방법을 가르친다.''
+    };
+\end{tikzpicture}
+\vspace{1cm}
+
+{\large \textbf{바이브코딩}으로 코드를 생성하고,\\[0.3em]
+\textbf{비판적 사고}로 검증합니다.}
+\end{center}
+\end{frame}
+
+%========================================
+\section{15주 전체 흐름}
+%========================================
+
+\begin{frame}{15주 전체 흐름}
+\begin{center}
+\begin{tikzpicture}[
+    box/.style={draw, rounded corners=4pt, minimum width=2.2cm, minimum height=1cm, align=center, font=\scriptsize\bfseries},
+    arrow/.style={-{Stealth}, thick},
+    scale=0.95
+]
+    % 단계별 박스
+    \node[box, fill=MainBlue!20] (w1) at (0,0) {1\textasciitilde2주\\탐색};
+    \node[box, fill=MainBlue!30] (w2) at (2.8,0) {3\textasciitilde4주\\기획};
+    \node[box, fill=AccentGreen!30] (w3) at (5.6,0) {5\textasciitilde8주\\수집};
+    \node[box, fill=AccentOrange!30] (w4) at (8.4,0) {9\textasciitilde13주\\분석};
+    \node[box, fill=MainBlue!40] (w5) at (11.2,0) {14\textasciitilde15주\\발표};
+    
+    % 화살표
+    \draw[arrow] (w1) -- (w2);
+    \draw[arrow] (w2) -- (w3);
+    \draw[arrow] (w3) -- (w4);
+    \draw[arrow] (w4) -- (w5);
+    
+    % 라벨
+    \node[below=0.2cm of w1, font=\tiny, text=MainBlue] {대면};
+    \node[below=0.2cm of w2, font=\tiny, text=MainBlue] {대면};
+    \node[below=0.2cm of w3, font=\tiny, text=AccentGreen] {실습기간};
+    \node[below=0.2cm of w4, font=\tiny, text=AccentOrange] {대면};
+    \node[below=0.2cm of w5, font=\tiny, text=MainBlue] {대면};
+    
+    % 상단 설명
+    \node[above=0.2cm of w1, font=\tiny, align=center] {마이크로비트\\바이브코딩};
+    \node[above=0.2cm of w2, font=\tiny, align=center] {주제 선정\\수집기 제작};
+    \node[above=0.2cm of w3, font=\tiny, align=center] {실습학교\\데이터 수집};
+    \node[above=0.2cm of w4, font=\tiny, align=center] {바이브코딩\\시각화·분석};
+    \node[above=0.2cm of w5, font=\tiny, align=center] {보고서\\발표};
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5em}
+
+\begin{block}{핵심 포인트}
+\begin{itemize}
+    \item 5\textasciitilde8주: 교육실습 기간 중 실습학교에서 데이터 수집
+    \item 9\textasciitilde13주: 바이브코딩으로 데이터 시각화 및 AI 모델 제작
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{예시 프로젝트: 수업 집중도}
+\begin{alertblock}{핵심 질문}
+온도가 높으면 집중도가 낮아질까? $\rightarrow$ \textbf{상관관계} vs \textbf{인과관계}
+\end{alertblock}
+
+\vspace{0.3em}
+
+\begin{columns}[T, totalwidth=\textwidth]
+\begin{column}{0.48\textwidth}
+\begin{block}{측정 데이터}
+\begin{itemize}
+    \item 온도 센서 $\rightarrow$ 실내 온도
+    \item 소음 센서 $\rightarrow$ 소음 수준
+    \item 설문 조사 $\rightarrow$ 집중도 (1\textasciitilde5점)
+\end{itemize}
+\end{block}
+\end{column}
+\hfill
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{프로젝트 흐름}
+\begin{enumerate}
+    \item 센서로 데이터 수집
+    \item 바이브코딩으로 시각화
+    \item 패턴 발견 및 해석
+    \item AI 모델 제작 및 비교
+    \item 결과 발표
+\end{enumerate}
+\end{exampleblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{시뮬레이터: 탭 1 - 데이터 입력}
+\begin{block}{데이터 입력 탭}
+센서 데이터와 집중도 점수를 입력하는 화면
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+    % 배경
+    \fill[MainBlue!10, rounded corners=10pt] (-6,-3) rectangle (6,3);
+    
+    % 헤더
+    \fill[MainBlue, rounded corners=5pt] (-5.5,2.2) rectangle (5.5,2.8);
+    \node[white, font=\small\bfseries] at (0,2.5) {수업 집중도 분석 프로그램};
+    
+    % 탭 버튼
+    \fill[AccentOrange, rounded corners=3pt] (-5,1.5) rectangle (-3,2);
+    \node[white, font=\tiny\bfseries] at (-4,1.75) {데이터 입력};
+    \foreach \x/\name in {-1.5/데이터 분석, 1/학생 모델, 3.5/교수 모델} {
+        \fill[gray!30, rounded corners=3pt] (\x-1,1.5) rectangle (\x+1,2);
+        \node[font=\tiny] at (\x,1.75) {\name};
+    }
+    
+    % 입력 폼
+    \fill[white, rounded corners=5pt] (-5,-2.5) rectangle (-0.5,1.2);
+    \node[font=\scriptsize\bfseries, MainBlue] at (-2.75,0.9) {센서 데이터 입력};
+    \draw[gray] (-4.8,0.3) rectangle (-0.7,0.6);
+    \node[font=\tiny, gray] at (-2.75,0.45) {온도 (°C)};
+    \draw[gray] (-4.8,-0.3) rectangle (-0.7,0);
+    \node[font=\tiny, gray] at (-2.75,-0.15) {소음 (dB)};
+    \draw[gray] (-4.8,-0.9) rectangle (-0.7,-0.6);
+    \node[font=\tiny, gray] at (-2.75,-0.75) {집중도 (1-5)};
+    \fill[AccentGreen, rounded corners=3pt] (-3.5,-1.8) rectangle (-2,-1.3);
+    \node[white, font=\tiny\bfseries] at (-2.75,-1.55) {추가};
+    
+    % 데이터 테이블
+    \fill[white, rounded corners=5pt] (0.5,-2.5) rectangle (5.5,1.2);
+    \node[font=\scriptsize\bfseries, MainBlue] at (3,0.9) {수집된 데이터};
+    \draw[gray] (0.7,0.4) rectangle (5.3,0.7);
+    \node[font=\tiny] at (3,0.55) {번호 | 온도 | 소음 | 집중도};
+    \draw[gray] (0.7,0) rectangle (5.3,0.3);
+    \node[font=\tiny] at (3,0.15) {1 | 24°C | 45dB | 4};
+    \draw[gray] (0.7,-0.4) rectangle (5.3,-0.1);
+    \node[font=\tiny] at (3,-0.25) {2 | 28°C | 55dB | 2};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{시뮬레이터: 탭 2 - 데이터 분석}
+\begin{block}{데이터 분석 탭}
+산점도와 상관관계를 분석하는 화면
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+    % 배경
+    \fill[MainBlue!10, rounded corners=10pt] (-6,-3) rectangle (6,3);
+    
+    % 헤더
+    \fill[MainBlue, rounded corners=5pt] (-5.5,2.2) rectangle (5.5,2.8);
+    \node[white, font=\small\bfseries] at (0,2.5) {수업 집중도 분석 프로그램};
+    
+    % 탭 버튼
+    \fill[AccentOrange, rounded corners=3pt] (-3.5,1.5) rectangle (-1.5,2);
+    \node[white, font=\tiny\bfseries] at (-2.5,1.75) {데이터 분석};
+    
+    % 산점도
+    \fill[white, rounded corners=5pt] (-5.5,-2.5) rectangle (-0.5,1.2);
+    \node[font=\scriptsize\bfseries, MainBlue] at (-3,0.9) {온도 vs 집중도};
+    \draw[->] (-5,-2) -- (-5,0.5);
+    \draw[->] (-5,-2) -- (-1,-2);
+    \node[font=\tiny, rotate=90] at (-5.3,-0.75) {집중도};
+    \node[font=\tiny] at (-3,-2.3) {온도};
+    % 데이터 점
+    \fill[AccentOrange] (-4.5,-0.5) circle (3pt);
+    \fill[AccentOrange] (-4,-1) circle (3pt);
+    \fill[AccentOrange] (-3.5,0) circle (3pt);
+    \fill[AccentOrange] (-3,-0.3) circle (3pt);
+    \fill[AccentOrange] (-2.5,-1.5) circle (3pt);
+    \fill[AccentOrange] (-2,-1.2) circle (3pt);
+    % 추세선
+    \draw[red, thick, dashed] (-4.8,0.2) -- (-1.5,-1.8);
+    
+    % 통계
+    \fill[white, rounded corners=5pt] (0.5,-2.5) rectangle (5.5,1.2);
+    \node[font=\scriptsize\bfseries, MainBlue] at (3,0.9) {상관관계 분석};
+    \node[font=\small, align=left] at (3,-0.5) {
+        상관계수: \textbf{-0.72}\\[0.3em]
+        해석: 강한 음의 상관\\[0.3em]
+        온도↑ $\rightarrow$ 집중도↓
+    };
+    \fill[AccentOrange!20, rounded corners=3pt] (1,-2.3) rectangle (5,-1.5);
+    \node[font=\tiny, AccentOrange, align=center] at (3,-1.9) {주의: 상관관계 $\neq$ 인과관계};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{시뮬레이터: 탭 3 - 학생 모델}
+\begin{block}{학생 모델 탭 (규칙 기반 AI)}
+학생이 직접 규칙을 정하는 AI 모델
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+    % 배경
+    \fill[MainBlue!10, rounded corners=10pt] (-6,-3) rectangle (6,3);
+    
+    % 헤더
+    \fill[MainBlue, rounded corners=5pt] (-5.5,2.2) rectangle (5.5,2.8);
+    \node[white, font=\small\bfseries] at (0,2.5) {수업 집중도 분석 프로그램};
+    
+    % 탭 버튼
+    \fill[AccentGreen, rounded corners=3pt] (-1,1.5) rectangle (1,2);
+    \node[white, font=\tiny\bfseries] at (0,1.75) {학생 모델};
+    
+    % 규칙 설정
+    \fill[white, rounded corners=5pt] (-5.5,-2.5) rectangle (-0.3,1.2);
+    \node[font=\scriptsize\bfseries, MainBlue] at (-2.9,0.9) {나의 규칙 설정};
+    
+    \node[font=\tiny, align=left] at (-2.9,0.2) {
+        \textbf{IF} 온도 $<$ 25°C\\
+        \textbf{AND} 소음 $<$ 50dB\\
+        \textbf{THEN} 집중도 = 높음
+    };
+    
+    \draw[gray, dashed] (-5.3,-0.3) -- (-0.5,-0.3);
+    
+    \node[font=\tiny, align=left] at (-2.9,-1) {
+        \textbf{IF} 온도 $\geq$ 28°C\\
+        \textbf{OR} 소음 $\geq$ 60dB\\
+        \textbf{THEN} 집중도 = 낮음
+    };
+    
+    \fill[AccentGreen, rounded corners=3pt] (-4,-2.2) rectangle (-1.8,-1.7);
+    \node[white, font=\tiny\bfseries] at (-2.9,-1.95) {규칙 적용};
+    
+    % 결과
+    \fill[white, rounded corners=5pt] (0.3,-2.5) rectangle (5.5,1.2);
+    \node[font=\scriptsize\bfseries, MainBlue] at (2.9,0.9) {예측 결과};
+    
+    \fill[AccentGreen!20, rounded corners=5pt] (0.8,-0.5) rectangle (5,0.5);
+    \node[font=\normalsize\bfseries, AccentGreen] at (2.9,0) {정확도: 68\%};
+    
+    \node[font=\tiny, align=center] at (2.9,-1.5) {
+        내가 만든 규칙으로\\
+        데이터를 분류한 결과
+    };
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{시뮬레이터: 탭 4 - 교수 모델}
+\begin{block}{교수 모델 탭 (머신러닝 AI)}
+데이터가 스스로 규칙을 찾는 AI 모델
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+    % 배경
+    \fill[MainBlue!10, rounded corners=10pt] (-6,-3) rectangle (6,3);
+    
+    % 헤더
+    \fill[MainBlue, rounded corners=5pt] (-5.5,2.2) rectangle (5.5,2.8);
+    \node[white, font=\small\bfseries] at (0,2.5) {수업 집중도 분석 프로그램};
+    
+    % 탭 버튼
+    \fill[purple, rounded corners=3pt] (1.5,1.5) rectangle (4,2);
+    \node[white, font=\tiny\bfseries] at (2.75,1.75) {교수 모델};
+    
+    % 학습 과정
+    \fill[white, rounded corners=5pt] (-5.5,-2.5) rectangle (-0.3,1.2);
+    \node[font=\scriptsize\bfseries, MainBlue] at (-2.9,0.9) {머신러닝 학습};
+    
+    \node[font=\tiny, align=center] at (-2.9,0.2) {
+        데이터를 입력하면\\
+        AI가 \textbf{자동으로}\\
+        최적의 규칙을 찾습니다
+    };
+    
+    \draw[->, thick, purple] (-4,-0.8) -- (-1.8,-0.8);
+    \node[font=\tiny] at (-2.9,-1.1) {학습 진행 중...};
+    
+    \fill[purple, rounded corners=3pt] (-4,-2.2) rectangle (-1.8,-1.7);
+    \node[white, font=\tiny\bfseries] at (-2.9,-1.95) {모델 학습};
+    
+    % 결과
+    \fill[white, rounded corners=5pt] (0.3,-2.5) rectangle (5.5,1.2);
+    \node[font=\scriptsize\bfseries, MainBlue] at (2.9,0.9) {예측 결과};
+    
+    \fill[purple!20, rounded corners=5pt] (0.8,-0.5) rectangle (5,0.5);
+    \node[font=\normalsize\bfseries, purple] at (2.9,0) {정확도: 85\%};
+    
+    \node[font=\tiny, align=center] at (2.9,-1.5) {
+        데이터에서 찾은 규칙:\\
+        온도×0.3 + 소음×0.5 + ...
+    };
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{시뮬레이터: 탭 5 - 모델 비교}
+\begin{block}{모델 비교 탭}
+학생 모델과 교수 모델의 정확도를 비교
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+    % 배경
+    \fill[MainBlue!10, rounded corners=10pt] (-6,-2.8) rectangle (6,2.8);
+    
+    % 헤더
+    \fill[MainBlue, rounded corners=5pt] (-5.5,2) rectangle (5.5,2.6);
+    \node[white, font=\small\bfseries] at (0,2.3) {수업 집중도 분석 프로그램};
+    
+    % 탭 버튼
+    \fill[red!70, rounded corners=3pt] (3.5,1.3) rectangle (5.5,1.8);
+    \node[white, font=\tiny\bfseries] at (4.5,1.55) {모델 비교};
+    
+    % 비교 차트
+    \fill[white, rounded corners=5pt] (-5.5,-2.3) rectangle (5.5,1);
+    \node[font=\scriptsize\bfseries, MainBlue] at (0,0.7) {정확도 비교};
+    
+    % 막대 그래프
+    \fill[AccentGreen] (-3,-1.6) rectangle (-1.5,-0.1);
+    \node[white, font=\small\bfseries] at (-2.25,-0.85) {68\%};
+    \node[font=\tiny] at (-2.25,-1.9) {학생 모델};
+    
+    \fill[purple] (1.5,-1.6) rectangle (3,0.3);
+    \node[white, font=\small\bfseries] at (2.25,-0.65) {85\%};
+    \node[font=\tiny] at (2.25,-1.9) {교수 모델};
+    
+    % 핵심 메시지
+    \node[font=\scriptsize, align=center, AccentOrange] at (0,-2.6) {
+        $\rightarrow$ 머신러닝이 더 정확하지만, \textbf{규칙을 설명할 수 없다!}
+    };
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+%========================================
+\section{바이브코딩 소개}
+%========================================
+
+\begin{frame}{바이브코딩이란?}
+\begin{block}{정의}
+\textbf{바이브코딩(Vibe Coding)} = 코드를 직접 작성하지 않고, AI와의 대화를 통해 프로그램을 만드는 방식
+\end{block}
+
+\vspace{0.3em}
+
+\begin{columns}[T, totalwidth=\textwidth]
+\begin{column}{0.48\textwidth}
+\begin{alertblock}{전통적 프로그래밍}
+\begin{enumerate}
+    \item 문법 학습
+    \item 코드 작성
+    \item 디버깅
+    \item 반복...
+\end{enumerate}
+\end{alertblock}
+\end{column}
+\hfill
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{바이브코딩}
+\begin{enumerate}
+    \item 요구사항 설명
+    \item AI가 코드 생성
+    \item 결과 확인 및 수정 요청
+    \item 완성!
+\end{enumerate}
+\end{exampleblock}
+\end{column}
+\end{columns}
+
+\vspace{0.3em}
+
+\begin{center}
+\large\bfseries\color{MainBlue}
+``코드를 짜지 않고 코드를 만든다''
+\end{center}
+\end{frame}
+
+\begin{frame}{바이브코딩 vs 전통적 프로그래밍}
+\begin{center}
+\begin{tikzpicture}[
+    box/.style={draw, rounded corners=3pt, minimum width=1.8cm, minimum height=0.7cm, align=center, font=\scriptsize},
+    arrow/.style={-{Stealth}, thick},
+    scale=0.9
+]
+    % 전통적 프로그래밍
+    \node[font=\small\bfseries, text=gray] at (-1.5, 1.5) {전통적};
+    \node[box, fill=gray!20] (p1) at (1, 1.5) {사람};
+    \node[box, fill=gray!20] (p2) at (3.2, 1.5) {문법 학습};
+    \node[box, fill=gray!20] (p3) at (5.4, 1.5) {코드 작성};
+    \node[box, fill=gray!20] (p4) at (7.6, 1.5) {디버깅};
+    \node[box, fill=MainBlue!30] (p5) at (9.8, 1.5) {프로그램};
+    
+    \draw[arrow, gray] (p1) -- (p2);
+    \draw[arrow, gray] (p2) -- (p3);
+    \draw[arrow, gray] (p3) -- (p4);
+    \draw[arrow, gray] (p4) -- (p5);
+    
+    % 바이브코딩
+    \node[font=\small\bfseries, text=AccentGreen] at (-1.5, -0.5) {바이브코딩};
+    \node[box, fill=AccentGreen!20] (v1) at (1, -0.5) {사람};
+    \node[box, fill=AccentGreen!20] (v2) at (3.8, -0.5) {요구사항 설명};
+    \node[box, fill=AccentOrange!30] (v3) at (6.8, -0.5) {AI};
+    \node[box, fill=MainBlue!30] (v4) at (9.8, -0.5) {프로그램};
+    
+    \draw[arrow, AccentGreen] (v1) -- (v2);
+    \draw[arrow, AccentGreen] (v2) -- (v3);
+    \draw[arrow, AccentGreen] (v3) -- (v4);
+    
+    % 피드백
+    \draw[arrow, AccentOrange, dashed] (v4.south) -- ++(0,-0.4) -| node[pos=0.25, below, font=\tiny] {수정 요청} (v2.south);
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5em}
+
+\begin{exampleblock}{핵심 차이}
+\begin{itemize}
+    \item 전통적: 문법을 알아야 코드를 작성할 수 있음
+    \item 바이브코딩: \textbf{무엇을 만들고 싶은지}만 설명하면 됨
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{바이브코딩 시연}
+\begin{alertblock}{오늘 시연할 프로그램}
+교수자가 바이브코딩으로 제작한 \textbf{수업 집중도 분석 프로그램}
+\end{alertblock}
+
+\vspace{0.5em}
+
+\begin{block}{프로그램 기능 (5개 탭)}
+\begin{enumerate}
+    \item \textbf{데이터 입력}: 센서 데이터 + 집중도 입력
+    \item \textbf{데이터 분석}: 산점도, 상관관계 분석
+    \item \textbf{학생 모델}: 규칙 기반 AI (내가 규칙을 정함)
+    \item \textbf{교수 모델}: 머신러닝 AI (데이터가 규칙을 알려줌)
+    \item \textbf{모델 비교}: 두 모델의 정확도 비교
+\end{enumerate}
+\end{block}
+
+\vspace{0.5em}
+
+\begin{center}
+\Large\bfseries\color{AccentOrange}
+$\rightarrow$ 시연 시작
+\end{center}
+\end{frame}
+
+%========================================
+\section{마이크로비트 소개}
+%========================================
+
+\begin{frame}{마이크로비트란?}
+\begin{block}{마이크로비트 V2}
+영국 BBC가 개발한 교육용 마이크로컨트롤러 --- 초등학교 피지컬 컴퓨팅 교육에 최적화
+\end{block}
+
+\begin{columns}[T, totalwidth=\textwidth]
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{내장 센서 (6종)}
+\scriptsize
+\begin{itemize}
+    \item 온도 센서, 빛 센서
+    \item 가속도 센서, 나침반 센서
+    \item \textbf{마이크} (V2 전용)
+    \item \textbf{터치 로고} (V2 전용)
+\end{itemize}
+\end{exampleblock}
+\end{column}
+\hfill
+\begin{column}{0.48\textwidth}
+\begin{alertblock}{특징}
+\scriptsize
+\begin{itemize}
+    \item 5×5 LED 디스플레이
+    \item 버튼 A, B
+    \item 블루투스 / USB 연결
+    \item \textbf{블록 코딩} (MakeCode)
+\end{itemize}
+\end{alertblock}
+\end{column}
+\end{columns}
+
+\begin{center}
+\includegraphics[height=1.5cm]{microbit_front.png}
+\hspace{1cm}
+\includegraphics[height=1.5cm]{microbit_back.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Grove 확장 시스템}
+\begin{block}{Grove 확장이란?}
+I2C 포트로 다양한 외부 센서를 마이크로비트에 연결하여 데이터 수집 범위를 확장
+\end{block}
+
+\begin{columns}[T, totalwidth=\textwidth]
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{연결 가능 센서}
+\scriptsize
+\begin{itemize}
+    \item 온습도 센서 (SHT40)
+    \item 기압 센서 (BMP280)
+    \item CO2/VOC 센서 (SGP30)
+    \item 거리 센서 (VL53L0X)
+\end{itemize}
+\end{exampleblock}
+
+\begin{alertblock}{최대 연결}
+\scriptsize
+I2C 포트로 최대 \textbf{6개} 센서 동시 연결
+\end{alertblock}
+\end{column}
+\hfill
+\begin{column}{0.48\textwidth}
+\begin{center}
+\includegraphics[height=3cm]{grove_shield.jpg}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Grove I2C 센서 (1/2) --- 환경 센서}
+\begin{columns}[T, totalwidth=\textwidth]
+\begin{column}{0.24\textwidth}
+\begin{center}
+\includegraphics[height=1.4cm]{sensor_03_sht35.jpg}\\[0.1em]
+{\scriptsize\textbf{SHT35}}\\[-0.2em]
+{\tiny 온습도 ±1.5\%RH}
+\end{center}
+\end{column}
+\begin{column}{0.24\textwidth}
+\begin{center}
+\includegraphics[height=1.4cm]{sensor_10_aht20.png}\\[0.1em]
+{\scriptsize\textbf{AHT20}}\\[-0.2em]
+{\tiny 온습도 저가형}
+\end{center}
+\end{column}
+\begin{column}{0.24\textwidth}
+\begin{center}
+\includegraphics[height=1.4cm]{sensor_09_mcp9808.jpg}\\[0.1em]
+{\scriptsize\textbf{MCP9808}}\\[-0.2em]
+{\tiny 고정밀 온도}
+\end{center}
+\end{column}
+\begin{column}{0.24\textwidth}
+\begin{center}
+\includegraphics[height=1.4cm]{sensor_06_bmp280.jpg}\\[0.1em]
+{\scriptsize\textbf{BMP280}}\\[-0.2em]
+{\tiny 기압/고도}
+\end{center}
+\end{column}
+\end{columns}
+
+\vspace{0.2cm}
+
+\begin{columns}[T, totalwidth=\textwidth]
+\begin{column}{0.24\textwidth}
+\begin{center}
+\includegraphics[height=1.4cm]{sensor_07_bme680.jpg}\\[0.1em]
+{\scriptsize\textbf{BME680}}\\[-0.2em]
+{\tiny 온습도+기압+가스}
+\end{center}
+\end{column}
+\begin{column}{0.74\textwidth}
+\begin{exampleblock}{환경 센서 활용 예시}
+\scriptsize
+\begin{itemize}
+    \item 교실 쾌적도 측정: SHT35 + BME680
+    \item 날씨 변화 감지: BMP280
+    \item 환기 필요성 판단: BME680 (가스 센서)
+\end{itemize}
+\end{exampleblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Grove I2C 센서 (2/2) --- 광학/모션/출력}
+\begin{columns}[T, totalwidth=\textwidth]
+\begin{column}{0.24\textwidth}
+\begin{center}
+\includegraphics[height=1.4cm]{sensor_01_light.jpg}\\[0.1em]
+{\scriptsize\textbf{TSL2561}}\\[-0.2em]
+{\tiny 조도 센서}
+\end{center}
+\end{column}
+\begin{column}{0.24\textwidth}
+\begin{center}
+\includegraphics[height=1.4cm]{sensor_02_color.jpg}\\[0.1em]
+{\scriptsize\textbf{TCS34725}}\\[-0.2em]
+{\tiny RGB 색상}
+\end{center}
+\end{column}
+\begin{column}{0.24\textwidth}
+\begin{center}
+\includegraphics[height=1.4cm]{sensor_05_tof.jpg}\\[0.1em]
+{\scriptsize\textbf{VL53L0X}}\\[-0.2em]
+{\tiny 거리 (ToF)}
+\end{center}
+\end{column}
+\begin{column}{0.24\textwidth}
+\begin{center}
+\includegraphics[height=1.4cm]{sensor_04_accel_gyro.jpg}\\[0.1em]
+{\scriptsize\textbf{6축 IMU}}\\[-0.2em]
+{\tiny 가속도+자이로}
+\end{center}
+\end{column}
+\end{columns}
+
+\vspace{0.2cm}
+
+\begin{columns}[T, totalwidth=\textwidth]
+\begin{column}{0.24\textwidth}
+\begin{center}
+\includegraphics[height=1.4cm]{sensor_08_oled.jpg}\\[0.1em]
+{\scriptsize\textbf{OLED}}\\[-0.2em]
+{\tiny 128×64 디스플레이}
+\end{center}
+\end{column}
+\begin{column}{0.74\textwidth}
+\begin{alertblock}{광학/모션 센서 활용 예시}
+\scriptsize
+\begin{itemize}
+    \item 학습 환경 밝기: TSL2561
+    \item 과일 익음 판정: TCS34725
+    \item 사람 통과 감지: VL53L0X
+    \item 동작 인식: 6축 IMU
+\end{itemize}
+\end{alertblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{MakeCode 소개}
+\begin{block}{MakeCode란?}
+마이크로비트 프로그래밍을 위한 \textbf{블록 코딩} 환경
+\end{block}
+
+\begin{exampleblock}{장점}
+\scriptsize
+\begin{itemize}
+    \item 드래그 앤 드롭으로 코딩
+    \item 실시간 시뮬레이터
+    \item 한글 지원
+    \item 웹 브라우저에서 실행
+\end{itemize}
+\end{exampleblock}
+
+\begin{alertblock}{접속 방법 \hfill $\rightarrow$ 지금 바로 접속해봅시다!}
+\begin{center}
+\normalsize\bfseries
+makecode.microbit.org
+\end{center}
+\end{alertblock}
+\end{frame}
+
+%========================================
+\section{평가 안내}
+%========================================
+
+\begin{frame}{평가 개요}
+\begin{table}
+\centering
+\begin{tabular}{l c l}
+\toprule
+\textbf{평가 항목} & \textbf{비율} & \textbf{시기} \\
+\midrule
+주간 과제 & \textbf{80\%} & 1\textasciitilde4주, 8\textasciitilde13주 \\
+최종 프로젝트 & \textbf{15\%} & 14\textasciitilde15주차 \\
+개인 성찰 보고서 & \textbf{5\%} & 15주차 \\
+\midrule
+\textbf{합계} & \textbf{100\%} & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\vspace{1em}
+
+\begin{alertblock}{중요 안내}
+\begin{itemize}
+    \item 주간 과제: 주당 \textbf{10\%} × 8주 = 80\%
+    \item \textbf{1주차 과제는 평가 점검용} $\rightarrow$ 모든 학생 10\% 만점
+    \item 5\textasciitilde7주차(실습기간)는 별도 과제 없음
+\end{itemize}
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{바이브코딩 주차 제출물}
+\begin{block}{바이브코딩 활용 주차}
+1주차, 2주차, 9\textasciitilde13주차 (총 7주)
+\end{block}
+
+\begin{columns}[T, totalwidth=\textwidth]
+\begin{column}{0.55\textwidth}
+\begin{exampleblock}{제출물 (3가지)}
+\small
+\begin{enumerate}
+    \item \textbf{프로그램 코드}: 바이브코딩으로 생성한 코드
+    \item \textbf{대화목록 전문} (PDF): 프롬프트 + Claude 응답 전체
+    \item \textbf{대화목록 요약본} (PDF): 프롬프트 + Claude 응답 3줄 요약
+\end{enumerate}
+\end{exampleblock}
+\end{column}
+\hfill
+\begin{column}{0.42\textwidth}
+\begin{alertblock}{제출 안내}
+\small
+\begin{itemize}
+    \item \textbf{제출처}: LMS
+    \item \textbf{기한}: 매주 일요일 자정
+    \item \textbf{지각 감점}: 1일당 10\%
+\end{itemize}
+\end{alertblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+%========================================
+\section{오늘의 실습}
+%========================================
+
+\begin{frame}{오늘의 실습: LED에 이름 표시하기}
+\begin{block}{실습 목표}
+마이크로비트 LED에 자신의 이름(이니셜)을 표시하는 프로그램 만들기
+\end{block}
+
+\begin{columns}[T, totalwidth=\textwidth]
+\begin{column}{0.55\textwidth}
+\begin{exampleblock}{실습 단계 (바이브코딩 활용)}
+\small
+\begin{enumerate}
+    \item Claude에게 MakeCode 블록 코드 요청하기
+    \item MakeCode에서 프로그램 만들기
+    \item 시뮬레이터에서 결과 확인
+    \item 실제 마이크로비트에서 실행
+    \item 실행 모습 \textbf{사진} 촬영
+\end{enumerate}
+\end{exampleblock}
+\end{column}
+\hfill
+\begin{column}{0.42\textwidth}
+\begin{alertblock}{제출물}
+\small
+사진 + 대화목록 전문(PDF) + 대화목록 요약본(PDF)
+\end{alertblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{프롬프트 예시}
+\begin{block}{Claude에게 요청하기}
+\begin{center}
+\begin{tikzpicture}
+\node[draw=MainBlue, fill=LightBlue, rounded corners=6pt, 
+      text width=9.5cm, align=left, inner sep=6pt] {
+\scriptsize\textbf{프롬프트 예시:}\\[0.1em]
+``마이크로비트 LED에 'KIM'이라는 글자를 표시하는 MakeCode 블록 코드를 알려줘.\\
+시작하면 블록 안에 문자열 표시 블록을 넣으면 돼.\\
+한 글자씩 스크롤되면서 표시되도록 해줘.''
+};
+\end{tikzpicture}
+\end{center}
+\end{block}
+
+\begin{exampleblock}{좋은 프롬프트의 조건}
+\scriptsize
+\begin{itemize}
+    \item \textbf{목표} 명확히 설명: ``LED에 이름 표시''
+    \item \textbf{맥락} 제공: ``MakeCode 블록 코드''
+    \item \textbf{조건} 명시: ``스크롤되면서 표시''
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+%========================================
+\section{다음 주 안내}
+%========================================
+
+\begin{frame}{2주차 예고}
+\begin{block}{2주차: 바이브코딩 체험}
+\begin{itemize}
+    \item 바이브코딩 개념 설명: ``코드를 짜지 않고 코드를 만든다''
+    \item Claude 사용법 시연
+    \item 간단한 바이브코딩 체험: \textbf{자기소개 웹페이지} 만들기
+    \item 센서 탐색: 마이크로비트 내장 센서 + Grove 확장 센서
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{1주차 과제 안내}
+\begin{alertblock}{과제 마감}
+\begin{center}
+\large\bfseries
+일요일 자정까지 LMS 제출
+\end{center}
+\end{alertblock}
+
+\begin{columns}[T, totalwidth=\textwidth]
+\begin{column}{0.55\textwidth}
+\begin{exampleblock}{제출물 (3가지)}
+\small
+\begin{enumerate}
+    \item \textbf{실행 사진}: 마이크로비트 LED에 이름 표시된 모습
+    \item \textbf{대화목록 전문} (PDF): 프롬프트 + Claude 응답 전체
+    \item \textbf{대화목록 요약본} (PDF): 프롬프트 + Claude 응답 3줄 요약
+\end{enumerate}
+\end{exampleblock}
+\end{column}
+\hfill
+\begin{column}{0.42\textwidth}
+\begin{block}{참고}
+\small
+\begin{itemize}
+    \item 1주차 과제는 \textbf{평가 점검용}\\모든 학생 10\% 만점 부여
+    \item 지각 감점: 1일당 10\%
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+%========================================
+% 마무리
+%========================================
+
+\begin{frame}{}
+\begin{center}
+\vspace{1cm}
+
+{\Huge\bfseries\color{MainBlue} 감사합니다}
+
+\vspace{1.5cm}
+
+{\large 질문이 있으신가요?}
+
+\vspace{0.8cm}
+
+{\small cmyang@cje.ac.kr}
+
+\vspace{1cm}
+
+{\footnotesize 사물인터넷과 빅데이터 --- 1주차 강의노트 v1.8.0.0}
+
+\end{center}
+\end{frame}
+
+\end{document}

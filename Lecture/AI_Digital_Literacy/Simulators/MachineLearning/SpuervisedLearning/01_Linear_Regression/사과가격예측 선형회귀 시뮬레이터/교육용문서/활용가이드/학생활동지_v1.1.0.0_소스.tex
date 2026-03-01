@@ -1,0 +1,368 @@
+% XeLaTeX 컬러 이모지 학생 활동지
+% 컴파일: xelatex worksheet.tex
+
+\documentclass[11pt, a4paper]{article}
+
+% 한글 지원
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{korean}
+\setotherlanguage{english}
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+
+% 이미지 (컬러 이모지)
+\usepackage{graphicx}
+\graphicspath{{./emoji/}}
+\newcommand{\emoji}[1]{\raisebox{-0.15em}{\includegraphics[height=1em]{#1}}}
+\newcommand{\emojiL}[1]{\raisebox{-0.2em}{\includegraphics[height=1.5em]{#1}}}
+\newcommand{\emojiXL}[1]{\raisebox{-0.2em}{\includegraphics[height=3em]{#1}}}
+
+% 페이지 설정
+\usepackage[margin=2cm, headheight=14pt]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\emoji{apple} 사과 가격 예측 시뮬레이터 활동지}
+\cfoot{- \thepage -}
+
+% 색상
+\usepackage{xcolor}
+\definecolor{primary}{HTML}{1565C0}
+\definecolor{secondary}{HTML}{00796B}
+\definecolor{accent}{HTML}{F57C00}
+\definecolor{success}{HTML}{2E7D32}
+\definecolor{purple}{HTML}{7B1FA2}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{lightgreen}{HTML}{E8F5E9}
+\definecolor{lightyellow}{HTML}{FFF8E1}
+\definecolor{lightcyan}{HTML}{E0F2F1}
+\definecolor{lightpurple}{HTML}{F3E5F5}
+
+% 표, 박스
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{colortbl}
+
+% 기타
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{amssymb}  % \square 명령어
+\onehalfspacing
+
+% 섹션 스타일
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries\color{primary}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries\color{secondary}}{\thesubsection}{0.5em}{}
+
+% tcolorbox 설정
+\tcbset{
+    boxrule=0.5pt,
+    arc=3mm,
+    left=5pt,
+    right=5pt,
+    top=5pt,
+    bottom=5pt
+}
+
+\begin{document}
+
+% ===== 표지 =====
+\begin{center}
+\vspace*{0.5cm}
+
+{\fontsize{60pt}{60pt}\selectfont \emojiXL{apple}}
+
+\vspace{0.3cm}
+
+{\Huge\bfseries\color{primary} 사과 가격 예측 시뮬레이터}
+
+\vspace{0.2cm}
+
+{\LARGE\bfseries\color{secondary} 학생 활동지}
+
+\vspace{0.8cm}
+
+\begin{tabular}{|p{3cm}|p{6cm}|}
+\hline
+\cellcolor{gray!20}\textbf{학년 / 반} & \\[0.5cm]
+\hline
+\cellcolor{gray!20}\textbf{이\quad\quad 름} & \\[0.5cm]
+\hline
+\cellcolor{gray!20}\textbf{날\quad\quad 짜} & \\[0.5cm]
+\hline
+\end{tabular}
+
+\vspace{0.8cm}
+
+\begin{tcolorbox}[colback=lightyellow, colframe=accent, title={\emojiL{books} \textbf{학습 목표}}, fonttitle=\bfseries\color{accent}]
+\begin{enumerate}[leftmargin=*]
+    \item 품질 점수가 사과 가격에 어떤 영향을 미치는지 이해한다.
+    \item AI가 데이터로부터 규칙을 학습하는 과정을 체험한다.
+    \item 학습된 모델로 새로운 사과의 가격을 예측해본다.
+\end{enumerate}
+\end{tcolorbox}
+
+\end{center}
+
+\newpage
+
+% ===== 사용 방법 =====
+\begin{tcolorbox}[colback=lightblue, colframe=primary, title={\emojiL{openbook} \textbf{활동지 사용 방법}}, fonttitle=\bfseries\color{primary}]
+\begin{enumerate}[leftmargin=*]
+    \item[\textcolor{primary}{\textbf{①}}] 시뮬레이터를 실행하고 선생님의 안내에 따라 활동을 진행하세요.
+    \item[\textcolor{primary}{\textbf{②}}] 각 활동마다 빈칸에 관찰한 내용이나 결과를 기록하세요.
+    \item[\textcolor{primary}{\textbf{③}}] 궁금한 점은 손을 들고 질문하세요!
+\end{enumerate}
+\vspace{0.2cm}
+\colorbox{blue!15}{\emoji{bulb} \textbf{팁:} \textit{정답이 없는 질문도 있어요. 자신의 생각을 자유롭게 적어보세요!}}
+\end{tcolorbox}
+
+\vspace{0.4cm}
+
+% ===== 1차시 =====
+\begin{tcolorbox}[colback=lightblue, colframe=primary]
+\begin{center}
+{\Large\bfseries \emoji{bluebook} 1차시: AI 학습의 원리 이해하기}
+\end{center}
+\end{tcolorbox}
+
+\vspace{0.4cm}
+
+\subsection*{\emoji{pencil} 활동 1: 품질 점수 계산하기}
+
+사과의 당도와 무게로 품질 점수를 계산해봅시다.
+
+\begin{tcolorbox}[colback=lightpurple, colframe=purple, title={\emoji{triangle} \textbf{품질 점수 공식}}, fonttitle=\bfseries\color{purple}]
+\texttt{당도 점수 = (당도 - 10) ÷ 8 × 50}\\
+\texttt{무게 점수 = (무게 - 150) ÷ 200 × 50}\\
+\texttt{\textbf{품질 점수 = 당도 점수 + 무게 점수}}
+\end{tcolorbox}
+
+\vspace{0.2cm}
+
+\textcolor{secondary}{\textbf{▶ 다음 사과의 품질 점수를 계산해보세요:}}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor{lightblue}
+\textbf{번호} & \textbf{당도(Brix)} & \textbf{무게(g)} & \textbf{당도점수} & \textbf{무게점수} & \textbf{품질점수} \\
+\hline
+1 & & & & & \\[0.4cm]
+\hline
+2 & & & & & \\[0.4cm]
+\hline
+3 & & & & & \\[0.4cm]
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.4cm}
+
+\subsection*{\emoji{magnify} 활동 2: 데이터 생성하고 관찰하기}
+
+시뮬레이터에서 데이터를 생성하고 관찰해봅시다.
+
+\vspace{0.2cm}
+
+\textcolor{secondary}{\textbf{▶ 설정값 기록:}}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\cellcolor{gray!20} 데이터 개수: \underline{\hspace{1.5cm}}개 & 
+\cellcolor{gray!20} 노이즈: \underline{\hspace{1.5cm}}\% & 
+\cellcolor{gray!20} 학습률: \underline{\hspace{1.5cm}} \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.2cm}
+
+\textcolor{secondary}{\textbf{▶ 산점도 관찰 (그래프에서 발견한 점을 적어보세요):}}
+
+\begin{tcolorbox}[colback=white, colframe=gray, height=2.2cm]
+\end{tcolorbox}
+
+\newpage
+
+% ===== 활동 3 =====
+\subsection*{\emoji{bolt} 활동 3: AI 학습 실행하기}
+
+[학습 실행] 버튼을 눌러 AI가 학습하는 과정을 관찰해봅시다.
+
+\vspace{0.2cm}
+
+\textcolor{secondary}{\textbf{▶ 학습 결과 기록:}}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{lightblue}
+\textbf{에포크} & \textbf{손실(MSE)} & \textbf{R² 점수} & \textbf{상태} \\
+\hline
+ & & & $\square$양호 $\square$보통 $\square$부족 \\[0.5cm]
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.2cm}
+
+\textcolor{secondary}{\textbf{▶ 학습된 회귀식 기록:}}
+
+\begin{tcolorbox}[colback=lightyellow, colframe=accent]
+\begin{center}
+{\Large\bfseries 가격 = \underline{\hspace{2cm}} × 품질 + \underline{\hspace{2cm}}}
+\end{center}
+\end{tcolorbox}
+
+\vspace{0.2cm}
+
+\textcolor{secondary}{\textbf{▶ 이 수식이 의미하는 것은? (품질이 1점 오르면 가격은?)}}
+
+\begin{tcolorbox}[colback=white, colframe=gray, height=1.8cm]
+\end{tcolorbox}
+
+\vspace{0.2cm}
+
+\textcolor{secondary}{\textbf{▶ [재생] 버튼으로 학습 과정을 다시 보고 느낀 점:}}
+
+\begin{tcolorbox}[colback=white, colframe=gray, height=1.8cm]
+\end{tcolorbox}
+
+\newpage
+
+% ===== 2차시 =====
+\begin{tcolorbox}[colback=lightcyan, colframe=secondary]
+\begin{center}
+{\Large\bfseries \emoji{greenbook} 2차시: AI 예측 체험하기}
+\end{center}
+\end{tcolorbox}
+
+\vspace{0.4cm}
+
+\subsection*{\emoji{ruler} 활동 4: 오차 분석하기}
+
+[오차선 표시] 체크박스를 켜고 AI의 예측이 틀린 정도를 관찰해봅시다.
+
+\begin{tcolorbox}[colback=lightgreen, colframe=success, title={\emoji{bulb} \textbf{오차선이란?}}, fonttitle=\bfseries\color{success}]
+실제 가격(데이터 점)과 AI가 예측한 가격(회귀선) 사이의 차이를 보여주는 점선입니다.\\
+오차선이 길수록 AI가 그 사과의 가격을 맞추지 못했다는 뜻이에요!
+\end{tcolorbox}
+
+\vspace{0.2cm}
+
+\textcolor{secondary}{\textbf{▶ 오차 통계 기록:}}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{lightgreen}
+\textbf{평균 오차} & \textbf{최대 오차} & \textbf{MSE} \\
+\hline
+\underline{\hspace{2cm}} 원 & \underline{\hspace{2cm}} 원 & \underline{\hspace{2cm}} \\[0.5cm]
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.2cm}
+
+\textcolor{secondary}{\textbf{▶ AI가 왜 100\% 정확하게 맞추지 못할까요?}}
+
+\begin{tcolorbox}[colback=white, colframe=gray, height=1.8cm]
+\end{tcolorbox}
+
+\vspace{0.4cm}
+
+\subsection*{\emoji{crystal} 활동 5: 새로운 사과 가격 예측하기}
+
+[추론 모드]로 전환하여 새로운 사과의 가격을 예측해봅시다.
+
+\vspace{0.2cm}
+
+\textcolor{secondary}{\textbf{▶ 3가지 사과의 가격을 예측하고 기록하세요:}}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{lightblue}
+\textbf{번호} & \textbf{당도(Brix)} & \textbf{무게(g)} & \textbf{품질점수} & \textbf{예측가격} \\
+\hline
+1 & & & & \\[0.4cm]
+\hline
+2 & & & & \\[0.4cm]
+\hline
+3 & & & & \\[0.4cm]
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+% ===== 활동 6 =====
+\subsection*{\emoji{microscope} 활동 6: 탐구 실험}
+
+조건을 바꿔가며 AI 학습이 어떻게 달라지는지 실험해봅시다.
+
+\vspace{0.2cm}
+
+\textcolor{secondary}{\textbf{▶ 학습률 실험 (학습률만 바꾸고 나머지는 같게 유지):}}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{lightgreen}
+\textbf{학습률} & \textbf{R² 점수} & \textbf{손실 그래프 모양} & \textbf{느낀 점} \\
+\hline
+0.001 (작게) & & & \\[0.6cm]
+\hline
+0.01 (보통) & & & \\[0.6cm]
+\hline
+0.1 (크게) & & & \\[0.6cm]
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.2cm}
+
+\textcolor{secondary}{\textbf{▶ 학습률이 너무 크면 어떤 문제가 생기나요?}}
+
+\begin{tcolorbox}[colback=white, colframe=gray, height=1.6cm]
+\end{tcolorbox}
+
+\vspace{0.4cm}
+
+% ===== 종합 정리 =====
+\subsection*{\emoji{memo} 종합 정리}
+
+오늘 배운 내용을 정리해봅시다.
+
+\vspace{0.2cm}
+
+\textbf{1. 선형 회귀란?}
+\begin{tcolorbox}[colback=white, colframe=gray, height=1.4cm]
+\end{tcolorbox}
+
+\textbf{2. AI 학습에서 가장 인상 깊었던 점은?}
+\begin{tcolorbox}[colback=white, colframe=gray, height=1.4cm]
+\end{tcolorbox}
+
+\textbf{3. AI가 완벽하지 않다는 것을 어떻게 알 수 있었나요?}
+\begin{tcolorbox}[colback=white, colframe=gray, height=1.4cm]
+\end{tcolorbox}
+
+\vspace{0.4cm}
+
+% ===== 자기 평가 =====
+\begin{tcolorbox}[colback=lightyellow, colframe=accent, title={\emoji{star} \textbf{자기 평가}}, fonttitle=\bfseries\color{accent}]
+\begin{itemize}[leftmargin=*]
+    \item[$\square$] 품질 점수 계산 방법을 이해했다
+    \item[$\square$] AI가 데이터로부터 학습하는 과정을 설명할 수 있다
+    \item[$\square$] 학습된 모델로 새로운 데이터를 예측할 수 있다
+    \item[$\square$] AI 예측에도 오차가 있다는 것을 이해했다
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}

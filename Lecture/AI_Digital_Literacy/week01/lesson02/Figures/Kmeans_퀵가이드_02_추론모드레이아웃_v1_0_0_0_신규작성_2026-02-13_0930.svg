@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFF8E1"/>
+      <stop offset="100%" style="stop-color:#FFECB3"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <filter id="shadowLight" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.06"/>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="400" rx="12" fill="url(#bgGrad)"/>
+
+  <rect x="16" y="12" width="768" height="52" rx="10" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <text x="400" y="34" text-anchor="middle" font-size="15" font-weight="700" fill="#E53935">🎨 K-Means 클러스터링 시뮬레이터</text>
+  <rect x="600" y="23" width="62" height="20" rx="10" fill="#E53935"/>
+  <text x="631" y="37" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">v1.2.0.0</text>
+  <text x="400" y="52" text-anchor="middle" font-size="9" fill="#795548">추론 모드 — 새 데이터 클러스터 할당</text>
+
+  <rect x="250" y="72" width="130" height="30" rx="15" fill="#FFF" stroke="#E0E0E0" stroke-width="1" filter="url(#shadowLight)"/>
+  <text x="315" y="91" text-anchor="middle" font-size="11" font-weight="500" fill="#888">🧠 학습 모드</text>
+  <rect x="390" y="72" width="130" height="30" rx="15" fill="#E53935" filter="url(#shadowLight)"/>
+  <text x="455" y="91" text-anchor="middle" font-size="11" font-weight="600" fill="#FFF">🔮 추론 모드</text>
+
+  <rect x="16" y="98" width="180" height="16" rx="8" fill="#E53935" opacity="0.9"/>
+  <text x="106" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">① 예측 입력</text>
+  <rect x="206" y="98" width="370" height="16" rx="8" fill="#FF9800" opacity="0.9"/>
+  <text x="391" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">② 예측 시각화</text>
+  <rect x="586" y="98" width="198" height="16" rx="8" fill="#2E7D32" opacity="0.9"/>
+  <text x="685" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">③ 예측 결과</text>
+
+  <!-- 좌측: 예측 입력 -->
+  <rect x="16" y="118" width="180" height="270" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="16" y="118" width="180" height="32" rx="10" fill="#FFF8E1"/>
+  <rect x="16" y="140" width="180" height="10" fill="#FFF8E1"/>
+  <text x="106" y="139" text-anchor="middle" font-size="12" font-weight="600" fill="#E53935">🎯 예측 입력</text>
+
+  <text x="28" y="168" font-size="9" fill="#555">X 좌표</text>
+  <rect x="28" y="174" width="156" height="4" rx="2" fill="#E0E0E0"/>
+  <circle cx="110" cy="176" r="6" fill="#E53935"/>
+  <text x="110" y="196" text-anchor="middle" font-size="9" font-weight="600" fill="#E53935">4.2</text>
+
+  <text x="28" y="218" font-size="9" fill="#555">Y 좌표</text>
+  <rect x="28" y="224" width="156" height="4" rx="2" fill="#E0E0E0"/>
+  <circle cx="90" cy="226" r="6" fill="#E53935"/>
+  <text x="90" y="246" text-anchor="middle" font-size="9" font-weight="600" fill="#E53935">3.1</text>
+
+  <!-- 범례 -->
+  <text x="28" y="274" font-size="9" font-weight="600" fill="#555">클러스터 범례</text>
+  <circle cx="38" cy="292" r="5" fill="#E53935"/>
+  <text x="48" y="296" font-size="8" fill="#555">클러스터 1</text>
+  <circle cx="38" cy="310" r="5" fill="#2E7D32"/>
+  <text x="48" y="314" font-size="8" fill="#555">클러스터 2</text>
+  <circle cx="38" cy="328" r="5" fill="#1976D2"/>
+  <text x="48" y="332" font-size="8" fill="#555">클러스터 3</text>
+  <circle cx="38" cy="346" r="5" fill="#FFC107" stroke="#E65100" stroke-width="1.5"/>
+  <text x="48" y="350" font-size="8" fill="#555">예측 점</text>
+
+  <!-- 중앙: 예측 시각화 -->
+  <rect x="206" y="118" width="370" height="270" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <text x="391" y="140" text-anchor="middle" font-size="11" font-weight="600" fill="#333">🔮 예측 시각화</text>
+
+  <!-- 기존 클러스터 데이터 -->
+  <circle cx="260" cy="220" r="3" fill="#E53935" opacity="0.4"/>
+  <circle cx="275" cy="235" r="3" fill="#E53935" opacity="0.4"/>
+  <circle cx="250" cy="240" r="3" fill="#E53935" opacity="0.4"/>
+  <circle cx="270" cy="210" r="3" fill="#E53935" opacity="0.4"/>
+  <circle cx="370" cy="280" r="3" fill="#2E7D32" opacity="0.4"/>
+  <circle cx="385" cy="270" r="3" fill="#2E7D32" opacity="0.4"/>
+  <circle cx="355" cy="290" r="3" fill="#2E7D32" opacity="0.4"/>
+  <circle cx="480" cy="200" r="3" fill="#1976D2" opacity="0.4"/>
+  <circle cx="495" cy="210" r="3" fill="#1976D2" opacity="0.4"/>
+  <circle cx="470" cy="190" r="3" fill="#1976D2" opacity="0.4"/>
+
+  <!-- 중심점 -->
+  <circle cx="264" cy="226" r="6" fill="none" stroke="#E53935" stroke-width="2"/>
+  <circle cx="370" cy="280" r="6" fill="none" stroke="#2E7D32" stroke-width="2"/>
+  <circle cx="482" cy="200" r="6" fill="none" stroke="#1976D2" stroke-width="2"/>
+
+  <!-- 예측 점 -->
+  <circle cx="340" cy="250" r="8" fill="#FFC107" stroke="#E65100" stroke-width="2"/>
+  <text x="340" y="254" text-anchor="middle" font-size="8" font-weight="700" fill="#333">★</text>
+
+  <!-- 점선 연결 (가장 가까운 중심점으로) -->
+  <line x1="340" y1="250" x2="370" y2="280" stroke="#FFC107" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="360" y="260" font-size="7" fill="#E65100">d=3.16</text>
+
+  <!-- 우측: 예측 결과 -->
+  <rect x="586" y="118" width="198" height="270" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="586" y="118" width="198" height="32" rx="10" fill="#E8F5E9"/>
+  <rect x="586" y="140" width="198" height="10" fill="#E8F5E9"/>
+  <text x="685" y="139" text-anchor="middle" font-size="12" font-weight="600" fill="#2E7D32">🎯 예측 결과</text>
+
+  <rect x="600" y="162" width="170" height="54" rx="8" fill="#E8F5E9"/>
+  <text x="685" y="180" text-anchor="middle" font-size="10" font-weight="600" fill="#2E7D32">할당 클러스터</text>
+  <circle cx="655" cy="202" r="8" fill="#2E7D32"/>
+  <text x="685" y="206" font-size="14" font-weight="700" fill="#2E7D32">클러스터 2</text>
+
+  <rect x="600" y="228" width="170" height="80" rx="8" fill="#FFF8E1"/>
+  <text x="685" y="246" text-anchor="middle" font-size="9" font-weight="600" fill="#E65100">거리 정보</text>
+  <text x="610" y="264" font-size="8" fill="#555">클러스터 1: 5.42</text>
+  <text x="610" y="280" font-size="8" font-weight="600" fill="#2E7D32">클러스터 2: 3.16 ←</text>
+  <text x="610" y="296" font-size="8" fill="#555">클러스터 3: 7.85</text>
+
+  <rect x="600" y="318" width="170" height="36" rx="8" fill="#E3F2FD"/>
+  <text x="685" y="334" text-anchor="middle" font-size="8" font-weight="600" fill="#1565C0">클러스터 2 정보</text>
+  <text x="685" y="348" text-anchor="middle" font-size="8" fill="#555">데이터 34개 · 중심점 (5.1, 6.8)</text>
+
+  <rect x="608" y="362" width="168" height="24" rx="6" fill="#FFF" stroke="#E53935" stroke-width="1.5"/>
+  <text x="692" y="378" text-anchor="middle" font-size="9" font-weight="600" fill="#E53935">🧠 학습 모드로 전환</text>
+</svg>

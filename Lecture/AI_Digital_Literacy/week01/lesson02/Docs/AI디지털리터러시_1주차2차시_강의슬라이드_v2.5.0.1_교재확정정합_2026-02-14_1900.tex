@@ -1,0 +1,541 @@
+% LuaLaTeX 컴파일 필요
+\documentclass[aspectratio=169]{beamer}
+
+% === 패키지 ===
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{emoji}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{tikz}
+
+% === 테마 (metropolis) ===
+\usetheme[progressbar=frametitle]{metropolis}
+
+% === 폰트 (한글 + 이모지) ===
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setmonofont{Noto Sans Mono CJK KR}[Scale=0.85]
+\setemojifont{Noto Color Emoji}
+
+% === 색상 (프로젝트 팔레트) ===
+\definecolor{primary}{HTML}{1976D2}
+\definecolor{darkblue}{HTML}{1565C0}
+\definecolor{teal}{HTML}{00897B}
+\definecolor{amber}{HTML}{FFA000}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{tableheader}{HTML}{BBDEFB}
+\definecolor{lightteal}{HTML}{E0F2F1}
+
+\setbeamercolor{frametitle}{bg=primary, fg=white}
+\setbeamercolor{progress bar}{fg=primary}
+\setbeamercolor{title separator}{fg=primary}
+\setbeamercolor{alerted text}{fg=primary}
+\setbeamercolor{example text}{fg=teal}
+\setbeamercolor{block title}{bg=primary, fg=white}
+\setbeamercolor{block body}{bg=lightblue}
+
+% === 슬라이드 번호 ===
+\setbeamertemplate{frame numbering}[fraction]
+
+% === 표 행 간격 ===
+\renewcommand{\arraystretch}{1.3}
+
+% === 문서 정보 ===
+\title{기계학습의 원리}
+\subtitle{AI디지털리터러시 — 1주차 2차시}
+\author{청주교육대학교}
+\date{2026학년도}
+
+\begin{document}
+
+% === 타이틀 ===
+\begin{frame}
+\titlepage
+\end{frame}
+
+% === 목차 ===
+\begin{frame}{오늘의 수업 흐름}
+\begin{center}
+\begin{tabular}{cl}
+\emoji{clapper-board} & \textbf{도입} — AI, ML, DL의 포함 관계 (5분) \\[0.3cm]
+\emoji{blue-book} & \textbf{전개 1} — 기계학습의 정의 (5분) \\[0.3cm]
+\emoji{green-book} & \textbf{전개 2} — 머신러닝 3가지 방법 + AI 사과농장 시뮬레이터 (30분) \\[0.3cm]
+\emoji{orange-book} & \textbf{전개 3} — 머신러닝 학습 과정 4단계 (5분) \\[0.3cm]
+\emoji{memo} & \textbf{정리} — 핵심 요약 + 엔트리 연결 (5분) \\
+\end{tabular}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{clapper-board} 도입: AI, ML, DL의 포함 관계}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% --- 그림 01: AI ⊃ ML ⊃ DL ---
+\begin{frame}{AI, ML, DL의 포함 관계}
+\begin{center}
+\Large ``1차시에서 배운 AI, 그 안에는 무엇이 있을까요?''
+\end{center}
+\vspace{0.2cm}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{images/fig01_AI_ML_DL포함관계.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{AI $\supset$ ML $\supset$ DL}
+\begin{columns}
+\begin{column}{0.33\textwidth}
+\begin{block}{\emoji{robot} AI (인공지능)}
+\small \textbf{가장 큰 개념}\\
+인간 지능 모방하는\\모든 기술\\[0.2cm]
+\footnotesize 예: 체스 프로그램,\\스팸 필터, ChatGPT
+\end{block}
+\end{column}
+\begin{column}{0.33\textwidth}
+\begin{block}{\emoji{brain} ML (기계학습)}
+\small \textbf{AI의 하위 개념}\\
+데이터로부터\\패턴 자동 학습\\[0.2cm]
+\footnotesize 예: 추천 시스템,\\날씨 예측
+\end{block}
+\end{column}
+\begin{column}{0.33\textwidth}
+\begin{block}{\emoji{fire} DL (딥러닝)}
+\small \textbf{ML의 하위 개념}\\
+인공신경망을 여러 층으로\\쌓아 복잡한 패턴 학습\\[0.2cm]
+\footnotesize 예: ChatGPT, AlphaGo
+\end{block}
+\end{column}
+\end{columns}
+\vspace{0.3cm}
+\begin{center}
+\small \emoji{light-bulb} \textbf{비유}: AI = 모든 차량, ML = 엔진 있는 차량, DL = 첨단 전기차
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{blue-book} 전개 1: 기계학습의 정의}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% --- 그림 02: 전통적 프로그래밍 vs 기계학습 ---
+\begin{frame}{전통적 프로그래밍 vs 기계학습}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{images/fig02_전통적프로그래밍vs기계학습.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{두 방식의 핵심 차이}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{block}{\emoji{desktop-computer} 전통적 프로그래밍}
+\centering
+\textbf{규칙} + 데이터 $\to$ 결과\\[0.3cm]
+\small 사람이 규칙을 직접 작성\\
+``무료'' + ``당첨'' $\to$ 스팸\\[0.2cm]
+\footnotesize \emoji{warning} 규칙을 모두 나열할 수 없음
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{\emoji{brain} 기계학습}
+\centering
+데이터 + 결과 $\to$ \textbf{규칙(패턴)}\\[0.3cm]
+\small 컴퓨터가 패턴을 스스로 발견\\
+수천 개 메일 $\to$ 스팸 패턴\\[0.2cm]
+\footnotesize \emoji{check-mark-button} 새로운 패턴도 자동 적응
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+% --- 그림 18: 왜 기계학습이 필요한가 ---
+\begin{frame}{왜 기계학습이 필요할까?}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{images/fig18_왜기계학습이필요한가.jpg}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\small 규칙으로 해결하기 \textbf{어려운 문제}가 있기 때문!
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{green-book} 전개 2: 머신러닝의 3가지 방법}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% === Part A: 이론 (12분) ===
+
+\begin{frame}{머신러닝의 3가지 학습 유형}
+\begin{center}
+\begin{tabular}{|>{\centering\arraybackslash}p{3cm}|>{\centering\arraybackslash}p{3.5cm}|>{\centering\arraybackslash}p{3.5cm}|>{\centering\arraybackslash}p{3cm}|}
+\hline
+\rowcolor{tableheader}
+& \textbf{지도학습} & \textbf{비지도학습} & \textbf{강화학습} \\
+\hline
+\textbf{핵심} & 정답이 있는 데이터 & 정답이 없는 데이터 & 보상으로 학습 \\
+\hline
+\textbf{비유} & 선생님과 공부 & 혼자서 탐색 & 시행착오 학습 \\
+\hline
+\textbf{사과농장} & 1$\cdot$2$\cdot$4$\cdot$5장 & 3장 & — \\
+\hline
+\textbf{대표 기술} & KNN, 선형회귀, 의사결정트리 & K-Means & Q-러닝 \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0.3cm}
+\begin{center}
+\small \emoji{light-bulb} 이 3가지를 기억해 두세요. 곧 \textbf{사과농장}에서 하나씩 만나게 됩니다!
+\end{center}
+\end{frame}
+
+% --- 지도학습 ---
+\begin{frame}{지도학습 (Supervised Learning)}
+\begin{block}{\emoji{teacher} 정의}
+\textbf{정답(라벨)}이 있는 데이터로 학습하여, 새로운 데이터의 정답을 예측
+\end{block}
+\vspace{0.3cm}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{images/fig03_지도학습vs비지도학습.png}
+\end{center}
+\end{frame}
+
+% --- 비지도학습 ---
+\begin{frame}{비지도학습 (Unsupervised Learning)}
+\begin{block}{\emoji{magnifying-glass-tilted-left} 정의}
+\textbf{정답 없이} 데이터 속 숨겨진 패턴이나 그룹을 스스로 발견
+\end{block}
+\vspace{0.2cm}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{images/fig04_라벨없는_3가지이유.png}
+\end{center}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{images/fig05_군집화_3단계과정.png}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+% --- 강화학습 ---
+\begin{frame}{강화학습 (Reinforcement Learning)}
+\begin{block}{\emoji{video-game} 정의}
+\textbf{보상(+)}과 \textbf{벌점($-$)}을 통해 최적의 행동을 스스로 학습
+\end{block}
+\vspace{0.2cm}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{images/fig07_강화학습루프.png}
+\end{center}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{images/fig08_강아지훈련.png}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{강화학습 — 게임으로 이해하기}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{images/fig09_게임점수획득.png}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\small 먹이 획득(+10) vs 벽 충돌($-$100) $\to$ 최적 경로 학습!
+\end{center}
+\end{frame}
+
+% === Part B: AI 사과농장 이야기 — 시뮬레이터 시연 (18분) ===
+
+\begin{frame}[standout]
+\emoji{green-apple} AI 사과농장 이야기
+
+\vspace{0.3cm}
+시뮬레이터 시연
+\end{frame}
+
+% --- 사과농장 도입 ---
+\begin{frame}{AI 사과농장 이야기: 새로운 시작}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{images/fig11_AI사과농장이야기.png}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\small \emoji{man-farmer} 농부 김사과와 \emoji{robot} AI 로봇 알파가 함께 사과 농장을 운영합니다!
+\end{center}
+\end{frame}
+
+\begin{frame}{사과농장 — 5가지 ML 기술}
+\begin{center}
+\begin{tabular}{|>{\centering\arraybackslash}p{0.8cm}|p{4cm}|>{\centering\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}p{2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{장} & \textbf{문제 상황} & \textbf{ML 기술} & \textbf{학습 유형} \\
+\hline
+1장 & \emoji{deciduous-tree} 익은 사과만 골라 따기 & 딥러닝 CNN & 지도학습 \\
+\hline
+2장 & \emoji{magnifying-glass-tilted-left} 섞인 품종 구분하기 & KNN & 지도학습 \\
+\hline
+3장 & \emoji{package} 크기별 등급 나누기 & K-Means & 비지도학습 \\
+\hline
+4장 & \emoji{money-bag} 품질로 가격 매기기 & 선형 회귀 & 지도학습 \\
+\hline
+5장 & \emoji{delivery-truck} 배송지 정하기 & 의사결정 트리 & 지도학습 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% --- 1장: CNN ---
+\begin{frame}{사과농장 1장: 수확 — 딥러닝 CNN}
+\begin{block}{\emoji{deciduous-tree} 문제}
+익은 사과와 덜 익은 사과를 구분해야 해요!
+\end{block}
+\vspace{0.3cm}
+\begin{center}
+\large CNN(합성곱 신경망) = 이미지의 특징을 자동으로 추출하여 분류
+\end{center}
+\vspace{0.3cm}
+\begin{center}
+\colorbox{lightblue}{\parbox{0.8\textwidth}{\centering
+\emoji{light-bulb} CNN 시뮬레이터는 \textbf{다음 주(2주차 1차시)}에서 직접 체험합니다!\\
+``사과 사진을 넣으면 AI가 어떻게 분류하는지 함께 확인해봐요''}}
+\end{center}
+\end{frame}
+
+% --- 2장: KNN ---
+\begin{frame}{사과농장 2장: 품종 분류 — KNN 시뮬레이터}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{center}
+\small \textbf{학습 모드}\\[0.2cm]
+\includegraphics[width=\textwidth]{images/fig13_KNN_학습모드.png}
+\end{center}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{center}
+\small \textbf{추론 모드}\\[0.2cm]
+\includegraphics[width=\textwidth]{images/fig20_KNN_추론모드.png}
+\end{center}
+\end{column}
+\end{columns}
+\vspace{0.2cm}
+\begin{center}
+\small \emoji{light-bulb} ``가장 가까운 이웃이 많은 쪽으로 분류'' — 다수결 원리!
+\end{center}
+\end{frame}
+
+% --- 4장: 선형 회귀 ---
+\begin{frame}{사과농장 4장: 가격 책정 — 선형 회귀 시뮬레이터}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{images/fig14_선형회귀_학습모드.png}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\small \emoji{light-bulb} ``데이터 점들 사이의 추세선'' — 품질 점수 $\to$ 가격 예측!
+\end{center}
+\end{frame}
+
+% --- 5장: 의사결정 트리 ---
+\begin{frame}{사과농장 5장: 배송지 결정 — 의사결정 트리}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{images/fig_decision_tree.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{의사결정 트리 시뮬레이터}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{images/fig15_의사결정트리_학습분석모드.png}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\small \emoji{light-bulb} 예/아니오 질문으로 분류 — 스무고개와 같은 원리!
+\end{center}
+\end{frame}
+
+% --- 3장: K-Means ---
+\begin{frame}{사과농장 3장: 등급 분류 — K-Means 시뮬레이터}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{images/fig16_Kmeans_학습모드.png}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\small \emoji{light-bulb} ``라벨 없이 AI가 스스로 그룹을 만든다'' — \textbf{비지도학습}!
+\end{center}
+\end{frame}
+
+\begin{frame}{K-Means: 클러스터 품질은 어떻게 측정할까?}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{images/fig21_Kmeans_Inertia.png}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\small Inertia가 \textbf{낮을수록} 클러스터 품질이 좋음 (점들이 중심에 가까움)
+\end{center}
+\end{frame}
+
+% --- 강화학습 시뮬레이터 ---
+\begin{frame}{강화학습 시뮬레이터: Q-러닝}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{images/fig19_Q러닝개념도.png}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\small 상태(S) $\to$ 행동(A) $\to$ 보상(R) $\to$ 새 상태(S')
+\end{center}
+\end{frame}
+
+\begin{frame}{스네이크 강화학습 시뮬레이터}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{images/fig17_스네이크RL_전체화면.png}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\small 무작위 이동 $\to$ 먹이 찾는 전략 습득! 시행착오로 학습하는 AI
+\end{center}
+\end{frame}
+
+% --- 사과농장 에필로그 ---
+\begin{frame}{사과농장 에필로그: 스마트 과수원 완성!}
+\begin{center}
+\begin{tabular}{|>{\centering\arraybackslash}p{0.8cm}|p{3.5cm}|>{\centering\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}p{2cm}|p{3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{장} & \textbf{작업} & \textbf{ML 기술} & \textbf{학습 유형} & \textbf{핵심} \\
+\hline
+1 & \emoji{deciduous-tree} 수확 & CNN & 지도학습 & 이미지 분류 \\
+\hline
+2 & \emoji{magnifying-glass-tilted-left} 품종 & KNN & 지도학습 & 이웃 다수결 \\
+\hline
+3 & \emoji{package} 등급 & K-Means & 비지도학습 & 자동 그룹화 \\
+\hline
+4 & \emoji{money-bag} 가격 & 선형 회귀 & 지도학습 & 추세선 예측 \\
+\hline
+5 & \emoji{delivery-truck} 배송 & 의사결정 트리 & 지도학습 & 조건 분기 \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0.2cm}
+\begin{center}
+\small \emoji{star} 하나의 농장에서 \textbf{여러 ML 기술}이 함께 사용됩니다!
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{orange-book} 전개 3: 머신러닝 학습 과정 4단계}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% --- 그림 10: 4단계 프로세스 ---
+\begin{frame}{머신러닝 4단계 프로세스}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{images/fig10_머신러닝프로세스.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{4단계와 엔트리 연결}
+\begin{center}
+\begin{tabular}{|>{\centering\arraybackslash}p{0.5cm}|>{\centering\arraybackslash}p{2.8cm}|p{4cm}|p{3.5cm}|}
+\hline
+\rowcolor{tableheader}
+& \textbf{단계} & \textbf{설명} & \textbf{엔트리 연결} \\
+\hline
+1 & \textbf{데이터 수집} & 학습할 데이터 모으기 (양$\cdot$질$\cdot$다양성) & 웹캠 사진 촬영 \\
+\hline
+2 & \textbf{학습 (Training)} & 패턴 찾기 (에포크, 가중치) & ``모델 학습하기'' 버튼 \\
+\hline
+3 & \textbf{평가 (Testing)} & 새 데이터로 정확도 확인 & 정확도 \% 확인 \\
+\hline
+4 & \textbf{예측 (Prediction)} & 실전 적용 & 새 사진 분류 \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0.3cm}
+\begin{center}
+\colorbox{lightblue}{\parbox{0.8\textwidth}{\centering
+\emoji{green-apple} \textbf{사과농장도 이 4단계}: 사과 사진 수집(1) $\to$ CNN 학습(2) $\to$ 정확도 확인(3) $\to$ 새 사과 판별(4)}}
+\end{center}
+\end{frame}
+
+% --- 그림 11: 편향된 데이터 ---
+\begin{frame}{좋은 데이터 = 좋은 AI}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{images/fig11_편향된데이터vs좋은데이터.png}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\small \emoji{warning} 빨간 사과만 학습하면, 초록 사과를 ``사과가 아니다''라고 판단!
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{memo} 정리}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{오늘 배운 핵심 개념 4가지}
+\begin{block}{\emoji{pushpin} AI $\supset$ ML $\supset$ DL}
+AI $>$ 기계학습 $>$ 딥러닝 — 포함 관계
+\end{block}
+
+\begin{block}{\emoji{pushpin} 기계학습 = 데이터에서 패턴을 학습}
+전통적 프로그래밍: 사람이 규칙 작성 vs 기계학습: 컴퓨터가 패턴 발견
+\end{block}
+
+\begin{block}{\emoji{pushpin} 3가지 학습 유형}
+지도(정답 있음) / 비지도(라벨 없음) / 강화(보상으로 학습)
+\end{block}
+
+\begin{block}{\emoji{pushpin} 4단계 학습 과정}
+데이터 수집 $\to$ 학습 $\to$ 평가 $\to$ 예측
+\end{block}
+\end{frame}
+
+\begin{frame}{엔트리 AI 모델과의 연결}
+\begin{center}
+\Large 3\textasciitilde 4주차 엔트리 이미지 분류 모델 = \textbf{지도학습}
+\end{center}
+\vspace{0.5cm}
+\begin{center}
+\begin{tabular}{rcl}
+데이터 수집 & $\to$ & 웹캠으로 사진 촬영 \\
+학습 & $\to$ & ``모델 학습하기'' 클릭 \\
+평가 & $\to$ & 정확도 \% 확인 \\
+예측 & $\to$ & 새 사진 분류 \\
+\end{tabular}
+\end{center}
+\vspace{0.5cm}
+\begin{center}
+\small \emoji{light-bulb} 오늘 배운 원리가 엔트리 실습에서 \textbf{그대로} 적용됩니다!
+\end{center}
+\end{frame}
+
+\begin{frame}{다음 차시 예고}
+\begin{center}
+\Large \textbf{2주차 1차시: 데이터와 딥러닝}
+\end{center}
+\vspace{0.5cm}
+\begin{itemize}
+    \item CNN 사과분류 시뮬레이터 \textbf{라이브 시연}
+    \item 데이터가 AI 성능에 미치는 영향
+    \item 신경망의 기본 구조
+\end{itemize}
+\vspace{0.5cm}
+\begin{center}
+\colorbox{lightblue}{\parbox{0.7\textwidth}{\centering
+\emoji{memo} \textbf{다음 주 퀴즈}: 5지선다 10문항(0.5점) + 단답형 5문항(1점) = 10점}}
+\end{center}
+\end{frame}
+
+\begin{frame}[standout]
+\emoji{clapping-hands} 감사합니다!
+
+\vspace{0.5cm}
+질문이 있으신가요?
+\end{frame}
+
+\end{document}

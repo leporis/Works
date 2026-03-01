@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFF8E1"/>
+      <stop offset="100%" style="stop-color:#FFECB3"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <filter id="shadowLight" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.06"/>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="500" rx="12" fill="url(#bgGrad)"/>
+
+  <!-- 헤더 -->
+  <rect x="16" y="12" width="768" height="52" rx="10" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <text x="360" y="34" text-anchor="middle" font-size="15" font-weight="700" fill="#1565C0">🐧 펭귄 의사결정트리 시뮬레이터</text>
+  <rect x="570" y="23" width="62" height="20" rx="10" fill="#1565C0"/>
+  <text x="601" y="37" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">v1.3.0.0</text>
+  <!-- 데이터셋 선택 -->
+  <rect x="650" y="22" width="120" height="22" rx="6" fill="#FFF" stroke="#BBDEFB" stroke-width="1"/>
+  <text x="660" y="37" font-size="8" fill="#555">🐧 펭귄 데이터셋</text>
+  <text x="762" y="37" text-anchor="end" font-size="8" fill="#AAA">▼</text>
+
+  <!-- 모드 탭 -->
+  <rect x="230" y="72" width="150" height="30" rx="15" fill="#1565C0" filter="url(#shadowLight)"/>
+  <text x="305" y="91" text-anchor="middle" font-size="11" font-weight="600" fill="#FFF">🌿 학습 &amp; 분석</text>
+  <rect x="390" y="72" width="130" height="30" rx="15" fill="#FFF" stroke="#E0E0E0" stroke-width="1" filter="url(#shadowLight)"/>
+  <text x="455" y="91" text-anchor="middle" font-size="11" font-weight="500" fill="#888">🔍 추론 모드</text>
+
+  <!-- 레이블 -->
+  <rect x="16" y="98" width="180" height="16" rx="8" fill="#1565C0" opacity="0.9"/>
+  <text x="106" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">① 트리 설정</text>
+  <rect x="206" y="98" width="370" height="16" rx="8" fill="#FF9800" opacity="0.9"/>
+  <text x="391" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">② 의사결정트리 시각화</text>
+  <rect x="586" y="98" width="198" height="16" rx="8" fill="#2E7D32" opacity="0.9"/>
+  <text x="685" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">③ 데이터 · 성능</text>
+
+  <!-- 좌측: 트리 설정 -->
+  <rect x="16" y="118" width="180" height="240" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="16" y="118" width="180" height="32" rx="10" fill="#E3F2FD"/>
+  <rect x="16" y="140" width="180" height="10" fill="#E3F2FD"/>
+  <text x="106" y="139" text-anchor="middle" font-size="12" font-weight="600" fill="#1565C0">⚙️ 트리 설정</text>
+
+  <!-- 최대 깊이 -->
+  <text x="28" y="168" font-size="9" fill="#555">최대 깊이</text>
+  <rect x="28" y="174" width="156" height="4" rx="2" fill="#E0E0E0"/>
+  <circle cx="100" cy="176" r="6" fill="#1565C0"/>
+  <text x="100" y="196" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">3</text>
+
+  <!-- 최소 샘플 수 -->
+  <text x="28" y="216" font-size="9" fill="#555">최소 샘플 수</text>
+  <rect x="28" y="222" width="156" height="4" rx="2" fill="#E0E0E0"/>
+  <circle cx="72" cy="224" r="6" fill="#1565C0"/>
+  <text x="72" y="244" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">2</text>
+
+  <!-- 사용할 특성 체크박스 -->
+  <text x="28" y="268" font-size="9" fill="#555">사용할 특성</text>
+  <text x="28" y="286" font-size="8" fill="#333">☑ 부리 길이</text>
+  <text x="28" y="300" font-size="8" fill="#333">☑ 부리 깊이</text>
+  <text x="28" y="314" font-size="8" fill="#333">☑ 날개 길이</text>
+  <text x="28" y="328" font-size="8" fill="#333">☑ 체질량</text>
+
+  <!-- 학습 버튼 -->
+  <rect x="28" y="336" width="156" height="28" rx="6" fill="#1565C0"/>
+  <text x="106" y="354" text-anchor="middle" font-size="10" font-weight="600" fill="#FFF">⚡ 트리 학습</text>
+
+  <!-- 중앙: 트리 시각화 -->
+  <rect x="206" y="118" width="370" height="240" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <text x="391" y="140" text-anchor="middle" font-size="11" font-weight="600" fill="#333">🌿 의사결정트리 시각화</text>
+
+  <!-- 트리 구조 스케치 -->
+  <!-- 루트 노드 -->
+  <rect x="346" y="150" width="90" height="30" rx="8" fill="#E3F2FD" stroke="#1565C0" stroke-width="1.5"/>
+  <text x="391" y="169" text-anchor="middle" font-size="7" font-weight="600" fill="#1565C0">부리길이 ≤ 42.3</text>
+  <!-- 좌측 자식 -->
+  <line x1="370" y1="180" x2="310" y2="210" stroke="#1565C0" stroke-width="1.5"/>
+  <rect x="265" y="210" width="90" height="28" rx="8" fill="#E3F2FD" stroke="#1565C0" stroke-width="1"/>
+  <text x="310" y="228" text-anchor="middle" font-size="7" fill="#1565C0">날개길이 ≤ 195</text>
+  <!-- 우측 자식 -->
+  <line x1="412" y1="180" x2="472" y2="210" stroke="#1565C0" stroke-width="1.5"/>
+  <rect x="427" y="210" width="90" height="28" rx="8" fill="#E3F2FD" stroke="#1565C0" stroke-width="1"/>
+  <text x="472" y="228" text-anchor="middle" font-size="7" fill="#1565C0">체질량 ≤ 4200</text>
+  <!-- 리프 노드들 -->
+  <line x1="290" y1="238" x2="260" y2="265" stroke="#999" stroke-width="1"/>
+  <rect x="230" y="265" width="60" height="24" rx="6" fill="#C8E6C9"/>
+  <text x="260" y="281" text-anchor="middle" font-size="7" font-weight="600" fill="#2E7D32">아델리</text>
+  <line x1="330" y1="238" x2="360" y2="265" stroke="#999" stroke-width="1"/>
+  <rect x="330" y="265" width="60" height="24" rx="6" fill="#BBDEFB"/>
+  <text x="360" y="281" text-anchor="middle" font-size="7" font-weight="600" fill="#1565C0">턱끈</text>
+  <line x1="452" y1="238" x2="422" y2="265" stroke="#999" stroke-width="1"/>
+  <rect x="392" y="265" width="60" height="24" rx="6" fill="#FFE0B2"/>
+  <text x="422" y="281" text-anchor="middle" font-size="7" font-weight="600" fill="#E65100">턱끈</text>
+  <line x1="492" y1="238" x2="520" y2="265" stroke="#999" stroke-width="1"/>
+  <rect x="490" y="265" width="60" height="24" rx="6" fill="#E1BEE7"/>
+  <text x="520" y="281" text-anchor="middle" font-size="7" font-weight="600" fill="#7B1FA2">젠투</text>
+
+  <!-- 좌측 라벨 "예" "아니오" -->
+  <text x="330" y="196" text-anchor="middle" font-size="7" fill="#2E7D32">예</text>
+  <text x="450" y="196" text-anchor="middle" font-size="7" fill="#C62828">아니오</text>
+
+  <!-- 우측: 데이터·성능 -->
+  <rect x="586" y="118" width="198" height="240" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="586" y="118" width="198" height="32" rx="10" fill="#E8F5E9"/>
+  <rect x="586" y="140" width="198" height="10" fill="#E8F5E9"/>
+  <text x="685" y="139" text-anchor="middle" font-size="12" font-weight="600" fill="#2E7D32">📊 데이터 · 성능</text>
+
+  <!-- 데이터 정보 -->
+  <rect x="600" y="160" width="170" height="56" rx="6" fill="#E3F2FD"/>
+  <text x="685" y="176" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">데이터 정보</text>
+  <text x="610" y="192" font-size="8" fill="#555">전체: 342개</text>
+  <text x="610" y="206" font-size="8" fill="#555">클래스: 3종 (아델리/턱끈/젠투)</text>
+
+  <!-- 모델 성능 -->
+  <rect x="600" y="226" width="170" height="70" rx="6" fill="#FFF8E1"/>
+  <text x="685" y="244" text-anchor="middle" font-size="9" font-weight="600" fill="#E65100">모델 성능</text>
+  <text x="610" y="262" font-size="9" fill="#555">학습 정확도:</text>
+  <text x="750" y="262" text-anchor="end" font-size="9" font-weight="700" fill="#2E7D32">97.8%</text>
+  <text x="610" y="280" font-size="9" fill="#555">테스트 정확도:</text>
+  <text x="750" y="280" text-anchor="end" font-size="9" font-weight="700" fill="#1565C0">95.6%</text>
+
+  <!-- 트리 통계 -->
+  <text x="610" y="316" font-size="8" fill="#888">깊이: 3 · 리프 노드: 4개</text>
+  <text x="610" y="332" font-size="8" fill="#888">특성 중요도: 부리길이 &gt; 체질량</text>
+
+  <!-- 하단: 2D 결정 경계 -->
+  <rect x="16" y="368" width="768" height="120" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="16" y="362" width="768" height="16" rx="8" fill="#E65100" opacity="0.85"/>
+  <text x="400" y="373" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">④ 2D 결정 경계</text>
+
+  <text x="400" y="396" text-anchor="middle" font-size="10" font-weight="600" fill="#333">🎯 2D 결정 경계 시각화</text>
+
+  <!-- 축 선택 드롭다운 -->
+  <text x="40" y="418" font-size="8" fill="#555">X축:</text>
+  <rect x="60" y="408" width="100" height="20" rx="4" fill="#FFF" stroke="#DDD" stroke-width="1"/>
+  <text x="70" y="422" font-size="8" fill="#333">부리 길이</text>
+  <text x="152" y="422" text-anchor="end" font-size="8" fill="#AAA">▼</text>
+  <text x="180" y="418" font-size="8" fill="#555">Y축:</text>
+  <rect x="200" y="408" width="100" height="20" rx="4" fill="#FFF" stroke="#DDD" stroke-width="1"/>
+  <text x="210" y="422" font-size="8" fill="#333">날개 길이</text>
+  <text x="292" y="422" text-anchor="end" font-size="8" fill="#AAA">▼</text>
+
+  <!-- 결정 경계 영역 스케치 -->
+  <rect x="330" y="400" width="430" height="78" rx="6" fill="#F0F4F8"/>
+  <rect x="340" y="408" width="140" height="62" rx="4" fill="#C8E6C9" opacity="0.4"/>
+  <rect x="484" y="408" width="130" height="62" rx="4" fill="#BBDEFB" opacity="0.4"/>
+  <rect x="618" y="408" width="130" height="62" rx="4" fill="#E1BEE7" opacity="0.4"/>
+  <text x="410" y="444" text-anchor="middle" font-size="8" font-weight="600" fill="#2E7D32">아델리</text>
+  <text x="549" y="444" text-anchor="middle" font-size="8" font-weight="600" fill="#1565C0">턱끈</text>
+  <text x="683" y="444" text-anchor="middle" font-size="8" font-weight="600" fill="#7B1FA2">젠투</text>
+
+  <!-- 산점도 점들 -->
+  <circle cx="370" cy="430" r="3" fill="#2E7D32" opacity="0.6"/>
+  <circle cx="390" cy="445" r="3" fill="#2E7D32" opacity="0.6"/>
+  <circle cx="420" cy="425" r="3" fill="#2E7D32" opacity="0.6"/>
+  <circle cx="510" cy="435" r="3" fill="#1565C0" opacity="0.6"/>
+  <circle cx="540" cy="450" r="3" fill="#1565C0" opacity="0.6"/>
+  <circle cx="560" cy="420" r="3" fill="#1565C0" opacity="0.6"/>
+  <circle cx="650" cy="440" r="3" fill="#7B1FA2" opacity="0.6"/>
+  <circle cx="680" cy="425" r="3" fill="#7B1FA2" opacity="0.6"/>
+  <circle cx="710" cy="450" r="3" fill="#7B1FA2" opacity="0.6"/>
+</svg>

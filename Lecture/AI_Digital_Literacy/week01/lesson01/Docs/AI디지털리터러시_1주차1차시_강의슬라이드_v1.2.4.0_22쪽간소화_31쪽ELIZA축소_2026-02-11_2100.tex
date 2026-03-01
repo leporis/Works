@@ -1,0 +1,521 @@
+% LuaLaTeX 컴파일 필요
+\documentclass[aspectratio=169]{beamer}
+
+% === 패키지 ===
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{emoji}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{tikz}
+
+% === 테마 (metropolis) ===
+\usetheme[progressbar=frametitle]{metropolis}
+
+% === 폰트 (한글 + 이모지) ===
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setmonofont{Noto Sans Mono CJK KR}[Scale=0.85]
+\setemojifont{Noto Color Emoji}
+
+% === 색상 (프로젝트 팔레트) ===
+\definecolor{primary}{HTML}{1976D2}
+\definecolor{darkblue}{HTML}{1565C0}
+\definecolor{teal}{HTML}{00897B}
+\definecolor{amber}{HTML}{FFA000}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{tableheader}{HTML}{BBDEFB}
+
+\setbeamercolor{frametitle}{bg=primary, fg=white}
+\setbeamercolor{progress bar}{fg=primary}
+\setbeamercolor{title separator}{fg=primary}
+\setbeamercolor{alerted text}{fg=primary}
+\setbeamercolor{example text}{fg=teal}
+\setbeamercolor{block title}{bg=primary, fg=white}
+\setbeamercolor{block body}{bg=lightblue}
+
+% === 슬라이드 번호 ===
+\setbeamertemplate{frame numbering}[fraction]
+
+% === 표 행 간격 ===
+\renewcommand{\arraystretch}{1.3}
+
+% === 문서 정보 ===
+\title{AI의 이해}
+\subtitle{AI디지털리터러시 — 1주차 1차시}
+\author{청주교육대학교}
+\date{2026학년도}
+
+\begin{document}
+
+% === 타이틀 ===
+\begin{frame}
+\titlepage
+\end{frame}
+
+% === 목차 ===
+\begin{frame}{오늘의 수업 흐름}
+\begin{center}
+\begin{tabular}{cl}
+\emoji{clapper-board} & \textbf{도입} — AI 시대와 우리 학생들의 미래 \mbox{(5분)} \\[0.3cm]
+\emoji{blue-book} & \textbf{전개 1} — 인공지능의 정의 \mbox{(15분)} \\[0.3cm]
+\emoji{green-book} & \textbf{전개 2} — AI 유형: 약한 AI vs 강한 AI, 기능별 분류 \mbox{(15분)} \\[0.3cm]
+\emoji{orange-book} & \textbf{전개 3} — AI의 봄과 겨울 \mbox{(10분)} \\[0.3cm]
+\emoji{memo} & \textbf{정리} — 핵심 요약 \mbox{(5분)} \\
+\end{tabular}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{clapper-board} 도입: AI 시대와 우리 학생들의 미래}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% --- 그림 01: 우리 학생들의 미래 ---
+\begin{frame}{우리 학생들의 미래}
+\begin{center}
+\Large ``지금 초등학생이 30살이 되는 2049년,\\어떤 세상일까요?''
+\end{center}
+\vspace{0.2cm}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_01_우리학생들의미래_v2_0_0_0_연도수정2026_20260207_2330.png}
+\end{center}
+\end{frame}
+
+% --- 그림 01 → 설명 ---
+\begin{frame}{세 가지 중요한 사실}
+\begin{columns}
+\begin{column}{0.33\textwidth}
+\begin{block}{\emoji{stopwatch} 10\textasciitilde 15년 후}
+\small 2022년 ChatGPT 등장 전엔\\상상도 못했어요
+\end{block}
+\end{column}
+\begin{column}{0.33\textwidth}
+\begin{block}{\emoji{school} 교사의 책임}
+\small ``미래를 살아갈 학생''을\\가르칩니다
+\end{block}
+\end{column}
+\begin{column}{0.33\textwidth}
+\begin{block}{\emoji{star} 변하지 않는 것}
+\small 창의성, 비판적 사고,\\공감, 협업
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+% --- 그림 02: 세 번의 기술 혁명 ---
+\begin{frame}{세 번의 기술 혁명}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_02_세번의기술혁명.png}
+\end{center}
+\end{frame}
+
+% --- 그림 02 → 설명 ---
+\begin{frame}{혁명마다 교육도 변화했습니다}
+\begin{columns}
+\begin{column}{0.33\textwidth}
+\begin{block}{\emoji{factory} 산업혁명}
+\small \textbf{대체}: 육체 노동\\
+\textbf{교육}: 읽기·쓰기·셈하기\\(공교육 도입)
+\end{block}
+\end{column}
+\begin{column}{0.33\textwidth}
+\begin{block}{\emoji{desktop-computer} 정보혁명}
+\small \textbf{대체}: 정보 처리\\
+\textbf{교육}: 컴퓨터 활용\\(정보 리터러시)
+\end{block}
+\end{column}
+\begin{column}{0.33\textwidth}
+\begin{block}{\emoji{robot} AI 혁명}
+\small \textbf{대체}: 지식 노동\\
+\textbf{교육}: AI 리터러시\\(창의성·비판적 사고)
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+% --- 그림 03: 4C 역량 ---
+\begin{frame}{4C 역량 — AI 시대의 핵심 능력}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_03_4C역량_v2_0_2_2_설명한줄정리_20260207_2355.png}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\small 기술이 아무리 변해도 \textbf{변하지 않는} 핵심 능력
+\end{center}
+\end{frame}
+
+% --- 그림 04: 교사 역할의 변화 ---
+\begin{frame}{AI 시대, 교사 역할의 변화}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_04_교사역할변화.png}
+\end{center}
+\end{frame}
+
+% --- 그림 04 → 설명 ---
+\begin{frame}{AI가 대체할 수 없는 것}
+\begin{center}
+\Large
+\emoji{eyes} 학생의 눈을 보며 격려하는 것\\[0.5cm]
+\emoji{handshake} 어려움에 처한 학생에게 다가가는 것\\[0.5cm]
+\emoji{party-popper} 성장의 기쁨을 함께 나누는 것\\[0.8cm]
+\normalsize 이것이 교사의 본질적 가치이며,\\AI 시대에도 교사가 필요한 이유입니다.
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{blue-book} 전개 1: 인공지능의 정의}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{인공지능이란 무엇일까요?}
+\begin{block}{\emoji{light-bulb} 인공지능 (Artificial Intelligence, AI)}
+\Large\centering 인간의 지능을 모방하는 컴퓨터 시스템
+\end{block}
+\vspace{0.5cm}
+\begin{itemize}
+    \item 보고(시각), 듣고(청각), 읽고(언어), 판단(추론)
+    \item 진짜 ``생각''하는 것이 아니라 $\rightarrow$ ``생각하는 것처럼 보이도록'' 만든 프로그램
+\end{itemize}
+\end{frame}
+
+% --- 그림 05: AI의 4가지 능력 ---
+\begin{frame}{AI의 4가지 능력}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{images/AI의4가지능력.jpg}
+\end{center}
+\vspace{0.3cm}
+\begin{center}
+\small 보기(시각) · 듣기(청각) · 읽기(언어 이해) · 판단하기(추론)
+\end{center}
+\end{frame}
+
+% --- 그림 06: 초등학생 AI 오개념 vs 실제 ---
+\begin{frame}{초등학생들의 AI 오개념}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{images/초등학생AI오개념vs실제.jpg}
+\end{center}
+\end{frame}
+
+\begin{frame}{초등학생들의 AI 오개념 — 교정 포인트}
+\begin{center}
+\small
+\begin{tabular}{|p{4.2cm}|p{3cm}|p{4.3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{오개념} & \textbf{실제} & \textbf{교정 포인트} \\
+\hline
+\mbox{``AI = 로봇''} & 소프트웨어 vs 하드웨어 & 눈에 보이지 않는 프로그램 \\
+\hline
+\mbox{``AI는 스스로 생각해요''} & 데이터 패턴을 학습 & \mbox{``생각''}이 아니라 \mbox{``계산''} \\
+\hline
+\mbox{``AI는 뭐든지 할 수 있어요''} & 특정 작업만 가능 & 시리에게 수학 문제를 풀어달라고 해보세요 \\
+\hline
+\mbox{``AI는 위험해요''} & 도구, 사용 방법이 중요 & 칼도 요리에 쓰면 유용! \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{green-book} 전개 2: AI 유형}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{약한 AI vs 강한 AI}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{block}{\emoji{small-blue-diamond} 약한 AI (Narrow AI)}
+\begin{itemize}
+    \item 특정 작업 하나에 특화
+    \item 현재 \textbf{모든 AI}가 약한 AI
+    \item 시리, ChatGPT, 자율주행 등
+\end{itemize}
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{\emoji{small-orange-diamond} 강한 AI (AGI)}
+\begin{itemize}
+    \item 인간처럼 범용적 사고
+    \item \textbf{아직 실현되지 않음}
+    \item 영화 속 AI (자비스 등)
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{alertblock}{\emoji{light-bulb} 쉬운 비유}
+약한 AI = ``한 과목만 잘하는 학생'' / 강한 AI = ``모든 과목 다 잘하는 학생''
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{ChatGPT도 약한 AI?}
+\begin{center}
+\Large ChatGPT는 대화도 하고, 글도 쓰고, 코딩도 하는데...\\
+\vspace{0.5cm}
+\pause
+\textbf{\color{primary}텍스트 생성}이라는 \textbf{하나의 작업}에 특화된 약한 AI\\
+\vspace{0.3cm}
+\normalsize 그 하나의 작업이 워낙 범용적이라\\다재다능해 \textbf{보이는} 거예요
+\end{center}
+\end{frame}
+
+\begin{frame}{기능별 분류 — AI는 무엇을 할 수 있을까?}
+\begin{center}
+\begin{tabular}{|p{2cm}|p{3.5cm}|p{4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{유형} & \textbf{하는 일} & \textbf{일상 속 예시} \\
+\hline
+\emoji{eye} \textbf{인식 AI} & 이미지·음성·텍스트를 알아봄 & 얼굴 잠금, 음성 비서 \\
+\hline
+\emoji{bar-chart} \textbf{예측 AI} & 미래 값을 예측 & 날씨 예보, 교통 예측 \\
+\hline
+\emoji{label} \textbf{분류 AI} & 데이터를 범주로 나눔 & 스팸 필터, 질병 진단 \\
+\hline
+\emoji{sparkles} \textbf{생성 AI} & 새로운 콘텐츠 생성 & ChatGPT, 이미지 생성 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% --- 그림 07: 고양이 vs 개 분류 ---
+\begin{frame}{고양이 vs 개 — AI는 어떻게 구별할까?}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_05_고양이vs개분류.png}
+\end{center}
+\end{frame}
+
+% --- 그림 07 → 설명 ---
+\begin{frame}{AI의 학습 과정}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{images/AI디지털리터러시_1주차1차시_05_고양이vs개분류.png}
+\end{center}
+\vspace{0.2cm}
+\begin{alertblock}{\emoji{light-bulb} 핵심}
+AI는 ``이해''가 아니라 \textbf{통계적 패턴}을 찾는 것!
+\end{alertblock}
+\end{frame}
+
+% --- 그림 08: 전통적 프로그래밍 vs 기계학습 ---
+\begin{frame}{전통적 프로그래밍 vs 기계학습}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_08_전통프로그래밍vs기계학습.png}
+\end{center}
+\end{frame}
+
+% --- 그림 06: AI, ML, DL 포함 관계 ---
+\begin{frame}{AI, ML, DL의 포함 관계}
+\begin{center}
+\includegraphics[width=0.70\textwidth]{images/AI디지털리터러시_1주차1차시_06_AI_ML_DL포함관계_v1_0_1_0_점선삭제_20260208_0010.png}
+\end{center}
+\begin{center}
+\small 다음 차시에서 본격적으로 다룰 거예요!
+\end{center}
+\end{frame}
+
+% --- 일상 속 AI 예시 (기능별 분류 적용) ---
+\begin{frame}{스마트폰 속 AI}
+\begin{center}
+\begin{tabular}{|p{2.5cm}|c|p{6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{기능} & \textbf{AI 유형} & \textbf{하는 일} \\
+\hline
+얼굴 잠금 해제 & 인식 & 얼굴 인식으로 본인 확인 \\
+\hline
+사진 자동 분류 & 분류 & 인물/장소별 자동 정리 \\
+\hline
+키보드 자동 완성 & 예측 & 다음 단어 예측·추천 \\
+\hline
+음성 비서 & 인식+생성 & 음성 인식 + 답변 생성 \\
+\hline
+카메라 야간 모드 & 생성 & 어두운 사진을 밝게 변환 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}{일상 서비스 속 AI}
+\begin{center}
+\begin{tabular}{|p{2.5cm}|c|p{6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{서비스} & \textbf{AI 유형} & \textbf{하는 일} \\
+\hline
+유튜브 추천 & 예측 & 좋아할 영상 추천 \\
+\hline
+네이버 지도 & 예측 & 최적 경로 제시 \\
+\hline
+쿠팡 상품 추천 & 예측+분류 & 관심 상품 추천 \\
+\hline
+넷플릭스 추천 & 분류+예측 & 취향 분류 + 콘텐츠 예측 \\
+\hline
+파파고 번역 & 인식+생성 & 한국어 인식 + 외국어 변환 \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0.3cm}
+\begin{alertblock}{\emoji{thought-balloon} 생각해보기}
+하루 동안 AI를 사용하지 않고 생활할 수 있을까요?
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{2022 개정 교육과정 연결}
+\begin{block}{{[6실05-04]} 데이터 유형 탐색}
+\begin{itemize}
+    \item 인식 AI $\rightarrow$ 이미지, 음성, 텍스트 데이터
+    \item 분류 AI $\rightarrow$ 레이블이 붙은 데이터
+    \item 예측 AI $\rightarrow$ 시계열, 수치 데이터
+    \item 생성 AI $\rightarrow$ 대규모 텍스트·이미지 데이터
+\end{itemize}
+\end{block}
+\vspace{0.3cm}
+\begin{block}{{[6실05-05]} AI가 만들어지는 과정}
+\begin{itemize}
+    \item 데이터 수집 $\rightarrow$ 학습 $\rightarrow$ 분류/예측
+    \item 4주차 엔트리 AI 모델 학습으로 직접 체험!
+\end{itemize}
+\end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{orange-book} 전개 3: AI의 봄과 겨울}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% --- 그림 10: AI 봄과 겨울 ---
+\begin{frame}{AI 70년 역사 — 봄과 겨울의 반복}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_07_AI봄과겨울.png}
+\end{center}
+\end{frame}
+
+% --- 그림 10 → 설명 1 ---
+\begin{frame}{탄생과 봄·겨울의 반복}
+\begin{description}[leftmargin=!,labelwidth=3cm]
+    \item[\emoji{seedling} 탄생 (1950s)] 튜링 테스트, 다트머스 회의 — ``인공지능'' 용어 탄생
+    \item[\emoji{cherry-blossom} 제1의 봄] 초기 프로그램 + 대규모 투자 $\rightarrow$ 낙관적 기대
+    \item[\emoji{snowflake} 제1의 겨울] 성과 미달 $\rightarrow$ 투자 감소, 컴퓨터 성능 한계
+    \item[\emoji{cherry-blossom} 제2의 봄] 전문가 시스템 $\rightarrow$ 상업적 성과
+    \item[\emoji{snowflake} 제2의 겨울] 유지보수 한계 $\rightarrow$ 인터넷으로 관심 이동
+\end{description}
+\end{frame}
+
+% --- 그림 11: ELIZA 대화 예시 ---
+\begin{frame}{최초의 챗봇 ELIZA (1966)}
+\begin{center}
+\includegraphics[width=0.65\textwidth]{images/AI디지털리터러시_1주차1차시_ELIZA대화예시.png}
+\end{center}
+\vspace{0.1cm}
+\begin{alertblock}{\emoji{light-bulb} 핵심 포인트}
+키워드 감지 → 패턴 매칭 응답 — \mbox{``이해''}가 아닌 \mbox{``규칙 따르기''}
+\end{alertblock}
+\end{frame}
+
+% --- 그림 12: IBM Deep Blue ---
+\begin{frame}{IBM Deep Blue --- 체스 챔피언을 이기다 (1997)}
+\begin{center}
+\includegraphics[width=0.82\textwidth]{images/AI디지털리터러시_1주차1차시_12_IBM_DeepBlue_1997_체스.png}
+\end{center}
+\vspace{0.2cm}
+\begin{center}
+\small 초당 2억 개의 체스 수 계산 — 그러나 ``체스만'' 잘하는 \textbf{약한 AI}
+\end{center}
+\end{frame}
+
+% --- 그림 10 → 설명 2 ---
+\begin{frame}{제3의 봄 (2010년대\textasciitilde 현재)}
+\begin{center}
+\large 이번에는 \textbf{질적으로 다른 봄}!
+\end{center}
+\vspace{0.3cm}
+\begin{center}
+\begin{tabular}{|l|p{4.5cm}|p{4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{요소} & \textbf{설명} & \textbf{왜 중요한가} \\
+\hline
+\emoji{bar-chart} \textbf{빅데이터} & 인터넷·스마트폰으로 데이터 폭발 & \mbox{``엄청난 양의 문제집''} \\
+\hline
+\emoji{high-voltage} \textbf{GPU 발전} & 복잡한 계산의 \mbox{``슈퍼 계산기''} & 학습 속도 혁신적 향상 \\
+\hline
+\emoji{brain} \textbf{딥러닝} & 뇌를 본뜬 \mbox{``학습 필터''} & 복잡한 패턴 학습 가능 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}{주요 이정표}
+\begin{center}
+\begin{tabular}{|c|p{5.5cm}|p{4.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{연도} & \textbf{사건} & \textbf{의미} \\
+\hline
+2011 & \textbf{IBM Watson} — 퀴즈쇼 제퍼디!에서 인간 챔피언 2명 격파 & 자연어 이해 AI의 가능성 \\
+\hline
+2012 & \textbf{ImageNet 대회} — 딥러닝\mbox{(AlexNet)}이 이미지 인식에서 압도적 성능 & 딥러닝의 위력 입증 \\
+\hline
+2016 & \textbf{AlphaGo vs 이세돌} — AI가 바둑에서 인간 챔피언 승리 & 전 세계가 AI 가능성 실감 \\
+\hline
+2022 & \textbf{ChatGPT 출시} — 일반인도 AI를 직접 사용 & AI 대중화, 생성형 AI 시대 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% --- 그림 13: IBM Watson ---
+\begin{frame}{IBM Watson — 퀴즈쇼 챔피언을 이기다 (2011)}
+\begin{center}
+\includegraphics[width=0.82\textwidth]{images/AI디지털리터러시_1주차1차시_13_IBM_Watson_2011_제퍼디.png}
+\end{center}
+\vspace{0.2cm}
+\begin{center}
+\small Watson \$77,147 vs Ken Jennings \$24,000 + Brad Rutter \$21,600
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{memo} 정리}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{오늘 배운 핵심 개념 3가지}
+\begin{block}{\emoji{pushpin} AI = 인간의 지능을 모방하는 컴퓨터 시스템}
+``생각''이 아니라 ``계산'' — 이미 일상 곳곳에!
+\end{block}
+
+\begin{block}{\emoji{pushpin} 현재 모든 AI = 약한 AI}
+ChatGPT도 텍스트 생성에 특화된 약한 AI
+\end{block}
+
+\begin{block}{\emoji{pushpin} AI의 봄과 겨울 $\rightarrow$ 현재 제3의 봄}
+빅데이터 + GPU + 딥러닝 삼박자
+\end{block}
+\end{frame}
+
+\begin{frame}{다음 차시 예고}
+\begin{center}
+\Large \textbf{기계학습(Machine Learning)의 원리}
+\end{center}
+\vspace{0.5cm}
+\begin{itemize}
+    \item AI는 어떻게 ``학습''할까?
+    \item 지도학습, 비지도학습, 강화학습의 차이
+    \item 4주차 엔트리 AI 모델 학습과의 연결
+\end{itemize}
+\vspace{0.5cm}
+\begin{center}
+AI가 \textbf{어떻게 똑똑해지는지}\\그 비밀을 파헤쳐 볼 차례! \emoji{rocket}
+\end{center}
+\end{frame}
+
+\begin{frame}[standout]
+\emoji{clapping-hands} 감사합니다!
+
+\vspace{0.5cm}
+질문이 있으신가요?
+\end{frame}
+
+\end{document}

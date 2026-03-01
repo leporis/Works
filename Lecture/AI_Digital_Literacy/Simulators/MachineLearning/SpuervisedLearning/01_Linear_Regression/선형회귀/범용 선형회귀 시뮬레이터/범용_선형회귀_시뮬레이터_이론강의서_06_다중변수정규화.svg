@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="800" height="420" fill="url(#bgGrad)"/>
+  
+  <!-- 제목 -->
+  <rect x="150" y="8" width="500" height="32" rx="6" fill="#3E2723"/>
+  <text x="400" y="30" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">📐 정규화 (Normalization): 단위 통일하기</text>
+  
+  <!-- ===== 문제 상황 (x:25, w:365, h:130) ===== -->
+  <rect x="25" y="50" width="365" height="130" rx="12" fill="#FFEBEE" filter="url(#shadow)"/>
+  <text x="207" y="78" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#C62828">❌ 문제: 단위가 다르면 비교 불가</text>
+  
+  <rect x="45" y="92" width="145" height="36" rx="6" fill="#FFFFFF"/>
+  <text x="117" y="115" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">부리길이: 40mm</text>
+  
+  <text x="207" y="115" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#5D4037">vs</text>
+  
+  <rect x="225" y="92" width="145" height="36" rx="6" fill="#FFFFFF"/>
+  <text x="297" y="115" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">체중: 4000g</text>
+  
+  <text x="207" y="150" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#C62828">숫자 크기만 보면 체중이 100배 중요해 보임!</text>
+  <text x="207" y="168" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#C62828">→ 공정한 비교가 불가능</text>
+  
+  <!-- 화살표 -->
+  <polygon points="395,115 415,105 415,125" fill="#43A047"/>
+  
+  <!-- ===== 해결책 (x:420, w:355, h:130) ===== -->
+  <rect x="420" y="50" width="355" height="130" rx="12" fill="#E8F5E9" filter="url(#shadow)"/>
+  <text x="597" y="78" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#2E7D32">✅ 해결: 0~100 범위로 통일</text>
+  
+  <rect x="440" y="92" width="145" height="36" rx="6" fill="#FFFFFF"/>
+  <text x="512" y="115" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">부리길이: 50점</text>
+  
+  <text x="597" y="115" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#5D4037">vs</text>
+  
+  <rect x="610" y="92" width="145" height="36" rx="6" fill="#FFFFFF"/>
+  <text x="682" y="115" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">체중: 54점</text>
+  
+  <text x="597" y="150" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#2E7D32">같은 범위로 변환하면 공정 비교 가능!</text>
+  <text x="597" y="168" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#2E7D32">→ 비슷한 중요도로 반영</text>
+  
+  <!-- ===== 정규화 공식 (y:195, h:55) ===== -->
+  <rect x="140" y="195" width="520" height="55" rx="10" fill="#FFFFFF" filter="url(#shadow)"/>
+  <text x="400" y="220" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#5D4037">📊 정규화 공식</text>
+  <text x="400" y="242" text-anchor="middle" font-family="Noto Sans KR, monospace" font-size="13" font-weight="700" fill="#E53935">정규화 점수 = (값 - 최소값) / (최대값 - 최소값) × 100</text>
+  
+  <!-- ===== 계산 예시 1 (x:25, w:370, h:155) ===== -->
+  <rect x="25" y="265" width="370" height="140" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  <text x="210" y="292" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#5D4037">🐧 예시 1: 부리길이 40mm</text>
+  
+  <text x="45" y="320" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">범위: 34mm ~ 46mm (최소~최대)</text>
+  
+  <rect x="45" y="335" width="330" height="30" rx="5" fill="#E3F2FD"/>
+  <text x="210" y="356" text-anchor="middle" font-family="Noto Sans KR, monospace" font-size="12" font-weight="600" fill="#E53935">(40 - 34) / (46 - 34) × 100 = 50점</text>
+  
+  <text x="45" y="392" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#8D6E63">→ 40mm는 범위의 정중앙이므로 50점</text>
+  
+  <!-- ===== 계산 예시 2 (x:415, w:360, h:155) ===== -->
+  <rect x="415" y="265" width="360" height="140" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  <text x="595" y="292" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#5D4037">🐧 예시 2: 체중 4000g</text>
+  
+  <text x="435" y="320" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">범위: 3200g ~ 4675g (최소~최대)</text>
+  
+  <rect x="435" y="335" width="320" height="30" rx="5" fill="#E3F2FD"/>
+  <text x="595" y="356" text-anchor="middle" font-family="Noto Sans KR, monospace" font-size="12" font-weight="600" fill="#E53935">(4000-3200) / (4675-3200) × 100 ≈ 54점</text>
+  
+  <text x="435" y="392" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#8D6E63">→ 4000g는 범위의 54% 지점이므로 54점</text>
+</svg>

@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 350">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-auto">
+      <path d="M 0 0 L 10 3.5 L 0 7 z" fill="#666"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-auto">
+      <path d="M 0 0 L 10 3.5 L 0 7 z" fill="#E53935"/>
+    </marker>
+    <marker id="arrowRedUp" viewBox="0 0 7 10" refX="3.5" refY="0" markerWidth="7" markerHeight="10">
+      <path d="M 0 10 L 3.5 0 L 7 10 z" fill="#E53935"/>
+    </marker>
+    <marker id="arrowDown" viewBox="0 0 7 10" refX="3.5" refY="10" markerWidth="7" markerHeight="10">
+      <path d="M 0 0 L 3.5 10 L 7 0 z" fill="#666"/>
+    </marker>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="350" rx="12" fill="url(#bgGrad)"/>
+  <text x="400" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#333">🎨 K-Means 클러스터링 실행 과정</text>
+  <text x="400" y="46" text-anchor="middle" font-size="9" fill="#795548">반복적 할당-업데이트를 통한 군집화</text>
+
+  <!-- 초기 중심점 -->
+  <rect x="40" y="70" width="130" height="70" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="40" y="70" width="130" height="22" rx="10" fill="#FFF8E1"/>
+  <rect x="40" y="84" width="130" height="8" fill="#FFF8E1"/>
+  <text x="105" y="87" text-anchor="middle" font-size="9" font-weight="600" fill="#E65100">초기화</text>
+  <text x="105" y="108" text-anchor="middle" font-size="8" fill="#555">K개 중심점</text>
+  <text x="105" y="122" text-anchor="middle" font-size="8" fill="#555">랜덤 배치</text>
+
+  <line x1="170" y1="105" x2="198" y2="105" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 반복 루프 영역 -->
+  <rect x="200" y="58" width="460" height="197" rx="12" fill="#FFF" stroke="#E53935" stroke-width="1.5" stroke-dasharray="6,3" filter="url(#shadow)"/>
+  <text x="430" y="76" text-anchor="middle" font-size="9" font-weight="700" fill="#E53935">🔄 반복 (최대 N회)</text>
+
+  <!-- ① 할당 -->
+  <rect x="216" y="88" width="120" height="60" rx="8" fill="#FFEBEE"/>
+  <text x="276" y="106" text-anchor="middle" font-size="9" font-weight="600" fill="#E53935">① 할당</text>
+  <text x="276" y="122" text-anchor="middle" font-size="7" fill="#555">각 데이터를</text>
+  <text x="276" y="134" text-anchor="middle" font-size="7" fill="#555">가장 가까운 중심점에</text>
+
+  <line x1="336" y1="118" x2="358" y2="118" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ② 업데이트 -->
+  <rect x="360" y="88" width="120" height="60" rx="8" fill="#E8F5E9"/>
+  <text x="420" y="106" text-anchor="middle" font-size="9" font-weight="600" fill="#2E7D32">② 업데이트</text>
+  <text x="420" y="122" text-anchor="middle" font-size="7" fill="#555">클러스터 평균으로</text>
+  <text x="420" y="134" text-anchor="middle" font-size="7" fill="#555">중심점 이동</text>
+
+  <line x1="480" y1="118" x2="502" y2="118" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ③ Inertia 계산 -->
+  <rect x="504" y="88" width="140" height="60" rx="8" fill="#E3F2FD"/>
+  <text x="574" y="106" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">③ Inertia 계산</text>
+  <text x="574" y="122" text-anchor="middle" font-size="7" fill="#555">데이터↔중심점</text>
+  <text x="574" y="134" text-anchor="middle" font-size="7" fill="#555">거리² 합산</text>
+
+  <!-- ④ 수렴 체크 (17px 하향) -->
+  <rect x="350" y="182" width="160" height="55" rx="8" fill="#FFF8E1" stroke="#FF9800" stroke-width="1.5"/>
+  <text x="430" y="202" text-anchor="middle" font-size="9" font-weight="600" fill="#E65100">④ 수렴 체크</text>
+  <text x="430" y="217" text-anchor="middle" font-size="7" fill="#555">|이전 − 현재| &lt; 0.01?</text>
+  <text x="430" y="231" text-anchor="middle" font-size="7" fill="#999">또는 최대 반복 도달?</text>
+
+  <path d="M574,148 L574,155 L430,155 L430,182" fill="none" stroke="#666" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+
+  <!-- 루프 되돌림 화살표 -->
+  <path d="M350,209 L276,209 L276,148" fill="none" stroke="#E53935" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowRedUp)"/>
+  <text x="290" y="205" font-size="7" font-weight="600" fill="#E53935">아니오 → 반복</text>
+
+  <!-- 수렴 완료 -->
+  <line x1="510" y1="209" x2="680" y2="209" stroke="#666" stroke-width="1.5"/>
+  <line x1="680" y1="209" x2="680" y2="262" stroke="#666" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+  <text x="600" y="203" font-size="7" font-weight="600" fill="#2E7D32">예 ✓</text>
+
+  <!-- 완료 -->
+  <rect x="610" y="262" width="140" height="60" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="610" y="262" width="140" height="22" rx="10" fill="#E8F5E9"/>
+  <rect x="610" y="276" width="140" height="8" fill="#E8F5E9"/>
+  <text x="680" y="279" text-anchor="middle" font-size="9" font-weight="600" fill="#2E7D32">✅ 완료</text>
+  <text x="680" y="300" text-anchor="middle" font-size="8" fill="#555">최종 클러스터</text>
+  <text x="680" y="314" text-anchor="middle" font-size="8" fill="#555">결과 표시</text>
+
+  <!-- 하단 수식 -->
+  <rect x="40" y="262" width="540" height="72" rx="8" fill="#FFF" filter="url(#shadow)"/>
+  <text x="310" y="282" text-anchor="middle" font-size="10" font-weight="600" fill="#333">📐 핵심 수식</text>
+  <text x="310" y="302" text-anchor="middle" font-size="10" fill="#1565C0">Inertia = Σᵢ (데이터ᵢ − 소속 중심점)²</text>
+  <text x="310" y="322" text-anchor="middle" font-size="8" fill="#888">Inertia가 작을수록 → 클러스터가 더 촘촘하게 모여 있음</text>
+</svg>

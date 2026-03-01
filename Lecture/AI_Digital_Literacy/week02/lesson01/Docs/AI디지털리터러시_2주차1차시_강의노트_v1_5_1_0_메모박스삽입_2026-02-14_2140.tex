@@ -1,0 +1,924 @@
+% LuaLaTeX 컴파일 필요 (컬러 이모지 + 한글 지원)
+\documentclass[11pt,a4paper]{article}
+
+% === 필수 패키지 ===
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{emoji}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{eso-pic}
+
+% === 페이지 설정 ===
+\geometry{left=25mm, right=25mm, top=28mm, bottom=99mm}
+\setlength{\parskip}{0.3em}
+
+% === 섹션 전후 간격 ===
+\titlespacing*{\section}{0pt}{1.2em}{0.6em}
+\titlespacing*{\subsection}{0pt}{1.0em}{0.5em}
+\titlespacing*{\subsubsection}{0pt}{0.8em}{0.3em}
+
+% === 폰트 설정 ===
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setmonofont{Noto Sans Mono CJK KR}[Scale=0.85]
+\setemojifont{Noto Color Emoji}
+
+% === 색상 정의 (프로젝트 팔레트) ===
+\definecolor{primary}{HTML}{1976D2}
+\definecolor{darkblue}{HTML}{1565C0}
+\definecolor{teal}{HTML}{00897B}
+\definecolor{purple}{HTML}{7B1FA2}
+\definecolor{amber}{HTML}{FFA000}
+\definecolor{green}{HTML}{388E3C}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{lightgray}{HTML}{F5F5F5}
+\definecolor{lightteal}{HTML}{E0F2F1}
+\definecolor{cream}{HTML}{FFF8E1}
+\definecolor{tableheader}{HTML}{BBDEFB}
+\definecolor{darkgray}{HTML}{333333}
+
+% === 하이퍼링크 ===
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    citecolor=primary
+}
+
+% === 섹션 스타일 ===
+\titleformat{\section}
+  {\LARGE\bfseries\color{primary}}
+  {\thesection}{0.5em}{}
+
+\titleformat{\subsection}
+  {\Large\bfseries\color{darkblue}}
+  {\thesubsection}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\large\bfseries\color{teal}}
+  {\thesubsubsection}{0.5em}{}
+
+% === 머리글/바닥글 ===
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{primary}AI디지털리터러시 --- 2주차 1차시}
+\fancyhead[R]{\small\color{primary}강의노트 v1.5.1.0}
+\fancyfoot[R]{}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% === tcolorbox 스타일 ===
+\tcbuselibrary{skins, breakable}
+
+\newtcolorbox{definitionbox}[1][]{
+    colback=lightblue,
+    colframe=primary,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={#1},
+    rounded corners,
+    boxrule=1pt,
+    breakable
+}
+
+\newtcolorbox{tipbox}[1][]{
+    colback=cream,
+    colframe=amber,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={#1},
+    rounded corners,
+    boxrule=1pt,
+    breakable
+}
+
+\newtcolorbox{keybox}[1][]{
+    colback=lightteal,
+    colframe=teal,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={#1},
+    rounded corners,
+    boxrule=1pt,
+    breakable
+}
+
+\newtcolorbox{questionbox}{
+    colback=lightgray,
+    colframe=primary!50,
+    rounded corners,
+    boxrule=0.5pt,
+    breakable
+}
+
+\newtcolorbox{summarybox}[1][]{
+    colback=lightblue!50,
+    colframe=primary,
+    coltitle=white,
+    fonttitle=\bfseries\large,
+    title={#1},
+    rounded corners,
+    boxrule=1.5pt,
+    breakable
+}
+
+\newtcolorbox{scriptbox}[1][]{
+    colback=lightgray,
+    colframe=darkgray!40,
+    coltitle=darkgray,
+    fonttitle=\bfseries,
+    title={#1},
+    rounded corners,
+    boxrule=0.5pt,
+    breakable,
+    left=8pt, right=8pt
+}
+
+\newtcolorbox{advancedbox}[1][]{
+    colback=purple!5,
+    colframe=purple!60,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={#1},
+    rounded corners,
+    boxrule=1pt,
+    breakable
+}
+
+% === 표 행 간격 ===
+\renewcommand{\arraystretch}{1.4}
+
+% === 한글화 ===
+\renewcommand{\contentsname}{목차}
+\renewcommand{\figurename}{그림}
+\renewcommand{\tablename}{표}
+
+% === 메모 박스 (매 페이지 하단 1/3) ===
+\AddToShipoutPictureFG{%
+  \AtPageLowerLeft{%
+    \put(71,42){%
+      \begin{minipage}[b]{160mm}%
+        \setlength{\parskip}{0pt}%
+        \hfill{\small\thepage}\par
+        \vspace{8.5bp}%
+        \begin{tcolorbox}[
+          nobeforeafter,
+          height=72mm,
+          colback=white,
+          colframe=gray!30,
+          coltitle=primary,
+          fonttitle=\bfseries\small,
+          title={\emoji{memo} 메모},
+          rounded corners,
+          boxrule=0.5pt,
+          top=2mm,
+          bottom=2mm,
+          left=3mm,
+          right=3mm
+        ]
+        \end{tcolorbox}
+      \end{minipage}%
+    }%
+  }%
+}
+
+\begin{document}
+
+% === 표지 ===
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+
+{\Huge\bfseries\color{primary} AI디지털리터러시}
+
+\vspace{0.5cm}
+
+{\LARGE\color{darkblue} 2주차 1차시 강의노트}
+
+\vspace{1.5cm}
+
+{\Huge\bfseries 데이터와 딥러닝}
+
+\vspace{0.5cm}
+
+{\Large\color{darkgray} 데이터의 역할과 편향 문제를 이해하고, 딥러닝과 신경망의 기초 개념을 이해한다}
+
+\vspace{3cm}
+
+{\large 청주교육대학교}
+
+\vspace{0.3cm}
+
+{\large 2026학년도}
+
+\vspace{2cm}
+
+\begin{tcolorbox}[colback=lightblue, colframe=primary, width=0.8\textwidth, halign=center]
+\begin{tabular}{ll}
+\textbf{교과목명} & AI디지털리터러시 \\
+\textbf{수업 시간} & 50분 \\
+\textbf{수업 대상} & 청주교육대학교 4학년 \\
+\textbf{관련 성취기준} & {[6실05-04]}, {[6실05-05]} \\
+\end{tabular}
+\end{tcolorbox}
+
+\end{titlepage}
+
+% === 목차 ===
+\tableofcontents
+\newpage
+
+% ============================================================
+% 수업 흐름 요약
+% ============================================================
+\section*{\emoji{clipboard} 수업 흐름 요약}
+\addcontentsline{toc}{section}{수업 흐름 요약}
+
+\begin{center}
+\begin{tabular}{|c|c|p{8cm}|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} & \textbf{그림} \\
+\hline
+10분 & \emoji{memo} 퀴즈 & 1주차 이론 퀴즈 (10점, 10분 제한) & --- \\
+\hline
+10분 & \emoji{blue-book} 전개 1 & 데이터의 역할: AI 학습의 연료, 양과 질의 중요성 & 그림 01\textasciitilde02 \\
+\hline
+10분 & \emoji{green-book} 전개 2 & 데이터 편향: 학습 데이터의 편향이 결과에 미치는 영향 & 그림 03 \\
+\hline
+15분 & \emoji{orange-book} 전개 3 & 딥러닝과 신경망: 입력층\textrightarrow{}은닉층\textrightarrow{}출력층 구조 (시뮬레이터 시연) & 그림 04\textasciitilde06 \\
+\hline
+5분 & \emoji{memo} 정리 & 딥러닝 성공 사례 (ImageNet, AlphaGo, GPT), 핵심 요약 & --- \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+% ============================================================
+% 퀴즈
+% ============================================================
+\section{\emoji{memo} 퀴즈: 1주차 이론 퀴즈 (10분)}
+
+\subsection{퀴즈 실시}
+
+\begin{center}
+\begin{tabular}{|>{\bfseries}l|p{10cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{내용} \\
+\hline
+시간 & 10분 \\
+\hline
+문항 & 5지선다형 10문항 + 단답형 5문항 (총 15문항) \\
+\hline
+배점 & 10점 (5지선다 0.5점 \texttimes{} 10 + 단답형 1점 \texttimes{} 5) \\
+\hline
+출제 범위 & 1주차 1차시 (AI의 이해) + 1주차 2차시 (기계학습의 원리) \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{운영 방법}:
+\begin{itemize}[nosep]
+    \item 시험지 배포 \textrightarrow{} 10분 후 회수
+    \item 시험 종료 후 간단히 정답 공유 (1\textasciitilde2분)
+\end{itemize}
+
+\begin{scriptbox}[\emoji{speech-balloon} 교수 멘트]
+``퀴즈가 끝났으니, 이제 기계학습이 학습하는 '재료'에 대해 알아볼까요?''
+\end{scriptbox}
+
+\newpage
+
+% ============================================================
+% 전개 1: 데이터의 역할
+% ============================================================
+\section{\emoji{blue-book} 전개 1: 데이터의 역할 (10분)}
+
+\begin{questionbox}
+\emoji{pushpin} \textbf{핵심 질문}: ``기계학습은 '무엇'으로 배울까요?''
+\end{questionbox}
+
+\subsection{1주차 복습 연결}
+
+지난 시간에 머신러닝 4단계를 배웠죠? 잠깐 복습해 봅시다.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{images/AI디지털리터러시_2주차1차시_01_머신러닝4단계프로세스.png}
+\caption{머신러닝 4단계 프로세스}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|c|c|p{8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{이름} & \textbf{설명} \\
+\hline
+1 & \emoji{package} 데이터 수집 & 학습에 필요한 데이터 모으기 \\
+\hline
+2 & \emoji{brain} 학습 & 데이터에서 패턴 발견하기 \\
+\hline
+3 & \emoji{bar-chart} 평가 & 학습 결과의 정확도 확인 \\
+\hline
+4 & \emoji{crystal-ball} 예측 & 새로운 데이터에 적용 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{scriptbox}[\emoji{speech-balloon} 교수 멘트]
+오늘은 이 4단계 중 \textbf{첫 번째 단계 --- 데이터}에 집중합니다. ``연료''가 좋아야 자동차가 잘 달리듯, \textbf{데이터가 좋아야 AI가 잘 배워요!}
+\end{scriptbox}
+
+\subsection{데이터 = AI 학습의 연료}
+
+AI에게 데이터는 우리에게 \textbf{교과서}와 같습니다. 학생이 좋은 교재로 공부하면 실력이 오르듯, AI도 좋은 데이터로 학습하면 성능이 높아져요.
+
+\begin{center}
+\begin{tabular}{|c|p{4.5cm}|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{비유} & \textbf{인간 학습} & \textbf{AI 학습} \\
+\hline
+\emoji{cooking} 요리 & 좋은 재료(신선, 다양) \textrightarrow{} 맛있는 요리 & 좋은 데이터 \textrightarrow{} 정확한 AI \\
+\hline
+\emoji{books} 공부 & 다양한 문제집 \textrightarrow{} 응용력 향상 & 다양한 데이터 \textrightarrow{} 일반화 능력 \\
+\hline
+\emoji{fuel-pump} 자동차 & 좋은 연료 \textrightarrow{} 원활한 주행 & 좋은 데이터 \textrightarrow{} 좋은 성능 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{AI가 학습하는 데이터의 유형}
+
+AI는 다양한 형태의 데이터를 학습합니다. 크게 3가지로 나눠 볼게요.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{images/AI디지털리터러시_2주차1차시_02_데이터유형_이미지텍스트소리_v1_0_0_0_신규작성_20260213_2230.png}
+\caption{AI가 학습하는 데이터 유형}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|c|p{3.5cm}|c|p{4.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{데이터 유형} & \textbf{예시} & \textbf{학습 단위} & \textbf{활용 사례} \\
+\hline
+\emoji{framed-picture} 이미지 & 사진, 그림, 영상 프레임 & 픽셀 & 고양이 vs 개 분류, 얼굴 인식 \\
+\hline
+\emoji{memo} 텍스트 & 문장, 단어, 문서 & 단어\textperiodcentered{}문장 & 긍정/부정 리뷰 판별, 번역 \\
+\hline
+\emoji{musical-note} 소리 & 음성, 음악, 환경음 & 파형\textperiodcentered{}주파수 & 음성 명령 인식, 음악 추천 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tipbox}[\emoji{light-bulb} 핵심]
+AI는 모든 데이터를 \textbf{숫자로 변환}하여 학습합니다. 사진은 픽셀 값(0\textasciitilde255), 텍스트는 벡터, 소리는 파형 데이터로 바뀌어요.
+\end{tipbox}
+
+\subsection{데이터의 양과 질}
+
+\textbf{양(Quantity)}: 데이터가 많을수록 패턴을 정확하게 파악할 수 있어요.
+\begin{itemize}[nosep]
+    \item 고양이 사진 10장보다 10,000장으로 학습한 AI가 더 정확합니다.
+    \item 하지만 ``많기만 하면'' 항상 좋은 걸까요? \textrightarrow{} 다음 시간(전개 2)에서 답을 찾아봅시다!
+\end{itemize}
+
+\textbf{질(Quality)}: 정확하고 다양한 데이터가 좋은 AI를 만듭니다.
+\begin{itemize}[nosep]
+    \item 흐릿한 사진, 잘못된 라벨이 많으면 AI도 혼란스러워요.
+    \item 다양한 각도, 조명, 배경의 고양이 사진이 필요해요.
+\end{itemize}
+
+\begin{scriptbox}[\emoji{speech-balloon} 전환 멘트]
+``그런데, 데이터가 많으면 항상 좋을까요? 아닌 경우를 볼까요.''
+\end{scriptbox}
+
+\newpage
+
+% ============================================================
+% 전개 2: 데이터 편향
+% ============================================================
+\section{\emoji{green-book} 전개 2: 데이터 편향 (10분)}
+
+\begin{questionbox}
+\emoji{pushpin} \textbf{핵심 질문}: ``데이터가 많은데도 AI가 틀리는 이유는?''
+\end{questionbox}
+
+\subsection{편향(Bias)이란?}
+
+편향이란 \textbf{한쪽으로 치우친 것}입니다. 데이터가 특정 유형에만 집중되어 있으면, AI도 그쪽으로 편향된 판단을 하게 됩니다.
+
+\begin{scriptbox}[\emoji{speech-balloon} 교수 멘트]
+\textbf{비유}: ``서울 학생들의 사진만으로 '한국 초등학생 얼굴' AI를 만들면?'' \\
+--- 지방 학생을 잘 인식 못할 수 있어요. 데이터가 서울에 \textbf{편향}되어 있기 때문이에요. \\[0.3em]
+더 쉬운 예시: ``교실에 남학생만 있는 사진으로 학습하면, 여학생을 학생으로 인식 못하는 AI가 됩니다.''
+\end{scriptbox}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{images/AI디지털리터러시_2주차1차시_03_편향된데이터vs좋은데이터.png}
+\caption{편향된 데이터 vs 좋은 데이터}
+\end{figure}
+
+\subsection{실제 사례로 보는 편향}
+
+\subsubsection{\emoji{magnifying-glass-tilted-left} 사례 1: 얼굴 인식 AI}
+
+\begin{itemize}[nosep]
+    \item \textbf{문제}: 밝은 피부 데이터 위주로 학습
+    \item \textbf{결과}: 어두운 피부 인식률 30\% 이상 차이
+    \item \textbf{원인}: 학습 데이터가 특정 피부톤에 편중
+\end{itemize}
+
+\subsubsection{\emoji{magnifying-glass-tilted-left} 사례 2: 채용 AI}
+
+\begin{itemize}[nosep]
+    \item \textbf{문제}: 과거 채용 데이터(남성 위주) 학습
+    \item \textbf{결과}: 여성 이력서에 낮은 점수 부여
+    \item \textbf{원인}: 과거 데이터 자체에 성별 편향이 있었음
+\end{itemize}
+
+\subsubsection{\emoji{magnifying-glass-tilted-left} 사례 3: 번역 AI}
+
+\begin{itemize}[nosep]
+    \item \textbf{문제}: 기존 문헌에서 직업-성별 연관 학습
+    \item \textbf{결과}: ``간호사 = 여성, 의사 = 남성''으로 번역
+    \item \textbf{원인}: 사회적 편견이 데이터에 반영
+\end{itemize}
+
+\subsection{왜 중요한가? --- 교육적 의미}
+
+AI가 사회적 편견을 학습하고 \textbf{강화}할 수 있습니다.
+
+\begin{keybox}[\emoji{school} 교사로서 알아야 할 이유]
+\begin{itemize}[nosep]
+    \item 학생들이 AI를 올바르게 이해하고 비판적으로 활용하도록 지도해야 합니다.
+    \item ``AI가 그렇게 말했어요''가 곧 ``진실''이 아님을 알려줘야 해요.
+\end{itemize}
+\end{keybox}
+
+\begin{tipbox}[\emoji{light-bulb} 데이터 윤리의 핵심 메시지]
+``AI가 공정하려면, 먼저 \textbf{데이터가 공정해야} 합니다.''
+\end{tipbox}
+
+\textbf{해결 방안 3가지}:
+
+\begin{center}
+\begin{tabular}{|c|p{3cm}|p{7cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{해결 방안} & \textbf{설명} \\
+\hline
+1 & 다양한 데이터 수집 & 성별, 인종, 지역 등 골고루 포함 \\
+\hline
+2 & 편향 검사 & 학습 전후로 편향 여부 테스트 \\
+\hline
+3 & 지속적 모니터링 & 사용 중 문제 발견 시 재학습 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{scriptbox}[\emoji{speech-balloon} 전환 멘트]
+``데이터의 중요성을 알았으니, 이제 AI가 데이터를 어떻게 '깊이' 학습하는지 알아볼까요?''
+\end{scriptbox}
+
+\newpage
+
+% ============================================================
+% 전개 3: 딥러닝과 신경망
+% ============================================================
+\section{\emoji{orange-book} 전개 3: 딥러닝과 신경망 (15분)}
+
+\begin{questionbox}
+\emoji{pushpin} \textbf{핵심 질문}: ``AI가 과일을 구분하는 '뇌'는 어떤 구조일까요?''
+\end{questionbox}
+
+\subsection{Part 1: 딥러닝과 신경망 개념 (5분)}
+
+\subsubsection{딥러닝(Deep Learning)이란?}
+
+1주차 1차시에서 AI \(\supset\) ML \(\supset\) DL 관계를 배웠죠? 오늘은 그 가장 안쪽, \textbf{딥러닝}을 파헤쳐 봅시다.
+
+\begin{definitionbox}[\emoji{books} 딥러닝 정의]
+\textbf{딥러닝}: 여러 층의 \textbf{신경망}을 활용한 기계학습 방법 --- ``깊이'' 있게 공부하는 AI
+\end{definitionbox}
+
+왜 \textbf{``딥(Deep)''}일까요? 층(Layer)이 많아서 ``깊다''고 해요!
+
+\begin{itemize}[nosep]
+    \item 기계학습: 보통 1\textasciitilde2단계 분석
+    \item 딥러닝: 수십\textasciitilde수백 단계 분석 \textrightarrow{} 더 복잡한 패턴을 파악
+\end{itemize}
+
+\subsubsection{\emoji{star} 심화: 생물학적 뉴런 vs 인공 뉴런}
+
+\begin{advancedbox}[\emoji{open-book} 심화 학습]
+아래 뉴런\textperiodcentered{}퍼셉트론 비교는 딥러닝 이해를 돕기 위한 심화 내용입니다. \textbf{퀴즈 출제 범위에 포함되지 않습니다.}
+\end{advancedbox}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{images/AI디지털리터러시_2주차1차시_04_뉴런과퍼셉트론_v1_0_0_0_신규작성_20260213_2230.png}
+\caption{뉴런의 관점 --- 생물학적 뇌 vs 인공지능}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{생물학적 뉴런} & \textbf{역할} & \textbf{인공 뉴런 (퍼셉트론)} \\
+\hline
+\textbf{수상돌기} & 신호 수용 \& 중요도 반영 & \textbf{입력값 \texttimes{} 가중치} \\
+\hline
+\textbf{세포체} & 정보 통합 \& 발화 여부 결정 & \textbf{합산 및 편향 (\(\Sigma\)+)} \\
+\hline
+\textbf{축삭 \textrightarrow{} 시냅스} & 결과 전달 \& 다음 단계 연결 & \textbf{활성화 함수 \textrightarrow{} 출력값} \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tipbox}[\emoji{light-bulb} 핵심]
+인공 뉴런은 생물학적 뉴런의 정보 처리 방식을 수학적으로 `모방'하여 학습합니다.
+\end{tipbox}
+
+\subsubsection{신경망의 기본 구조}
+
+인간의 뇌에서 영감을 얻어 만든 구조입니다. (하지만 실제 뇌와는 매우 다릅니다!)
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{images/AI디지털리터러시_2주차1차시_05_신경망기본구조_v1_0_0_0_신규작성_20260213_2230.png}
+\caption{신경망의 기본 구조}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|c|p{5cm}|p{5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{층} & \textbf{역할} & \textbf{비유} \\
+\hline
+\textbf{입력층} (Input) & 데이터를 받아들이는 곳 & \emoji{eyes} 눈 --- 정보를 수집 \\
+\hline
+\textbf{은닉층} (Hidden) & 패턴을 분석\textperiodcentered{}처리하는 곳 & \emoji{brain} 뇌 --- 정보를 해석 \\
+\hline
+\textbf{출력층} (Output) & 결과를 내보내는 곳 & \emoji{raised-hand} 손 --- 판단을 실행 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}[\emoji{light-bulb} 핵심]
+은닉층이 많을수록 = ``깊은'' 학습 \textrightarrow{} \textbf{딥러닝(Deep Learning)}
+\end{keybox}
+
+\subsubsection{딥러닝의 특징 추출}
+
+딥러닝의 진짜 놀라운 점은 \textbf{스스로 특징을 추출}한다는 거예요!
+
+고양이 사진을 예로 들면:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{images/AI디지털리터러시_2주차1차시_06_딥러닝특징추출_v1_0_0_0_신규작성_20260213_2230.png}
+\caption{딥러닝의 단계별 특징 추출}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|c|c|p{3.5cm}|p{4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{층} & \textbf{발견하는 특징} & \textbf{비유} \\
+\hline
+1단계 & 초기 층 & 선, 윤곽, 가장자리 & ``이건 선이네'' \\
+\hline
+2단계 & 중간 층 & 눈, 코, 귀 모양 & ``눈 모양이 보인다'' \\
+\hline
+3단계 & 깊은 층 & 전체 형태 인식 & ``이건 고양이다!'' \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}[\emoji{light-bulb} 핵심]
+층이 깊어질수록 더 복잡한 패턴을 인식할 수 있습니다. 이것이 딥러닝의 힘!
+\end{keybox}
+
+\subsection{Part 2: 신경망과일분류 시뮬레이터 시연 (5분)}
+
+\subsubsection{시연 목적}
+
+실제로 신경망이 어떻게 과일을 분류하는지 눈으로 확인해 봅시다!
+
+\subsubsection{시뮬레이터 사양}
+
+\begin{center}
+\begin{tabular}{|>{\bfseries}l|p{9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{사양} \\
+\hline
+시뮬레이터 & 신경망과일분류시뮬레이터 \\
+\hline
+입력 & 2개 (크기, 빨간 정도) \\
+\hline
+은닉층 & 6개 노드 \\
+\hline
+출력 & 4개 (\emoji{red-apple} 사과, \emoji{tangerine} 오렌지, \emoji{lemon} 레몬, \emoji{grapes} 포도) \\
+\hline
+학습 방식 & 에포크(epoch) 단위 반복 학습 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{시연 시나리오}
+
+\begin{center}
+\begin{tabular}{|c|p{4.5cm}|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{순서} & \textbf{교수 행동} & \textbf{핵심 메시지} \\
+\hline
+\textcircled{1} 구조 확인 & 입력층(2)\textrightarrow{}은닉층(6)\textrightarrow{}출력층(4) 보여주기 & ``이것이 신경망 구조예요!'' \\
+\hline
+\textcircled{2} 학습 시작 & {[학습 시작]} 버튼 \textrightarrow{} 에포크 진행 관찰 & ``데이터를 반복해서 학습 중!'' \\
+\hline
+\textcircled{3} 결과 확인 & 학습 완료 후 테스트 과일 분류 시도 & ``학습한 AI가 새 과일을 맞출까요?'' \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{scriptbox}[\emoji{speech-balloon} 학생 참여 유도]
+``다음에 무슨 과일이 나올까요? 맞춰 보세요!''
+\end{scriptbox}
+
+\subsection{\emoji{star} Part 3: CNN 이미지필터 시뮬레이터 시연 --- 심화 (5분)}
+
+\begin{advancedbox}[\emoji{open-book} 심화 학습]
+CNN(합성곱 신경망) 개념과 시뮬레이터 체험은 딥러닝 이해를 돕기 위한 심화 내용입니다. \textbf{퀴즈 출제 범위에 포함되지 않습니다.}
+\end{advancedbox}
+
+\subsubsection{시연 목적}
+
+딥러닝의 ``필터가 특징을 추출하는 과정''을 직접 눈으로 확인!
+
+\subsubsection{시뮬레이터 사양}
+
+\begin{center}
+\begin{tabular}{|>{\bfseries}l|p{9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{사양} \\
+\hline
+시뮬레이터 & CNN 이미지필터 체험 시뮬레이터 v1.0.0.0 \\
+\hline
+입력 & 10\texttimes{}10 픽셀 그리드 (흑백) \\
+\hline
+필터(커널) & 7종 3\texttimes{}3 커널 (가로/세로/전체 윤곽선, 선명, 블러 등) \\
+\hline
+출력 & 8\texttimes{}8 결과 그리드 (양수=파랑, 음수=빨강) \\
+\hline
+시각화 & 단계별 재생, 속도 조절, 계산 과정 실시간 표시 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{시연 시나리오}
+
+\begin{center}
+\begin{tabular}{|c|p{3.5cm}|c|p{4.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{순서} & \textbf{교수 행동} & \textbf{시간} & \textbf{핵심 메시지} \\
+\hline
+\textcircled{1} 프리셋 선택 & `십자' 패턴 선택, 원본 확인 & 1분 & ``10\texttimes{}10 격자에 그림을 그릴 수 있어요'' \\
+\hline
+\textcircled{2} 필터 적용 & 가로윤곽선 \textrightarrow{} 세로윤곽선 \textrightarrow{} 전체윤곽선 순서 & 2분 & ``같은 그림인데 필터마다 결과가 다르다!'' \\
+\hline
+\textcircled{3} 애니메이션 & {[단계별 재생]} \textrightarrow{} 3\texttimes{}3 영역 하이라이트 & 1분 & ``필터가 이미지 위를 훑으며 특징을 추출!'' \\
+\hline
+\textcircled{4} 연결 설명 & 그림 06과 연결하여 설명 & 1분 & ``이런 필터를 겹겹이 쌓으면 \textrightarrow{} 딥러닝!'' \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}[\emoji{light-bulb} 핵심 메시지]
+``CNN은 이런 필터를 \textbf{스스로 학습}합니다. 어떤 필터가 좋은지 AI가 데이터로부터 배워요!''
+\end{keybox}
+
+\begin{scriptbox}[\emoji{speech-balloon} 학생 참여 유도]
+``이 필터를 적용하면 어떤 결과가 나올까요? 예상해 보세요!''
+\end{scriptbox}
+
+\newpage
+
+% ============================================================
+% 정리
+% ============================================================
+\section{\emoji{memo} 정리 (5분)}
+
+\subsection{핵심 개념 3가지 요약}
+
+오늘 배운 내용을 3가지로 정리해 봅시다.
+
+\begin{summarybox}[\emoji{keycap-1} 데이터의 역할]
+AI 학습의 연료 --- \textbf{양과 질}이 모두 중요!
+
+\begin{itemize}[nosep]
+    \item AI는 이미지, 텍스트, 소리 등 다양한 데이터를 \textbf{숫자로 변환}하여 학습
+    \item 데이터가 많고 다양할수록 AI 성능이 높아짐
+\end{itemize}
+\end{summarybox}
+
+\begin{summarybox}[\emoji{keycap-2} 데이터 편향]
+치우친 데이터 \textrightarrow{} 불공정한 AI \textrightarrow{} \textbf{다양한 데이터 수집}이 해결책!
+
+\begin{itemize}[nosep]
+    \item 편향된 데이터는 편향된 AI를 만듦
+    \item 교사로서 AI의 편향을 인식하고 학생들에게 비판적 활용을 지도해야 함
+\end{itemize}
+\end{summarybox}
+
+\begin{summarybox}[\emoji{keycap-3} 딥러닝과 신경망]
+여러 층의 신경망으로 복잡한 패턴 학습! (입력층 \textrightarrow{} 은닉층 \textrightarrow{} 출력층)
+
+\begin{itemize}[nosep]
+    \item 은닉층이 많을수록 = 딥러닝
+    \item 층이 깊어질수록 선 \textrightarrow{} 부분 \textrightarrow{} 전체를 인식하는 \textbf{자동 특징 추출}
+\end{itemize}
+\end{summarybox}
+
+\subsection{딥러닝 성공 사례}
+
+\begin{center}
+\begin{tabular}{|c|p{5.5cm}|p{4.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{연도} & \textbf{사건} & \textbf{의미} \\
+\hline
+2012 & ImageNet 대회: 딥러닝 이미지 인식 압도적 성능 & 딥러닝 가능성 증명 \\
+\hline
+2016 & AlphaGo: 바둑 세계 챔피언 승리 & 딥러닝 + 강화학습 \\
+\hline
+2022 & ChatGPT 출시: LLM 대중화 & 딥러닝 기반 생성형 AI \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{scriptbox}[\emoji{speech-balloon} 교수 멘트]
+1주차의 ``제3의 봄''과 연결: ``이 모든 성공의 비결이 바로 \textbf{딥러닝}이에요!''
+\end{scriptbox}
+
+\subsection{교육과정 연결}
+
+\begin{center}
+\begin{tabular}{|c|p{4.5cm}|p{4.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{성취기준} & \textbf{오늘 배운 내용} & \textbf{앞으로 배울 내용} \\
+\hline
+{[6실05-04]} & 데이터 유형(이미지/텍스트/소리)과 AI 학습의 관계 & 3\textasciitilde4주차: 엔트리 실습 \\
+\hline
+{[6실05-05]} & 딥러닝 원리, 신경망 구조 이해 & 2차시: 생성형 AI 심화 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}[\emoji{school} 엔트리 실습 연결]
+3\textasciitilde4주차에 배울 엔트리 AI 모델에서 데이터 수집\textperiodcentered{}학습 과정을 직접 체험합니다. ``오늘 배운 데이터의 중요성, 편향 문제가 엔트리 실습에서도 그대로 나타나요!''
+\end{keybox}
+
+\subsection{\emoji{crystal-ball} 다음 차시 예고}
+
+\begin{scriptbox}[\emoji{speech-balloon} 교수 멘트]
+다음 차시에서는 \textbf{생성형 AI 심화}를 배울 거예요.
+
+\begin{itemize}[nosep]
+    \item LLM(대규모 언어 모델)은 어떻게 문장을 만들까?
+    \item 증강과 자동화 --- AI를 어떻게 활용하는 게 바람직할까?
+    \item 프롬프트 엔지니어링 --- AI에게 잘 질문하는 방법은?
+\end{itemize}
+
+딥러닝이 AI를 ``똑똑하게'' 만들었다면, 다음 시간에는 우리가 AI를 \textbf{``잘 쓰는 방법''}을 배울 차례입니다!
+\end{scriptbox}
+
+\newpage
+
+% ============================================================
+% 사용 그림 목록
+% ============================================================
+\section*{사용 그림 목록}
+\addcontentsline{toc}{section}{사용 그림 목록}
+
+\begin{center}
+\small
+\begin{tabular}{|c|p{3.5cm}|c|p{4cm}|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{파일명 (약칭)} & \textbf{사용 단계} & \textbf{내용} & \textbf{상태} \\
+\hline
+01 & 머신러닝4단계프로세스 & 전개 1 & 데이터 수집 \textrightarrow{} 학습 \textrightarrow{} 평가 \textrightarrow{} 예측 & \emoji{check-mark-button} 재사용 \\
+\hline
+02 & 데이터유형 이미지텍스트소리 & 전개 1 & 이미지\textperiodcentered{}텍스트\textperiodcentered{}소리 3가지 데이터 유형 & \emoji{check-mark-button} 신규 \\
+\hline
+03 & 편향된데이터vs좋은데이터 & 전개 2 & 편향된 데이터 vs 다양한 데이터 비교 & \emoji{check-mark-button} 재사용 \\
+\hline
+04 & 뉴런과퍼셉트론 & 전개 3 & 생물학적 뉴런 vs 인공 뉴런 비교 & \emoji{check-mark-button} 신규 \emoji{star} \\
+\hline
+05 & 신경망기본구조 & 전개 3 & 입력층 \textrightarrow{} 은닉층 \textrightarrow{} 출력층 & \emoji{check-mark-button} 신규 \\
+\hline
+06 & 딥러닝특징추출 & 전개 3 & 초기 층(선) \textrightarrow{} 중간 층(부분) \textrightarrow{} 깊은 층(전체) & \emoji{check-mark-button} 신규 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.5em}
+\noindent \textbf{참고}: 시뮬레이터 2종(신경망과일분류, CNN 이미지필터)을 주력 시각 자료로 사용하므로, 정적 그림은 6종으로 구성했습니다.
+
+% ============================================================
+% 참고자료
+% ============================================================
+\section*{참고자료}
+\addcontentsline{toc}{section}{참고자료}
+
+\begin{center}
+\small
+\begin{tabular}{|c|p{5.5cm}|p{2cm}|p{3.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & AI디지털리터러시\_강의계획서\_v1.3.0.0 & 프로젝트 문서 & 2주차 1차시 수업 계획 \\
+\hline
+2 & AI디지털리터러시\_2주차1차시\_강의개요\_v1.5.0.0 & 프로젝트 문서 & 본 강의노트의 기반 \\
+\hline
+3 & 2022 개정 교육과정 (교육부 고시 제2022-33호) & 교육부 문서 & {[6실05-04]}, {[6실05-05]} 성취기준 \\
+\hline
+4 & 신경망과일분류시뮬레이터\_퀵가이드\_v1.1.0.0 & 프로젝트 문서 & 시뮬레이터 사양 \\
+\hline
+5 & CNN\_이미지필터\_체험\_시뮬레이터\_사용설명서\_v1.0.0.0 & 프로젝트 문서 & CNN 시뮬레이터 상세 \\
+\hline
+6 & CNN\_이미지필터\_체험\_시뮬레이터\_퀵가이드\_v1.0.0.0 & 프로젝트 문서 & CNN 시뮬레이터 빠른 참조 \\
+\hline
+7 & 문서작성지침서\_v1.11.0.0 & 프로젝트 문서 & 강의자료 작성 절차 \\
+\hline
+8 & 문서관리지침\_v2.2.0.0 & 프로젝트 문서 & 이미지 제작 8단계 프로세스 \\
+\hline
+9 & 버전관리지침\_v1.3.0 & 프로젝트 문서 & 문서 버전 체계 \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================================
+% 생성/수정 이력
+% ============================================================
+\section*{생성/수정 이력}
+\addcontentsline{toc}{section}{생성/수정 이력}
+
+\begin{center}
+\small
+\begin{tabular}{|l|l|l|l|p{6cm}|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경 수준} & \textbf{변경 내용} & \textbf{작성자} \\
+\hline
+v1.0.0.0 & 2026-02-11 & 19:30 & 최초 & 강의개요 v1.0.0.0 기반 강의노트 신규 작성 & Claude \\
+\hline
+v1.1.0.0 & 2026-02-13 & 06:00 & 마이너 & 신경망과일분류시뮬레이터 명칭/사양 반영, 시연 시나리오 구체화 & Claude \\
+\hline
+v1.2.0.0 & 2026-02-13 & 18:30 & 마이너 & CNN 이미지필터 시뮬레이터 통합. 전개3을 3파트 15분으로 재구성 & Claude \\
+\hline
+v1.3.0.0 & 2026-02-13 & 19:30 & 마이너 & 그림 5종 삽입. 신규 3종 + 재사용 2종 & Claude \\
+\hline
+v1.4.0.0 & 2026-02-13 & 22:30 & 마이너 & 그림04 `뉴런과 퍼셉트론' 삽입. 번호 재정렬 & Claude \\
+\hline
+v1.5.0.0 & 2026-02-14 & 08:30 & 마이너 & 강의자료 검토. \emoji{star} 심화 표기, 맞춤법 수정 & Claude \\
+\hline
+v1.5.0.1 & 2026-02-14 & 12:10 & 패치 & 시뮬레이터 입력 ``색상'' → ``빨간 정도'' 용어 통일 & Claude \\
+\hline
+v1.5.1.0 & 2026-02-14 & 21:40 & 마이너 & 메모 박스 삽입 (하단 1/3, eso-pic+tcolorbox, 72mm 고정 높이) & Claude \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{2em}
+\begin{center}
+\textit{AI디지털리터러시 2주차 1차시 강의노트 --- 데이터와 딥러닝}
+\end{center}
+
+\end{document}

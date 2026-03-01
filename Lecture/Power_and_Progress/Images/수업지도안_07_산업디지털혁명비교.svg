@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" font-family="'Noto Sans KR', sans-serif">
+  <defs>
+    <filter id="ds"><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-opacity="0.10"/></filter>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="900" height="640" rx="12" fill="#FAFAFA"/>
+
+  <!-- 제목 영역 -->
+  <rect x="0" y="0" width="900" height="78" rx="12" fill="#1976D2"/>
+  <rect x="0" y="40" width="900" height="38" fill="#1976D2"/>
+  <text x="450" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">산업혁명 vs 디지털혁명 — 무엇이 같고 무엇이 다른가</text>
+  <text x="450" y="62" text-anchor="middle" font-size="13" font-weight="400" fill="#BBDEFB">『권력과 진보』 8장 · 디지털 시대의 불평등</text>
+
+  <!-- ========== 비교표 ========== -->
+  <!-- 표 영역: x=60~840, y=96~440 -->
+  <!-- 열 너비: 항목=180, 산업혁명=300, 디지털혁명=300 -->
+
+  <!-- 헤더 행 -->
+  <rect x="60" y="96" width="180" height="44" rx="0" fill="#1976D2"/>
+  <text x="150" y="124" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">비교 항목</text>
+
+  <rect x="240" y="96" width="300" height="44" fill="#00897B"/>
+  <text x="390" y="124" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">🏭 산업혁명 (18~19세기)</text>
+
+  <rect x="540" y="96" width="300" height="44" fill="#7B1FA2"/>
+  <text x="690" y="124" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">💻 디지털혁명 (21세기)</text>
+
+  <!-- 좌상단 둥근 모서리 보정 -->
+  <rect x="60" y="96" width="12" height="44" fill="#1976D2"/>
+  <!-- 우상단 둥근 모서리 -->
+  <rect x="828" y="96" width="12" height="44" fill="#7B1FA2"/>
+
+  <!-- 행 1: 핵심 기술 -->
+  <rect x="60" y="140" width="180" height="44" fill="#E3F2FD"/>
+  <text x="150" y="168" text-anchor="middle" font-size="13" font-weight="700" fill="#0D47A1">핵심 기술</text>
+  <rect x="240" y="140" width="300" height="44" fill="#E0F2F1"/>
+  <text x="390" y="168" text-anchor="middle" font-size="13" fill="#004D40">방적기 · 증기기관 · 공장</text>
+  <rect x="540" y="140" width="300" height="44" fill="#F3E5F5"/>
+  <text x="690" y="168" text-anchor="middle" font-size="13" fill="#4A148C">플랫폼 · AI · 알고리즘</text>
+
+  <!-- 행 2: 착취 대상 -->
+  <rect x="60" y="184" width="180" height="50" fill="#EDE7F6"/>
+  <text x="150" y="214" text-anchor="middle" font-size="13" font-weight="700" fill="#0D47A1">착취 대상</text>
+  <rect x="240" y="184" width="300" height="50" fill="#E0F2F1" opacity="0.6"/>
+  <text x="390" y="206" text-anchor="middle" font-size="13" fill="#004D40">육체 노동</text>
+  <text x="390" y="224" text-anchor="middle" font-size="11" fill="#00897B">노동자의 몸 · 시간</text>
+  <rect x="540" y="184" width="300" height="50" fill="#F3E5F5" opacity="0.6"/>
+  <text x="690" y="206" text-anchor="middle" font-size="13" fill="#4A148C">주의(attention) · 데이터</text>
+  <text x="690" y="224" text-anchor="middle" font-size="11" fill="#7B1FA2">사용자의 클릭 · 행동 기록</text>
+
+  <!-- 행 3: 감시 방식 -->
+  <rect x="60" y="234" width="180" height="50" fill="#E3F2FD"/>
+  <text x="150" y="264" text-anchor="middle" font-size="13" font-weight="700" fill="#0D47A1">감시 방식</text>
+  <rect x="240" y="234" width="300" height="50" fill="#E0F2F1"/>
+  <text x="390" y="256" text-anchor="middle" font-size="13" fill="#004D40">감독관 · 벌금 · 체벌</text>
+  <text x="390" y="274" text-anchor="middle" font-size="11" fill="#00897B">물리적 · 시각적 통제</text>
+  <rect x="540" y="234" width="300" height="50" fill="#F3E5F5"/>
+  <text x="690" y="256" text-anchor="middle" font-size="13" fill="#4A148C">알고리즘 · 쿠키 · 추적</text>
+  <text x="690" y="274" text-anchor="middle" font-size="11" fill="#7B1FA2">디지털 · 비가시적 통제</text>
+
+  <!-- 행 4: 설득 내러티브 -->
+  <rect x="60" y="284" width="180" height="44" fill="#EDE7F6"/>
+  <text x="150" y="312" text-anchor="middle" font-size="13" font-weight="700" fill="#0D47A1">설득 내러티브</text>
+  <rect x="240" y="284" width="300" height="44" fill="#E0F2F1" opacity="0.6"/>
+  <text x="390" y="312" text-anchor="middle" font-size="13" font-weight="600" fill="#004D40">"자유 시장이 모두를 살린다"</text>
+  <rect x="540" y="284" width="300" height="44" fill="#F3E5F5" opacity="0.6"/>
+  <text x="690" y="312" text-anchor="middle" font-size="13" font-weight="600" fill="#4A148C">"기술이 세상을 더 낫게 한다"</text>
+
+  <!-- 행 5: 자동화 대상 -->
+  <rect x="60" y="328" width="180" height="44" fill="#E3F2FD"/>
+  <text x="150" y="356" text-anchor="middle" font-size="13" font-weight="700" fill="#0D47A1">자동화 대상</text>
+  <rect x="240" y="328" width="300" height="44" fill="#E0F2F1"/>
+  <text x="390" y="356" text-anchor="middle" font-size="13" fill="#004D40">수공업 장인 · 숙련 노동자</text>
+  <rect x="540" y="328" width="300" height="44" fill="#F3E5F5"/>
+  <text x="690" y="356" text-anchor="middle" font-size="13" fill="#4A148C">사무직 · 중산층 · 전문직</text>
+
+  <!-- 행 6: 잉여의 행방 -->
+  <rect x="60" y="372" width="180" height="44" fill="#EDE7F6"/>
+  <text x="150" y="400" text-anchor="middle" font-size="13" font-weight="700" fill="#0D47A1">잉여의 행방</text>
+  <rect x="240" y="372" width="300" height="44" fill="#E0F2F1" opacity="0.6"/>
+  <text x="390" y="400" text-anchor="middle" font-size="13" fill="#004D40">공장주 저택 · 자본 축적</text>
+  <rect x="540" y="372" width="300" height="44" fill="#F3E5F5" opacity="0.6"/>
+  <text x="690" y="400" text-anchor="middle" font-size="13" fill="#4A148C">빅테크 시가총액 · 주주 배당</text>
+
+  <!-- 행 7: 대항 권력 (강조) -->
+  <rect x="60" y="416" width="180" height="48" fill="#E3F2FD"/>
+  <text x="150" y="446" text-anchor="middle" font-size="13" font-weight="700" fill="#0D47A1">대항 권력</text>
+  <rect x="240" y="416" width="300" height="48" fill="#E8F5E9"/>
+  <text x="390" y="440" text-anchor="middle" font-size="13" font-weight="600" fill="#2E7D32">✅ 노동조합 · 참정권 · 복지국가</text>
+  <text x="390" y="458" text-anchor="middle" font-size="11" fill="#388E3C">100년에 걸쳐 형성됨</text>
+  <rect x="540" y="416" width="300" height="48" fill="#FFF3E0" stroke="#FFA000" stroke-width="1.5"/>
+  <text x="690" y="440" text-anchor="middle" font-size="13" font-weight="700" fill="#E65100">❓ 아직 형성되지 않았다</text>
+  <text x="690" y="458" text-anchor="middle" font-size="11" fill="#F57C00">디지털 시대의 과제</text>
+
+  <!-- 표 외곽선 -->
+  <rect x="60" y="96" width="780" height="368" rx="0" fill="none" stroke="#BDBDBD" stroke-width="1"/>
+
+  <!-- ========== 하단: 디지털 피해 3가지 메커니즘 ========== -->
+  <line x1="40" y1="482" x2="860" y2="482" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="450" y="504" text-anchor="middle" font-size="13" font-weight="700" fill="#424242">디지털 피해의 3가지 메커니즘</text>
+
+  <!-- 카드 1: 과잉 자동화 -->
+  <rect x="60" y="516" width="250" height="72" rx="10" fill="#FFF3E0" stroke="#E65100" stroke-width="1.5" filter="url(#ds)"/>
+  <text x="185" y="540" text-anchor="middle" font-size="14" font-weight="700" fill="#BF360C">① 과잉 자동화</text>
+  <text x="185" y="558" text-anchor="middle" font-size="12" fill="#E65100">인간을 대체하는 기술에 과잉 투자</text>
+  <text x="185" y="576" text-anchor="middle" font-size="11" fill="#F57C00">일자리 소멸 · 임금 하락 · 탈숙련화</text>
+
+  <!-- 카드 2: 주의 경제 -->
+  <rect x="325" y="516" width="250" height="72" rx="10" fill="#F3E5F5" stroke="#8E24AA" stroke-width="1.5" filter="url(#ds)"/>
+  <text x="450" y="540" text-anchor="middle" font-size="14" font-weight="700" fill="#4A148C">② 주의 경제</text>
+  <text x="450" y="558" text-anchor="middle" font-size="12" fill="#7B1FA2">사용자 주의력을 광고 수익으로 전환</text>
+  <text x="450" y="576" text-anchor="middle" font-size="11" fill="#8E24AA">중독 설계 · 가짜뉴스 · 극단화</text>
+
+  <!-- 카드 3: 감시 자본주의 -->
+  <rect x="590" y="516" width="250" height="72" rx="10" fill="#E0F2F1" stroke="#00897B" stroke-width="1.5" filter="url(#ds)"/>
+  <text x="715" y="540" text-anchor="middle" font-size="14" font-weight="700" fill="#004D40">③ 감시 자본주의</text>
+  <text x="715" y="558" text-anchor="middle" font-size="12" fill="#00897B">행동 데이터를 무단 수집 · 예측 · 판매</text>
+  <text x="715" y="576" text-anchor="middle" font-size="11" fill="#00897B">프라이버시 소멸 · 행동 조작</text>
+
+  <!-- ========== 최하단: 핵심 질문 ========== -->
+  <rect x="100" y="602" width="700" height="28" rx="8" fill="#E3F2FD" stroke="#1976D2" stroke-width="1.5"/>
+  <text x="450" y="621" text-anchor="middle" font-size="12" font-weight="500" fill="#0D47A1">💡  디지털혁명의 대항 권력은 아직 형성되지 않았다 — 왜?  우리는 무엇부터 해야 하는가?</text>
+
+</svg>

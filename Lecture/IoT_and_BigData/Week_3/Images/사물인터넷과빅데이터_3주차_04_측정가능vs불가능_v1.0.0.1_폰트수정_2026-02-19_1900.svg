@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 420" font-family="'Noto Sans CJK KR', sans-serif">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrowAmber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#FFA000"/>
+    </marker>
+  </defs>
+
+  <rect width="700" height="420" rx="16" fill="#FAFAFA"/>
+
+  <!-- 제목 -->
+  <text x="350" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#333">💡 "측정 불가능"을 "측정 가능"으로 바꾸기</text>
+
+  <!-- 좌측 헤더 -->
+  <rect x="20" y="50" width="230" height="32" rx="8" fill="#E53935"/>
+  <text x="135" y="72" text-anchor="middle" font-size="13" font-weight="bold" fill="white">❌ 추상적 표현 (측정 불가)</text>
+
+  <!-- 우측 헤더 -->
+  <rect x="450" y="50" width="230" height="32" rx="8" fill="#388E3C"/>
+  <text x="565" y="72" text-anchor="middle" font-size="13" font-weight="bold" fill="white">✅ 구체적 지표 (측정 가능)</text>
+
+  <!-- 중앙 헤더 -->
+  <text x="350" y="72" text-anchor="middle" font-size="12" font-weight="bold" fill="#FFA000">🔄 변환</text>
+
+  <!-- 행 1: 덥다 → 28℃ -->
+  <rect x="20" y="95" width="230" height="56" rx="10" fill="#FFEBEE" stroke="#FFCDD2" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="40" y="120" font-size="20">😰</text>
+  <text x="70" y="120" font-size="13" font-weight="bold" fill="#C62828">"교실이 덥다"</text>
+  <text x="70" y="138" font-size="10" fill="#999">주관적 판단</text>
+
+  <line x1="255" y1="123" x2="445" y2="123" stroke="#FFA000" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrowAmber)"/>
+  <text x="350" y="118" text-anchor="middle" font-size="10" fill="#F57F17">구체화</text>
+
+  <rect x="450" y="95" width="230" height="56" rx="10" fill="#E8F5E9" stroke="#C8E6C9" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="470" y="120" font-size="20">🌡️</text>
+  <text x="500" y="118" font-size="12" font-weight="bold" fill="#2E7D32">"온도 28℃ 이상인</text>
+  <text x="500" y="138" font-size="12" font-weight="bold" fill="#2E7D32">시간 비율은?"</text>
+
+  <!-- 행 2: 시끄럽다 → 소음 70 -->
+  <rect x="20" y="165" width="230" height="56" rx="10" fill="#FFEBEE" stroke="#FFCDD2" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="40" y="190" font-size="20">😤</text>
+  <text x="70" y="190" font-size="13" font-weight="bold" fill="#C62828">"복도가 시끄럽다"</text>
+  <text x="70" y="208" font-size="10" fill="#999">주관적 판단</text>
+
+  <line x1="255" y1="193" x2="445" y2="193" stroke="#FFA000" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrowAmber)"/>
+  <text x="350" y="188" text-anchor="middle" font-size="10" fill="#F57F17">구체화</text>
+
+  <rect x="450" y="165" width="230" height="56" rx="10" fill="#E8F5E9" stroke="#C8E6C9" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="470" y="190" font-size="20">🔊</text>
+  <text x="500" y="188" font-size="12" font-weight="bold" fill="#2E7D32">"쉬는 시간 소음이</text>
+  <text x="500" y="208" font-size="12" font-weight="bold" fill="#2E7D32">수업 시간의 몇 배?"</text>
+
+  <!-- 행 3: 쾌적하다 → 온습도 범위 -->
+  <rect x="20" y="235" width="230" height="56" rx="10" fill="#FFEBEE" stroke="#FFCDD2" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="40" y="260" font-size="20">😊</text>
+  <text x="70" y="260" font-size="13" font-weight="bold" fill="#C62828">"교실이 쾌적하다"</text>
+  <text x="70" y="278" font-size="10" fill="#999">복합 주관 판단</text>
+
+  <line x1="255" y1="263" x2="445" y2="263" stroke="#FFA000" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrowAmber)"/>
+  <text x="350" y="258" text-anchor="middle" font-size="10" fill="#F57F17">구체화</text>
+
+  <rect x="450" y="235" width="230" height="56" rx="10" fill="#E8F5E9" stroke="#C8E6C9" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="470" y="258" font-size="20">🌡️</text>
+  <text x="500" y="258" font-size="12" font-weight="bold" fill="#2E7D32">"22~26℃이고</text>
+  <text x="500" y="278" font-size="12" font-weight="bold" fill="#2E7D32">습도 40~60% 비율?"</text>
+
+  <!-- 행 4: 혼잡하다 → 감지 횟수 -->
+  <rect x="20" y="305" width="230" height="56" rx="10" fill="#FFEBEE" stroke="#FFCDD2" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="40" y="330" font-size="20">🍽️</text>
+  <text x="70" y="330" font-size="13" font-weight="bold" fill="#C62828">"급식실이 혼잡하다"</text>
+  <text x="70" y="348" font-size="10" fill="#999">주관적 판단</text>
+
+  <line x1="255" y1="333" x2="445" y2="333" stroke="#FFA000" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrowAmber)"/>
+  <text x="350" y="328" text-anchor="middle" font-size="10" fill="#F57F17">구체화</text>
+
+  <rect x="450" y="305" width="230" height="56" rx="10" fill="#E8F5E9" stroke="#C8E6C9" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="470" y="328" font-size="20">📏</text>
+  <text x="500" y="328" font-size="12" font-weight="bold" fill="#2E7D32">"1분당 거리 센서</text>
+  <text x="500" y="348" font-size="12" font-weight="bold" fill="#2E7D32">감지 횟수는?"</text>
+
+  <!-- 하단 공식 배너 -->
+  <rect x="80" y="380" width="540" height="30" rx="15" fill="#FFF8E1" stroke="#FFD54F" stroke-width="1.5"/>
+  <text x="350" y="400" text-anchor="middle" font-size="12" font-weight="bold" fill="#F57F17">💡 추상적 개념 → 센서 숫자 → 기준(임계값) 설정 → 비율/빈도로 질문</text>
+</svg>

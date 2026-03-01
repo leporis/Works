@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAFBFF"/>
+      <stop offset="100%" style="stop-color:#EEF2FF"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#90A4AE"/>
+    </marker>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1976D2"/>
+      <stop offset="100%" style="stop-color:#1565C0"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#7B1FA2"/>
+      <stop offset="100%" style="stop-color:#6A1B9A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="800" height="450" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- 제목 영역 -->
+  <rect x="250" y="12" width="300" height="42" fill="url(#blueGrad)" rx="8"/>
+  <text x="400" y="40" font-family="'Noto Sans CJK KR', sans-serif" font-size="19" font-weight="700" text-anchor="middle" fill="#FFFFFF">전통적 AI  vs  생성형 AI</text>
+
+  <!-- 좌측: 전통적 AI 패널 -->
+  <rect x="20" y="70" width="370" height="310" fill="#FFFFFF" stroke="#BBDEFB" stroke-width="1.5" rx="10" filter="url(#shadow)"/>
+
+  <!-- 좌측 헤더 -->
+  <rect x="20" y="70" width="370" height="50" fill="#E3F2FD" rx="10"/>
+  <rect x="20" y="100" width="370" height="20" fill="#E3F2FD"/>
+  <circle cx="50" cy="95" r="15" fill="#1976D2" opacity="0.15"/>
+  <text x="50" y="100" font-family="'Noto Sans CJK KR', sans-serif" font-size="16" text-anchor="middle" fill="#1976D2" font-weight="700">Q</text>
+  <text x="75" y="100" font-family="'Noto Sans CJK KR', sans-serif" font-size="17" font-weight="700" fill="#1976D2">전통적 AI</text>
+  <text x="200" y="100" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" fill="#78909C">(판별형 AI)</text>
+
+  <!-- 좌측 흐름도 -->
+  <rect x="50" y="140" width="110" height="55" fill="#E8EAF6" stroke="#C5CAE9" stroke-width="1" rx="8"/>
+  <text x="105" y="163" font-family="'Noto Sans CJK KR', sans-serif" font-size="14" text-anchor="middle" fill="#37474F" font-weight="600">입력 데이터</text>
+  <text x="105" y="181" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" text-anchor="middle" fill="#78909C">(이미지, 텍스트)</text>
+
+  <line x1="165" y1="167" x2="220" y2="167" stroke="#90A4AE" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <rect x="225" y="140" width="140" height="55" fill="#E3F2FD" stroke="#90CAF9" stroke-width="1" rx="8"/>
+  <text x="295" y="163" font-family="'Noto Sans CJK KR', sans-serif" font-size="14" text-anchor="middle" fill="#37474F" font-weight="600">결과 (라벨)</text>
+  <text x="295" y="181" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" text-anchor="middle" fill="#78909C">분류 / 예측</text>
+
+  <!-- 좌측 비유 -->
+  <rect x="40" y="215" width="340" height="45" fill="#F5F5F5" rx="6"/>
+  <text x="55" y="234" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" fill="#1976D2" font-weight="600">비유</text>
+  <text x="93" y="234" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" fill="#455A64">시험에서 정답을 고르는 학생</text>
+  <text x="55" y="252" font-family="'Noto Sans CJK KR', sans-serif" font-size="12" fill="#78909C">"이 이메일은 스팸인가요?" → "예"</text>
+
+  <!-- 좌측 예시 -->
+  <text x="55" y="290" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" fill="#1976D2" font-weight="600">예시</text>
+  <text x="93" y="290" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" fill="#455A64">스팸 필터, 추천 시스템, 얼굴 인식</text>
+
+  <!-- 좌측 키워드 태그 -->
+  <rect x="50" y="310" width="55" height="24" fill="#E3F2FD" rx="12"/>
+  <text x="77" y="326" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" text-anchor="middle" fill="#1565C0">분류</text>
+  <rect x="115" y="310" width="55" height="24" fill="#E3F2FD" rx="12"/>
+  <text x="142" y="326" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" text-anchor="middle" fill="#1565C0">예측</text>
+  <rect x="180" y="310" width="55" height="24" fill="#E3F2FD" rx="12"/>
+  <text x="207" y="326" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" text-anchor="middle" fill="#1565C0">인식</text>
+  <rect x="245" y="310" width="55" height="24" fill="#E3F2FD" rx="12"/>
+  <text x="272" y="326" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" text-anchor="middle" fill="#1565C0">판별</text>
+
+  <!-- 우측: 생성형 AI 패널 -->
+  <rect x="410" y="70" width="370" height="310" fill="#FFFFFF" stroke="#E1BEE7" stroke-width="1.5" rx="10" filter="url(#shadow)"/>
+
+  <!-- 우측 헤더 -->
+  <rect x="410" y="70" width="370" height="50" fill="#F3E5F5" rx="10"/>
+  <rect x="410" y="100" width="370" height="20" fill="#F3E5F5"/>
+  <circle cx="440" cy="95" r="15" fill="#7B1FA2" opacity="0.15"/>
+  <text x="440" y="100" font-family="'Noto Sans CJK KR', sans-serif" font-size="16" text-anchor="middle" fill="#7B1FA2" font-weight="700">G</text>
+  <text x="465" y="100" font-family="'Noto Sans CJK KR', sans-serif" font-size="17" font-weight="700" fill="#7B1FA2">생성형 AI</text>
+  <text x="585" y="100" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" fill="#78909C">(Generative AI)</text>
+
+  <!-- 우측 흐름도 -->
+  <rect x="435" y="140" width="110" height="55" fill="#F3E5F5" stroke="#CE93D8" stroke-width="1" rx="8"/>
+  <text x="490" y="163" font-family="'Noto Sans CJK KR', sans-serif" font-size="14" text-anchor="middle" fill="#37474F" font-weight="600">프롬프트</text>
+  <text x="490" y="181" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" text-anchor="middle" fill="#78909C">(사용자 요청)</text>
+
+  <line x1="550" y1="167" x2="605" y2="167" stroke="#90A4AE" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <rect x="610" y="140" width="150" height="55" fill="#EDE7F6" stroke="#B39DDB" stroke-width="1" rx="8"/>
+  <text x="685" y="163" font-family="'Noto Sans CJK KR', sans-serif" font-size="14" text-anchor="middle" fill="#37474F" font-weight="600">새로운 콘텐츠</text>
+  <text x="685" y="181" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" text-anchor="middle" fill="#78909C">텍스트 / 이미지 / 코드</text>
+
+  <!-- 우측 비유 -->
+  <rect x="430" y="215" width="340" height="45" fill="#F5F5F5" rx="6"/>
+  <text x="445" y="234" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" fill="#7B1FA2" font-weight="600">비유</text>
+  <text x="483" y="234" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" fill="#455A64">빈 종이에 답을 써내는 학생</text>
+  <text x="445" y="252" font-family="'Noto Sans CJK KR', sans-serif" font-size="12" fill="#78909C">"이메일 초안 써줘" → 새로운 이메일</text>
+
+  <!-- 우측 예시 -->
+  <text x="445" y="290" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" fill="#7B1FA2" font-weight="600">예시</text>
+  <text x="483" y="290" font-family="'Noto Sans CJK KR', sans-serif" font-size="13" fill="#455A64">ChatGPT, DALL-E, Midjourney</text>
+
+  <!-- 우측 키워드 태그 -->
+  <rect x="440" y="310" width="80" height="24" fill="#F3E5F5" rx="12"/>
+  <text x="480" y="326" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" text-anchor="middle" fill="#6A1B9A">텍스트 생성</text>
+  <rect x="530" y="310" width="80" height="24" fill="#F3E5F5" rx="12"/>
+  <text x="570" y="326" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" text-anchor="middle" fill="#6A1B9A">이미지 생성</text>
+  <rect x="620" y="310" width="80" height="24" fill="#F3E5F5" rx="12"/>
+  <text x="660" y="326" font-family="'Noto Sans CJK KR', sans-serif" font-size="11" text-anchor="middle" fill="#6A1B9A">코드 생성</text>
+
+  <!-- VS 구분자 -->
+  <circle cx="400" cy="167" r="22" fill="#FFFFFF" stroke="#CFD8DC" stroke-width="2"/>
+  <text x="400" y="173" font-family="'Noto Sans CJK KR', sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="#546E7A">VS</text>
+
+  <!-- 하단 핵심 메시지 -->
+  <rect x="80" y="400" width="640" height="38" fill="#1976D2" rx="19"/>
+  <text x="400" y="424" font-family="'Noto Sans CJK KR', sans-serif" font-size="14" font-weight="600" text-anchor="middle" fill="#FFFFFF">핵심:  기존 데이터에서 답을 찾기  vs  새로운 답을 만들어내기</text>
+</svg>

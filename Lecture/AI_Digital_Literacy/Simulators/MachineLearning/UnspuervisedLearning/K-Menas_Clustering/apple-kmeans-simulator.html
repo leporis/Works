@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍎 사과 등급 매기기 - K-평균 알고리즘 시뮬레이터</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --apple-red: #e74c3c;
+            --apple-green: #27ae60;
+            --apple-yellow: #f1c40f;
+            --grade-premium: #c0392b;
+            --grade-good: #e67e22;
+            --grade-normal: #95a5a6;
+            --bg-cream: #fef9f3;
+            --bg-warm: #fff8f0;
+            --text-dark: #2c1810;
+            --text-muted: #8b7355;
+            --shadow-warm: rgba(139, 69, 19, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, var(--bg-cream) 0%, var(--bg-warm) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* 배경 장식 */
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-apple {
+            position: absolute;
+            font-size: 120px;
+            opacity: 0.03;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .bg-apple:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+        .bg-apple:nth-child(2) { top: 60%; left: 85%; animation-delay: -5s; }
+        .bg-apple:nth-child(3) { top: 80%; left: 15%; animation-delay: -10s; }
+        .bg-apple:nth-child(4) { top: 20%; left: 75%; animation-delay: -15s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 헤더 */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--apple-red), #c0392b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        h1 .emoji {
+            font-size: 2.8rem;
+            -webkit-text-fill-color: initial;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* 메인 그리드 */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 25px;
+        }
+
+        @media (max-width: 1100px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 카드 스타일 */
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px var(--shadow-warm);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 15px 25px;
+            border-bottom: 3px solid rgba(0,0,0,0.05);
+        }
+
+        .card-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #6c4a00;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* 시각화 캔버스 영역 */
+        .visualization-area {
+            position: relative;
+        }
+
+        #canvas-container {
+            position: relative;
+            background: linear-gradient(180deg, #fafafa 0%, #f5f0eb 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #efe5d9;
+        }
+
+        #mainCanvas {
+            display: block;
+            width: 100%;
+            cursor: crosshair;
+        }
+
+        .axis-label {
+            position: absolute;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .axis-label.x-axis {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .axis-label.y-axis {
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+
+        /* 범례 */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .legend-dot.premium { background: var(--grade-premium); }
+        .legend-dot.good { background: var(--grade-good); }
+        .legend-dot.normal { background: var(--grade-normal); }
+        .legend-dot.centroid {
+            background: white;
+            border: 3px solid #333;
+        }
+
+        /* 컨트롤 패널 */
+        .control-section {
+            margin-bottom: 20px;
+        }
+
+        .control-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* 슬라이더 */
+        .slider-container {
+            flex: 1;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--apple-red);
+            margin-bottom: 5px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e0d6cc;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--apple-red), #c0392b);
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.4);
+            transition: transform 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        /* 버튼 */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--apple-red), #c0392b);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--apple-green), #219a52);
+            color: white;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--text-dark);
+            border: 2px solid #e0d6cc;
+        }
+
+        .btn-outline:hover {
+            background: #f5f0eb;
+            border-color: #c0b0a0;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--apple-yellow), #d4a700);
+            color: #5a4a00;
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-full {
+            grid-column: 1 / -1;
+        }
+
+        /* 상태 표시 */
+        .status-box {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .status-label {
+            font-size: 0.8rem;
+            color: #2e7d32;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .status-value {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1b5e20;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* 알고리즘 단계 표시 */
+        .step-indicator {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .step-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #e65100;
+            margin-bottom: 8px;
+        }
+
+        .step-description {
+            font-size: 0.9rem;
+            color: #bf360c;
+            line-height: 1.5;
+        }
+
+        /* 결과 테이블 */
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .result-table th,
+        .result-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #e0d6cc;
+        }
+
+        .result-table th {
+            background: #f5f0eb;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .result-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .grade-badge.premium {
+            background: rgba(192, 57, 43, 0.15);
+            color: var(--grade-premium);
+        }
+
+        .grade-badge.good {
+            background: rgba(230, 126, 34, 0.15);
+            color: var(--grade-good);
+        }
+
+        .grade-badge.normal {
+            background: rgba(149, 165, 166, 0.15);
+            color: var(--grade-normal);
+        }
+
+        /* 알고리즘 설명 */
+        .algorithm-info {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .algorithm-info h4 {
+            font-size: 0.9rem;
+            color: #1565c0;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .algorithm-steps {
+            font-size: 0.85rem;
+            color: #0d47a1;
+            line-height: 1.8;
+        }
+
+        .algorithm-steps li {
+            margin-bottom: 5px;
+        }
+
+        /* 속도 조절 */
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .speed-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        /* 애니메이션 */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .centroid-pulse {
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        /* 툴팁 */
+        .tooltip {
+            position: absolute;
+            background: rgba(44, 24, 16, 0.95);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        /* 푸터 */
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* 모드 선택 */
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e0d6cc;
+            background: white;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, var(--apple-red), #c0392b);
+            color: white;
+            border-color: var(--apple-red);
+        }
+
+        .mode-btn:hover:not(.active) {
+            background: #f5f0eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-decoration">
+        <div class="bg-apple">🍎</div>
+        <div class="bg-apple">🍏</div>
+        <div class="bg-apple">🍎</div>
+        <div class="bg-apple">🍏</div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>
+                <span class="emoji">🍎</span>
+                사과 등급 분류기
+                <span class="emoji">🍏</span>
+            </h1>
+            <p class="subtitle">K-평균(K-Means) 클러스터링 알고리즘으로 배우는 비지도 학습</p>
+        </header>
+
+        <div class="main-grid">
+            <!-- 시각화 영역 -->
+            <div class="card visualization-area">
+                <div class="card-header">
+                    <h2>📊 사과 분포 시각화</h2>
+                </div>
+                <div class="card-body">
+                    <div id="canvas-container">
+                        <canvas id="mainCanvas" width="700" height="500"></canvas>
+                        <span class="axis-label x-axis">크기 (mm) →</span>
+                        <span class="axis-label y-axis">← 당도 (Brix)</span>
+                    </div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-dot premium"></div>
+                            <span>프리미엄 등급</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot good"></div>
+                            <span>상등급</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot normal"></div>
+                            <span>보통 등급</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot centroid"></div>
+                            <span>클러스터 중심</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 컨트롤 패널 -->
+            <div class="control-panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>🎛️ 설정</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="control-section">
+                            <div class="control-label">🍎 사과 개수</div>
+                            <div class="slider-container">
+                                <div class="slider-value" id="appleCountValue">30</div>
+                                <input type="range" id="appleCount" min="10" max="100" value="30">
+                            </div>
+                        </div>
+
+                        <div class="control-section">
+                            <div class="control-label">🎯 등급 수 (K값)</div>
+                            <div class="slider-container">
+                                <div class="slider-value" id="kValue">3</div>
+                                <input type="range" id="kSlider" min="2" max="5" value="3">
+                            </div>
+                        </div>
+
+                        <div class="control-section">
+                            <div class="control-label">📦 데이터 분포</div>
+                            <div class="mode-selector">
+                                <button class="mode-btn active" data-mode="random">무작위</button>
+                                <button class="mode-btn" data-mode="clustered">군집형</button>
+                            </div>
+                        </div>
+
+                        <div class="control-section">
+                            <div class="btn-group">
+                                <button class="btn btn-primary" id="generateBtn">
+                                    🍎 사과 생성
+                                </button>
+                                <button class="btn btn-outline" id="resetBtn">
+                                    🔄 초기화
+                                </button>
+                                <button class="btn btn-secondary btn-full" id="runBtn" disabled>
+                                    ▶️ 알고리즘 실행
+                                </button>
+                                <button class="btn btn-warning" id="stepBtn" disabled>
+                                    ⏭️ 한 단계
+                                </button>
+                                <button class="btn btn-outline" id="autoBtn" disabled>
+                                    ⏩ 자동 실행
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="speed-control">
+                            <span class="speed-label">속도:</span>
+                            <input type="range" id="speedSlider" min="100" max="2000" value="800" style="flex:1">
+                            <span class="speed-label" id="speedValue">보통</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-header">
+                        <h2>📈 실행 상태</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="status-box">
+                            <div class="status-label">현재 반복 횟수</div>
+                            <div class="status-value" id="iterationCount">0</div>
+                        </div>
+                        <div class="status-grid">
+                            <div class="status-box">
+                                <div class="status-label">사과 수</div>
+                                <div class="status-value" id="totalApples">0</div>
+                            </div>
+                            <div class="status-box">
+                                <div class="status-label">상태</div>
+                                <div class="status-value" id="statusText">대기</div>
+                            </div>
+                        </div>
+
+                        <div class="step-indicator" id="stepIndicator">
+                            <div class="step-title">📌 현재 단계</div>
+                            <div class="step-description" id="stepDescription">
+                                사과를 생성하고 알고리즘을 실행해 보세요!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-header">
+                        <h2>📋 분류 결과</h2>
+                    </div>
+                    <div class="card-body">
+                        <table class="result-table">
+                            <thead>
+                                <tr>
+                                    <th>등급</th>
+                                    <th>개수</th>
+                                    <th>비율</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultTableBody">
+                                <tr>
+                                    <td colspan="3" style="color: var(--text-muted);">
+                                        결과 없음
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-header">
+                        <h2>💡 K-평균 알고리즘</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="algorithm-info">
+                            <h4>🔬 알고리즘 원리</h4>
+                            <ol class="algorithm-steps">
+                                <li><strong>초기화:</strong> K개의 중심점을 무작위 배치</li>
+                                <li><strong>할당:</strong> 각 데이터를 가장 가까운 중심에 할당</li>
+                                <li><strong>갱신:</strong> 각 클러스터의 새로운 중심 계산</li>
+                                <li><strong>반복:</strong> 중심이 변하지 않을 때까지 2-3 반복</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            🍎 컴퓨팅 사고력 교육을 위한 K-평균 클러스터링 시뮬레이터 | 비지도 학습의 기초 개념 이해하기
+        </footer>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // ==================== 초기화 ====================
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        const tooltip = document.getElementById('tooltip');
+
+        // 상태 변수
+        let apples = [];
+        let centroids = [];
+        let iteration = 0;
+        let isRunning = false;
+        let autoInterval = null;
+        let dataMode = 'random';
+        let algorithmPhase = 'idle'; // idle, initialized, assigning, updating, converged
+
+        // 색상 팔레트 (등급별)
+        const gradeColors = [
+            { fill: '#c0392b', stroke: '#922b21', name: '프리미엄', class: 'premium' },
+            { fill: '#e67e22', stroke: '#ba6318', name: '상등급', class: 'good' },
+            { fill: '#95a5a6', stroke: '#7f8c8d', name: '보통', class: 'normal' },
+            { fill: '#3498db', stroke: '#2980b9', name: '4등급', class: 'grade4' },
+            { fill: '#9b59b6', stroke: '#8e44ad', name: '5등급', class: 'grade5' }
+        ];
+
+        // 캔버스 설정
+        const padding = 60;
+        const plotWidth = canvas.width - padding * 2;
+        const plotHeight = canvas.height - padding * 2;
+
+        // 축 범위 (크기: 50-100mm, 당도: 8-18 Brix)
+        const xRange = { min: 50, max: 100 };
+        const yRange = { min: 8, max: 18 };
+
+        // ==================== 유틸리티 함수 ====================
+        function dataToCanvas(x, y) {
+            const canvasX = padding + ((x - xRange.min) / (xRange.max - xRange.min)) * plotWidth;
+            const canvasY = canvas.height - padding - ((y - yRange.min) / (yRange.max - yRange.min)) * plotHeight;
+            return { x: canvasX, y: canvasY };
+        }
+
+        function canvasToData(canvasX, canvasY) {
+            const x = xRange.min + ((canvasX - padding) / plotWidth) * (xRange.max - xRange.min);
+            const y = yRange.min + ((canvas.height - padding - canvasY) / plotHeight) * (yRange.max - yRange.min);
+            return { x, y };
+        }
+
+        function distance(p1, p2) {
+            // 정규화된 거리 계산
+            const dx = (p1.x - p2.x) / (xRange.max - xRange.min);
+            const dy = (p1.y - p2.y) / (yRange.max - yRange.min);
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function randomRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // ==================== 사과 데이터 생성 ====================
+        function generateApples() {
+            const count = parseInt(document.getElementById('appleCount').value);
+            apples = [];
+
+            if (dataMode === 'random') {
+                // 완전 무작위 분포
+                for (let i = 0; i < count; i++) {
+                    apples.push({
+                        x: randomRange(xRange.min + 5, xRange.max - 5),
+                        y: randomRange(yRange.min + 1, yRange.max - 1),
+                        cluster: -1
+                    });
+                }
+            } else {
+                // 군집형 분포 (3개의 자연스러운 그룹)
+                const clusters = [
+                    { cx: 85, cy: 15, spread: 6 },   // 프리미엄: 크고 달콤
+                    { cx: 70, cy: 12, spread: 8 },   // 상등급: 중간
+                    { cx: 60, cy: 10, spread: 7 }    // 보통: 작고 덜 달콤
+                ];
+
+                for (let i = 0; i < count; i++) {
+                    const cluster = clusters[i % clusters.length];
+                    apples.push({
+                        x: Math.max(xRange.min + 2, Math.min(xRange.max - 2, 
+                            cluster.cx + (Math.random() - 0.5) * cluster.spread * 2)),
+                        y: Math.max(yRange.min + 0.5, Math.min(yRange.max - 0.5,
+                            cluster.cy + (Math.random() - 0.5) * cluster.spread * 0.8)),
+                        cluster: -1
+                    });
+                }
+            }
+
+            centroids = [];
+            iteration = 0;
+            algorithmPhase = 'idle';
+            updateUI();
+            draw();
+        }
+
+        // ==================== K-평균 알고리즘 ====================
+        function initializeCentroids() {
+            const k = parseInt(document.getElementById('kSlider').value);
+            centroids = [];
+
+            // K-means++ 초기화
+            // 첫 번째 중심점 무작위 선택
+            const firstIdx = Math.floor(Math.random() * apples.length);
+            centroids.push({ x: apples[firstIdx].x, y: apples[firstIdx].y });
+
+            // 나머지 중심점 선택 (거리 기반 확률)
+            for (let i = 1; i < k; i++) {
+                const distances = apples.map(apple => {
+                    const minDist = Math.min(...centroids.map(c => distance(apple, c)));
+                    return minDist * minDist;
+                });
+                const totalDist = distances.reduce((a, b) => a + b, 0);
+                let rand = Math.random() * totalDist;
+                
+                for (let j = 0; j < apples.length; j++) {
+                    rand -= distances[j];
+                    if (rand <= 0) {
+                        centroids.push({ x: apples[j].x, y: apples[j].y });
+                        break;
+                    }
+                }
+            }
+
+            iteration = 0;
+            algorithmPhase = 'initialized';
+            updateStepDescription('중심점이 초기화되었습니다. 다음 단계에서 각 사과를 가장 가까운 중심에 할당합니다.');
+        }
+
+        function assignClusters() {
+            apples.forEach(apple => {
+                let minDist = Infinity;
+                let nearestCluster = 0;
+                
+                centroids.forEach((centroid, idx) => {
+                    const dist = distance(apple, centroid);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        nearestCluster = idx;
+                    }
+                });
+                
+                apple.cluster = nearestCluster;
+            });
+            
+            algorithmPhase = 'assigning';
+            updateStepDescription('각 사과가 가장 가까운 중심점에 할당되었습니다. 다음 단계에서 새로운 중심점을 계산합니다.');
+        }
+
+        function updateCentroids() {
+            const k = centroids.length;
+            let hasChanged = false;
+            
+            for (let i = 0; i < k; i++) {
+                const clusterApples = apples.filter(a => a.cluster === i);
+                
+                if (clusterApples.length > 0) {
+                    const newX = clusterApples.reduce((sum, a) => sum + a.x, 0) / clusterApples.length;
+                    const newY = clusterApples.reduce((sum, a) => sum + a.y, 0) / clusterApples.length;
+                    
+                    if (Math.abs(centroids[i].x - newX) > 0.01 || Math.abs(centroids[i].y - newY) > 0.01) {
+                        hasChanged = true;
+                    }
+                    
+                    centroids[i].x = newX;
+                    centroids[i].y = newY;
+                }
+            }
+            
+            iteration++;
+            
+            if (hasChanged) {
+                algorithmPhase = 'updating';
+                updateStepDescription(`반복 ${iteration}: 중심점이 이동했습니다. 할당 단계로 돌아갑니다.`);
+            } else {
+                algorithmPhase = 'converged';
+                updateStepDescription(`🎉 수렴 완료! ${iteration}번의 반복 후 알고리즘이 수렴했습니다.`);
+                if (autoInterval) {
+                    clearInterval(autoInterval);
+                    autoInterval = null;
+                    document.getElementById('autoBtn').textContent = '⏩ 자동 실행';
+                }
+            }
+            
+            return hasChanged;
+        }
+
+        function runOneStep() {
+            if (apples.length === 0) return;
+            
+            if (algorithmPhase === 'idle') {
+                initializeCentroids();
+            } else if (algorithmPhase === 'initialized' || algorithmPhase === 'updating') {
+                assignClusters();
+            } else if (algorithmPhase === 'assigning') {
+                updateCentroids();
+            }
+            
+            updateUI();
+            draw();
+        }
+
+        function runFullAlgorithm() {
+            if (apples.length === 0) return;
+            
+            initializeCentroids();
+            
+            let maxIterations = 100;
+            let hasChanged = true;
+            
+            while (hasChanged && iteration < maxIterations) {
+                assignClusters();
+                hasChanged = updateCentroids();
+            }
+            
+            algorithmPhase = 'converged';
+            updateStepDescription(`🎉 완료! ${iteration}번의 반복 후 알고리즘이 수렴했습니다.`);
+            updateUI();
+            draw();
+        }
+
+        // ==================== 그리기 ====================
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            drawGrid();
+            drawAxes();
+            drawClusterRegions();
+            drawApples();
+            drawCentroids();
+        }
+
+        function drawGrid() {
+            ctx.strokeStyle = '#e8e0d5';
+            ctx.lineWidth = 1;
+            
+            // 수직선
+            for (let x = xRange.min; x <= xRange.max; x += 10) {
+                const pos = dataToCanvas(x, yRange.min);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, padding);
+                ctx.lineTo(pos.x, canvas.height - padding);
+                ctx.stroke();
+            }
+            
+            // 수평선
+            for (let y = yRange.min; y <= yRange.max; y += 2) {
+                const pos = dataToCanvas(xRange.min, y);
+                ctx.beginPath();
+                ctx.moveTo(padding, pos.y);
+                ctx.lineTo(canvas.width - padding, pos.y);
+                ctx.stroke();
+            }
+        }
+
+        function drawAxes() {
+            ctx.strokeStyle = '#8b7355';
+            ctx.lineWidth = 2;
+            ctx.font = '12px "Noto Sans KR"';
+            ctx.fillStyle = '#8b7355';
+            
+            // X축
+            ctx.beginPath();
+            ctx.moveTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+            
+            // X축 눈금
+            for (let x = xRange.min; x <= xRange.max; x += 10) {
+                const pos = dataToCanvas(x, yRange.min);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, canvas.height - padding);
+                ctx.lineTo(pos.x, canvas.height - padding + 5);
+                ctx.stroke();
+                ctx.textAlign = 'center';
+                ctx.fillText(x, pos.x, canvas.height - padding + 18);
+            }
+            
+            // Y축
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.stroke();
+            
+            // Y축 눈금
+            for (let y = yRange.min; y <= yRange.max; y += 2) {
+                const pos = dataToCanvas(xRange.min, y);
+                ctx.beginPath();
+                ctx.moveTo(padding - 5, pos.y);
+                ctx.lineTo(padding, pos.y);
+                ctx.stroke();
+                ctx.textAlign = 'right';
+                ctx.fillText(y, padding - 10, pos.y + 4);
+            }
+        }
+
+        function drawClusterRegions() {
+            if (centroids.length === 0 || algorithmPhase === 'idle' || algorithmPhase === 'initialized') return;
+            
+            // 부드러운 클러스터 영역 표시
+            centroids.forEach((centroid, idx) => {
+                const clusterApples = apples.filter(a => a.cluster === idx);
+                if (clusterApples.length === 0) return;
+                
+                const pos = dataToCanvas(centroid.x, centroid.y);
+                const gradient = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, 150);
+                gradient.addColorStop(0, gradeColors[idx].fill + '20');
+                gradient.addColorStop(1, gradeColors[idx].fill + '00');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 150, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function drawApples() {
+            apples.forEach(apple => {
+                const pos = dataToCanvas(apple.x, apple.y);
+                const colorIdx = apple.cluster >= 0 ? apple.cluster : 0;
+                const color = apple.cluster >= 0 ? gradeColors[colorIdx] : { fill: '#bdc3c7', stroke: '#95a5a6' };
+                
+                // 사과 그림자
+                ctx.beginPath();
+                ctx.arc(pos.x + 2, pos.y + 2, 10, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0,0,0,0.1)';
+                ctx.fill();
+                
+                // 사과 본체
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 10, 0, Math.PI * 2);
+                ctx.fillStyle = color.fill;
+                ctx.fill();
+                ctx.strokeStyle = color.stroke;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 사과 하이라이트
+                ctx.beginPath();
+                ctx.arc(pos.x - 3, pos.y - 3, 3, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                ctx.fill();
+            });
+        }
+
+        function drawCentroids() {
+            centroids.forEach((centroid, idx) => {
+                const pos = dataToCanvas(centroid.x, centroid.y);
+                
+                // 중심점 외곽
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 18, 0, Math.PI * 2);
+                ctx.fillStyle = 'white';
+                ctx.fill();
+                ctx.strokeStyle = gradeColors[idx].fill;
+                ctx.lineWidth = 4;
+                ctx.stroke();
+                
+                // 중심점 내부 십자
+                ctx.beginPath();
+                ctx.moveTo(pos.x - 8, pos.y);
+                ctx.lineTo(pos.x + 8, pos.y);
+                ctx.moveTo(pos.x, pos.y - 8);
+                ctx.lineTo(pos.x, pos.y + 8);
+                ctx.strokeStyle = gradeColors[idx].fill;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 등급 라벨
+                ctx.font = 'bold 11px "Noto Sans KR"';
+                ctx.fillStyle = gradeColors[idx].fill;
+                ctx.textAlign = 'center';
+                ctx.fillText(gradeColors[idx].name, pos.x, pos.y + 32);
+            });
+        }
+
+        // ==================== UI 업데이트 ====================
+        function updateUI() {
+            document.getElementById('iterationCount').textContent = iteration;
+            document.getElementById('totalApples').textContent = apples.length;
+            
+            const statusText = {
+                'idle': '대기',
+                'initialized': '초기화됨',
+                'assigning': '할당 중',
+                'updating': '갱신 중',
+                'converged': '✓ 완료'
+            };
+            document.getElementById('statusText').textContent = statusText[algorithmPhase] || '대기';
+            
+            // 버튼 상태
+            const hasApples = apples.length > 0;
+            const isConverged = algorithmPhase === 'converged';
+            
+            document.getElementById('runBtn').disabled = !hasApples || isConverged;
+            document.getElementById('stepBtn').disabled = !hasApples || isConverged;
+            document.getElementById('autoBtn').disabled = !hasApples || isConverged;
+            
+            updateResultTable();
+        }
+
+        function updateResultTable() {
+            const tbody = document.getElementById('resultTableBody');
+            
+            if (centroids.length === 0 || algorithmPhase === 'idle') {
+                tbody.innerHTML = '<tr><td colspan="3" style="color: var(--text-muted);">결과 없음</td></tr>';
+                return;
+            }
+            
+            // 클러스터별 통계를 품질 점수로 정렬
+            const stats = centroids.map((c, idx) => {
+                const count = apples.filter(a => a.cluster === idx).length;
+                const qualityScore = c.x * 0.5 + c.y * 2; // 크기와 당도 기반 품질 점수
+                return { idx, count, qualityScore, centroid: c };
+            }).sort((a, b) => b.qualityScore - a.qualityScore);
+            
+            tbody.innerHTML = stats.map((stat, rank) => {
+                const percent = apples.length > 0 ? ((stat.count / apples.length) * 100).toFixed(1) : 0;
+                const gradeInfo = gradeColors[rank] || gradeColors[gradeColors.length - 1];
+                return `
+                    <tr>
+                        <td><span class="grade-badge ${gradeInfo.class}">${gradeInfo.name}</span></td>
+                        <td>${stat.count}개</td>
+                        <td>${percent}%</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateStepDescription(text) {
+            document.getElementById('stepDescription').textContent = text;
+        }
+
+        // ==================== 이벤트 핸들러 ====================
+        // 슬라이더
+        document.getElementById('appleCount').addEventListener('input', (e) => {
+            document.getElementById('appleCountValue').textContent = e.target.value;
+        });
+
+        document.getElementById('kSlider').addEventListener('input', (e) => {
+            document.getElementById('kValue').textContent = e.target.value;
+        });
+
+        document.getElementById('speedSlider').addEventListener('input', (e) => {
+            const speed = parseInt(e.target.value);
+            const labels = { 100: '매우 빠름', 500: '빠름', 1000: '보통', 1500: '느림', 2000: '매우 느림' };
+            const closest = Object.keys(labels).reduce((prev, curr) => 
+                Math.abs(curr - speed) < Math.abs(prev - speed) ? curr : prev
+            );
+            document.getElementById('speedValue').textContent = labels[closest];
+        });
+
+        // 모드 선택
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                dataMode = btn.dataset.mode;
+            });
+        });
+
+        // 버튼
+        document.getElementById('generateBtn').addEventListener('click', generateApples);
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            apples = [];
+            centroids = [];
+            iteration = 0;
+            algorithmPhase = 'idle';
+            if (autoInterval) {
+                clearInterval(autoInterval);
+                autoInterval = null;
+            }
+            document.getElementById('autoBtn').textContent = '⏩ 자동 실행';
+            updateStepDescription('사과를 생성하고 알고리즘을 실행해 보세요!');
+            updateUI();
+            draw();
+        });
+
+        document.getElementById('runBtn').addEventListener('click', runFullAlgorithm);
+
+        document.getElementById('stepBtn').addEventListener('click', runOneStep);
+
+        document.getElementById('autoBtn').addEventListener('click', () => {
+            if (autoInterval) {
+                clearInterval(autoInterval);
+                autoInterval = null;
+                document.getElementById('autoBtn').textContent = '⏩ 자동 실행';
+            } else {
+                const speed = parseInt(document.getElementById('speedSlider').value);
+                document.getElementById('autoBtn').textContent = '⏸️ 일시정지';
+                autoInterval = setInterval(() => {
+                    if (algorithmPhase === 'converged') {
+                        clearInterval(autoInterval);
+                        autoInterval = null;
+                        document.getElementById('autoBtn').textContent = '⏩ 자동 실행';
+                    } else {
+                        runOneStep();
+                    }
+                }, speed);
+            }
+        });
+
+        // 캔버스 툴팁
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const canvasX = (e.clientX - rect.left) * scaleX;
+            const canvasY = (e.clientY - rect.top) * scaleY;
+            
+            // 근처 사과 찾기
+            let foundApple = null;
+            for (const apple of apples) {
+                const pos = dataToCanvas(apple.x, apple.y);
+                if (Math.hypot(canvasX - pos.x, canvasY - pos.y) < 15) {
+                    foundApple = apple;
+                    break;
+                }
+            }
+            
+            if (foundApple) {
+                const gradeIdx = foundApple.cluster >= 0 ? foundApple.cluster : -1;
+                const gradeName = gradeIdx >= 0 ? gradeColors[gradeIdx].name : '미분류';
+                tooltip.innerHTML = `
+                    크기: ${foundApple.x.toFixed(1)}mm<br>
+                    당도: ${foundApple.y.toFixed(1)}°Bx<br>
+                    등급: ${gradeName}
+                `;
+                tooltip.style.left = (e.clientX + 15) + 'px';
+                tooltip.style.top = (e.clientY + 15) + 'px';
+                tooltip.classList.add('visible');
+            } else {
+                tooltip.classList.remove('visible');
+            }
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            tooltip.classList.remove('visible');
+        });
+
+        // 초기화
+        draw();
+    </script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadowSm">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.5" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrowSave" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2980b9"/>
+    </marker>
+    <marker id="arrowLoad" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#27ae60"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="260" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="26" text-anchor="middle" font-family="Noto Sans KR" font-size="17" font-weight="700" fill="#1a1a2e">저장과 불러오기 흐름도</text>
+  <text x="400" y="42" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#888">4가지 저장/불러오기 경로</text>
+
+  <!-- ===== CENTER: Simulator ===== -->
+  <g transform="translate(310, 70)">
+    <rect width="180" height="100" rx="12" fill="#1a1a2e" filter="url(#shadow)"/>
+    <text x="90" y="28" text-anchor="middle" font-family="Noto Sans KR" font-size="16" fill="white">🤖</text>
+    <text x="90" y="48" text-anchor="middle" font-family="Noto Sans KR" font-size="13" font-weight="700" fill="white">RL 틱택토</text>
+    <text x="90" y="65" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#00c8ff">Q-테이블 + 학습 이력</text>
+    <text x="90" y="80" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="rgba(255,255,255,0.6)">파라미터 + 에피소드 수</text>
+    <text x="90" y="94" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="rgba(255,255,255,0.4)">자동 저장: 5,000판마다</text>
+  </g>
+
+  <!-- ===== LEFT TOP: Browser Storage (Save) ===== -->
+  <g transform="translate(40, 55)">
+    <rect width="200" height="52" rx="8" fill="white" stroke="#2980b9" stroke-width="1.5" filter="url(#shadowSm)"/>
+    <text x="24" y="22" font-family="Noto Sans KR" font-size="14" fill="#2980b9">💾</text>
+    <text x="44" y="22" font-family="Noto Sans KR" font-size="11" font-weight="600" fill="#2980b9">브라우저 저장</text>
+    <text x="44" y="38" font-family="Noto Sans KR" font-size="9" fill="#555">localStorage에 저장</text>
+    <text x="44" y="48" font-family="Noto Sans KR" font-size="8" fill="#888">같은 브라우저에서만 접근</text>
+  </g>
+
+  <!-- Arrow: Simulator → Browser Save -->
+  <line x1="310" y1="95" x2="242" y2="82" stroke="#2980b9" stroke-width="1.5" marker-end="url(#arrowSave)"/>
+
+  <!-- ===== LEFT BOTTOM: Browser Storage (Load) ===== -->
+  <g transform="translate(40, 148)">
+    <rect width="200" height="52" rx="8" fill="white" stroke="#27ae60" stroke-width="1.5" filter="url(#shadowSm)"/>
+    <text x="24" y="22" font-family="Noto Sans KR" font-size="14" fill="#27ae60">📂</text>
+    <text x="44" y="22" font-family="Noto Sans KR" font-size="11" font-weight="600" fill="#27ae60">브라우저 불러오기</text>
+    <text x="44" y="38" font-family="Noto Sans KR" font-size="9" fill="#555">localStorage에서 복원</text>
+    <text x="44" y="48" font-family="Noto Sans KR" font-size="8" fill="#888">브라우저 열면 자동 불러오기</text>
+  </g>
+
+  <!-- Arrow: Browser Load → Simulator -->
+  <line x1="242" y1="172" x2="310" y2="148" stroke="#27ae60" stroke-width="1.5" marker-end="url(#arrowLoad)"/>
+
+  <!-- ===== RIGHT TOP: File Export ===== -->
+  <g transform="translate(560, 55)">
+    <rect width="200" height="52" rx="8" fill="white" stroke="#2980b9" stroke-width="1.5" filter="url(#shadowSm)"/>
+    <text x="24" y="22" font-family="Noto Sans KR" font-size="14" fill="#2980b9">📤</text>
+    <text x="44" y="22" font-family="Noto Sans KR" font-size="11" font-weight="600" fill="#2980b9">파일 내보내기</text>
+    <text x="44" y="38" font-family="Noto Sans KR" font-size="9" fill="#555">JSON 파일로 다운로드</text>
+    <text x="44" y="48" font-family="Noto Sans KR" font-size="8" fill="#888">다른 컴퓨터로 이동 가능</text>
+  </g>
+
+  <!-- Arrow: Simulator → File Export -->
+  <line x1="490" y1="95" x2="558" y2="82" stroke="#2980b9" stroke-width="1.5" marker-end="url(#arrowSave)"/>
+
+  <!-- ===== RIGHT BOTTOM: File Import ===== -->
+  <g transform="translate(560, 148)">
+    <rect width="200" height="52" rx="8" fill="white" stroke="#27ae60" stroke-width="1.5" filter="url(#shadowSm)"/>
+    <text x="24" y="22" font-family="Noto Sans KR" font-size="14" fill="#27ae60">📥</text>
+    <text x="44" y="22" font-family="Noto Sans KR" font-size="11" font-weight="600" fill="#27ae60">파일 가져오기</text>
+    <text x="44" y="38" font-family="Noto Sans KR" font-size="9" fill="#555">JSON 파일에서 복원</text>
+    <text x="44" y="48" font-family="Noto Sans KR" font-size="8" fill="#888">공유받은 학습 데이터 적용</text>
+  </g>
+
+  <!-- Arrow: File Import → Simulator -->
+  <line x1="558" y1="172" x2="490" y2="148" stroke="#27ae60" stroke-width="1.5" marker-end="url(#arrowLoad)"/>
+
+  <!-- Legend -->
+  <g transform="translate(270, 210)">
+    <rect width="260" height="28" rx="6" fill="white" stroke="#ddd" stroke-width="0.8" filter="url(#shadowSm)"/>
+    <line x1="20" y1="221" x2="50" y2="221" stroke="#2980b9" stroke-width="2"/>
+    <text x="55" y="228" font-family="Noto Sans KR" font-size="9" fill="#2980b9">저장 (Save)</text>
+    <line x1="140" y1="221" x2="170" y2="221" stroke="#27ae60" stroke-width="2"/>
+    <text x="175" y="228" font-family="Noto Sans KR" font-size="9" fill="#27ae60">불러오기 (Load)</text>
+  </g>
+
+  <!-- Bottom caption -->
+  <text x="400" y="253" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#999">그림 9. 저장과 불러오기 흐름도 — 브라우저 저장(임시)과 파일 내보내기(영구) 두 가지 경로</text>
+</svg>

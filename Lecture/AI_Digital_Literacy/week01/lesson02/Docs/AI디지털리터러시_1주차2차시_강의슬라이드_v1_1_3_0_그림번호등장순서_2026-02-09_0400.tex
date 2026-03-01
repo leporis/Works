@@ -1,0 +1,737 @@
+% LuaLaTeX + Metropolis Beamer — 그림 적극 활용 버전
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usetheme[progressbar=frametitle]{metropolis}
+
+% === 패키지 ===
+\usepackage{fontspec}
+\usepackage[hangul]{luatexko}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{emoji}
+\usepackage{tikz}
+\usepackage{makecell}
+
+% === 폰트 ===
+\setmainfont[Ligatures=TeX]{TeX Gyre Heros}
+\setsansfont{TeX Gyre Heros}
+\setmonofont{Noto Sans Mono}
+\setmainhangulfont{Noto Sans CJK KR}[BoldFont={Noto Sans CJK KR Bold}]
+\setsanshangulfont{Noto Sans CJK KR}[BoldFont={Noto Sans CJK KR Bold}]
+\setemojifont{Noto Color Emoji}
+
+% === 색상 ===
+\definecolor{mainblue}{HTML}{1976D2}
+\definecolor{mainteal}{HTML}{00897B}
+\definecolor{mainorange}{HTML}{F57C00}
+\definecolor{mainpurple}{HTML}{7B1FA2}
+\definecolor{maingreen}{HTML}{388E3C}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{lightmint}{HTML}{E0F2F1}
+\definecolor{lightcream}{HTML}{FFF8E1}
+
+\setbeamercolor{frametitle}{bg=mainblue, fg=white}
+\setbeamercolor{progress bar}{fg=mainorange}
+
+% === 표 열 타입 ===
+\newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}m{#1}}
+
+% === 이미지 경로 ===
+\graphicspath{{images/}}
+
+% === PDF 설정 ===
+\hypersetup{unicode=true, pdfencoding=unicode}
+
+\title{AI디지털리터러시}
+\subtitle{1주차 2차시 — 기계학습의 원리}
+\author{청주교육대학교}
+\date{2026년 2학기}
+
+\begin{document}
+
+% ============================================================
+% 슬라이드 1: 타이틀
+% ============================================================
+\maketitle
+
+% ============================================================
+% 슬라이드 2: 목차
+% ============================================================
+\begin{frame}{오늘의 수업 흐름}
+\begin{description}[labelwidth=3cm]
+\item[\emoji{clapper-board} \textbf{도입} (5분)] AI, ML, DL의 포함 관계
+\item[\emoji{blue-book} \textbf{전개 1} (15분)] 기계학습의 정의
+\item[\emoji{green-book} \textbf{전개 2} (15분)] 3가지 학습 유형 (지도/비지도/강화)
+\item[\emoji{orange-book} \textbf{전개 3} (10분)] 머신러닝 4단계 프로세스
+\item[\emoji{memo} \textbf{정리} (5분)] 엔트리 AI와의 연결
+\end{description}
+\end{frame}
+
+% ============================================================
+% 슬라이드 3: 복습
+% ============================================================
+\begin{frame}{지난 시간 핵심 내용}
+\emoji{check-mark-button} \textbf{AI의 정의} — 인간의 지능을 모방하는 컴퓨터 시스템
+
+\vspace{0.4cm}
+\emoji{check-mark-button} \textbf{약한 AI vs 강한 AI} — 현재 모든 AI는 약한 AI (특정 작업 전문가)
+
+\vspace{0.4cm}
+\emoji{check-mark-button} \textbf{AI의 4가지 기능} — 인식, 예측, 분류, 생성
+
+\vspace{0.4cm}
+\emoji{check-mark-button} \textbf{AI 발전사} — AI의 봄과 겨울 반복 $\rightarrow$ 현재 제3의 봄
+\end{frame}
+
+% ============================================================
+% 슬라이드 4: 핵심 질문
+% ============================================================
+\begin{frame}{오늘의 핵심 질문}
+\begin{center}
+\vspace{0.5cm}
+{\Large \emoji{light-bulb} ``1차시에서 배운 AI,}
+
+\vspace{0.3cm}
+{\Large 그 안에는 무엇이 있을까요?''}
+
+\vspace{1cm}
+\textbf{오늘의 목표}
+
+\vspace{0.3cm}
+\emoji{check-mark-button} 기계학습의 원리 이해하기
+
+\emoji{check-mark-button} 3가지 학습 유형 구분하기
+\end{center}
+\end{frame}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 도입: AI, ML, DL의 포함 관계
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{도입: AI, ML, DL의 포함 관계}
+
+% ============================================================
+% 슬라이드 5: 그림 01 — AI⊃ML⊃DL (그림 단독)
+% ============================================================
+\begin{frame}{AI, ML, DL의 포함 관계}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{AI디지털리터러시_1주차1차시_06_AI_ML_DL포함관계_v1.0.1.0_점선삭제_2026-02-08_0010.png}
+
+\vspace{0.2cm}
+{\tiny 그림 01: AI\_ML\_DL포함관계}
+\end{center}
+\end{frame}
+
+% ============================================================
+% 슬라이드 6: AI, ML, DL 핵심 설명
+% ============================================================
+\begin{frame}{AI, ML, DL — 핵심 정리}
+\textbf{AI (Artificial Intelligence)} — 인간의 지능을 모방하는 컴퓨터 시스템
+\begin{itemize}
+\item 가장 넓은 개념
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{ML (Machine Learning)} — 데이터로부터 패턴을 학습하는 기술
+\begin{itemize}
+\item AI를 구현하는 대표적 방법
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{DL (Deep Learning)} — 인공신경망을 사용하는 기계학습
+\begin{itemize}
+\item ML의 한 종류 (최근 주목)
+\end{itemize}
+
+\vspace{0.3cm}
+\emoji{point-right} \textbf{오늘 초점}: 기계학습(ML)의 원리와 3가지 학습 유형
+\end{frame}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 전개 1: 기계학습의 정의
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{전개 1: 기계학습의 정의}
+
+% ============================================================
+% 슬라이드 7: 기계학습이란?
+% ============================================================
+\begin{frame}{기계학습이란?}
+\begin{center}
+\vspace{0.3cm}
+{\large \textbf{Machine Learning (기계학습)}}
+
+\vspace{0.5cm}
+\begin{tikzpicture}
+\node[draw=mainblue, fill=lightblue, rounded corners=8pt, inner sep=12pt, text width=10cm, align=center] {
+{\large \emoji{light-bulb} 데이터로부터 패턴을 학습하여}\\[0.2cm]
+{\large 새로운 상황에서 예측하는 AI 기술}
+};
+\end{tikzpicture}
+
+\vspace{0.5cm}
+\emoji{bar-chart} \textbf{데이터} \hspace{1cm}
+\emoji{magnifying-glass-tilted-right} \textbf{패턴 발견} \hspace{1cm}
+\emoji{bullseye} \textbf{예측}
+\end{center}
+\end{frame}
+
+% ============================================================
+% 슬라이드 8: 전통적 프로그래밍 vs 기계학습
+% ============================================================
+\begin{frame}{전통적 프로그래밍 vs 기계학습}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{center}
+\textbf{\color{mainorange}전통적 프로그래밍}
+
+\vspace{0.3cm}
+\begin{tikzpicture}
+\node[draw=mainorange, fill=lightcream, rounded corners=5pt, inner sep=8pt, text width=4.5cm, align=center] {
+규칙 + 데이터 $\rightarrow$ 결과\\[0.2cm]
+사람이 규칙 작성 \emoji{writing-hand}\\
+컴퓨터가 실행 \emoji{desktop-computer}
+};
+\end{tikzpicture}
+\end{center}
+\end{column}
+\begin{column}{0.45\textwidth}
+\begin{center}
+\textbf{\color{mainblue}기계학습}
+
+\vspace{0.3cm}
+\begin{tikzpicture}
+\node[draw=mainblue, fill=lightblue, rounded corners=5pt, inner sep=8pt, text width=4.5cm, align=center] {
+데이터 + 결과 $\rightarrow$ 규칙 발견\\[0.2cm]
+사람이 데이터 제공 \emoji{bar-chart}\\
+컴퓨터가 규칙 발견 \emoji{robot}
+};
+\end{tikzpicture}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+% ============================================================
+% 슬라이드 9: 왜 기계학습이 필요한가?
+% ============================================================
+\begin{frame}{왜 기계학습이 필요한가?}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{center}
+\textbf{\color{mainorange}\emoji{cross-mark} 규칙 작성이 불가능}
+
+\vspace{0.3cm}
+고양이 vs 개 구분 규칙?
+
+\vspace{0.2cm}
+귀 모양? 털 색깔? 크기?
+
+\vspace{0.2cm}
+$\rightarrow$ 예외가 너무 많음!
+\end{center}
+\end{column}
+\begin{column}{0.45\textwidth}
+\begin{center}
+\textbf{\color{maingreen}\emoji{check-mark-button} 기계학습의 해결}
+
+\vspace{0.3cm}
+수천 장의 사진 제공
+
+\vspace{0.2cm}
+컴퓨터가 스스로 패턴 발견
+
+\vspace{0.2cm}
+$\rightarrow$ 새로운 사진도 구분!
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+% ============================================================
+% 슬라이드 10: 일상 속 기계학습
+% ============================================================
+\begin{frame}{일상 속 기계학습}
+\emoji{e-mail} \textbf{스팸 필터} — 스팸 메일 패턴 학습 $\rightarrow$ 자동 분류
+
+\vspace{0.4cm}
+\emoji{clapper-board} \textbf{영화 추천} — 내가 본 영화 분석 $\rightarrow$ 비슷한 영화 추천
+
+\vspace{0.4cm}
+\emoji{microphone} \textbf{음성 인식} — 다양한 목소리 학습 $\rightarrow$ 텍스트 변환
+
+\vspace{0.4cm}
+\emoji{grinning-face} \textbf{얼굴 인식} — 수많은 얼굴 학습 $\rightarrow$ 특정 인물 인식
+\end{frame}
+
+% ============================================================
+% 슬라이드 11: 기계학습의 핵심 3요소
+% ============================================================
+\begin{frame}{기계학습의 핵심 3요소}
+\begin{center}
+\vspace{0.3cm}
+\begin{tikzpicture}
+\node[draw=mainblue, fill=lightblue, rounded corners=8pt, inner sep=15pt, minimum width=3cm, minimum height=1.5cm, text width=2.8cm, align=center] at (0,0) {\textbf{① 데이터}\\학습의 재료};
+\node at (2.5,0) {\Large $\Rightarrow$};
+\node[draw=mainteal, fill=lightmint, rounded corners=8pt, inner sep=15pt, minimum width=3cm, minimum height=1.5cm, text width=2.8cm, align=center] at (5,0) {\textbf{② 학습}\\패턴을 찾는 과정};
+\node at (7.5,0) {\Large $\Rightarrow$};
+\node[draw=mainpurple, fill=lightcream, rounded corners=8pt, inner sep=15pt, minimum width=3cm, minimum height=1.5cm, text width=2.8cm, align=center] at (10,0) {\textbf{③ 예측}\\새로운 상황에 적용};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 전개 2: 3가지 학습 유형
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{전개 2: 3가지 학습 유형}
+
+% ============================================================
+% 슬라이드 12: 그림 02 — 3가지 학습 유형 비교 (그림 단독)
+% ============================================================
+\begin{frame}{3가지 학습 유형 비교}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{AI디지털리터러시_1주차2차시_10_3가지학습유형비교.png}
+
+\vspace{0.1cm}
+{\tiny 그림 02: 3가지\_학습유형비교}
+\end{center}
+\end{frame}
+
+% ============================================================
+% 슬라이드 13: 지도학습 정의
+% ============================================================
+\begin{frame}{① 지도학습 (Supervised Learning)}
+\begin{center}
+\begin{tikzpicture}
+\node[draw=mainblue, fill=lightblue, rounded corners=8pt, inner sep=12pt, text width=10cm, align=center] {
+\emoji{light-bulb} \textbf{정답(라벨)이 있는} 데이터로 학습
+};
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.3cm}
+\textbf{비유}: 선생님이 정답을 알려주며 가르치는 것
+
+\vspace{0.3cm}
+\textbf{데이터 구조}:
+\begin{itemize}
+\item 고양이 사진 $\rightarrow$ ``고양이'' (정답)
+\item 개 사진 $\rightarrow$ ``개'' (정답)
+\end{itemize}
+
+\vspace{0.3cm}
+\emoji{point-right} 엔트리 이미지 분류 모델이 바로 \textbf{지도학습}!
+\end{frame}
+
+% ============================================================
+% 슬라이드 14: 분류 vs 회귀 비교
+% ============================================================
+\begin{frame}{지도학습의 2가지 유형: 분류 vs 회귀}
+\begin{center}
+\begin{tabular}{C{1.8cm} L{4cm} L{4cm}}
+\toprule
+\textbf{구분} & \textbf{회귀 (얼마나?)} & \textbf{분류 (어느 것?)} \\
+\midrule
+\textbf{답 형태} & 숫자 (연속적) & 범주 (구분) \\
+\textbf{예시 1} & 시험 점수: 85점 & 합격/불합격: 합격 \\
+\textbf{예시 2} & 집값: 3억 5천 & 아파트/빌라: 아파트 \\
+\textbf{예시 3} & 기온: 18도 & 더위/추위: 더위 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+% ============================================================
+% 슬라이드 15: 그림 03 — 지도 vs 비지도 데이터 구조 (그림 단독)
+% ============================================================
+\begin{frame}{② 비지도학습 — 지도학습과 무엇이 다를까?}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{AI디지털리터러시_1주차2차시_15_지도학습vs비지도학습_데이터구조비교.png}
+
+\vspace{0.1cm}
+{\tiny 그림 03: 지도학습vs비지도학습\_데이터구조비교}
+\end{center}
+\end{frame}
+
+% ============================================================
+% 슬라이드 16: 그림 04 — 라벨 없는 3가지 이유 (그림 단독)
+% ============================================================
+\begin{frame}{왜 라벨(정답) 없이 학습할까?}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{AI디지털리터러시_1주차2차시_17_라벨없는_3가지이유.png}
+
+\vspace{0.1cm}
+{\tiny 그림 04: 라벨없는\_3가지이유}
+\end{center}
+\end{frame}
+
+% ============================================================
+% 슬라이드 17: 그림 05 — 군집화 3단계 과정 (그림 단독)
+% ============================================================
+\begin{frame}{비지도학습의 핵심: 군집화 (Clustering)}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{AI디지털리터러시_1주차2차시_16_군집화_3단계과정.png}
+
+\vspace{0.1cm}
+{\tiny 그림 05: 군집화\_3단계과정}
+\end{center}
+\end{frame}
+
+% ============================================================
+% 슬라이드 18: 그림 06 — 고객 세분화 결과 (columns: 그림+키워드)
+% ============================================================
+\begin{frame}{비지도학습 예시: 고객 세분화}
+\begin{columns}
+\begin{column}{0.55\textwidth}
+\includegraphics[width=\textwidth]{AI디지털리터러시_1주차2차시_18_고객세분화결과_4개그룹.png}
+
+{\tiny 그림 06: 고객세분화결과\_4개그룹}
+\end{column}
+\begin{column}{0.40\textwidth}
+\textbf{쇼핑몰 고객 10,000명}
+
+\vspace{0.3cm}
+AI가 4개 그룹 자동 분류:
+\begin{itemize}
+\item \emoji{money-bag} 알뜰형
+\item \emoji{gem-stone} 명품형
+\item \emoji{fire} 트렌드형
+\item \emoji{package} 실속형
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+% ============================================================
+% 슬라이드 19: 그림 07 — 강화학습 루프 (그림 단독)
+% ============================================================
+\begin{frame}{③ 강화학습 — 시행착오로 배우는 AI}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{AI디지털리터러시_1주차2차시_14_강화학습루프.png}
+
+\vspace{0.1cm}
+{\tiny 그림 07: 강화학습루프 (Agent $\leftrightarrow$ Environment)}
+\end{center}
+\end{frame}
+
+% ============================================================
+% 슬라이드 20: 강화학습 핵심 설명
+% ============================================================
+\begin{frame}{강화학습 (Reinforcement Learning)}
+\begin{center}
+\begin{tikzpicture}
+\node[draw=mainpurple, fill=lightcream, rounded corners=8pt, inner sep=12pt, text width=10cm, align=center] {
+\emoji{light-bulb} \textbf{시행착오}를 통해 \textbf{보상을 최대화}하는 학습
+};
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.4cm}
+\textbf{핵심 개념}:
+\begin{itemize}
+\item \textbf{에이전트}(Agent): AI — 행동을 결정하는 주체
+\item \textbf{환경}(Environment): 에이전트가 상호작용하는 세계
+\item \textbf{보상}(Reward): 좋은 행동 $\rightarrow$ +점수 / 나쁜 행동 $\rightarrow$ -점수
+\end{itemize}
+
+\vspace{0.3cm}
+\emoji{point-right} 정답을 알려주지 않고, \textbf{스스로 최선의 행동}을 찾아가는 방식
+\end{frame}
+
+% ============================================================
+% 슬라이드 21: 그림 08 — 강아지 훈련 비유 (columns: 그림+키워드)
+% ============================================================
+\begin{frame}{강화학습 비유: 강아지 훈련 \emoji{dog}}
+\begin{columns}
+\begin{column}{0.50\textwidth}
+\includegraphics[width=\textwidth]{AI디지털리터러시_1주차2차시_19_강아지훈련_강화학습비유.png}
+
+{\tiny 그림 08: 강아지훈련\_강화학습비유}
+\end{column}
+\begin{column}{0.45\textwidth}
+\textbf{① 상황}: 강아지가 마당에 있음
+
+\vspace{0.2cm}
+\textbf{② 행동}: ``앉아!'' $\rightarrow$ 앉음
+
+\vspace{0.2cm}
+\textbf{③ 보상}: 잘했어! 간식! \emoji{bone}
+
+\vspace{0.2cm}
+\textbf{④ 학습}: 앉아 = 간식
+
+\vspace{0.4cm}
+\emoji{point-right} 다음번엔 바로 앉음!
+\end{column}
+\end{columns}
+\end{frame}
+
+% ============================================================
+% 슬라이드 22: 그림 09 — 게임 점수 획득 (columns: 그림+키워드)
+% ============================================================
+\begin{frame}{강화학습 예시: 게임 AI \emoji{video-game}}
+\begin{columns}
+\begin{column}{0.40\textwidth}
+\includegraphics[width=\textwidth]{AI디지털리터러시_1주차2차시_20_게임점수획득_강화학습과정.png}
+
+{\tiny 그림 09: 게임점수획득\_강화학습과정}
+\end{column}
+\begin{column}{0.55\textwidth}
+\textbf{100만 번 반복 학습}
+
+\vspace{0.3cm}
+\begin{tabular}{rl}
+1,000번 & 50점 \emoji{loudly-crying-face} \\
+10,000번 & 300점 \emoji{slightly-smiling-face} \\
+100,000번 & 850점 \emoji{grinning-face} \\
+1,000,000번 & 2,500점 \emoji{trophy} \\
+\end{tabular}
+
+\vspace{0.4cm}
+\emoji{point-right} AI는 지치지 않고 24시간 연습!
+\end{column}
+\end{columns}
+\end{frame}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 전개 3: 머신러닝 4단계 프로세스
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{전개 3: 머신러닝 4단계 프로세스}
+
+% ============================================================
+% 슬라이드 23: 그림 10 — 머신러닝 4단계 프로세스 (그림 단독)
+% ============================================================
+\begin{frame}{머신러닝 학습 과정 4단계}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{AI디지털리터러시_1주차2차시_09_머신러닝4단계프로세스.png}
+
+\vspace{0.1cm}
+{\tiny 그림 10: 머신러닝\_4단계\_프로세스}
+\end{center}
+\end{frame}
+
+% ============================================================
+% 슬라이드 24: 그림 11 — 편향된 데이터 vs 좋은 데이터 (그림 단독)
+% ============================================================
+\begin{frame}{1단계 데이터 수집 — 데이터의 질이 중요!}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{AI디지털리터러시_1주차2차시_13_편향된데이터vs좋은데이터.png}
+
+\vspace{0.1cm}
+{\tiny 그림 11: 편향된데이터vs좋은데이터}
+\end{center}
+\end{frame}
+
+% ============================================================
+% 슬라이드 25: 데이터 수집 3원칙 설명
+% ============================================================
+\begin{frame}{데이터 수집의 3가지 원칙}
+\begin{center}
+\begin{tikzpicture}
+\node[draw=mainblue, fill=lightblue, rounded corners=8pt, inner sep=12pt, minimum width=3cm, text width=3cm, align=center] at (0,0) {\textbf{① 양}\\충분히 많은 데이터\\(수천\textasciitilde 수만 개)};
+\node[draw=mainteal, fill=lightmint, rounded corners=8pt, inner sep=12pt, minimum width=3cm, text width=3cm, align=center] at (4.5,0) {\textbf{② 질}\\정확하고 깨끗한\\데이터};
+\node[draw=mainpurple, fill=lightcream, rounded corners=8pt, inner sep=12pt, minimum width=3cm, text width=3cm, align=center] at (9,0) {\textbf{③ 다양성}\\다양한 상황의\\데이터};
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5cm}
+\emoji{warning} \textbf{편향된 데이터} $\rightarrow$ 편향된 AI!
+
+\vspace{0.2cm}
+\emoji{point-right} 실내 고양이만 학습하면 $\rightarrow$ 야외 고양이를 인식 못함
+\end{frame}
+
+% ============================================================
+% 슬라이드 26: 그림 12 — 학습 곡선 (그림 단독)
+% ============================================================
+\begin{frame}{2단계 학습 — 에포크와 학습 곡선}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{AI디지털리터러시_1주차2차시_12_학습곡선.png}
+
+\vspace{0.1cm}
+{\tiny 그림 12: 학습곡선 (에포크별 정확도 변화)}
+\end{center}
+\end{frame}
+
+% ============================================================
+% 슬라이드 27: 학습 핵심 용어 설명
+% ============================================================
+\begin{frame}{학습 핵심 용어}
+\textbf{에포크 (Epoch)}
+\begin{itemize}
+\item 전체 데이터를 1회 학습하는 단위
+\item 에포크 \emoji{up-arrow} $\Rightarrow$ 정확도 \emoji{up-arrow}
+\end{itemize}
+
+\vspace{0.4cm}
+\textbf{가중치 (Weights)}
+\begin{itemize}
+\item AI가 학습하며 조정하는 수치
+\item ``이 특징이 얼마나 중요한가?''를 숫자로 표현
+\end{itemize}
+
+\vspace{0.4cm}
+\emoji{point-right} 3주차 엔트리 실습에서 에포크 변화를 직접 관찰!
+\end{frame}
+
+% ============================================================
+% 슬라이드 28: 그림 13 — 데이터 분할 (그림 단독)
+% ============================================================
+\begin{frame}{3단계 평가 — 데이터 분할}
+\begin{center}
+\includegraphics[width=0.85\textwidth]{AI디지털리터러시_1주차2차시_11_데이터분할.png}
+
+\vspace{0.1cm}
+{\tiny 그림 13: 데이터분할 (Train 70\% / Validation 15\% / Test 15\%)}
+\end{center}
+\end{frame}
+
+% ============================================================
+% 슬라이드 29: 과적합 설명
+% ============================================================
+\begin{frame}{왜 데이터를 나눌까? — 과적합 방지}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{center}
+\textbf{\color{mainorange}\emoji{cross-mark} 과적합 상태}
+
+\vspace{0.3cm}
+\begin{tikzpicture}
+\node[draw=mainorange, fill=lightcream, rounded corners=5pt, inner sep=8pt, text width=4.5cm, align=center] {
+훈련 데이터: 100점\\
+새 데이터: 50점\\[0.2cm]
+$\rightarrow$ 암기만, 이해 못함
+};
+\end{tikzpicture}
+\end{center}
+\end{column}
+\begin{column}{0.45\textwidth}
+\begin{center}
+\textbf{\color{maingreen}\emoji{check-mark-button} 좋은 학습}
+
+\vspace{0.3cm}
+\begin{tikzpicture}
+\node[draw=maingreen, fill=lightmint, rounded corners=5pt, inner sep=8pt, text width=4.5cm, align=center] {
+훈련 데이터: 85점\\
+새 데이터: 82점\\[0.2cm]
+$\rightarrow$ 일반화 능력 우수
+};
+\end{tikzpicture}
+\end{center}
+\end{column}
+\end{columns}
+
+\vspace{0.4cm}
+\begin{center}
+\emoji{point-right} 시험 범위만 달달 외우면? $\rightarrow$ 응용 문제에서 틀림!
+\end{center}
+\end{frame}
+
+% ============================================================
+% 슬라이드 30: 4단계 예측
+% ============================================================
+\begin{frame}{4단계 예측 — 실전 적용}
+\textbf{모델 배포}
+\begin{itemize}
+\item \textbf{①} 학습 완료된 모델 저장
+\item \textbf{②} 앱/웹사이트에 적용
+\item \textbf{③} 실시간 예측 시작
+\end{itemize}
+
+\vspace{0.4cm}
+\textbf{지속적 개선}
+\begin{itemize}
+\item 새 데이터 수집 $\rightarrow$ 재학습 (Re-training)
+\item 성능 모니터링 $\rightarrow$ 더 좋은 모델로 업데이트
+\end{itemize}
+\end{frame}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 정리
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{정리}
+
+% ============================================================
+% 슬라이드 31: 엔트리 AI 연결
+% ============================================================
+\begin{frame}{엔트리 AI 모델과의 연결}
+\begin{center}
+\textbf{3주차에 배울 엔트리 이미지 분류 모델 = 지도학습!}
+\end{center}
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}
+\node[draw=mainblue, fill=lightblue, rounded corners=5pt, inner sep=6pt, minimum width=2.2cm] (a) at (0,0) {\textbf{①} 사진 수집};
+\node[draw=mainteal, fill=lightmint, rounded corners=5pt, inner sep=6pt, minimum width=2.2cm] (b) at (3,0) {\textbf{②} 라벨 붙이기};
+\node[draw=mainpurple, fill=lightcream, rounded corners=5pt, inner sep=6pt, minimum width=2.2cm] (c) at (6,0) {\textbf{③} 학습 클릭};
+\node[draw=maingreen, fill=lightmint, rounded corners=5pt, inner sep=6pt, minimum width=2.2cm] (d) at (9,0) {\textbf{④} 에포크 관찰};
+\node[draw=mainorange, fill=lightcream, rounded corners=5pt, inner sep=6pt, minimum width=2.2cm] (e) at (12,0) {\textbf{⑤} 예측 테스트};
+\draw[->,thick] (a) -- (b);
+\draw[->,thick] (b) -- (c);
+\draw[->,thick] (c) -- (d);
+\draw[->,thick] (d) -- (e);
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.3cm}
+\emoji{point-right} 오늘 배운 4단계 프로세스를 \textbf{직접 체험}하게 됩니다!
+\end{frame}
+
+% ============================================================
+% 슬라이드 32: 오늘 배운 내용 정리
+% ============================================================
+\begin{frame}{오늘 배운 내용 정리}
+\emoji{check-mark-button} \textbf{AI$\supset$ML$\supset$DL 포함 관계}
+\begin{itemize}
+\item 기계학습은 AI를 구현하는 방법
+\end{itemize}
+
+\vspace{0.3cm}
+\emoji{check-mark-button} \textbf{3가지 학습 유형}
+\begin{itemize}
+\item 지도학습: 정답 있음 (분류/회귀)
+\item 비지도학습: 정답 없음 (군집화)
+\item 강화학습: 보상으로 학습 (시행착오)
+\end{itemize}
+
+\vspace{0.3cm}
+\emoji{check-mark-button} \textbf{머신러닝 4단계}
+\begin{itemize}
+\item 데이터 수집 $\rightarrow$ 학습 $\rightarrow$ 평가 $\rightarrow$ 예측
+\end{itemize}
+\end{frame}
+
+% ============================================================
+% 슬라이드 33: 퀴즈 안내
+% ============================================================
+\begin{frame}{다음 주 퀴즈 안내 \emoji{memo}}
+\begin{center}
+\begin{tabular}{ll}
+\textbf{시기} & 2주차 1차시 시작 (15분) \\
+\textbf{범위} & 1주차 1차시 + 1주차 2차시 전체 \\
+\textbf{형식} & 객관식 10문항 (5점) + 단답형 5문항 (5점) \\
+\textbf{배점} & 총 10점 \\
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+\textbf{준비 방법}:
+\begin{itemize}
+\item 강의교재 복습
+\item 핵심 개념 확인 (AI/ML/DL, 3가지 학습유형, 4단계 프로세스)
+\end{itemize}
+\end{frame}
+
+% ============================================================
+% 슬라이드 34: 마무리 (standout)
+% ============================================================
+\begin{frame}[standout]
+\emoji{clapping-hands} 수고하셨습니다!
+
+\vspace{0.5cm}
+다음 주에 만나요 \emoji{waving-hand}
+\end{frame}
+
+\end{document}

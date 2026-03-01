@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍎 AI 사과 농장 이야기</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --apple-red: #E53935;
+            --apple-red-dark: #C62828;
+            --apple-green: #43A047;
+            --apple-green-light: #81C784;
+            --leaf-green: #2E7D32;
+            --honey-yellow: #FFC107;
+            --warm-cream: #FFF8E7;
+            --warm-cream-dark: #FFE4B5;
+            --sky-blue: #87CEEB;
+            --text-dark: #3E2723;
+            --text-medium: #5D4037;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(180deg, var(--sky-blue) 0%, var(--warm-cream) 100%);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stage {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            padding: 40px;
+        }
+
+        .scene.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scene-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 900px;
+        }
+
+        .scene-title {
+            font-family: 'Gowun Batang', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+            animation-play-state: paused;
+        }
+
+        .scene.active .scene-title {
+            animation-play-state: running;
+        }
+
+        .scene-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-medium);
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease 0.3s forwards;
+            animation-play-state: paused;
+        }
+
+        .scene.active .scene-subtitle {
+            animation-play-state: running;
+        }
+
+        .scene-text {
+            font-size: 1.2rem;
+            line-height: 2;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 0.5s forwards;
+            animation-play-state: paused;
+        }
+
+        .scene.active .scene-text {
+            animation-play-state: running;
+        }
+
+        .scene-text p {
+            margin-bottom: 15px;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, var(--honey-yellow) 60%);
+            padding: 0 4px;
+            font-weight: 600;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            background: var(--apple-red);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .tech-badge.green { background: var(--apple-green); }
+        .tech-badge.blue { background: #2196F3; }
+        .tech-badge.purple { background: #9C27B0; }
+        .tech-badge.orange { background: #FF9800; }
+
+        .illustration {
+            width: 100%;
+            max-width: 600px;
+            height: 280px;
+            margin: 20px auto;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 0.7s forwards;
+            animation-play-state: paused;
+        }
+
+        .scene.active .illustration {
+            animation-play-state: running;
+        }
+
+        .flow-diagram {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .flow-box {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 140px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .flow-box.animated {
+            animation: flowBoxIn 0.5s ease forwards;
+        }
+
+        @keyframes flowBoxIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .flow-box .icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .flow-box .label { font-weight: 600; color: var(--text-dark); margin-bottom: 5px; }
+        .flow-box .tech {
+            font-size: 0.85rem;
+            color: white;
+            background: var(--apple-red);
+            padding: 4px 10px;
+            border-radius: 10px;
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: var(--apple-red);
+            opacity: 0;
+        }
+
+        .flow-arrow.animated {
+            animation: arrowIn 0.3s ease forwards;
+        }
+
+        @keyframes arrowIn {
+            to { opacity: 1; }
+        }
+
+        .decision-tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .tree-node {
+            background: white;
+            border: 3px solid var(--apple-red);
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .tree-node.animated {
+            animation: nodeIn 0.4s ease forwards;
+        }
+
+        @keyframes nodeIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .tree-branches {
+            display: flex;
+            gap: 60px;
+        }
+
+        .tree-branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tree-branch .line {
+            width: 3px;
+            height: 30px;
+            background: var(--apple-red);
+            opacity: 0;
+        }
+
+        .tree-branch .line.animated {
+            animation: lineIn 0.3s ease forwards;
+        }
+
+        @keyframes lineIn {
+            to { opacity: 1; }
+        }
+
+        .tree-leaf {
+            background: var(--apple-green);
+            color: white;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-weight: 500;
+            opacity: 0;
+        }
+
+        .tree-leaf.animated {
+            animation: leafIn 0.4s ease forwards;
+        }
+
+        @keyframes leafIn {
+            to { opacity: 1; }
+        }
+
+        .clusters {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .cluster {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .cluster.animated {
+            animation: clusterIn 0.5s ease forwards;
+        }
+
+        @keyframes clusterIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cluster-dots { display: flex; gap: 5px; }
+        .cluster-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--apple-red);
+        }
+        .cluster-dot.medium { background: var(--honey-yellow); }
+        .cluster-dot.small { background: var(--apple-green); }
+        .cluster-label { font-weight: 600; font-size: 0.9rem; }
+
+        .regression-chart {
+            width: 300px;
+            height: 200px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .regression-line {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            width: 0;
+            height: 3px;
+            background: var(--apple-red);
+            transform-origin: left center;
+            transform: rotate(-35deg);
+        }
+
+        .regression-line.animated {
+            animation: lineGrow 1s ease forwards;
+        }
+
+        @keyframes lineGrow {
+            to { width: 200px; }
+        }
+
+        .chart-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--apple-green);
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .chart-dot.animated {
+            animation: dotIn 0.3s ease forwards;
+        }
+
+        @keyframes dotIn {
+            to { opacity: 1; }
+        }
+
+        /* 컨트롤 바 */
+        .controls {
+            background: rgba(255,255,255,0.95);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        }
+
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--apple-red);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            background: var(--apple-red-dark);
+            transform: scale(1.1);
+        }
+
+        /* 음소거 버튼 */
+        .mute-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #666;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .mute-btn:hover {
+            background: #444;
+        }
+
+        .mute-btn.muted {
+            background: var(--apple-red);
+        }
+
+        .progress-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #E0E0E0;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--apple-red), var(--apple-green));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-medium);
+        }
+
+        .scene-indicators {
+            display: flex;
+            gap: 8px;
+        }
+
+        .scene-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #E0E0E0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .scene-dot.active {
+            background: var(--apple-red);
+            transform: scale(1.2);
+        }
+
+        .scene-dot:hover {
+            background: var(--apple-red-dark);
+        }
+
+        /* 음성 속도 조절 */
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        .speed-control select {
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scene-prologue { background: linear-gradient(180deg, #87CEEB 0%, #E8F5E9 50%, var(--warm-cream) 100%); }
+        .scene-1 { background: linear-gradient(180deg, #C8E6C9 0%, #E8F5E9 100%); }
+        .scene-2 { background: linear-gradient(180deg, #FFECB3 0%, #FFF8E1 100%); }
+        .scene-3 { background: linear-gradient(180deg, #E3F2FD 0%, #BBDEFB 100%); }
+        .scene-4 { background: linear-gradient(180deg, #FCE4EC 0%, #F8BBD9 100%); }
+        .scene-5 { background: linear-gradient(180deg, #E8EAF6 0%, #C5CAE9 100%); }
+        .scene-epilogue { background: linear-gradient(180deg, #C8E6C9 0%, var(--warm-cream) 50%, #FFECB3 100%); }
+
+        .quote {
+            font-family: 'Gowun Batang', serif;
+            font-size: 1.3rem;
+            font-style: italic;
+            color: var(--text-medium);
+            padding: 20px 30px;
+            border-left: 4px solid var(--apple-red);
+            background: rgba(255,255,255,0.7);
+            border-radius: 0 12px 12px 0;
+            margin: 20px 0;
+        }
+
+        /* 나레이션 표시 영역 */
+        .narration-display {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            max-width: 80%;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+        }
+
+        .narration-display.visible {
+            opacity: 1;
+        }
+
+        /* TTS 상태 표시 */
+        .tts-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: var(--text-medium);
+        }
+
+        .tts-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+
+        .tts-status .dot.ready {
+            background: var(--apple-green);
+        }
+
+        .tts-status .dot.speaking {
+            background: var(--apple-green);
+            animation: pulse 0.5s infinite;
+        }
+
+        .tts-status .dot.error {
+            background: var(--apple-red);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        @media (max-width: 768px) {
+            .scene-title { font-size: 2rem; }
+            .scene-text { font-size: 1rem; }
+            .flow-diagram { gap: 10px; }
+            .flow-box { min-width: 100px; padding: 15px; }
+            .controls { padding: 10px 15px; flex-wrap: wrap; }
+            .speed-control { display: none; }
+            .tts-status { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="stage">
+            <!-- 프롤로그 -->
+            <div class="scene scene-prologue active" data-scene="0">
+                <div class="scene-content">
+                    <h1 class="scene-title">🍎 AI 사과 농장 이야기</h1>
+                    <p class="scene-subtitle">스마트 과수원을 꿈꾸는 농부의 이야기</p>
+                    <div class="illustration">
+                        <svg width="100%" height="100%" viewBox="0 0 400 250">
+                            <ellipse cx="80" cy="100" rx="60" ry="70" fill="#81C784"/>
+                            <rect x="70" y="150" width="20" height="60" fill="#8B4513"/>
+                            <ellipse cx="200" cy="80" rx="70" ry="80" fill="#66BB6A"/>
+                            <rect x="190" y="140" width="20" height="70" fill="#8B4513"/>
+                            <ellipse cx="320" cy="100" rx="60" ry="70" fill="#81C784"/>
+                            <rect x="310" y="150" width="20" height="60" fill="#8B4513"/>
+                            <circle cx="60" cy="90" r="12" fill="#E53935"/>
+                            <circle cx="100" cy="70" r="10" fill="#E53935"/>
+                            <circle cx="170" cy="60" r="14" fill="#E53935"/>
+                            <circle cx="220" cy="80" r="12" fill="#E53935"/>
+                            <circle cx="300" cy="85" r="11" fill="#E53935"/>
+                            <circle cx="340" cy="100" r="13" fill="#E53935"/>
+                            <ellipse cx="200" cy="230" rx="25" ry="15" fill="#8B4513"/>
+                            <rect x="185" y="180" width="30" height="50" rx="5" fill="#4E342E"/>
+                            <circle cx="200" cy="165" r="20" fill="#FFCCBC"/>
+                            <ellipse cx="200" cy="150" rx="25" ry="10" fill="#FFC107"/>
+                            <ellipse cx="200" cy="145" rx="15" ry="8" fill="#FFC107"/>
+                            <text x="240" y="140" font-size="24">🤔</text>
+                        </svg>
+                    </div>
+                    <div class="quote">
+                        "사과 수확철만 되면 일손이 부족해... 인건비도 너무 올랐고..."
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1장: 수확 -->
+            <div class="scene scene-1" data-scene="1">
+                <div class="scene-content">
+                    <h1 class="scene-title">1장: 수확의 시작 🌳</h1>
+                    <p class="scene-subtitle">익은 사과만 골라 따는 방법</p>
+                    <div class="scene-text">
+                        <p>사과는 한꺼번에 익지 않습니다.<br>같은 나무에서도 <span class="highlight">익은 사과</span>와 <span class="highlight">덜 익은 사과</span>가 섞여 있죠.</p>
+                    </div>
+                    <div class="illustration" id="scene1-illust">
+                        <div class="flow-diagram">
+                            <div class="flow-box" data-delay="0">
+                                <div class="icon">📷</div>
+                                <div class="label">카메라 촬영</div>
+                            </div>
+                            <div class="flow-arrow" data-delay="400">→</div>
+                            <div class="flow-box" data-delay="800">
+                                <div class="icon">🧠</div>
+                                <div class="label">딥러닝 분석</div>
+                                <div class="tech">CNN</div>
+                            </div>
+                            <div class="flow-arrow" data-delay="1200">→</div>
+                            <div class="flow-box" data-delay="1600">
+                                <div class="icon">✅</div>
+                                <div class="label">"92% 익음"</div>
+                            </div>
+                            <div class="flow-arrow" data-delay="2000">→</div>
+                            <div class="flow-box" data-delay="2400">
+                                <div class="icon">🤖</div>
+                                <div class="label">로봇 수확!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tech-badge">딥러닝 (CNN)</div>
+                    <div class="tech-badge green">지도 학습</div>
+                </div>
+            </div>
+
+            <!-- 2장: 품종 구분 -->
+            <div class="scene scene-2" data-scene="2">
+                <div class="scene-content">
+                    <h1 class="scene-title">2장: 품종이 섞였다! 🔍</h1>
+                    <p class="scene-subtitle">비슷한 것끼리 찾아 분류하기</p>
+                    <div class="scene-text">
+                        <p><span class="highlight">홍로, 부사, 아오리, 감홍</span>...<br>수확한 사과들이 모두 섞여버렸어요!</p>
+                    </div>
+                    <div class="illustration" id="scene2-illust">
+                        <div class="flow-diagram">
+                            <div class="flow-box" data-delay="0">
+                                <div class="icon">📊</div>
+                                <div class="label">특성 측정</div>
+                                <div style="font-size:0.8rem;color:#666;">당도, 산도, 무게</div>
+                            </div>
+                            <div class="flow-arrow" data-delay="400">→</div>
+                            <div class="flow-box" data-delay="800">
+                                <div class="icon">🔍</div>
+                                <div class="label">KNN 분석</div>
+                                <div class="tech" style="background:#FF9800;">K-최근접</div>
+                            </div>
+                            <div class="flow-arrow" data-delay="1200">→</div>
+                            <div class="flow-box" data-delay="1600">
+                                <div class="icon">🏷️</div>
+                                <div class="label">"부사입니다"</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="quote" style="margin-top:20px;">
+                        "비슷한 특성의 사과들이 어떤 품종인지 확인하고,<br>같은 품종으로 분류해요!"
+                    </div>
+                    <div class="tech-badge orange">KNN</div>
+                    <div class="tech-badge green">지도 학습</div>
+                </div>
+            </div>
+
+            <!-- 3장: 등급 분류 -->
+            <div class="scene scene-3" data-scene="3">
+                <div class="scene-content">
+                    <h1 class="scene-title">3장: 크기별 등급 분류 📦</h1>
+                    <p class="scene-subtitle">매년 달라지는 크기에 자동 적응!</p>
+                    <div class="scene-text">
+                        <p>매년 날씨에 따라 사과 크기가 달라요.<br><span class="highlight">고정 기준</span>으로는 매년 적용할 수 없죠!</p>
+                    </div>
+                    <div class="illustration" id="scene3-illust">
+                        <div class="clusters">
+                            <div class="cluster" data-delay="0">
+                                <div class="cluster-dots">
+                                    <div class="cluster-dot small"></div>
+                                    <div class="cluster-dot small"></div>
+                                    <div class="cluster-dot small"></div>
+                                </div>
+                                <div class="cluster-label">🥉 하품</div>
+                            </div>
+                            <div class="cluster" data-delay="500">
+                                <div class="cluster-dots">
+                                    <div class="cluster-dot medium"></div>
+                                    <div class="cluster-dot medium"></div>
+                                    <div class="cluster-dot medium"></div>
+                                </div>
+                                <div class="cluster-label">🥈 중품</div>
+                            </div>
+                            <div class="cluster" data-delay="1000">
+                                <div class="cluster-dots">
+                                    <div class="cluster-dot"></div>
+                                    <div class="cluster-dot"></div>
+                                    <div class="cluster-dot"></div>
+                                </div>
+                                <div class="cluster-label">🥇 상품</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="quote">
+                        "K-means는 그 해 데이터에서<br>자동으로 3개 그룹으로 나눠줘요!"
+                    </div>
+                    <div class="tech-badge blue">K-means</div>
+                    <div class="tech-badge" style="background:#9C27B0;">비지도 학습</div>
+                </div>
+            </div>
+
+            <!-- 4장: 가격 예측 -->
+            <div class="scene scene-4" data-scene="4">
+                <div class="scene-content">
+                    <h1 class="scene-title">4장: 가격을 매기자 💰</h1>
+                    <p class="scene-subtitle">품질과 가격의 관계 학습</p>
+                    <div class="scene-text">
+                        <p><span class="highlight">당도</span>가 높고 <span class="highlight">무게</span>가 나가면 비싸게!<br>정확히 얼마로 책정할까요?</p>
+                    </div>
+                    <div class="illustration" id="scene4-illust">
+                        <div class="regression-chart">
+                            <div style="position:absolute;bottom:20px;left:20px;font-size:0.8rem;color:#666;">품질 →</div>
+                            <div style="position:absolute;top:20px;left:5px;font-size:0.8rem;color:#666;transform:rotate(-90deg);">가격 →</div>
+                            <div class="chart-dot" style="bottom:50px;left:60px;" data-delay="0"></div>
+                            <div class="chart-dot" style="bottom:70px;left:90px;" data-delay="200"></div>
+                            <div class="chart-dot" style="bottom:90px;left:120px;" data-delay="400"></div>
+                            <div class="chart-dot" style="bottom:110px;left:150px;" data-delay="600"></div>
+                            <div class="chart-dot" style="bottom:130px;left:180px;" data-delay="800"></div>
+                            <div class="chart-dot" style="bottom:150px;left:210px;" data-delay="1000"></div>
+                            <div class="regression-line" data-delay="1500"></div>
+                        </div>
+                        <div style="margin-top:20px;font-family:'Gowun Batang',serif;font-size:1.2rem;">
+                            <strong>가격 = 30 × 품질 + 1000</strong>
+                        </div>
+                    </div>
+                    <div class="tech-badge">선형 회귀</div>
+                    <div class="tech-badge green">지도 학습</div>
+                </div>
+            </div>
+
+            <!-- 5장: 출하 결정 -->
+            <div class="scene scene-5" data-scene="5">
+                <div class="scene-content">
+                    <h1 class="scene-title">5장: 어디로 보낼까? 🚚</h1>
+                    <p class="scene-subtitle">규칙 기반 의사결정</p>
+                    <div class="scene-text">
+                        <p>가격까지 정해진 사과들!<br><span class="highlight">백화점? 마트? 온라인? 주스공장?</span></p>
+                    </div>
+                    <div class="illustration" id="scene5-illust">
+                        <div class="decision-tree">
+                            <div class="tree-node" data-delay="0">등급 = 상품?</div>
+                            <div class="tree-branches">
+                                <div class="tree-branch">
+                                    <div class="line" data-delay="500"></div>
+                                    <div style="font-size:0.9rem;color:#666;" data-delay="500">예 ✓</div>
+                                    <div class="tree-leaf" data-delay="800">🏬 백화점</div>
+                                </div>
+                                <div class="tree-branch">
+                                    <div class="line" data-delay="500"></div>
+                                    <div style="font-size:0.9rem;color:#666;" data-delay="500">아니오 ✗</div>
+                                    <div class="tree-node" data-delay="1100" style="font-size:0.9rem;">등급 = 중품?</div>
+                                    <div class="tree-branches" style="gap:30px;margin-top:10px;">
+                                        <div class="tree-branch">
+                                            <div class="line" data-delay="1400" style="height:20px;"></div>
+                                            <div class="tree-leaf" data-delay="1700">🛒 온라인</div>
+                                        </div>
+                                        <div class="tree-branch">
+                                            <div class="line" data-delay="1400" style="height:20px;"></div>
+                                            <div class="tree-leaf" data-delay="1700" style="background:#FF9800;">🧃 주스공장</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tech-badge purple">결정 트리</div>
+                    <div class="tech-badge green">지도 학습</div>
+                </div>
+            </div>
+
+            <!-- 에필로그 -->
+            <div class="scene scene-epilogue" data-scene="6">
+                <div class="scene-content">
+                    <h1 class="scene-title">🎉 스마트 과수원의 완성!</h1>
+                    <p class="scene-subtitle">5가지 AI 기술이 만든 변화</p>
+                    <div class="illustration" id="scene6-illust">
+                        <div class="flow-diagram" style="flex-wrap:nowrap;">
+                            <div class="flow-box" data-delay="0">
+                                <div class="icon">🌳</div>
+                                <div class="label">수확</div>
+                                <div class="tech">딥러닝</div>
+                            </div>
+                            <div class="flow-arrow" data-delay="300">→</div>
+                            <div class="flow-box" data-delay="600">
+                                <div class="icon">🔍</div>
+                                <div class="label">품종</div>
+                                <div class="tech" style="background:#FF9800;">KNN</div>
+                            </div>
+                            <div class="flow-arrow" data-delay="900">→</div>
+                            <div class="flow-box" data-delay="1200">
+                                <div class="icon">📦</div>
+                                <div class="label">등급</div>
+                                <div class="tech" style="background:#2196F3;">K-means</div>
+                            </div>
+                            <div class="flow-arrow" data-delay="1500">→</div>
+                            <div class="flow-box" data-delay="1800">
+                                <div class="icon">💰</div>
+                                <div class="label">가격</div>
+                                <div class="tech">선형회귀</div>
+                            </div>
+                            <div class="flow-arrow" data-delay="2100">→</div>
+                            <div class="flow-box" data-delay="2400">
+                                <div class="icon">🚚</div>
+                                <div class="label">출하</div>
+                                <div class="tech" style="background:#9C27B0;">결정트리</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="quote" style="margin-top:30px;">
+                        "AI가 어렵게만 느껴졌는데,<br>각각의 문제에 맞는 도구를 선택하는 거였어요!"
+                    </div>
+                    <p style="margin-top:20px;font-size:1.5rem;">🍎 끝 🍎</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 나레이션 표시 -->
+        <div class="narration-display" id="narrationDisplay"></div>
+
+        <!-- 컨트롤 바 -->
+        <div class="controls">
+            <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
+            <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
+            <div class="progress-container">
+                <div class="progress-bar" onclick="seekTo(event)">
+                    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                </div>
+                <div class="progress-labels">
+                    <span id="currentSceneLabel">프롤로그</span>
+                    <span id="timeLabel">0:00 / 2:00</span>
+                </div>
+            </div>
+            <div class="speed-control">
+                <span>속도</span>
+                <select id="speedSelect" onchange="changeSpeed()">
+                    <option value="0.8">느리게</option>
+                    <option value="1" selected>보통</option>
+                    <option value="1.2">빠르게</option>
+                </select>
+            </div>
+            <div class="tts-status">
+                <div class="dot" id="ttsDot"></div>
+                <span id="ttsLabel">준비중</span>
+            </div>
+            <div class="scene-indicators" id="sceneIndicators"></div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 나레이션 텍스트 ==========
+        const narrations = [
+            // 프롤로그
+            [
+                "AI 사과 농장 이야기. 스마트 과수원을 꿈꾸는 농부의 이야기입니다.",
+                "청주에서 사과 과수원을 운영하는 김사과 농부는 요즘 걱정이 많습니다.",
+                "사과 수확철만 되면 일손이 부족하고, 인건비도 너무 올랐거든요.",
+                "어느 날, 농부는 AI와 로봇이 농업에 활용된다는 소식을 듣게 됩니다."
+            ],
+            // 1장
+            [
+                "1장. 수확의 시작입니다.",
+                "사과는 한꺼번에 익지 않습니다. 같은 나무에서도 익은 사과와 덜 익은 사과가 섞여 있죠.",
+                "수확 로봇은 카메라로 사과를 촬영합니다.",
+                "딥러닝, 그 중에서도 CNN이라는 기술이 사과 이미지를 분석합니다.",
+                "이 사과는 92퍼센트 확률로 익었습니다!",
+                "판정이 끝나면 로봇팔이 사과를 수확합니다."
+            ],
+            // 2장
+            [
+                "2장. 품종이 섞였습니다!",
+                "홍로, 부사, 아오리, 감홍. 수확한 사과들이 모두 섞여버렸어요!",
+                "품종마다 맛도 다르고 가격도 다른데, 어떻게 구분할까요?",
+                "센서로 당도, 산도, 무게를 측정합니다.",
+                "KNN 알고리즘이 비슷한 특성의 사과들을 찾아냅니다.",
+                "이 사과는 부사입니다!"
+            ],
+            // 3장
+            [
+                "3장. 크기별 등급 분류입니다.",
+                "매년 날씨에 따라 사과 크기가 달라집니다.",
+                "고정 기준으로는 매년 적용할 수 없습니다.",
+                "K평균 클러스터링을 사용합니다.",
+                "이 기술은 그 해 데이터에서 자동으로 3개 그룹을 만들어 줍니다.",
+                "비지도 학습이기 때문에 정답 없이도 스스로 분류할 수 있습니다."
+            ],
+            // 4장
+            [
+                "4장. 가격을 매깁니다.",
+                "당도가 높고 무게가 나가면 비싸게! 그런데 정확히 얼마로 책정할까요?",
+                "선형 회귀를 사용합니다.",
+                "품질 점수를 계산하고, 가격과의 관계를 학습합니다.",
+                "가격은 30 곱하기 품질 더하기 1000원.",
+                "품질이 높을수록 가격도 비례해서 올라가는 관계를 AI가 학습합니다."
+            ],
+            // 5장
+            [
+                "5장. 어디로 보낼까요?",
+                "가격까지 정해진 사과들. 이제 출하처를 결정해야 합니다.",
+                "백화점? 대형마트? 온라인? 주스공장?",
+                "결정 트리를 사용합니다.",
+                "등급이 상품이면 백화점으로, 중품이면 온라인으로, 하품이면 주스공장으로.",
+                "예 아니오 질문을 반복해서 최종 결정을 내립니다."
+            ],
+            // 에필로그
+            [
+                "드디어 스마트 과수원이 완성되었습니다!",
+                "수확에는 딥러닝, 품종 구분에는 KNN",
+                "등급 분류에는 K평균, 가격 예측에는 선형 회귀",
+                "그리고 출하 결정에는 결정 트리.",
+                "AI가 어렵게만 느껴졌는데, 각각의 문제에 맞는 도구를 선택하는 거였어요!",
+                "AI 사과 농장 이야기. 끝."
+            ]
+        ];
+
+        // ========== 장면 설정 ==========
+        const scenes = [
+            { name: '프롤로그', duration: 18000 },
+            { name: '1장: 수확', duration: 20000 },
+            { name: '2장: 품종', duration: 18000 },
+            { name: '3장: 등급', duration: 18000 },
+            { name: '4장: 가격', duration: 18000 },
+            { name: '5장: 출하', duration: 18000 },
+            { name: '에필로그', duration: 20000 }
+        ];
+
+        // ========== 전역 변수 ==========
+        let currentScene = 0;
+        let isPlaying = false;
+        let isMuted = false;
+        let sceneTimer = null;
+        let progressTimer = null;
+        let sceneStartTime = 0;
+        let speechRate = 1;
+        let ttsReady = false;
+        let voices = [];
+        let koreanVoice = null;
+        let isSpeaking = false;
+        let narrationQueue = [];
+        let currentNarrationIndex = 0;
+
+        // ========== 초기화 ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            createSceneIndicators();
+            updateUI();
+            initTTS();
+        });
+
+        // ========== TTS 초기화 ==========
+        function initTTS() {
+            if (!('speechSynthesis' in window)) {
+                setTTSStatus('error', 'TTS 미지원');
+                console.error('이 브라우저는 음성 합성을 지원하지 않습니다.');
+                return;
+            }
+
+            setTTSStatus('loading', '로딩중...');
+
+            // 음성 목록 로드
+            function loadVoices() {
+                voices = speechSynthesis.getVoices();
+                console.log('사용 가능한 음성:', voices.length);
+                
+                if (voices.length > 0) {
+                    // 한국어 음성 찾기
+                    koreanVoice = voices.find(v => v.lang.includes('ko-KR')) ||
+                                  voices.find(v => v.lang.includes('ko')) ||
+                                  voices.find(v => v.lang.includes('KR'));
+                    
+                    if (koreanVoice) {
+                        console.log('한국어 음성 발견:', koreanVoice.name);
+                        setTTSStatus('ready', '준비됨');
+                        ttsReady = true;
+                    } else {
+                        // 한국어 음성이 없으면 기본 음성 사용
+                        koreanVoice = voices[0];
+                        console.log('한국어 음성 없음. 기본 음성 사용:', koreanVoice.name);
+                        setTTSStatus('ready', '기본음성');
+                        ttsReady = true;
+                    }
+                }
+            }
+
+            // 음성 목록이 비동기로 로드될 수 있음
+            loadVoices();
+            
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = loadVoices;
+            }
+
+            // 3초 후에도 로드되지 않으면 재시도
+            setTimeout(() => {
+                if (!ttsReady) {
+                    loadVoices();
+                    if (!ttsReady && voices.length === 0) {
+                        setTTSStatus('error', '음성 없음');
+                    }
+                }
+            }, 3000);
+        }
+
+        function setTTSStatus(status, label) {
+            const dot = document.getElementById('ttsDot');
+            const labelEl = document.getElementById('ttsLabel');
+            
+            dot.className = 'dot ' + status;
+            labelEl.textContent = label;
+        }
+
+        // ========== TTS 함수 ==========
+        function speak(text, onEnd) {
+            if (isMuted || !text || !ttsReady) {
+                if (onEnd) setTimeout(onEnd, 100);
+                return;
+            }
+
+            // 이전 음성 중지
+            speechSynthesis.cancel();
+            isSpeaking = true;
+            setTTSStatus('speaking', '재생중');
+
+            // 나레이션 표시
+            const display = document.getElementById('narrationDisplay');
+            display.textContent = text;
+            display.classList.add('visible');
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            if (koreanVoice) {
+                utterance.voice = koreanVoice;
+            }
+            utterance.lang = 'ko-KR';
+            utterance.rate = speechRate;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                display.classList.remove('visible');
+                setTTSStatus('ready', '준비됨');
+                if (onEnd) onEnd();
+            };
+
+            utterance.onerror = (event) => {
+                console.log('TTS 이벤트:', event.error);
+                isSpeaking = false;
+                display.classList.remove('visible');
+                
+                // interrupted는 정상적인 중단 (다른 장면으로 이동 등)
+                if (event.error === 'interrupted' || event.error === 'canceled') {
+                    setTTSStatus('ready', '준비됨');
+                } else {
+                    setTTSStatus('error', '오류');
+                }
+                
+                if (onEnd) onEnd();
+            };
+
+            // 약간의 지연 후 재생 (브라우저 호환성)
+            setTimeout(() => {
+                try {
+                    speechSynthesis.speak(utterance);
+                } catch (e) {
+                    console.error('TTS 실행 오류:', e);
+                    isSpeaking = false;
+                    display.classList.remove('visible');
+                    setTTSStatus('error', '오류');
+                    if (onEnd) onEnd();
+                }
+            }, 100);
+        }
+
+        function speakSceneNarrations(sceneIndex, narrationIndex = 0) {
+            if (!isPlaying || currentScene !== sceneIndex) return;
+            
+            const sceneNarrations = narrations[sceneIndex];
+            if (!sceneNarrations || narrationIndex >= sceneNarrations.length) return;
+
+            currentNarrationIndex = narrationIndex;
+            const text = sceneNarrations[narrationIndex];
+
+            speak(text, () => {
+                // 다음 나레이션 (약간의 간격)
+                setTimeout(() => {
+                    if (isPlaying && currentScene === sceneIndex) {
+                        speakSceneNarrations(sceneIndex, narrationIndex + 1);
+                    }
+                }, 800);
+            });
+        }
+
+        function stopSpeaking() {
+            speechSynthesis.cancel();
+            isSpeaking = false;
+            document.getElementById('narrationDisplay').classList.remove('visible');
+            if (ttsReady) {
+                setTTSStatus('ready', '준비됨');
+            }
+        }
+
+        // ========== 장면 인디케이터 ==========
+        function createSceneIndicators() {
+            const container = document.getElementById('sceneIndicators');
+            scenes.forEach((scene, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'scene-dot' + (index === 0 ? ' active' : '');
+                dot.title = scene.name;
+                dot.onclick = () => goToScene(index);
+                container.appendChild(dot);
+            });
+        }
+
+        // ========== 재생 컨트롤 ==========
+        function togglePlay() {
+            if (isPlaying) {
+                pause();
+            } else {
+                play();
+            }
+        }
+
+        function play() {
+            isPlaying = true;
+            document.getElementById('playBtn').textContent = '⏸';
+            sceneStartTime = Date.now();
+            startSceneTimer();
+            startProgressTimer();
+            animateCurrentScene();
+            
+            // 나레이션 시작
+            setTimeout(() => {
+                speakSceneNarrations(currentScene, 0);
+            }, 500);
+        }
+
+        function pause() {
+            isPlaying = false;
+            document.getElementById('playBtn').textContent = '▶';
+            clearTimeout(sceneTimer);
+            clearInterval(progressTimer);
+            stopSpeaking();
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const btn = document.getElementById('muteBtn');
+            btn.textContent = isMuted ? '🔇' : '🔊';
+            btn.classList.toggle('muted', isMuted);
+            
+            if (isMuted) {
+                stopSpeaking();
+            }
+        }
+
+        function changeSpeed() {
+            speechRate = parseFloat(document.getElementById('speedSelect').value);
+        }
+
+        // ========== 타이머 ==========
+        function startSceneTimer() {
+            const duration = scenes[currentScene].duration;
+            sceneTimer = setTimeout(() => {
+                if (currentScene < scenes.length - 1) {
+                    goToScene(currentScene + 1);
+                    if (isPlaying) {
+                        startSceneTimer();
+                    }
+                } else {
+                    pause();
+                    currentScene = 0;
+                    showScene(0);
+                    updateUI();
+                }
+            }, duration);
+        }
+
+        function startProgressTimer() {
+            progressTimer = setInterval(updateProgress, 100);
+        }
+
+        function updateProgress() {
+            const elapsed = Date.now() - sceneStartTime;
+            
+            let totalDuration = scenes.reduce((sum, s) => sum + s.duration, 0);
+            let elapsedTotal = 0;
+            for (let i = 0; i < currentScene; i++) {
+                elapsedTotal += scenes[i].duration;
+            }
+            elapsedTotal += elapsed;
+            
+            const totalProgress = (elapsedTotal / totalDuration) * 100;
+            document.getElementById('progressFill').style.width = totalProgress + '%';
+            
+            const currentSec = Math.floor(elapsedTotal / 1000);
+            const totalSec = Math.floor(totalDuration / 1000);
+            document.getElementById('timeLabel').textContent = 
+                formatTime(currentSec) + ' / ' + formatTime(totalSec);
+        }
+
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
+        // ========== 장면 이동 ==========
+        function goToScene(index) {
+            stopSpeaking();
+            currentScene = index;
+            sceneStartTime = Date.now();
+            showScene(index);
+            updateUI();
+            animateCurrentScene();
+            
+            if (isPlaying) {
+                clearTimeout(sceneTimer);
+                startSceneTimer();
+                setTimeout(() => {
+                    speakSceneNarrations(index, 0);
+                }, 500);
+            }
+        }
+
+        function showScene(index) {
+            document.querySelectorAll('.scene').forEach((scene, i) => {
+                scene.classList.toggle('active', i === index);
+            });
+        }
+
+        function updateUI() {
+            document.getElementById('currentSceneLabel').textContent = scenes[currentScene].name;
+            
+            document.querySelectorAll('.scene-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentScene);
+            });
+        }
+
+        // ========== 장면 애니메이션 ==========
+        function animateCurrentScene() {
+            const sceneEl = document.querySelector(`.scene[data-scene="${currentScene}"]`);
+            if (!sceneEl) return;
+
+            const flowBoxes = sceneEl.querySelectorAll('.flow-box');
+            const flowArrows = sceneEl.querySelectorAll('.flow-arrow');
+            
+            flowBoxes.forEach(box => {
+                box.classList.remove('animated');
+                const delay = parseInt(box.dataset.delay || 0);
+                setTimeout(() => box.classList.add('animated'), delay);
+            });
+
+            flowArrows.forEach(arrow => {
+                arrow.classList.remove('animated');
+                const delay = parseInt(arrow.dataset.delay || 0);
+                setTimeout(() => arrow.classList.add('animated'), delay);
+            });
+
+            const clusters = sceneEl.querySelectorAll('.cluster');
+            clusters.forEach(cluster => {
+                cluster.classList.remove('animated');
+                const delay = parseInt(cluster.dataset.delay || 0);
+                setTimeout(() => cluster.classList.add('animated'), delay);
+            });
+
+            const chartDots = sceneEl.querySelectorAll('.chart-dot');
+            chartDots.forEach(dot => {
+                dot.classList.remove('animated');
+                const delay = parseInt(dot.dataset.delay || 0);
+                setTimeout(() => dot.classList.add('animated'), delay);
+            });
+
+            const regLine = sceneEl.querySelector('.regression-line');
+            if (regLine) {
+                regLine.classList.remove('animated');
+                const delay = parseInt(regLine.dataset.delay || 0);
+                setTimeout(() => regLine.classList.add('animated'), delay);
+            }
+
+            const treeNodes = sceneEl.querySelectorAll('.tree-node');
+            const treeLines = sceneEl.querySelectorAll('.tree-branch .line');
+            const treeLeaves = sceneEl.querySelectorAll('.tree-leaf');
+
+            treeNodes.forEach(node => {
+                node.classList.remove('animated');
+                const delay = parseInt(node.dataset.delay || 0);
+                setTimeout(() => node.classList.add('animated'), delay);
+            });
+
+            treeLines.forEach(line => {
+                line.classList.remove('animated');
+                const delay = parseInt(line.dataset.delay || 0);
+                setTimeout(() => line.classList.add('animated'), delay);
+            });
+
+            treeLeaves.forEach(leaf => {
+                leaf.classList.remove('animated');
+                const delay = parseInt(leaf.dataset.delay || 0);
+                setTimeout(() => leaf.classList.add('animated'), delay);
+            });
+        }
+
+        function seekTo(event) {
+            const bar = event.currentTarget;
+            const rect = bar.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const percent = clickX / rect.width;
+            
+            const totalDuration = scenes.reduce((sum, s) => sum + s.duration, 0);
+            const targetTime = percent * totalDuration;
+            
+            let elapsed = 0;
+            for (let i = 0; i < scenes.length; i++) {
+                if (elapsed + scenes[i].duration > targetTime) {
+                    goToScene(i);
+                    break;
+                }
+                elapsed += scenes[i].duration;
+            }
+        }
+
+        // ========== 키보드 단축키 ==========
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                togglePlay();
+            } else if (e.code === 'ArrowRight') {
+                if (currentScene < scenes.length - 1) {
+                    goToScene(currentScene + 1);
+                }
+            } else if (e.code === 'ArrowLeft') {
+                if (currentScene > 0) {
+                    goToScene(currentScene - 1);
+                }
+            } else if (e.code === 'KeyM') {
+                toggleMute();
+            }
+        });
+    </script>
+</body>
+</html>

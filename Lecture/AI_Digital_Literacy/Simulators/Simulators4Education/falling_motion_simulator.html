@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🪂 낙하 운동 시뮬레이터 v1.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Nanum Gothic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            margin-top: 10px;
+            opacity: 0.95;
+        }
+
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 320px 1fr 350px;
+            gap: 20px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .canvas-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        #physicsCanvas {
+            width: 100%;
+            height: 700px;
+            border-radius: 15px;
+            background: linear-gradient(to bottom, #87ceeb 0%, #e0f2fe 100%);
+            border: 3px solid #e2e8f0;
+        }
+
+        .control-group {
+            margin: 15px 0;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #334155;
+        }
+
+        .control-value {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        input[type=range] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            background: linear-gradient(to right, #e2e8f0, var(--primary));
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input[type=range]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 8px 0;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .mode-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .mode-btn:hover {
+            border-color: var(--primary);
+            background: #f0f9ff;
+        }
+
+        .mode-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .stat-item {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #0284c7;
+        }
+
+        .info-box h4 {
+            margin: 0 0 10px 0;
+            color: #0369a1;
+        }
+
+        .formula-box {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .trail {
+            opacity: 0.3;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        @media (max-width: 1400px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🪂 낙하 운동 시뮬레이터</h1>
+    <p class="subtitle">자유낙하와 포물선 운동을 직접 체험해보세요!</p>
+</header>
+
+<div class="main-container">
+    <!-- 왼쪽: 설정 패널 -->
+    <aside class="panel">
+        <h2 style="margin-top: 0;">⚙️ 시뮬레이션 설정</h2>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" id="freeFallBtn" onclick="SimApp.setMode('freeFall')">
+                ⬇️ 자유낙하
+            </button>
+            <button class="mode-btn" id="projectileBtn" onclick="SimApp.setMode('projectile')">
+                🎯 포물선 운동
+            </button>
+        </div>
+
+        <div class="control-group">
+            <div class="control-label">
+                <span>높이 (h)</span>
+                <span class="control-value" id="heightValue">100 m</span>
+            </div>
+            <input type="range" id="heightSlider" min="10" max="200" value="100" step="10">
+        </div>
+
+        <div class="control-group" id="velocityControl" style="display: none;">
+            <div class="control-label">
+                <span>초기 속도 (v₀)</span>
+                <span class="control-value" id="velocityValue">20 m/s</span>
+            </div>
+            <input type="range" id="velocitySlider" min="0" max="50" value="20" step="5">
+        </div>
+
+        <div class="control-group" id="angleControl" style="display: none;">
+            <div class="control-label">
+                <span>발사 각도 (θ)</span>
+                <span class="control-value" id="angleValue">45°</span>
+            </div>
+            <input type="range" id="angleSlider" min="0" max="90" value="45" step="5">
+        </div>
+
+        <div class="control-group">
+            <div class="control-label">
+                <span>중력가속도 (g)</span>
+                <span class="control-value" id="gravityValue">9.8 m/s²</span>
+            </div>
+            <input type="range" id="gravitySlider" min="1" max="20" value="9.8" step="0.1">
+        </div>
+
+        <div class="control-group">
+            <div class="control-label">
+                <span>공기저항</span>
+            </div>
+            <div class="toggle-switch">
+                <label class="switch">
+                    <input type="checkbox" id="airResistanceToggle">
+                    <span class="slider"></span>
+                </label>
+                <span id="airResistanceLabel">끄기</span>
+            </div>
+        </div>
+
+        <div class="control-group" id="dragControl" style="display: none;">
+            <div class="control-label">
+                <span>항력계수</span>
+                <span class="control-value" id="dragValue">0.1</span>
+            </div>
+            <input type="range" id="dragSlider" min="0" max="0.5" value="0.1" step="0.05">
+        </div>
+
+        <hr style="margin: 20px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+        <button class="btn btn-success" id="startBtn" onclick="SimApp.start()">
+            ▶️ 시작
+        </button>
+
+        <button class="btn btn-warning" id="pauseBtn" onclick="SimApp.pause()" disabled>
+            ⏸️ 일시정지
+        </button>
+
+        <button class="btn btn-danger" onclick="SimApp.reset()">
+            🔄 초기화
+        </button>
+
+        <div class="info-box">
+            <h4>💡 팁</h4>
+            <p style="font-size: 0.9rem; line-height: 1.6; margin: 0;">
+                • 자유낙하: 수직으로 떨어지는 운동<br>
+                • 포물선: 비스듬히 던진 물체의 운동<br>
+                • 공기저항을 켜면 현실적인 운동을 볼 수 있어요!
+            </p>
+        </div>
+    </aside>
+
+    <!-- 중앙: 시뮬레이션 캔버스 -->
+    <main class="canvas-container">
+        <canvas id="physicsCanvas"></canvas>
+    </main>
+
+    <!-- 오른쪽: 데이터 패널 -->
+    <aside class="panel">
+        <h2 style="margin-top: 0;">📊 실시간 데이터</h2>
+
+        <div class="stat-grid">
+            <div class="stat-item">
+                <div class="stat-label">시간 (t)</div>
+                <div class="stat-value" id="timeDisplay">0.00 s</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">높이 (y)</div>
+                <div class="stat-value" id="yDisplay">100 m</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">속도 (v)</div>
+                <div class="stat-value" id="vDisplay">0.0 m/s</div>
+            </div>
+            <div class="stat-item" id="xDistanceStat" style="display: none;">
+                <div class="stat-label">수평거리 (x)</div>
+                <div class="stat-value" id="xDisplay">0 m</div>
+            </div>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-item">
+                <div class="stat-label">최고 높이</div>
+                <div class="stat-value" id="maxHeight">100 m</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">낙하 시간</div>
+                <div class="stat-value" id="fallTime">0.00 s</div>
+            </div>
+        </div>
+
+        <div id="projectileStats" style="display: none;">
+            <div class="stat-item" style="margin-top: 10px;">
+                <div class="stat-label">비행 거리</div>
+                <div class="stat-value" id="rangeDisplay">0 m</div>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 25px;">📐 물리 공식</h3>
+        
+        <div id="freeFallFormulas">
+            <div class="formula-box">
+                속도: v = gt<br>
+                높이: y = h - ½gt²<br>
+                낙하시간: t = √(2h/g)
+            </div>
+        </div>
+
+        <div id="projectileFormulas" style="display: none;">
+            <div class="formula-box">
+                vₓ = v₀cosθ<br>
+                vᵧ = v₀sinθ - gt<br>
+                x = v₀cosθ · t<br>
+                y = h + v₀sinθ·t - ½gt²
+            </div>
+        </div>
+
+        <div class="info-box" style="margin-top: 20px;">
+            <h4>🌍 중력가속도</h4>
+            <p style="font-size: 0.9rem; line-height: 1.6; margin: 0;">
+                <strong>지구:</strong> 9.8 m/s²<br>
+                <strong>달:</strong> 1.6 m/s²<br>
+                <strong>화성:</strong> 3.7 m/s²<br>
+                <strong>목성:</strong> 24.8 m/s²
+            </p>
+            <button class="btn btn-primary" style="margin-top: 10px; font-size: 0.9rem; padding: 8px;" onclick="SimApp.setGravity(1.6)">
+                🌙 달 중력 적용
+            </button>
+        </div>
+
+        <div class="info-box" style="background: #fef3c7; border-left-color: #f59e0b;">
+            <h4 style="color: #92400e;">💡 알아두기</h4>
+            <p style="font-size: 0.9rem; line-height: 1.6; margin: 0; color: #78350f;">
+                실제로는 공기저항 때문에 물체마다 낙하 속도가 달라요. 
+                진공 상태에서는 깃털과 쇠구슬이 동시에 떨어진답니다!
+            </p>
+        </div>
+    </aside>
+</div>
+
+<script>
+const SimApp = {
+    mode: 'freeFall', // 'freeFall' or 'projectile'
+    
+    config: {
+        height: 100,
+        velocity: 20,
+        angle: 45,
+        gravity: 9.8,
+        airResistance: false,
+        dragCoefficient: 0.1
+    },
+
+    state: {
+        running: false,
+        paused: false,
+        time: 0,
+        x: 0,
+        y: 100,
+        vx: 0,
+        vy: 0,
+        trail: [],
+        maxHeight: 100,
+        landed: false
+    },
+
+    viz: {
+        ctx: null,
+        canvas: null,
+        animationId: null,
+
+        init() {
+            this.canvas = document.getElementById('physicsCanvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.resize();
+            window.addEventListener('resize', () => this.resize());
+            this.draw();
+        },
+
+        resize() {
+            const parent = this.canvas.parentElement;
+            this.canvas.width = parent.clientWidth - 40;
+            this.canvas.height = 700;
+        },
+
+        draw() {
+            const ctx = this.ctx;
+            const w = this.canvas.width;
+            const h = this.canvas.height;
+
+            // 배경 (하늘)
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+            skyGrad.addColorStop(0, '#87ceeb');
+            skyGrad.addColorStop(1, '#e0f2fe');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, w, h);
+
+            // 땅
+            const groundY = h - 80;
+            ctx.fillStyle = '#4ade80';
+            ctx.fillRect(0, groundY, w, 80);
+            
+            // 땅 경계선
+            ctx.strokeStyle = '#22c55e';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, groundY);
+            ctx.lineTo(w, groundY);
+            ctx.stroke();
+
+            // 그리드
+            ctx.strokeStyle = 'rgba(0,0,0,0.05)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < w; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, groundY);
+                ctx.stroke();
+            }
+            for (let j = 0; j < groundY; j += 50) {
+                ctx.beginPath();
+                ctx.moveTo(0, j);
+                ctx.lineTo(w, j);
+                ctx.stroke();
+            }
+
+            // 스케일 계산 (높이를 화면에 맞춤)
+            const scale = (groundY - 50) / (SimApp.config.height + 20);
+            const startX = SimApp.mode === 'freeFall' ? w / 2 : 100;
+            const startYPos = SimApp.mode === 'freeFall' ? 
+                groundY - SimApp.config.height * scale : 
+                100; // 포물선은 왼쪽 위에서 시작
+
+            // 발사대 또는 낙하 시작점
+            if (SimApp.mode === 'freeFall') {
+                // 플랫폼
+                ctx.fillStyle = '#64748b';
+                ctx.fillRect(startX - 40, groundY - SimApp.config.height * scale - 20, 80, 20);
+                
+                // 높이 표시
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(startX + 50, groundY);
+                ctx.lineTo(startX + 50, groundY - SimApp.config.height * scale);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.fillStyle = '#f59e0b';
+                ctx.font = 'bold 14px Nanum Gothic';
+                ctx.fillText(`${SimApp.config.height}m`, startX + 60, groundY - SimApp.config.height * scale / 2);
+            } else {
+                // 발사대 (왼쪽 위)
+                ctx.fillStyle = '#64748b';
+                ctx.beginPath();
+                ctx.moveTo(startX - 15, startYPos);
+                ctx.lineTo(startX + 15, startYPos);
+                ctx.lineTo(startX, startYPos - 15);
+                ctx.closePath();
+                ctx.fill();
+
+                // 높이 표시
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(50, groundY);
+                ctx.lineTo(50, startYPos);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.fillStyle = '#f59e0b';
+                ctx.font = 'bold 14px Nanum Gothic';
+                const heightInMeters = (groundY - startYPos) / scale;
+                ctx.fillText(`${heightInMeters.toFixed(0)}m`, 55, (groundY + startYPos) / 2);
+
+                // 발사 각도 표시
+                if (!SimApp.state.running) {
+                    const angleRad = SimApp.config.angle * Math.PI / 180;
+                    ctx.strokeStyle = '#3b82f6';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startYPos);
+                    ctx.lineTo(
+                        startX + Math.cos(angleRad) * 60,
+                        startYPos - Math.sin(angleRad) * 60
+                    );
+                    ctx.stroke();
+
+                    // 각도 호
+                    ctx.strokeStyle = '#60a5fa';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(startX, startYPos, 30, -angleRad, 0);
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#3b82f6';
+                    ctx.font = '12px Nanum Gothic';
+                    ctx.fillText(`${SimApp.config.angle}°`, startX + 35, startYPos - 15);
+                }
+            }
+
+            // 궤적 그리기
+            if (SimApp.state.trail.length > 1) {
+                ctx.strokeStyle = 'rgba(239, 68, 68, 0.5)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                SimApp.state.trail.forEach((point, index) => {
+                    let px, py;
+                    if (SimApp.mode === 'freeFall') {
+                        px = startX;
+                        py = groundY - point.y * scale;
+                    } else {
+                        px = startX + point.x * scale;
+                        py = startYPos + (SimApp.config.height - point.y) * scale;
+                    }
+                    
+                    if (index === 0) {
+                        ctx.moveTo(px, py);
+                    } else {
+                        ctx.lineTo(px, py);
+                    }
+                });
+                ctx.stroke();
+
+                // 궤적 점들
+                SimApp.state.trail.forEach(point => {
+                    ctx.fillStyle = 'rgba(239, 68, 68, 0.3)';
+                    let px, py;
+                    if (SimApp.mode === 'freeFall') {
+                        px = startX;
+                        py = groundY - point.y * scale;
+                    } else {
+                        px = startX + point.x * scale;
+                        py = startYPos + (SimApp.config.height - point.y) * scale;
+                    }
+                    ctx.beginPath();
+                    ctx.arc(px, py, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+
+            // 물체 그리기
+            if (SimApp.state.running || SimApp.state.time > 0) {
+                let objX, objY;
+                if (SimApp.mode === 'freeFall') {
+                    objX = startX;
+                    objY = groundY - SimApp.state.y * scale;
+                } else {
+                    objX = startX + SimApp.state.x * scale;
+                    objY = startYPos + (SimApp.config.height - SimApp.state.y) * scale;
+                }
+
+                // 그림자
+                ctx.fillStyle = 'rgba(0,0,0,0.2)';
+                ctx.beginPath();
+                ctx.ellipse(objX, groundY - 5, 8, 3, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 물체 (공 - 작게)
+                const ballGrad = ctx.createRadialGradient(objX - 3, objY - 3, 2, objX, objY, 10);
+                ballGrad.addColorStop(0, '#fbbf24');
+                ballGrad.addColorStop(1, '#f59e0b');
+                ctx.fillStyle = ballGrad;
+                ctx.beginPath();
+                ctx.arc(objX, objY, 10, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.strokeStyle = '#d97706';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // 속도 벡터
+                const velocityScale = 2;
+                const vMag = Math.sqrt(SimApp.state.vx ** 2 + SimApp.state.vy ** 2);
+                
+                if (vMag > 0.1) {
+                    ctx.strokeStyle = '#3b82f6';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(objX, objY);
+                    ctx.lineTo(
+                        objX + SimApp.state.vx * velocityScale,
+                        objY - SimApp.state.vy * velocityScale
+                    );
+                    ctx.stroke();
+
+                    // 화살표
+                    const vAngle = Math.atan2(-SimApp.state.vy, SimApp.state.vx);
+                    ctx.fillStyle = '#3b82f6';
+                    ctx.beginPath();
+                    ctx.moveTo(
+                        objX + SimApp.state.vx * velocityScale,
+                        objY - SimApp.state.vy * velocityScale
+                    );
+                    ctx.lineTo(
+                        objX + SimApp.state.vx * velocityScale - 8 * Math.cos(vAngle - Math.PI / 6),
+                        objY - SimApp.state.vy * velocityScale + 8 * Math.sin(vAngle - Math.PI / 6)
+                    );
+                    ctx.lineTo(
+                        objX + SimApp.state.vx * velocityScale - 8 * Math.cos(vAngle + Math.PI / 6),
+                        objY - SimApp.state.vy * velocityScale + 8 * Math.sin(vAngle + Math.PI / 6)
+                    );
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+
+            // 착지 메시지
+            if (SimApp.state.landed) {
+                ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                ctx.fillRect(0, h / 2 - 50, w, 100);
+                
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 36px Nanum Gothic';
+                ctx.textAlign = 'center';
+                ctx.fillText('🎯 착지!', w / 2, h / 2);
+                
+                ctx.font = '20px Nanum Gothic';
+                ctx.fillText(`총 시간: ${SimApp.state.time.toFixed(2)}초`, w / 2, h / 2 + 35);
+            }
+        }
+    },
+
+    init() {
+        this.viz.init();
+        this.setupEventListeners();
+        this.updateDisplay();
+    },
+
+    setupEventListeners() {
+        document.getElementById('heightSlider').oninput = (e) => {
+            this.config.height = parseFloat(e.target.value);
+            document.getElementById('heightValue').textContent = `${this.config.height} m`;
+            this.updateDisplay();
+        };
+
+        document.getElementById('velocitySlider').oninput = (e) => {
+            this.config.velocity = parseFloat(e.target.value);
+            document.getElementById('velocityValue').textContent = `${this.config.velocity} m/s`;
+        };
+
+        document.getElementById('angleSlider').oninput = (e) => {
+            this.config.angle = parseFloat(e.target.value);
+            document.getElementById('angleValue').textContent = `${this.config.angle}°`;
+            this.viz.draw();
+        };
+
+        document.getElementById('gravitySlider').oninput = (e) => {
+            this.config.gravity = parseFloat(e.target.value);
+            document.getElementById('gravityValue').textContent = `${this.config.gravity} m/s²`;
+        };
+
+        document.getElementById('airResistanceToggle').onchange = (e) => {
+            this.config.airResistance = e.target.checked;
+            document.getElementById('airResistanceLabel').textContent = e.target.checked ? '켜기' : '끄기';
+            document.getElementById('dragControl').style.display = e.target.checked ? 'block' : 'none';
+        };
+
+        document.getElementById('dragSlider').oninput = (e) => {
+            this.config.dragCoefficient = parseFloat(e.target.value);
+            document.getElementById('dragValue').textContent = this.config.dragCoefficient.toFixed(2);
+        };
+    },
+
+    setMode(mode) {
+        this.mode = mode;
+        
+        // 버튼 활성화
+        document.getElementById('freeFallBtn').classList.toggle('active', mode === 'freeFall');
+        document.getElementById('projectileBtn').classList.toggle('active', mode === 'projectile');
+
+        // 컨트롤 표시/숨김
+        document.getElementById('velocityControl').style.display = mode === 'projectile' ? 'block' : 'none';
+        document.getElementById('angleControl').style.display = mode === 'projectile' ? 'block' : 'none';
+        document.getElementById('xDistanceStat').style.display = mode === 'projectile' ? 'block' : 'none';
+        document.getElementById('projectileStats').style.display = mode === 'projectile' ? 'block' : 'none';
+
+        // 공식 표시
+        document.getElementById('freeFallFormulas').style.display = mode === 'freeFall' ? 'block' : 'none';
+        document.getElementById('projectileFormulas').style.display = mode === 'projectile' ? 'block' : 'none';
+
+        this.reset();
+    },
+
+    start() {
+        this.state.running = true;
+        this.state.paused = false;
+        this.state.time = 0;
+        this.state.x = 0;
+        this.state.y = this.config.height;
+        this.state.trail = [];
+        this.state.landed = false;
+        this.state.maxHeight = this.config.height;
+
+        if (this.mode === 'freeFall') {
+            this.state.vx = 0;
+            this.state.vy = 0;
+        } else {
+            const angleRad = this.config.angle * Math.PI / 180;
+            this.state.vx = this.config.velocity * Math.cos(angleRad);
+            this.state.vy = this.config.velocity * Math.sin(angleRad);
+        }
+
+        document.getElementById('startBtn').disabled = true;
+        document.getElementById('pauseBtn').disabled = false;
+
+        this.simulate();
+    },
+
+    pause() {
+        this.state.paused = !this.state.paused;
+        document.getElementById('pauseBtn').textContent = this.state.paused ? '▶️ 재개' : '⏸️ 일시정지';
+        
+        if (!this.state.paused) {
+            this.simulate();
+        }
+    },
+
+    reset() {
+        this.state.running = false;
+        this.state.paused = false;
+        this.state.time = 0;
+        this.state.x = 0;
+        this.state.y = this.config.height;
+        this.state.vx = 0;
+        this.state.vy = 0;
+        this.state.trail = [];
+        this.state.landed = false;
+        this.state.maxHeight = this.config.height;
+
+        if (this.viz.animationId) {
+            cancelAnimationFrame(this.viz.animationId);
+        }
+
+        document.getElementById('startBtn').disabled = false;
+        document.getElementById('pauseBtn').disabled = true;
+        document.getElementById('pauseBtn').textContent = '⏸️ 일시정지';
+
+        this.updateDisplay();
+        this.viz.draw();
+    },
+
+    simulate() {
+        if (!this.state.running || this.state.paused) return;
+
+        const dt = 0.016; // 약 60fps
+
+        // 물리 계산
+        const g = this.config.gravity;
+        
+        // 공기저항 계산
+        let ax = 0, ay = -g;
+        if (this.config.airResistance) {
+            const v = Math.sqrt(this.state.vx ** 2 + this.state.vy ** 2);
+            const drag = this.config.dragCoefficient * v;
+            ax = -drag * this.state.vx / (v + 0.001);
+            ay = -g - drag * this.state.vy / (v + 0.001);
+        }
+
+        // 속도 업데이트
+        this.state.vx += ax * dt;
+        this.state.vy += ay * dt;
+
+        // 위치 업데이트
+        this.state.x += this.state.vx * dt;
+        this.state.y += this.state.vy * dt;
+        this.state.time += dt;
+
+        // 최고 높이 기록
+        if (this.state.y > this.state.maxHeight) {
+            this.state.maxHeight = this.state.y;
+        }
+
+        // 궤적 기록 (0.1초마다)
+        if (this.state.trail.length === 0 || this.state.time - this.state.trail[this.state.trail.length - 1].t > 0.1) {
+            this.state.trail.push({
+                x: this.state.x,
+                y: this.state.y,
+                t: this.state.time
+            });
+        }
+
+        // 착지 체크
+        if (this.state.y <= 0) {
+            this.state.y = 0;
+            this.state.running = false;
+            this.state.landed = true;
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+        }
+
+        this.updateDisplay();
+        this.viz.draw();
+
+        if (this.state.running) {
+            this.viz.animationId = requestAnimationFrame(() => this.simulate());
+        }
+    },
+
+    updateDisplay() {
+        document.getElementById('timeDisplay').textContent = `${this.state.time.toFixed(2)} s`;
+        document.getElementById('yDisplay').textContent = `${Math.max(0, this.state.y).toFixed(1)} m`;
+        
+        const velocity = Math.sqrt(this.state.vx ** 2 + this.state.vy ** 2);
+        document.getElementById('vDisplay').textContent = `${velocity.toFixed(1)} m/s`;
+        
+        document.getElementById('maxHeight').textContent = `${this.state.maxHeight.toFixed(1)} m`;
+        document.getElementById('fallTime').textContent = `${this.state.time.toFixed(2)} s`;
+
+        if (this.mode === 'projectile') {
+            document.getElementById('xDisplay').textContent = `${this.state.x.toFixed(1)} m`;
+            document.getElementById('rangeDisplay').textContent = `${this.state.x.toFixed(1)} m`;
+        }
+    },
+
+    setGravity(g) {
+        this.config.gravity = g;
+        document.getElementById('gravitySlider').value = g;
+        document.getElementById('gravityValue').textContent = `${g} m/s²`;
+    }
+};
+
+// 초기화
+window.onload = () => {
+    SimApp.init();
+};
+</script>
+</body>
+</html>

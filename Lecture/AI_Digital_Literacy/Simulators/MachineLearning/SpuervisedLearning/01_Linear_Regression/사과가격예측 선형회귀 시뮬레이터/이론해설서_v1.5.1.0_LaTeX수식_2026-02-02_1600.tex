@@ -1,0 +1,750 @@
+% 사과 가격 예측 선형 회귀 시뮬레이터 이론해설서 v1.5.1.0
+% LuaLaTeX 컴파일 필요 (컬러 이모지 + 한글 지원)
+
+\documentclass[11pt,a4paper]{article}
+
+% === 패키지 ===
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{emoji}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% === 페이지 설정 ===
+\geometry{left=25mm, right=25mm, top=30mm, bottom=30mm}
+
+% === 폰트 설정 ===
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setmonofont{Noto Sans CJK KR}
+\setemojifont{Noto Color Emoji}
+
+% === 색상 정의 ===
+\definecolor{primary}{HTML}{E53935}
+\definecolor{darkbrown}{HTML}{3E2723}
+\definecolor{mediumbrown}{HTML}{5D4037}
+\definecolor{lightbrown}{HTML}{8D6E63}
+\definecolor{cream}{HTML}{FFF3E0}
+\definecolor{lightgray}{HTML}{F5F5F5}
+\definecolor{tableheader}{HTML}{E8E8E8}
+
+% === 제목 스타일 ===
+\titleformat{\section}
+  {\Large\bfseries\color{primary}}
+  {\thesection.}{0.5em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{darkbrown}}
+  {\thesubsection}{0.5em}{}
+
+% === 머리글/바닥글 ===
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}선형 회귀 이론해설서 v1.5.1.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% === tcolorbox 스타일 ===
+\tcbset{
+  tipbox/.style={
+    colback=cream,
+    colframe=primary,
+    boxrule=1.5pt,
+    arc=3mm,
+    left=5mm,
+    right=5mm,
+    top=3mm,
+    bottom=3mm,
+    fonttitle=\bfseries\color{primary}
+  },
+  formulabox/.style={
+    colback=lightgray,
+    colframe=lightgray,
+    boxrule=0pt,
+    arc=2mm,
+    left=5mm,
+    right=5mm,
+    top=3mm,
+    bottom=3mm
+  },
+  summarybox/.style={
+    colback=white,
+    colframe=primary,
+    boxrule=2pt,
+    arc=4mm,
+    left=5mm,
+    right=5mm,
+    top=5mm,
+    bottom=5mm
+  }
+}
+
+% === 수식 해석 환경 ===
+\newcommand{\formulawithexp}[2]{%
+  \begin{tcolorbox}[formulabox]
+    \centering\large #1\\[3mm]
+    \small\color{mediumbrown} \emoji{point-right} #2
+  \end{tcolorbox}
+}
+
+% === 하이퍼링크 설정 ===
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primary,
+  urlcolor=primary
+}
+
+\begin{document}
+
+% 목차 제목 한글화
+\renewcommand{\contentsname}{목차}
+
+% ===== 표지 =====
+\thispagestyle{empty}
+\begin{center}
+\vspace*{3cm}
+
+{\fontsize{72pt}{72pt}\selectfont \emoji{red-apple}}
+
+\vspace{1cm}
+
+{\fontsize{28pt}{32pt}\selectfont\bfseries\color{primary} 선형 회귀 이론해설서}
+
+\vspace{0.5cm}
+
+{\Large\color{lightbrown} Linear Regression Theory Guide}
+
+\vspace{1.5cm}
+
+\begin{tcolorbox}[colback=primary, colframe=primary, arc=15pt, width=4cm]
+  \centering\large\bfseries\color{white} v1.5.0.0
+\end{tcolorbox}
+
+\vspace{1cm}
+
+{\large 품질 점수 기반 단순 선형 회귀}
+
+{\color{lightbrown} 시뮬레이터 v1.2.4.1 연동}
+
+\vspace{3cm}
+
+{\color{lightbrown} 청주교육대학교 컴퓨팅사고 교육자료}
+
+{\color{lightbrown} 2026년 2월}
+
+\end{center}
+
+\newpage
+
+% ===== 목차 =====
+\tableofcontents
+\newpage
+
+% ===== 문서 사용방법 (신규) =====
+\section*{\emoji{books} 문서 사용방법}
+\addcontentsline{toc}{section}{문서 사용방법}
+
+\subsection*{이 문서의 목적}
+
+이 문서는 \textbf{``사과 가격 예측 선형 회귀 시뮬레이터''}의 이론적 배경을 설명합니다. 시뮬레이터를 사용하기 전에 읽거나, 사용하면서 참고하세요.
+
+\subsection*{대상 독자}
+
+\begin{itemize}
+  \item 초등 예비교사 (컴퓨팅사고 교육)
+  \item AI/머신러닝 입문자
+  \item 선형 회귀의 원리를 시각적으로 이해하고 싶은 분
+\end{itemize}
+
+\subsection*{권장 학습 순서}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|p{4cm}|p{6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{순서} & \textbf{활동} & \textbf{설명} \\
+\hline
+1 & \emoji{stopwatch} 30초 퀵서머리 읽기 & 전체 흐름 파악 \\
+\hline
+2 & \emoji{red-apple} 시뮬레이터 실행 & 데이터 생성 → 학습 → 추론 체험 \\
+\hline
+3 & \emoji{books} 본문 읽기 & 궁금한 개념을 찾아서 읽기 \\
+\hline
+4 & \emoji{video-game} 시뮬레이터 재실험 & 파라미터 변경하며 이론 확인 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{관련 문서}
+
+\begin{tcolorbox}[colback=cream, colframe=primary, boxrule=1pt, arc=3mm]
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|p{6cm}|p{4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{문서명} & \textbf{용도} \\
+\hline
+1 & 시뮬레이터\_v1.2.4.1.html & \textbf{실습용} - 먼저 실행해보세요! \\
+\hline
+2 & 퀵가이드\_v1.2.4.1.md & 시뮬레이터 조작법 (2페이지) \\
+\hline
+3 & 개발일지\_v1.2.4.1.md & 기술 상세 (개발자용) \\
+\hline
+4 & \textbf{이론해설서 (본 문서)} & 이론 배경 설명 \\
+\hline
+\end{tabular}
+\end{center}
+\end{tcolorbox}
+
+\begin{tcolorbox}[tipbox, title={\emoji{light-bulb} 팁: 시뮬레이터와 함께 보세요!}]
+이 문서를 읽으면서 시뮬레이터를 \textbf{동시에 실행}해두면 이해가 훨씬 쉽습니다.
+
+예: ``경사 하강법'' 섹션을 읽을 때 → 시뮬레이터에서 \emoji{play-button} 재생 버튼을 눌러 회귀선이 움직이는 모습을 확인하세요!
+\end{tcolorbox}
+
+\newpage
+
+% ===== 30초 퀵 서머리 (신규) =====
+\section*{\emoji{stopwatch} 30초 퀵 서머리}
+\addcontentsline{toc}{section}{30초 퀵 서머리}
+
+\begin{tcolorbox}[summarybox, title={\large\emoji{light-bulb} 이 문서의 핵심을 한눈에!}]
+
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|>{\centering\arraybackslash}p{4cm}|>{\centering\arraybackslash}p{4cm}|>{\centering\arraybackslash}p{4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{우리가 하는 일} & \textbf{AI 용어로 바꾸면?} & \textbf{비유하자면?} \\
+\hline
+품질 점수 만들기 & \textbf{특성 추출 / 정규화} & \emoji{kitchen-knife} 재료 손질하기 \\
+\hline
+가격 예측 공식 찾기 & \textbf{모델 학습} & \emoji{books} 정답 맞히기 연습 \\
+\hline
+얼마나 틀렸나 계산 & \textbf{손실 함수 (MSE)} & \emoji{cross-mark} 오답 체크하기 \\
+\hline
+정답에 가깝게 수정 & \textbf{경사 하강법} & \emoji{mountain} 눈감고 골짜기 찾기 \\
+\hline
+잘 맞추는지 점수 매김 & \textbf{R² 평가} & \emoji{scroll} AI 성적표 \\
+\hline
+새 사과 가격 맞추기 & \textbf{추론 (Inference)} & \emoji{crystal-ball} 시험 보기 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+
+\begin{center}
+\textbf{\large \emoji{red-apple} 핵심 공식}
+\end{center}
+
+\begin{tcolorbox}[formulabox]
+\centering\Large
+$\text{가격} = w \times \text{품질} + b$
+\end{tcolorbox}
+
+\begin{itemize}
+  \item \textbf{w (가중치)}: 품질이 1점 오를 때 가격이 얼마나 오르는가
+  \item \textbf{b (편향)}: 품질이 0점일 때의 기본 가격
+\end{itemize}
+
+\end{tcolorbox}
+
+\newpage
+
+% ===== 1. 머신러닝이란? =====
+\section{머신러닝이란?}
+
+머신러닝(Machine Learning)은 컴퓨터가 명시적으로 프로그래밍되지 않고도 \textbf{데이터로부터 학습}하여 예측이나 결정을 내릴 수 있게 하는 인공지능의 한 분야입니다.
+
+\subsection{머신러닝의 종류}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|p{6cm}|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{유형} & \textbf{설명} & \textbf{시뮬레이터 예시} \\
+\hline
+지도 학습 & 입력과 정답(레이블)이 함께 제공됨 & 품질→가격 예측 \emoji{check-mark-button} \\
+\hline
+비지도 학습 & 정답 없이 데이터의 패턴을 찾음 & 군집화 (K-means) \\
+\hline
+강화 학습 & 보상을 최대화하는 행동을 학습 & 게임 AI (알파고) \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{theory_images/img01_ml_types.png}
+\caption{머신러닝의 종류}
+\end{figure}
+
+\begin{tcolorbox}[tipbox, title={\emoji{light-bulb} 시뮬레이터에서 확인하기}]
+사과 가격 예측 시뮬레이터는 \textbf{'지도 학습'} 중 \textbf{'회귀'} 문제를 다룹니다. 품질(입력)과 가격(정답)이 함께 제공된 데이터로 학습합니다.
+\end{tcolorbox}
+
+\newpage
+
+% ===== 2. 선형 회귀 =====
+\section{선형 회귀 (Linear Regression)}
+
+선형 회귀는 입력 변수(특성)와 출력 변수(타겟) 사이의 \textbf{선형 관계}를 모델링하는 지도 학습 알고리즘입니다.
+
+\subsection{단순 선형 회귀 수식}
+
+\formulawithexp{$y = w \cdot x + b$}{예측 가격 = (품질의 영향력 $\times$ 품질 점수) + 기본 가격}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{기호} & \textbf{의미} & \textbf{시뮬레이터 예시} \\
+\hline
+y & 예측값 (출력) & 예측 가격 (원) \\
+\hline
+x & 입력값 (특성) & 품질 점수 (0\textasciitilde100) \\
+\hline
+w & 가중치 (기울기) & 품질이 가격에 미치는 영향력 \\
+\hline
+b & 편향 (y절편) & 품질이 0일 때 기본 가격 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{theory_images/img03_linear.png}
+\caption{단순 선형 회귀 모델}
+\end{figure}
+
+\subsection{시뮬레이터의 회귀 모델}
+
+\begin{tcolorbox}[formulabox]
+\centering\Large
+$\text{가격} = w \times \text{품질} + b$
+\end{tcolorbox}
+
+시뮬레이터는 당도와 무게를 \textbf{품질 점수}로 통합한 후, 1변수 단순 선형 회귀를 적용합니다.
+
+\newpage
+
+% ===== 3. 품질 점수 계산 =====
+\section{품질 점수 계산 (특성 통합)}
+
+여러 특성을 하나로 통합하면 시각화가 단순해지고 학습 개념을 이해하기 쉬워집니다.
+
+\begin{tcolorbox}[formulabox]
+\centering\Large
+$\text{품질} = \text{당도점수}(50\%) + \text{무게점수}(50\%)$
+\end{tcolorbox}
+
+\subsection{세부 계산식}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{구성요소} & \textbf{계산식} & \textbf{범위} \\
+\hline
+당도점수 & $\displaystyle\frac{\text{당도} - 10}{8} \times 50$ & 10\textasciitilde18 Brix → 0\textasciitilde50점 \\
+\hline
+무게점수 & $\displaystyle\frac{\text{무게} - 150}{200} \times 50$ & 150\textasciitilde350g → 0\textasciitilde50점 \\
+\hline
+품질 (총합) & $\text{당도점수} + \text{무게점수}$ & 0\textasciitilde100점 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{계산 예시}
+
+당도 14 Brix, 무게 250g인 사과:
+
+\begin{itemize}
+  \item 당도점수 $= \dfrac{14 - 10}{8} \times 50 = $ \textbf{25점}
+  \item 무게점수 $= \dfrac{250 - 150}{200} \times 50 = $ \textbf{25점}
+  \item 총 품질 $= 25 + 25 = $ \textbf{50점}
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{theory_images/img02_quality.png}
+\caption{품질 점수 계산 과정}
+\end{figure}
+
+\newpage
+
+% ===== 4. 정규화 =====
+\section{정규화 (Normalization)}
+
+정규화는 서로 다른 범위를 가진 데이터를 일정한 범위로 변환하는 과정입니다.
+
+\subsection{왜 정규화가 필요한가?}
+
+\begin{tcolorbox}[tipbox, title={\emoji{straight-ruler} 비유: 서로 다른 자(Ruler) 합치기}]
+당도는 10\textasciitilde18 Brix, 무게는 150\textasciitilde350g입니다.
+
+만약 그냥 더하면? 무게(최대 350)가 당도(최대 18)보다 \textbf{20배나 커서}, 무게만 가격에 영향을 주는 것처럼 보입니다.
+
+이를 공평하게 0\textasciitilde100 사이로 맞추는 과정이 정규화입니다. 마치 \textbf{cm 자와 km 자를 모두 \% 자로 바꾸는 것}과 같습니다!
+\end{tcolorbox}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{theory_images/img09_normalization_analogy.png}
+\caption{정규화 비유: 서로 다른 단위의 자를 통일된 \% 자로 변환}
+\end{figure}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{5.5cm}|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\emoji{cross-mark} 정규화 없이} & \textbf{\emoji{check-mark-button} 정규화 적용} \\
+\hline
+학습이 불안정해질 수 있음 & 안정적이고 빠른 학습 가능 \\
+\hline
+가중치가 극단적인 값으로 발산 & 가중치가 적절한 범위 유지 \\
+\hline
+학습률 설정이 어려움 & 학습률 선택이 용이 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Z-score 정규화 수식}
+
+\formulawithexp{$\displaystyle z = \frac{x - \mu}{\sigma}$ \quad (정규화된 값 $=$ $\dfrac{\text{원래 값} - \text{평균}}{\text{표준편차}}$)}{``평균에서 얼마나 떨어졌는가''를 표준 단위로 표현}
+
+정규화된 데이터는 \textbf{평균이 0, 표준편차가 1}인 분포를 가집니다.
+
+\begin{tcolorbox}[tipbox, title={\emoji{magnifying-glass-tilted-left} 시뮬레이터 내부 동작}]
+시뮬레이터는 정규화된 가중치(w, b)로 학습하고, 결과 표시 시 실제 스케일의 가중치(wReal, bReal)로 변환하여 보여줍니다.
+\end{tcolorbox}
+
+\newpage
+
+% ===== 5. 손실 함수 =====
+\section{손실 함수 (Loss Function)}
+
+\textbf{손실(Loss)}은 모델의 예측값과 실제값의 차이를 수치화한 것입니다.
+
+\subsection{평균 제곱 오차 (MSE)}
+
+\formulawithexp{$\displaystyle \text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2$}{``오차들을 제곱해서 평균 낸 값'' - 큰 오차에 더 큰 페널티!}
+
+MSE는 오차를 제곱하여 평균을 구합니다. \textbf{큰 오차에 더 큰 페널티}를 부여합니다.
+
+\subsection{오차(잔차)의 의미}
+
+\formulawithexp{$\text{오차} = y_i - \hat{y}_i$ \quad (실제 가격 $-$ 예측 가격)}{``AI가 틀린 정도'' - 양수면 과소예측, 음수면 과대예측}
+
+\subsection{오차선 시각화}
+
+'오차선 표시' 기능은 각 데이터 포인트에서 회귀선까지의 거리를 시각화합니다:
+
+\begin{itemize}
+  \item \textbf{점선}: 실제 데이터 점 ↔ 회귀선 위 예측점
+  \item \textbf{색상 변화}: \textcolor{green!70!black}{녹색(작은 오차)} → \textcolor{red}{빨강(큰 오차)}
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{theory_images/img04_loss.png}
+\caption{손실 함수와 오차선 시각화}
+\end{figure}
+
+\newpage
+
+% ===== 6. 경사 하강법 =====
+\section{경사 하강법 (Gradient Descent)}
+
+경사 하강법은 손실 함수의 기울기를 따라 손실이 감소하는 방향으로 가중치를 업데이트합니다.
+
+\begin{tcolorbox}[tipbox, title={\emoji{mountain} 비유: 안개 낀 산에서 골짜기 찾기}]
+안개가 너무 짙어 \textbf{발 앞만 보이는 산}에서 가장 낮은 골짜기(오차가 가장 작은 지점)를 찾는 과정입니다.
+
+한 발 내딛어보고(\textbf{학습률}), 경사가 아래쪽이면 그 방향으로 계속 내려갑니다.
+
+\begin{itemize}
+  \item \emoji{warning} 너무 크게 걸으면 → 골짜기를 지나쳐버림 (발산)
+  \item \emoji{snail} 너무 작게 걸으면 → 내려오는 데 하루 종일 (느린 수렴)
+\end{itemize}
+\end{tcolorbox}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{theory_images/img10_gradient_analogy.png}
+\caption{경사 하강법 비유: 안개 낀 산에서 발밑만 보고 골짜기 찾기}
+\end{figure}
+
+\subsection{업데이트 공식}
+
+\formulawithexp{$w_{\text{new}} = w_{\text{old}} - \eta \cdot \nabla L$}{``새 가중치 = 기존 위치 $-$ (학습률 $\times$ 경사방향)''}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.65\textwidth]{theory_images/img05_gradient.png}
+\caption{경사 하강법 원리}
+\end{figure}
+
+\subsection{학습률의 영향}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{학습률} & \textbf{특징} & \textbf{손실 그래프} \\
+\hline
+너무 작음 (0.001) & 수렴 매우 느림 & 완만하게 천천히 감소 \\
+\hline
+\textbf{적절함 (0.01)} \emoji{check-mark-button} & 안정적 수렴 & 빠르고 안정적으로 감소 \\
+\hline
+너무 큼 (0.1) & 발산 가능 & 급격히 증가하거나 진동 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{theory_images/img06_lr.png}
+\caption{학습률에 따른 손실 그래프 비교}
+\end{figure}
+
+\begin{tcolorbox}[tipbox, title={\emoji{video-game} 시뮬레이터에서 확인하기}]
+\emoji{play-button} 재생 버튼을 클릭하면 회귀선이 데이터에 맞춰가는 애니메이션을 볼 수 있습니다!
+\end{tcolorbox}
+
+\newpage
+
+% ===== 7. 모델 평가 =====
+\section{모델 평가}
+
+\subsection{결정 계수 (R²)}
+
+\formulawithexp{$\displaystyle R^2 = 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}} = 1 - \frac{\sum(y_i - \hat{y}_i)^2}{\sum(y_i - \bar{y})^2}$}{``모델이 데이터의 변동성을 얼마나 잘 설명하는가'' (1에 가까울수록 좋음)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{R² 값} & \textbf{의미} & \textbf{시뮬레이터 표시} \\
+\hline
+R² = 1 & 완벽한 적합 & - \\
+\hline
+R² > 0.8 & 모델이 데이터를 잘 설명함 & \emoji{check-mark-button} 양호 \\
+\hline
+R² > 0.5 & 보통 수준의 설명력 & \emoji{warning} 보통 \\
+\hline
+R² < 0 & 평균보다 못한 예측 & \emoji{cross-mark} 부족 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.65\textwidth]{theory_images/img07_r2.png}
+\caption{R² 점수 해석 가이드}
+\end{figure}
+
+\begin{tcolorbox}[tipbox, title={\emoji{scroll} R²는 AI의 성적표!}]
+학교 시험에서 100점 만점에 80점을 받으면 ``잘했다''고 하듯이, R² > 0.8이면 AI가 ``공부를 잘 했다''는 뜻입니다!
+\end{tcolorbox}
+
+\newpage
+
+% ===== 8. 추론 =====
+\section{추론 (Inference)}
+
+추론은 학습된 모델을 사용하여 \textbf{새로운 데이터에 대한 예측}을 수행하는 과정입니다.
+
+\subsection{추론 과정 4단계}
+
+\begin{enumerate}
+  \item \emoji{honey-pot} \emoji{balance-scale} 당도, 무게 슬라이더로 새 사과 특성 입력
+  \item \emoji{star} 품질 점수 자동 계산 (당도점수 + 무게점수)
+  \item \emoji{abacus} 학습된 회귀식에 품질 점수 대입
+  \item \emoji{money-bag} 예측 가격 출력 및 차트에 시각화
+\end{enumerate}
+
+\subsection{예측 시각화}
+
+추론 모드에서는 다음 요소들이 차트에 표시됩니다:
+
+\begin{itemize}
+  \item \textbf{수직 점선}: 품질 점수 위치에서 회귀선까지
+  \item \textbf{수평 점선}: 회귀선에서 가격 축까지
+  \item \textbf{노란 원} \emoji{yellow-circle}: 예측 위치 (품질, 가격)
+\end{itemize}
+
+\begin{tcolorbox}[tipbox, title={\emoji{crystal-ball} 자동 추론 기능}]
+슬라이더를 움직이면 \textbf{즉시} 예측 결과가 업데이트됩니다. 실시간으로 ``만약 이런 사과라면?''을 실험해 볼 수 있습니다!
+\end{tcolorbox}
+
+\newpage
+
+% ===== 9. 학습 과정 요약 =====
+\section{학습 과정 요약}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|p{6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{과정} & \textbf{설명} \\
+\hline
+1 & 데이터 준비 & 당도, 무게 → 품질 점수 계산 \\
+\hline
+2 & 가중치 초기화 & $w=0$, $b=0$으로 시작 \\
+\hline
+3 & 예측 & $\text{가격} = w \times \text{품질} + b$ 계산 \\
+\hline
+4 & 손실 계산 & MSE 계산 (오차선 시각화) \\
+\hline
+5 & 경사 방향 확인 & 손실이 줄어드는 방향 파악 \\
+\hline
+6 & 가중치 업데이트 & $w$, $b$ 조정 (회귀선 이동) \\
+\hline
+7 & 반복 & 에포크 수만큼 3\textasciitilde6단계 반복 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{theory_images/img08_flow.png}
+\caption{선형 회귀 학습 과정 흐름도}
+\end{figure}
+
+\newpage
+
+% ===== 10. 교육적 포인트 =====
+\section{교육적 포인트: AI는 항상 맞지 않는다}
+
+'오차선 표시' 기능은 AI의 한계를 시각적으로 보여주는 중요한 교육 도구입니다.
+
+\subsection{오차선이 보여주는 것}
+
+\begin{itemize}
+  \item 모든 예측에는 \textbf{오차가 존재}함
+  \item 같은 품질이라도 실제 가격은 다를 수 있음
+  \item 노이즈(현실 세계의 불확실성)를 완벽히 예측할 수 없음
+\end{itemize}
+
+\subsection{수업에서의 활용}
+
+\begin{enumerate}
+  \item 노이즈 수준을 5\% → 20\%로 변경하며 R² 변화 관찰
+  \item 오차선 색상(\textcolor{green!70!black}{녹색}→\textcolor{red}{빨강})으로 오차 크기 직관적 이해
+  \item ``완벽한 예측은 불가능하다''는 AI의 한계 토론
+\end{enumerate}
+
+\subsection{데이터가 AI의 실력을 결정한다 (신규)}
+
+\begin{tcolorbox}[tipbox, title={\emoji{red-apple} 생각해보기: 빨간 사과 vs 초록 사과}]
+만약 우리가 \textbf{``빨간 사과''} 데이터만 가지고 학습했다면, \textbf{``초록 사과(아오리)''의 가격}도 잘 맞출 수 있을까요?
+
+\vspace{3mm}
+\emoji{point-right} AI의 실력은 알고리즘만큼이나 \textbf{``어떤 데이터를 주었는가''}에 달려 있습니다!
+\end{tcolorbox}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{theory_images/img11_data_bias.png}
+\caption{데이터 편향성: 빨간 사과로만 학습한 AI가 초록 사과를 예측할 때}
+\end{figure}
+
+\subsection{토론 질문}
+
+\begin{tcolorbox}[colback=white, colframe=mediumbrown, boxrule=1pt, arc=2mm]
+\emoji{books} \textbf{수업에서 활용할 토론 질문들}
+
+\begin{enumerate}
+  \item AI가 틀릴 수 있다면, 어떤 상황에서 AI를 신뢰해야 할까요?
+  \item 오차를 줄이려면 어떤 데이터가 더 필요할까요?
+  \item 학습 데이터에 없는 종류의 사과가 들어오면 어떻게 될까요?
+  \item 계절에 따라 가격이 달라진다면 어떤 데이터가 필요할까요?
+\end{enumerate}
+\end{tcolorbox}
+
+\newpage
+
+% ===== 참고자료 =====
+\section*{참고자료}
+\addcontentsline{toc}{section}{참고자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|p{7.5cm}|c|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & 사과가격예측\_선형회귀\_시뮬레이터\_v1.2.4.1.html & 파일 & 실습용 \\
+\hline
+2 & 사과가격예측\_선형회귀\_시뮬레이터\_개발일지\_v1.2.4.1.md & 문서 & 기술 상세 \\
+\hline
+3 & 사과가격예측\_선형회귀\_시뮬레이터\_퀵가이드\_v1.2.4.1.md & 문서 & 사용 안내 \\
+\hline
+4 & 이론해설서\_v1.2.0.0 (이전 버전) & 문서 & 수정 전 \\
+\hline
+5 & AI 실습 활동지 검토 의견 & 피드백 & 비유 추가 제안 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+
+% ===== 생성/수정 이력 =====
+\section*{생성/수정 이력}
+\addcontentsline{toc}{section}{생성/수정 이력}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|c|c|p{4.5cm}|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경 수준} & \textbf{변경 내용} & \textbf{작성자} \\
+\hline
+v1.0.0.0 & 2026-01-31 & 14:00 & 최초 & 초안 작성 & Claude \\
+\hline
+v1.1.0.0 & 2026-01-31 & 15:40 & 마이너 & 품질점수, 단순선형회귀 반영 & Claude \\
+\hline
+v1.2.0.0 & 2026-02-02 & 14:00 & 마이너 & 정규화/추론/교육포인트 추가 & Claude \\
+\hline
+\textbf{v1.3.0.0} & \textbf{2026-02-02} & \textbf{15:30} & \textbf{마이너} & \textbf{퀵서머리, 비유, 수식해석 추가} & \textbf{Claude} \\
+\hline
+\textbf{v1.4.0.0} & \textbf{2026-02-02} & \textbf{14:35} & \textbf{리비전} & \textbf{비유 이미지 3개 삽입 (정규화, 경사하강법, 데이터편향)} & \textbf{Claude} \\
+\hline
+\textbf{v1.4.0.1} & \textbf{2026-02-02} & \textbf{14:45} & \textbf{패치} & \textbf{목차 제목 한글화 (Contents → 목차)} & \textbf{Claude} \\
+\hline
+\textbf{v1.5.0.0} & \textbf{2026-02-02} & \textbf{15:45} & \textbf{마이너} & \textbf{문서 사용방법 섹션 추가 (목적, 대상, 학습순서, 관련문서)} & \textbf{Claude} \\
+\hline
+\textbf{v1.5.1.0} & \textbf{2026-02-02} & \textbf{16:00} & \textbf{리비전} & \textbf{모든 수식을 LaTeX 수학 수식으로 변경 (amsmath)} & \textbf{Claude} \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{2cm}
+
+\begin{center}
+\textit{\color{lightbrown} 선형 회귀 이론해설서}
+\end{center}
+
+\end{document}

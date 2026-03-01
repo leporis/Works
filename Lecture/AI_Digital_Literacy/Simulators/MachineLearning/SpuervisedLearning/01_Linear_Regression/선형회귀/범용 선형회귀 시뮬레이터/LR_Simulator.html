@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 선형회귀 시뮬레이터 v1.5 (Educator Edition)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1E88E5; --secondary: #43A047; --danger: #E53935;
+            --bg-light: #F8F9FA; --text-main: #37474F; --border: #CFD8DC;
+        }
+        body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg-light); color: var(--text-main); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Layout */
+        .sidebar { width: 320px; background: white; border-right: 1px solid var(--border); padding: 20px; overflow-y: auto; box-shadow: 2px 0 5px rgba(0,0,0,0.05); }
+        .main-content { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
+        
+        /* UI Components */
+        .card { background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        .chart-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        canvas { width: 100%; background: #FFF; border-radius: 8px; border: 1px solid #EEE; }
+        
+        /* Controls */
+        .control-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 700; margin-bottom: 5px; font-size: 0.9em; }
+        select, input, button { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border); box-sizing: border-box; }
+        button { background: var(--primary); color: white; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        button:hover { filter: brightness(0.9); }
+        .btn-secondary { background: var(--secondary); }
+
+        /* Metrics Display */
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; }
+        .metric-box { padding: 10px; border-radius: 8px; background: #E3F2FD; }
+        .metric-value { font-family: 'JetBrains Mono'; font-weight: 700; font-size: 1.2em; color: var(--primary); }
+        .metric-label { font-size: 0.8em; color: #546E7A; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>⚙️ 설정 및 데이터</h2>
+    
+    <div class="control-group">
+        <label>데이터셋 선택</label>
+        <select id="datasetSelect" onchange="handleDatasetChange()"></select>
+    </div>
+
+    <div id="varSelectGroup" class="card" style="margin-bottom: 15px; display:none;">
+        <label>X축 변수 (독립변수)</label>
+        <select id="xVarSelect"></select>
+        <label style="margin-top:10px;">Y축 변수 (종속변수)</label>
+        <select id="yVarSelect"></select>
+        <button onclick="loadSelectedData()">📊 데이터 적용</button>
+    </div>
+
+    <div class="card">
+        <label>학습 파라미터</label>
+        <div class="control-group">
+            <label>학습률 (α): <span id="lrVal">0.01</span></label>
+            <input type="range" id="lrInput" min="0.001" max="0.1" step="0.001" value="0.01" oninput="updateVal('lr')">
+        </div>
+        <div class="control-group">
+            <label>에포크 (Epochs): <span id="epochVal">100</span></label>
+            <input type="range" id="epochInput" min="10" max="1000" step="10" value="100" oninput="updateVal('epoch')">
+        </div>
+        <button id="trainBtn" onclick="startTraining()">🚀 자동 학습 시작</button>
+    </div>
+
+    <div class="card" style="margin-top:15px;">
+        <label>📍 수동 피팅 (Manual Fit)</label>
+        <label>가중치 (w): <span id="manualWVal">0.0</span></label>
+        <input type="range" id="manualW" min="-10" max="10" step="0.1" value="0" oninput="manualFit()">
+        <label>편향 (b): <span id="manualBVal">0.0</span></label>
+        <input type="range" id="manualB" min="-100" max="100" step="1" value="0" oninput="manualFit()">
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="card">
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <div class="metric-label">훈련 MSE</div>
+                <div id="trainMse" class="metric-value">-</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">테스트 MSE</div>
+                <div id="testMse" class="metric-value">-</div>
+            </div>
+            <div class="metric-box" style="background: #E8F5E9;">
+                <div class="metric-label">결정계수 (R²)</div>
+                <div id="r2Value" class="metric-value" style="color: var(--secondary);">-</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <div class="card">
+            <label>📈 선형회귀 시각화 (훈련/테스트)</label>
+            <canvas id="mainChart" height="400"></canvas>
+        </div>
+        <div class="card">
+            <label>📉 잔차 분석 플롯 (Residual Plot)</label>
+            <canvas id="residualChart" height="400"></canvas>
+        </div>
+    </div>
+    
+    <div class="card">
+        <label>📝 데이터 정보</label>
+        <div id="dataInfo" style="font-size: 0.9em; color: #666; line-height: 1.6;">데이터셋을 선택하세요.</div>
+    </div>
+</div>
+
+<script>
+    // 전역 상태 관리
+    let rawData = [];
+    let trainData = [], testData = [];
+    let model = { w: 0, b: 0, isTraining: false };
+    let animId = null;
+
+    // 초기화: 데이터셋 로드 (기존 23종 데이터 객체 구조 활용)
+    const DATASETS = [ /* 데이터셋 객체들... */ ]; 
+
+    function updateVal(type) {
+        document.getElementById(type + 'Val').innerText = document.getElementById(type + 'Input').value;
+    }
+
+    // 통계 지표 계산 로직 (R2)
+    function calculateR2(points, w, b) {
+        if (!points.length) return 0;
+        const yVals = points.map(p => p.y);
+        const yMean = yVals.reduce((a, b) => a + b, 0) / yVals.length;
+        let ssRes = 0, ssTot = 0;
+        points.forEach(p => {
+            const yPred = w * p.x + b;
+            ssRes += Math.pow(p.y - yPred, 2);
+            ssTot += Math.pow(p.y - yMean, 2);
+        });
+        return ssTot === 0 ? 0 : (1 - (ssRes / ssTot)).toFixed(4);
+    }
+
+    // 애니메이션 기반 학습 (Gradient Descent 시각화)
+    function startTraining() {
+        if (model.isTraining) return;
+        model.isTraining = true;
+        let epoch = 0;
+        const maxEpoch = parseInt(document.getElementById('epochInput').value);
+        const lr = parseFloat(document.getElementById('lrInput').value);
+
+        function step() {
+            if (epoch < maxEpoch && model.isTraining) {
+                // 경사하강법 1회 수행
+                performStep(lr);
+                updateUI(epoch);
+                epoch++;
+                animId = requestAnimationFrame(step);
+            } else {
+                model.isTraining = false;
+            }
+        }
+        animId = requestAnimationFrame(step);
+    }
+
+    function performStep(lr) {
+        let dw = 0, db = 0;
+        trainData.forEach(p => {
+            const error = (model.w * p.x + model.b) - p.y;
+            dw += error * p.x;
+            db += error;
+        });
+        model.w -= (dw / trainData.length) * lr;
+        model.b -= (db / trainData.length) * lr;
+    }
+
+    // 시각화 로직: 메인 차트 및 잔차 플롯
+    function drawCharts() {
+        const mainCtx = document.getElementById('mainChart').getContext('2d');
+        const resCtx = document.getElementById('residualChart').getContext('2d');
+        
+        // 1. 메인 차트 그리기 (산점도 + 회귀선)
+        // [코드 생략: 스케일링 및 점/선 그리기 로직]
+
+        // 2. 잔차 플롯 그리기
+        drawResiduals(resCtx);
+    }
+
+    function drawResiduals(ctx) {
+        // 잔차 = 실제값 - 예측값
+        // 예측값을 X축으로, 잔차를 Y축으로 플로팅하여 패턴 확인
+        // [코드 생략: 잔차 시각화 로직]
+    }
+
+    function manualFit() {
+        model.isTraining = false;
+        if (animId) cancelAnimationFrame(animId);
+        model.w = parseFloat(document.getElementById('manualW').value);
+        model.b = parseFloat(document.getElementById('manualB').value);
+        updateUI();
+    }
+
+    function updateUI(epoch = "Final") {
+        document.getElementById('r2Value').innerText = calculateR2(testData, model.w, model.b);
+        // MSE 및 차트 업데이트 호출
+        drawCharts();
+    }
+
+    // 페이지 로드 시 초기화
+    window.onload = () => { /* 초기 렌더링 로직 */ };
+</script>
+</body>
+</html>

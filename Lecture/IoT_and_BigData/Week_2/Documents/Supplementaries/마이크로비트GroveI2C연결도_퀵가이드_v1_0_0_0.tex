@@ -1,0 +1,259 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}마이크로비트 Grove I2C 연결도 퀵가이드 v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{electric-plug} 마이크로비트 Grove I2C 연결도}\\[0.5cm]
+{\Huge\bfseries\color{primary} 퀵가이드}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v1.0.3.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 퀵가이드는 마이크로비트 Grove I2C 연결도와 함께 보는 내비게이션입니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{\emoji{open-book} 이 문서 사용법}
+
+\begin{tcolorbox}[tipbox]
+\textbf{이 퀵가이드는 I2C 연결도 다이어그램과 함께 보는 내비게이션입니다.}
+
+이 자료는 \textbf{정적 인포그래픽}입니다 — 클릭하거나 조작하는 기능은 없고, 보면서 구조를 이해하는 참고 자료입니다.
+
+\end{tcolorbox}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{9.0cm}|p{6.0cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{상황} & \textbf{참조 섹션} \\
+\hline
+전체 구조 파악 & \emoji{high-voltage} 초속성 실습 \\
+\hline
+센서 종류·데이터 확인 & \emoji{magnifying-glass-tilted-left} 관찰 포인트 \\
+\hline
+화면 배치가 궁금함 & \emoji{desktop-computer} 화면 구성 \\
+\hline
+용어 모름 & \emoji{key} 핵심 용어 \\
+\hline
+문제 발생 & \emoji{sos} 트러블슈팅 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{high-voltage} 1분 초속성 실습}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{8.8cm}|p{4.7cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{행동} & \textbf{확인} \\
+\hline
+1 & 화면 상단의 \textbf{마이크로비트 보드}와 \textbf{Grove Shield} 영역을 찾으세요 & 녹색 보드 위에 마이크로비트가 있나요? \\
+\hline
+2 & Shield에서 뻗어나온 \textbf{보라색 배선}(SDA/SCL)을 눈으로 따라가세요 & 6개 센서 카드로 이어지나요? \\
+\hline
+3 & 아무 \textbf{센서 카드}를 골라 \textbf{I2C 주소}(0x로 시작)와 \textbf{데이터 태그}를 읽으세요 & 주소와 측정 항목이 보이면 \emoji{party-popper} \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{rocket} 빠른 시작 — 이렇게 읽으세요}
+
+\subsection*{\emoji{keycap-1} 연결 구조 이해하기}
+
+다이어그램의 핵심은 \textbf{"6개 센서가 2개 선만으로 연결된다"}는 것입니다:
+
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{images/S2_GroveI2C_screen.png}
+\end{center}
+
+\subsection*{\emoji{keycap-2} 센서 카드 읽기}
+
+각 카드에는 3가지 정보가 있습니다:
+
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.2cm}|p{5.3cm}|p{6.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{위치} & \textbf{정보} & \textbf{예시} \\
+\hline
+왼쪽 상단 & 이모지 아이콘 & \emoji{thermometer} (온도 관련) \\
+\hline
+오른쪽 상단 & I2C 주소 & \texttt{0x44} \\
+\hline
+카드 아래 & 측정 가능한 데이터 & \texttt{온도 (°C)} \texttt{습도 (\%)} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{\emoji{keycap-3} 카드 색상으로 유형 구분하기}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.2cm}|p{3.2cm}|p{9.6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{색상} & \textbf{유형} & \textbf{대상} \\
+\hline
+\emoji{purple-heart} 보라 & 디스플레이 & OLED (출력 장치) \\
+\hline
+\emoji{blue-heart} 파랑 & 환경 & SHT40, BMP280 (온도·습도·기압) \\
+\hline
+\emoji{green-heart} 초록 & 모션 & LIS3DHTR (가속도·기울기) \\
+\hline
+\emoji{yellow-heart} 노랑 & 빛/색상 & TCS34725 (R·G·B·밝기) \\
+\hline
+\emoji{light-blue-heart} 시안 & 시간 & DS1307 RTC (날짜·시간) \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{desktop-computer} 화면 구성}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{images/S2_GroveI2C_screen.png}
+\end{center}
+
+
+\section*{\emoji{magnifying-glass-tilted-left} 관찰 포인트}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.6cm}|p{5.8cm}|p{6.6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{관찰 대상} & \textbf{찾아볼 장면} & \textbf{의미} \\
+\hline
+I2C 주소 6개 & 각 카드 오른쪽 상단 (0x3C, 0x44 등) & "같은 버스에서 주소로 구분한다" \\
+\hline
+배선 2개 & SDA + SCL 보라색 선 & "6개 센서가 선 2개만으로 연결 가능" \\
+\hline
+데이터 태그 17종 & 각 카드 아래 배지들 & "센서마다 측정하는 데이터가 다르다" \\
+\hline
+카드 색상 5종 & 보라·파랑·초록·노랑·시안 & "센서를 기능별로 분류할 수 있다" \\
+\hline
+OLED 카드 & 보라색 카드 (유일한 출력 장치) & "센서(입력)와 디스플레이(출력)는 다르다" \\
+\hline
+구성 요약 & 하단 4칸 요약 정보 & "전체 시스템의 규모를 한눈에" \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{sos} 도와주세요!}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{4.4cm}|p{3.2cm}|p{7.4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{증상} & \textbf{원인} & \textbf{해결책} \\
+\hline
+일부 글자가 깨져 보여요 & 브라우저 인코딩 문제 & Chrome에서 열기 + UTF-8 확인 \\
+\hline
+카드가 너무 작아서 안 읽혀요 & 화면 크기 부족 & \texttt{Ctrl + +}로 확대, 또는 가로 모드 \\
+\hline
+배선이 잘 안 보여요 & 화면 밝기 문제 & 밝기 올리기 (다크 테마 배경이라 어두울 수 있음) \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{key} 핵심 용어}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.8cm}|p{3.5cm}|p{3.4cm}|p{6.3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{용어} & \textbf{학술 용어} & \textbf{의미} & \textbf{쉬운 설명} \\
+\hline
+I2C & Inter-Integrated Circuit & 2선 직렬 통신 규격 & 선 2개로 여러 센서를 연결하는 방법 \\
+\hline
+SDA & Serial Data & 데이터 전송선 & 센서와 마이크로비트가 데이터를 주고받는 선 \\
+\hline
+SCL & Serial Clock & 클럭 동기화선 & "지금 보내요!" 타이밍을 맞추는 선 \\
+\hline
+I2C 주소 & I2C Address & 장치 식별 번호 (0x형식) & "교실에서 학생 이름" — 센서마다 고유 \\
+\hline
+Grove Shield & Grove Shield & 확장 보드 & 마이크로비트에 외부 센서를 쉽게 꽂는 거치대 \\
+\hline
+버스 & Bus & 공유 통신 경로 & 여러 장치가 같은 도로(선)를 함께 사용 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{thought-balloon} 생각해보기}
+
+\begin{tcolorbox}[summarybox]
+\textbf{"왜 센서마다 별도의 선을 연결하지 않을까?"}
+
+\vspace{0.3em}
+센서 6개를 각각 연결하면 선이 12개 이상 필요합니다.
+
+I2C 버스를 사용하면 \textbf{단 2개 선}으로 모든 센서와 통신할 수 있습니다.
+
+\vspace{0.3em}
+이것은 마치 \textbf{교실 방송 시스템}과 같습니다:
+
+- 스피커 1개(SDA)와 마이크 1개(SCL)로 교실 전체에 방송
+
+- "3번 학생(0x44번 센서), 온도 알려주세요!" \textrightarrow{} 해당 센서만 응답
+
+\vspace{0.3em}
+단, I2C 주소가 겹치면 두 센서가 동시에 대답해서 혼란이 생깁니다!
+
+실제 프로젝트에서 주소 충돌을 확인하는 것이 중요합니다.
+
+\end{tcolorbox}
+
+
+\section*{참고자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{7.9cm}|p{2.6cm}|p{3.0cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & 마이크로비트GroveI2C연결도\_v1.0.3.0 & HTML 파일 & 다이어그램 \\
+\hline
+2 & 마이크로비트GroveI2C연결도\_개발참조\_v1.0.0.0 & 문서 & 기술 상세 \\
+\hline
+3 & 코딩관리지침\_v4.0.0.0 \S{}17 & 프로젝트 문서 & 퀵가이드 작성법 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{마이크로비트 Grove I2C 연결도 퀵가이드}
+\end{center}
+\end{document}

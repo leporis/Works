@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" font-family="'Noto Sans CJK KR', sans-serif">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#BDBDBD"/>
+    </marker>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="800" height="280" rx="16" fill="#FAFAFA"/>
+
+  <!-- 제목 -->
+  <text x="400" y="35" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">📌 프로젝트 진행 4단계</text>
+
+  <!-- 1단계 - 블루 강조 -->
+  <rect x="20" y="60" width="170" height="160" rx="12" fill="#E3F2FD" stroke="#1976D2" stroke-width="3" filter="url(#shadow)"/>
+  <rect x="20" y="60" width="170" height="36" rx="12" fill="#1976D2"/>
+  <rect x="20" y="78" width="170" height="18" fill="#1976D2"/>
+  <text x="105" y="84" text-anchor="middle" font-size="14" font-weight="bold" fill="white">🔵 1단계: 기획</text>
+  <text x="105" y="115" text-anchor="middle" font-size="13" font-weight="bold" fill="#1565C0">3주차</text>
+  <text x="105" y="140" text-anchor="middle" font-size="12" fill="#333">무엇을 측정할까?</text>
+  <text x="105" y="158" text-anchor="middle" font-size="12" fill="#333">어떤 센서를 쓸까?</text>
+  <rect x="45" y="185" width="120" height="24" rx="12" fill="#1976D2"/>
+  <text x="105" y="201" text-anchor="middle" font-size="11" font-weight="bold" fill="white">▲ 지금 여기!</text>
+
+  <!-- 화살표 1→2 -->
+  <line x1="195" y1="140" x2="215" y2="140" stroke="#BDBDBD" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 2단계 - 그레이 -->
+  <rect x="220" y="60" width="170" height="160" rx="12" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="220" y="60" width="170" height="36" rx="12" fill="#9E9E9E"/>
+  <rect x="220" y="78" width="170" height="18" fill="#9E9E9E"/>
+  <text x="305" y="84" text-anchor="middle" font-size="14" font-weight="bold" fill="white">⚙️ 2단계: 제작</text>
+  <text x="305" y="115" text-anchor="middle" font-size="13" font-weight="bold" fill="#757575">4주차</text>
+  <text x="305" y="140" text-anchor="middle" font-size="12" fill="#666">MakeCode로</text>
+  <text x="305" y="158" text-anchor="middle" font-size="12" fill="#666">데이터수집기 제작</text>
+
+  <!-- 화살표 2→3 -->
+  <line x1="395" y1="140" x2="415" y2="140" stroke="#BDBDBD" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 3단계 - 그레이 -->
+  <rect x="420" y="60" width="170" height="160" rx="12" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="420" y="60" width="170" height="36" rx="12" fill="#9E9E9E"/>
+  <rect x="420" y="78" width="170" height="18" fill="#9E9E9E"/>
+  <text x="505" y="84" text-anchor="middle" font-size="14" font-weight="bold" fill="white">📡 3단계: 수집</text>
+  <text x="505" y="115" text-anchor="middle" font-size="13" font-weight="bold" fill="#757575">5~8주차</text>
+  <text x="505" y="140" text-anchor="middle" font-size="12" fill="#666">실습학교에서</text>
+  <text x="505" y="158" text-anchor="middle" font-size="12" fill="#666">실제 데이터 수집</text>
+
+  <!-- 화살표 3→4 -->
+  <line x1="595" y1="140" x2="615" y2="140" stroke="#BDBDBD" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 4단계 - 그레이 -->
+  <rect x="620" y="60" width="170" height="160" rx="12" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="620" y="60" width="170" height="36" rx="12" fill="#9E9E9E"/>
+  <rect x="620" y="78" width="170" height="18" fill="#9E9E9E"/>
+  <text x="705" y="84" text-anchor="middle" font-size="14" font-weight="bold" fill="white">📊 4단계: 분석</text>
+  <text x="705" y="115" text-anchor="middle" font-size="13" font-weight="bold" fill="#757575">9~13주차</text>
+  <text x="705" y="140" text-anchor="middle" font-size="12" fill="#666">바이브코딩으로</text>
+  <text x="705" y="158" text-anchor="middle" font-size="12" fill="#666">시각화·해석</text>
+
+  <!-- 하단 범례 -->
+  <text x="400" y="260" text-anchor="middle" font-size="11" fill="#999">오늘 만드는 수집 계획서가 → 4주차 설계도 → 5~8주차 가이드가 됩니다</text>
+</svg>

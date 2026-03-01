@@ -1,0 +1,230 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" font-family="'Noto Sans KR', sans-serif">
+  <defs>
+    <filter id="ds"><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-opacity="0.10"/></filter>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="900" height="700" rx="12" fill="#FAFAFA"/>
+
+  <!-- 제목 영역 -->
+  <rect x="0" y="0" width="900" height="78" rx="12" fill="#1976D2"/>
+  <rect x="0" y="40" width="900" height="38" fill="#1976D2"/>
+  <text x="450" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">『권력과 진보』 15주 수업 여정 지도</text>
+  <text x="450" y="62" text-anchor="middle" font-size="13" font-weight="400" fill="#BBDEFB">Learning Journey Map · 컴퓨팅사고력과 AI 교육</text>
+
+  <!-- ========== 단계 라벨 (우측) ========== -->
+  <rect x="810" y="94" width="76" height="100" rx="8" fill="#3F51B5" filter="url(#ds)"/>
+  <text x="848" y="138" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">도입</text>
+  <text x="848" y="156" text-anchor="middle" font-size="10" fill="#C5CAE9">1~3주</text>
+
+  <rect x="810" y="204" width="76" height="100" rx="8" fill="#00897B" filter="url(#ds)"/>
+  <text x="848" y="248" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">역사</text>
+  <text x="848" y="266" text-anchor="middle" font-size="10" fill="#B2DFDB">4~6주</text>
+
+  <rect x="810" y="314" width="76" height="100" rx="8" fill="#F57C00" filter="url(#ds)"/>
+  <text x="848" y="358" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">전환</text>
+  <text x="848" y="376" text-anchor="middle" font-size="10" fill="#FFE0B2">7~9주</text>
+
+  <rect x="810" y="424" width="76" height="100" rx="8" fill="#7B1FA2" filter="url(#ds)"/>
+  <text x="848" y="468" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">심화</text>
+  <text x="848" y="486" text-anchor="middle" font-size="10" fill="#CE93D8">10~12주</text>
+
+  <rect x="810" y="534" width="76" height="100" rx="8" fill="#388E3C" filter="url(#ds)"/>
+  <text x="848" y="578" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">종합</text>
+  <text x="848" y="596" text-anchor="middle" font-size="10" fill="#C8E6C9">13~15주</text>
+
+  <!-- ========== 1행: 도입 (1~3주) — 인디고 ========== -->
+  <!-- 1주 -->
+  <rect x="40" y="94" width="240" height="100" rx="10" fill="#E8EAF6" stroke="#5C6BC0" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="40" y="94" width="240" height="32" rx="10" fill="#5C6BC0"/>
+  <rect x="40" y="112" width="240" height="14" fill="#5C6BC0"/>
+  <text x="56" y="115" font-size="13" font-weight="700" fill="#fff">1주</text>
+  <text x="248" y="115" text-anchor="end" font-size="10" fill="#C5CAE9">오리엔테이션</text>
+  <text x="56" y="148" font-size="12" font-weight="600" fill="#283593">📖 기술은 우리를 행복하게 하는가?</text>
+  <text x="56" y="166" font-size="11" fill="#5C6BC0">책 소개 · 핵심 질문 설정</text>
+  <text x="56" y="184" font-size="10" fill="#9FA8DA">수업지도안_11, 수업지도안_12 활용</text>
+
+  <text x="290" y="150" text-anchor="middle" font-size="18" fill="#5C6BC0">→</text>
+
+  <!-- 2주 -->
+  <rect x="300" y="94" width="240" height="100" rx="10" fill="#E8EAF6" stroke="#5C6BC0" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="300" y="94" width="240" height="32" rx="10" fill="#5C6BC0"/>
+  <rect x="300" y="112" width="240" height="14" fill="#5C6BC0"/>
+  <text x="316" y="115" font-size="13" font-weight="700" fill="#fff">2주</text>
+  <text x="508" y="115" text-anchor="end" font-size="10" fill="#C5CAE9">프롤로그+1장</text>
+  <text x="316" y="148" font-size="12" font-weight="600" fill="#283593">🎡 "기술 발전 = 진보"라는 신화</text>
+  <text x="316" y="166" font-size="11" fill="#5C6BC0">밴드왜건의 작동과 실패 조건</text>
+  <text x="316" y="184" font-size="10" fill="#9FA8DA">수업지도안_01 활용</text>
+
+  <text x="550" y="150" text-anchor="middle" font-size="18" fill="#5C6BC0">→</text>
+
+  <!-- 3주 -->
+  <rect x="560" y="94" width="240" height="100" rx="10" fill="#E8EAF6" stroke="#5C6BC0" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="560" y="94" width="240" height="32" rx="10" fill="#5C6BC0"/>
+  <rect x="560" y="112" width="240" height="14" fill="#5C6BC0"/>
+  <text x="576" y="115" font-size="13" font-weight="700" fill="#fff">3주</text>
+  <text x="768" y="115" text-anchor="end" font-size="10" fill="#C5CAE9">2장</text>
+  <text x="576" y="148" font-size="12" font-weight="600" fill="#283593">🌾 최초의 기술이 만든 불평등</text>
+  <text x="576" y="166" font-size="11" fill="#5C6BC0">농경혁명 · 운하의 비전</text>
+  <text x="576" y="184" font-size="10" fill="#9FA8DA">수업지도안_02, 수업지도안_03 활용</text>
+
+  <!-- ========== 2행: 역사 (4~6주) — 틸 ========== -->
+  <!-- 4주 -->
+  <rect x="40" y="204" width="240" height="100" rx="10" fill="#E0F2F1" stroke="#00897B" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="40" y="204" width="240" height="32" rx="10" fill="#00897B"/>
+  <rect x="40" y="222" width="240" height="14" fill="#00897B"/>
+  <text x="56" y="225" font-size="13" font-weight="700" fill="#fff">4주</text>
+  <text x="248" y="225" text-anchor="end" font-size="10" fill="#B2DFDB">3장</text>
+  <text x="56" y="258" font-size="12" font-weight="600" fill="#004D40">👑 설득 권력 — 누가 "진보"를 쓰나</text>
+  <text x="56" y="276" font-size="11" fill="#00897B">내러티브와 비전 설정자 분석</text>
+  <text x="56" y="294" font-size="10" fill="#80CBC4">수업지도안_05 활용</text>
+
+  <text x="290" y="260" text-anchor="middle" font-size="18" fill="#00897B">→</text>
+
+  <!-- 5주 -->
+  <rect x="300" y="204" width="240" height="100" rx="10" fill="#E0F2F1" stroke="#00897B" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="300" y="204" width="240" height="32" rx="10" fill="#00897B"/>
+  <rect x="300" y="222" width="240" height="14" fill="#00897B"/>
+  <text x="316" y="225" font-size="13" font-weight="700" fill="#fff">5주</text>
+  <text x="508" y="225" text-anchor="end" font-size="10" fill="#B2DFDB">4-5장</text>
+  <text x="316" y="258" font-size="12" font-weight="600" fill="#004D40">📉 산업혁명의 명암</text>
+  <text x="316" y="276" font-size="11" fill="#00897B">GDP ↑ 임금 정체 · 엥겔스의 일시정지</text>
+  <text x="316" y="294" font-size="10" fill="#80CBC4">수업지도안_03, 수업지도안_04 활용</text>
+
+  <text x="550" y="260" text-anchor="middle" font-size="18" fill="#00897B">→</text>
+
+  <!-- 6주 -->
+  <rect x="560" y="204" width="240" height="100" rx="10" fill="#E0F2F1" stroke="#00897B" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="560" y="204" width="240" height="32" rx="10" fill="#00897B"/>
+  <rect x="560" y="222" width="240" height="14" fill="#00897B"/>
+  <text x="576" y="225" font-size="13" font-weight="700" fill="#fff">6주</text>
+  <text x="768" y="225" text-anchor="end" font-size="10" fill="#B2DFDB">6-7장</text>
+  <text x="576" y="258" font-size="12" font-weight="600" fill="#004D40">✊ 투쟁을 통한 진보</text>
+  <text x="576" y="276" font-size="11" fill="#00897B">조직화 → 참정권 → 복지국가</text>
+  <text x="576" y="294" font-size="10" fill="#80CBC4">수업지도안_06 활용</text>
+
+  <!-- ========== 3행: 전환 (7~9주) — 앰버 ========== -->
+  <!-- 7주 -->
+  <rect x="40" y="314" width="240" height="100" rx="10" fill="#FFF3E0" stroke="#F57C00" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="40" y="314" width="240" height="32" rx="10" fill="#F57C00"/>
+  <rect x="40" y="332" width="240" height="14" fill="#F57C00"/>
+  <text x="56" y="335" font-size="13" font-weight="700" fill="#fff">7주</text>
+  <text x="248" y="335" text-anchor="end" font-size="10" fill="#FFE0B2">중간 정리</text>
+  <text x="56" y="368" font-size="12" font-weight="600" fill="#E65100">🔍 중간 종합 · 중간평가</text>
+  <text x="56" y="386" font-size="11" fill="#F57C00">1~7장 핵심 논증 복습</text>
+  <text x="56" y="404" font-size="10" fill="#FFCC80">수업지도안_03, 수업지도안_11 활용</text>
+
+  <text x="290" y="370" text-anchor="middle" font-size="18" fill="#F57C00">→</text>
+
+  <!-- 8주 -->
+  <rect x="300" y="314" width="240" height="100" rx="10" fill="#FFF3E0" stroke="#F57C00" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="300" y="314" width="240" height="32" rx="10" fill="#F57C00"/>
+  <rect x="300" y="332" width="240" height="14" fill="#F57C00"/>
+  <text x="316" y="335" font-size="13" font-weight="700" fill="#fff">8주</text>
+  <text x="508" y="335" text-anchor="end" font-size="10" fill="#FFE0B2">8장</text>
+  <text x="316" y="368" font-size="12" font-weight="600" fill="#E65100">💻 디지털 피해</text>
+  <text x="316" y="386" font-size="11" fill="#F57C00">나는 소비자인가, 상품인가</text>
+  <text x="316" y="404" font-size="10" fill="#FFCC80">수업지도안_07 활용</text>
+
+  <text x="550" y="370" text-anchor="middle" font-size="18" fill="#F57C00">→</text>
+
+  <!-- 9주 -->
+  <rect x="560" y="314" width="240" height="100" rx="10" fill="#FFF3E0" stroke="#F57C00" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="560" y="314" width="240" height="32" rx="10" fill="#F57C00"/>
+  <rect x="560" y="332" width="240" height="14" fill="#F57C00"/>
+  <text x="576" y="335" font-size="13" font-weight="700" fill="#fff">9주</text>
+  <text x="768" y="335" text-anchor="end" font-size="10" fill="#FFE0B2">9장</text>
+  <text x="576" y="368" font-size="12" font-weight="600" fill="#E65100">🤖 인공 투쟁 — AI는 돕는가, 대체하는가</text>
+  <text x="576" y="386" font-size="11" fill="#F57C00">자동화(대체) vs 보완(증강)</text>
+  <text x="576" y="404" font-size="10" fill="#FFCC80">수업지도안_08 활용</text>
+
+  <!-- ========== 4행: 심화 (10~12주) — 퍼플 ========== -->
+  <!-- 10주 -->
+  <rect x="40" y="424" width="240" height="100" rx="10" fill="#F3E5F5" stroke="#8E24AA" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="40" y="424" width="240" height="32" rx="10" fill="#7B1FA2"/>
+  <rect x="40" y="442" width="240" height="14" fill="#7B1FA2"/>
+  <text x="56" y="445" font-size="13" font-weight="700" fill="#fff">10주</text>
+  <text x="248" y="445" text-anchor="end" font-size="10" fill="#CE93D8">9장 심화</text>
+  <text x="56" y="478" font-size="12" font-weight="600" fill="#4A148C">🏫 AI와 교육 격차</text>
+  <text x="56" y="496" font-size="11" fill="#7B1FA2">모두를 위한 기술인가?</text>
+  <text x="56" y="514" font-size="10" fill="#CE93D8">수업지도안_08 심화 토론</text>
+
+  <text x="290" y="480" text-anchor="middle" font-size="18" fill="#7B1FA2">→</text>
+
+  <!-- 11주 -->
+  <rect x="300" y="424" width="240" height="100" rx="10" fill="#F3E5F5" stroke="#8E24AA" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="300" y="424" width="240" height="32" rx="10" fill="#7B1FA2"/>
+  <rect x="300" y="442" width="240" height="14" fill="#7B1FA2"/>
+  <text x="316" y="445" font-size="13" font-weight="700" fill="#fff">11주</text>
+  <text x="508" y="445" text-anchor="end" font-size="10" fill="#CE93D8">10장</text>
+  <text x="316" y="478" font-size="12" font-weight="600" fill="#4A148C">🚨 민주주의와 기술 — 공론장 위기</text>
+  <text x="316" y="496" font-size="11" fill="#7B1FA2">알고리즘 → 극단화 → 민주주의 위기</text>
+  <text x="316" y="514" font-size="10" fill="#CE93D8">수업지도안_09 활용</text>
+
+  <text x="550" y="480" text-anchor="middle" font-size="18" fill="#7B1FA2">→</text>
+
+  <!-- 12주 -->
+  <rect x="560" y="424" width="240" height="100" rx="10" fill="#F3E5F5" stroke="#8E24AA" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="560" y="424" width="240" height="32" rx="10" fill="#7B1FA2"/>
+  <rect x="560" y="442" width="240" height="14" fill="#7B1FA2"/>
+  <text x="576" y="445" font-size="13" font-weight="700" fill="#fff">12주</text>
+  <text x="768" y="445" text-anchor="end" font-size="10" fill="#CE93D8">11장</text>
+  <text x="576" y="478" font-size="12" font-weight="600" fill="#4A148C">🔄 경로 재설정 3단계</text>
+  <text x="576" y="496" font-size="11" fill="#7B1FA2">내러티브 전환 → 대항 권력 → 정책</text>
+  <text x="576" y="514" font-size="10" fill="#CE93D8">수업지도안_10 활용</text>
+
+  <!-- ========== 5행: 종합 (13~15주) — 초록 ========== -->
+  <!-- 13주 -->
+  <rect x="40" y="534" width="240" height="100" rx="10" fill="#E8F5E9" stroke="#388E3C" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="40" y="534" width="240" height="32" rx="10" fill="#388E3C"/>
+  <rect x="40" y="552" width="240" height="14" fill="#388E3C"/>
+  <text x="56" y="555" font-size="13" font-weight="700" fill="#fff">13주</text>
+  <text x="248" y="555" text-anchor="end" font-size="10" fill="#C8E6C9">서평</text>
+  <text x="56" y="588" font-size="12" font-weight="600" fill="#1B5E20">📝 비판적 서평 — 강점과 한계</text>
+  <text x="56" y="606" font-size="11" fill="#388E3C">이 책의 논증을 비판적으로 평가</text>
+  <text x="56" y="624" font-size="10" fill="#A5D6A7">외부 서평 2편 비교</text>
+
+  <text x="290" y="590" text-anchor="middle" font-size="18" fill="#388E3C">→</text>
+
+  <!-- 14주 -->
+  <rect x="300" y="534" width="240" height="100" rx="10" fill="#E8F5E9" stroke="#388E3C" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="300" y="534" width="240" height="32" rx="10" fill="#388E3C"/>
+  <rect x="300" y="552" width="240" height="14" fill="#388E3C"/>
+  <text x="316" y="555" font-size="13" font-weight="700" fill="#fff">14주</text>
+  <text x="508" y="555" text-anchor="end" font-size="10" fill="#C8E6C9">발표</text>
+  <text x="316" y="588" font-size="12" font-weight="600" fill="#1B5E20">🎤 최종 프로젝트 발표</text>
+  <text x="316" y="606" font-size="11" fill="#388E3C">모둠별 초등 수업 설계 발표</text>
+  <text x="316" y="624" font-size="10" fill="#A5D6A7">동료 평가</text>
+
+  <text x="550" y="590" text-anchor="middle" font-size="18" fill="#388E3C">→</text>
+
+  <!-- 15주 -->
+  <rect x="560" y="534" width="240" height="100" rx="10" fill="#E8F5E9" stroke="#388E3C" stroke-width="1.5" filter="url(#ds)"/>
+  <rect x="560" y="534" width="240" height="32" rx="10" fill="#388E3C"/>
+  <rect x="560" y="552" width="240" height="14" fill="#388E3C"/>
+  <text x="576" y="555" font-size="13" font-weight="700" fill="#fff">15주</text>
+  <text x="768" y="555" text-anchor="end" font-size="10" fill="#C8E6C9">마무리</text>
+  <text x="576" y="588" font-size="12" font-weight="600" fill="#1B5E20">🌱 종합 성찰 · 여정 마무리</text>
+  <text x="576" y="606" font-size="11" fill="#388E3C">최종 에세이 · 어항 토론</text>
+  <text x="576" y="624" font-size="10" fill="#A5D6A7">수업지도안_11 활용</text>
+
+  <!-- ========== 최하단: 여정 흐름 바 ========== -->
+  <rect x="40" y="650" width="180" height="36" rx="8" fill="#3F51B5" filter="url(#ds)"/>
+  <text x="130" y="673" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">📖 도입 · 문제 제기</text>
+
+  <text x="228" y="673" text-anchor="middle" font-size="14" fill="#1976D2">→</text>
+
+  <rect x="236" y="650" width="180" height="36" rx="8" fill="#00897B" filter="url(#ds)"/>
+  <text x="326" y="673" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">🏛️ 역사적 분석</text>
+
+  <text x="424" y="673" text-anchor="middle" font-size="14" fill="#1976D2">→</text>
+
+  <rect x="432" y="650" width="180" height="36" rx="8" fill="#7B1FA2" filter="url(#ds)"/>
+  <text x="522" y="673" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">💻 디지털 적용</text>
+
+  <text x="620" y="673" text-anchor="middle" font-size="14" fill="#1976D2">→</text>
+
+  <rect x="628" y="650" width="180" height="36" rx="8" fill="#388E3C" filter="url(#ds)"/>
+  <text x="718" y="673" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">🌱 실천과 성찰</text>
+
+</svg>

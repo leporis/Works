@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" font-family="'Noto Sans KR', sans-serif">
+  <defs>
+    <filter id="ds"><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-opacity="0.10"/></filter>
+    <linearGradient id="gdpFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1976D2" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#BBDEFB" stop-opacity="0.08"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="900" height="620" rx="12" fill="#FAFAFA"/>
+
+  <!-- 제목 영역 -->
+  <rect x="0" y="0" width="900" height="78" rx="12" fill="#1976D2"/>
+  <rect x="0" y="40" width="900" height="38" fill="#1976D2"/>
+  <text x="450" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">엥겔스의 일시정지 (Engels' Pause)</text>
+  <text x="450" y="62" text-anchor="middle" font-size="13" font-weight="400" fill="#BBDEFB">『권력과 진보』 4-5장 · GDP는 성장했지만, 노동자의 삶은 나아지지 않았다</text>
+
+  <!-- ========== 차트 영역 ========== -->
+  <!-- 차트 프레임: x=100~680, y=110~370 -->
+
+  <!-- Y축 좌 라벨 (GDP) -->
+  <text x="48" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#1976D2">GDP</text>
+  <text x="48" y="128" text-anchor="middle" font-size="9" fill="#1976D2">성장</text>
+  <text x="88" y="370" text-anchor="end" font-size="9" fill="#9E9E9E">낮음</text>
+  <text x="88" y="125" text-anchor="end" font-size="9" fill="#9E9E9E">높음</text>
+
+  <!-- Y축 우 라벨 (실질임금) -->
+  <text x="700" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#E65100">실질</text>
+  <text x="700" y="128" text-anchor="middle" font-size="9" fill="#E65100">임금</text>
+
+  <!-- X축 -->
+  <line x1="100" y1="370" x2="680" y2="370" stroke="#9E9E9E" stroke-width="1.5"/>
+  <!-- Y축 좌 -->
+  <line x1="100" y1="110" x2="100" y2="370" stroke="#BDBDBD" stroke-width="1"/>
+  <!-- Y축 우 -->
+  <line x1="680" y1="110" x2="680" y2="370" stroke="#BDBDBD" stroke-width="1"/>
+
+  <!-- X축 라벨 -->
+  <text x="100" y="390" text-anchor="middle" font-size="11" fill="#616161">1760</text>
+  <text x="245" y="390" text-anchor="middle" font-size="11" fill="#616161">1800</text>
+  <text x="390" y="390" text-anchor="middle" font-size="11" fill="#616161">1840</text>
+  <text x="535" y="390" text-anchor="middle" font-size="11" fill="#616161">1870</text>
+  <text x="680" y="390" text-anchor="middle" font-size="11" fill="#616161">1900</text>
+
+  <!-- X축 눈금선 -->
+  <line x1="245" y1="365" x2="245" y2="375" stroke="#BDBDBD" stroke-width="1"/>
+  <line x1="390" y1="365" x2="390" y2="375" stroke="#BDBDBD" stroke-width="1"/>
+  <line x1="535" y1="365" x2="535" y2="375" stroke="#BDBDBD" stroke-width="1"/>
+  <line x1="680" y1="365" x2="680" y2="375" stroke="#BDBDBD" stroke-width="1"/>
+
+  <!-- 가로 격자선 (연한) -->
+  <line x1="100" y1="305" x2="680" y2="305" stroke="#EEEEEE" stroke-width="1"/>
+  <line x1="100" y1="240" x2="680" y2="240" stroke="#EEEEEE" stroke-width="1"/>
+  <line x1="100" y1="175" x2="680" y2="175" stroke="#EEEEEE" stroke-width="1"/>
+
+  <!-- ========== 엥겔스의 일시정지 구간 음영 ========== -->
+  <rect x="100" y="110" width="290" height="260" fill="#FFF3E0" opacity="0.45"/>
+  <line x1="390" y1="110" x2="390" y2="370" stroke="#E65100" stroke-width="1" stroke-dasharray="5,3" opacity="0.6"/>
+
+  <!-- 구간 라벨 (상단) -->
+  <text x="245" y="400" text-anchor="middle" font-size="10" font-weight="600" fill="#E65100">← 엥겔스의 일시정지 (약 80년) →</text>
+
+  <!-- ========== GDP 영역 차트 (블루) ========== -->
+  <!-- GDP 곡선: 1760(y=350) → 1800(y=320) → 1840(y=250) → 1870(y=170) → 1900(y=125) -->
+  <path d="M100,350 Q170,345 245,320 Q320,290 390,250 Q460,210 535,170 Q610,140 680,125 L680,370 L100,370 Z" fill="url(#gdpFill)"/>
+  <path d="M100,350 Q170,345 245,320 Q320,290 390,250 Q460,210 535,170 Q610,140 680,125" fill="none" stroke="#1976D2" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- GDP 라벨 -->
+  <text x="620" y="118" font-size="11" font-weight="600" fill="#1976D2">GDP ↑</text>
+
+  <!-- ========== 실질임금 선 (주황) ========== -->
+  <!-- 임금: 1760(y=310) → 1800(y=308) → 1840(y=305) → 1870(y=250) → 1900(y=190) -->
+  <path d="M100,310 Q170,310 245,308 Q320,307 390,305 Q430,290 480,260 Q535,230 590,210 Q640,195 680,190" fill="none" stroke="#E65100" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- 임금 데이터 포인트 -->
+  <circle cx="100" cy="310" r="4" fill="#E65100"/>
+  <circle cx="245" cy="308" r="4" fill="#E65100"/>
+  <circle cx="390" cy="305" r="4" fill="#E65100"/>
+  <circle cx="535" cy="230" r="4" fill="#E65100"/>
+  <circle cx="680" cy="190" r="4" fill="#E65100"/>
+
+  <!-- 임금 라벨 -->
+  <text x="620" y="183" font-size="11" font-weight="600" fill="#E65100">임금 ↑</text>
+
+  <!-- ========== 격차 표시 화살표 (1840 시점) ========== -->
+  <line x1="395" y1="250" x2="395" y2="305" stroke="#7B1FA2" stroke-width="2" stroke-dasharray="4,3"/>
+  <text x="410" y="282" font-size="10" font-weight="700" fill="#7B1FA2">격차</text>
+
+  <!-- ========== 범례 ========== -->
+  <rect x="120" y="130" width="140" height="46" rx="6" fill="#fff" stroke="#E0E0E0" stroke-width="1" opacity="0.95"/>
+  <line x1="130" y1="146" x2="155" y2="146" stroke="#1976D2" stroke-width="2.5"/>
+  <text x="162" y="150" font-size="11" fill="#1976D2">국가 GDP</text>
+  <line x1="130" y1="166" x2="155" y2="166" stroke="#E65100" stroke-width="3"/>
+  <circle cx="142" cy="166" r="3" fill="#E65100"/>
+  <text x="162" y="170" font-size="11" fill="#E65100">노동자 실질임금</text>
+
+  <!-- ========== 우측 콜아웃 박스 ========== -->
+  <rect x="720" y="140" width="165" height="100" rx="10" fill="#FFF3E0" stroke="#FFA000" stroke-width="1.5" filter="url(#ds)"/>
+  <text x="802" y="165" text-anchor="middle" font-size="12" font-weight="700" fill="#E65100">약 80년간</text>
+  <text x="802" y="185" text-anchor="middle" font-size="11" fill="#BF360C">GDP는 3배 성장</text>
+  <text x="802" y="202" text-anchor="middle" font-size="11" fill="#BF360C">했지만</text>
+  <text x="802" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#E65100">노동자 임금은</text>
+  <text x="802" y="238" text-anchor="middle" font-size="12" font-weight="700" fill="#E65100">거의 변하지 않았다</text>
+
+  <!-- 1840 전환점 콜아웃 -->
+  <rect x="720" y="270" width="165" height="80" rx="10" fill="#E8F5E9" stroke="#388E3C" stroke-width="1.5" filter="url(#ds)"/>
+  <text x="802" y="292" text-anchor="middle" font-size="11" font-weight="700" fill="#2E7D32">1840년대 이후</text>
+  <text x="802" y="310" text-anchor="middle" font-size="10" fill="#388E3C">노동조합 합법화</text>
+  <text x="802" y="326" text-anchor="middle" font-size="10" fill="#388E3C">참정권 확대</text>
+  <text x="802" y="342" text-anchor="middle" font-size="10" fill="#388E3C">→ 비로소 임금 상승</text>
+
+  <!-- ========== 하단: 밴드왜건이 끊긴 3가지 이유 ========== -->
+  <line x1="60" y1="418" x2="840" y2="418" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="450" y="440" text-anchor="middle" font-size="13" font-weight="700" fill="#424242">밴드왜건이 끊긴 3가지 이유</text>
+
+  <!-- 카드 1 -->
+  <rect x="60" y="452" width="250" height="64" rx="10" fill="#F3E5F5" stroke="#8E24AA" stroke-width="1.5" filter="url(#ds)"/>
+  <text x="185" y="474" text-anchor="middle" font-size="13" font-weight="700" fill="#4A148C">① 강제적 노동 관계</text>
+  <text x="185" y="494" text-anchor="middle" font-size="11" fill="#7B1FA2">이직 금지 · 감옥이 대안인 세상</text>
+
+  <!-- 카드 2 -->
+  <rect x="325" y="452" width="250" height="64" rx="10" fill="#FFF3E0" stroke="#E65100" stroke-width="1.5" filter="url(#ds)"/>
+  <text x="450" y="474" text-anchor="middle" font-size="13" font-weight="700" fill="#BF360C">② 대체형 기술</text>
+  <text x="450" y="494" text-anchor="middle" font-size="11" fill="#E65100">숙련공 → 미숙련 여성 · 아동 대체</text>
+
+  <!-- 카드 3 -->
+  <rect x="590" y="452" width="250" height="64" rx="10" fill="#E0F2F1" stroke="#00897B" stroke-width="1.5" filter="url(#ds)"/>
+  <text x="715" y="474" text-anchor="middle" font-size="13" font-weight="700" fill="#004D40">③ 대항 권력 부재</text>
+  <text x="715" y="494" text-anchor="middle" font-size="11" fill="#00897B">노동조합 불법 · 참정권 없음</text>
+
+  <!-- ========== 최하단: 핵심 질문 ========== -->
+  <rect x="100" y="536" width="700" height="62" rx="10" fill="#E3F2FD" stroke="#1976D2" stroke-width="1.5"/>
+  <text x="450" y="560" text-anchor="middle" font-size="13" font-weight="500" fill="#0D47A1">💡 오늘날에도 "엥겔스의 일시정지"가 반복되고 있는가?</text>
+  <text x="450" y="580" text-anchor="middle" font-size="11" fill="#1565C0">한국의 GDP는 성장하는데, 체감 삶의 질은 왜 나아지지 않는다고 느끼는가?</text>
+  <text x="450" y="594" text-anchor="middle" font-size="11" fill="#1565C0">배달 플랫폼 노동자의 임금은 기술 발전과 함께 올랐는가?</text>
+
+</svg>

@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .title { font-family: 'Noto Sans KR', sans-serif; font-size: 18px; font-weight: 700; fill: #3E2723; }
+      .subtitle { font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 600; fill: #5D4037; }
+      .label { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; font-weight: 500; fill: #5D4037; }
+      .small { font-family: 'Noto Sans KR', sans-serif; font-size: 10px; fill: #5D4037; }
+      .hint { font-family: 'Noto Sans KR', sans-serif; font-size: 9px; fill: #8D6E63; }
+      .formula { font-family: monospace; font-size: 11px; fill: #E53935; font-weight: 600; }
+      .white { fill: #FFFFFF; }
+    </style>
+  </defs>
+  
+  <rect width="800" height="400" fill="url(#bgGrad)"/>
+  
+  <text x="400" y="30" text-anchor="middle" class="title">📏 오차선 (잔차, Residual)</text>
+  <text x="400" y="50" text-anchor="middle" class="hint">실제 데이터점과 회귀선 위 예측점 사이의 거리</text>
+  
+  <!-- 차트 영역 -->
+  <rect x="30" y="70" width="450" height="300" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  
+  <!-- 좌표축 -->
+  <line x1="80" y1="100" x2="80" y2="340" stroke="#5D4037" stroke-width="2"/>
+  <line x1="80" y1="340" x2="450" y2="340" stroke="#5D4037" stroke-width="2"/>
+  <text x="65" y="105" text-anchor="end" class="small">Y</text>
+  <text x="445" y="355" class="small">X</text>
+  
+  <!-- 회귀선 -->
+  <line x1="100" y1="300" x2="430" y2="140" stroke="#E53935" stroke-width="3"/>
+  <text x="420" y="130" class="label" style="fill:#E53935">회귀선</text>
+  
+  <!-- 데이터점 1 (오차 작음) -->
+  <circle cx="150" cy="275" r="8" fill="#43A047"/>
+  <line x1="150" y1="275" x2="150" y2="282" stroke="#43A047" stroke-width="2" stroke-dasharray="4,2"/>
+  <circle cx="150" cy="282" r="3" fill="#E53935"/>
+  <text x="165" y="280" class="hint" style="fill:#43A047">오차 작음</text>
+  
+  <!-- 데이터점 2 (오차 중간) -->
+  <circle cx="230" cy="230" r="8" fill="#FFC107"/>
+  <line x1="230" y1="230" x2="230" y2="258" stroke="#FFC107" stroke-width="2" stroke-dasharray="4,2"/>
+  <circle cx="230" cy="258" r="3" fill="#E53935"/>
+  <text x="245" y="245" class="hint" style="fill:#FFA000">오차 중간</text>
+  
+  <!-- 데이터점 3 (오차 큼 - 위로) -->
+  <circle cx="300" cy="175" r="8" fill="#E53935"/>
+  <line x1="300" y1="175" x2="300" y2="228" stroke="#E53935" stroke-width="2" stroke-dasharray="4,2"/>
+  <circle cx="300" cy="228" r="3" fill="#E53935"/>
+  
+  <!-- 오차 크기 표시 화살표 -->
+  <line x1="310" y1="180" x2="310" y2="225" stroke="#C62828" stroke-width="1"/>
+  <polygon points="310,180 306,190 314,190" fill="#C62828"/>
+  <polygon points="310,225 306,215 314,215" fill="#C62828"/>
+  <text x="325" y="205" class="hint" style="fill:#C62828;font-weight:600">오차 큼!</text>
+  
+  <!-- 데이터점 4 (오차 큼 - 아래로) -->
+  <circle cx="370" cy="220" r="8" fill="#FF7043"/>
+  <line x1="370" y1="220" x2="370" y2="185" stroke="#FF7043" stroke-width="2" stroke-dasharray="4,2"/>
+  <circle cx="370" cy="185" r="3" fill="#E53935"/>
+  
+  <!-- 설명 영역 -->
+  <rect x="500" y="70" width="270" height="140" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  <text x="635" y="95" text-anchor="middle" class="subtitle">📐 오차 공식</text>
+  
+  <rect x="515" y="110" width="240" height="35" rx="6" fill="#FFEBEE"/>
+  <text x="635" y="133" text-anchor="middle" class="formula">오차 = 실제값 - 예측값</text>
+  
+  <text x="525" y="165" class="small">• 오차 > 0: 실제값이 예측보다 큼 (위)</text>
+  <text x="525" y="182" class="small">• 오차 &lt; 0: 실제값이 예측보다 작음 (아래)</text>
+  <text x="525" y="199" class="small">• 오차 = 0: 완벽한 예측 (선 위)</text>
+  
+  <!-- 색상 범례 -->
+  <rect x="500" y="220" width="270" height="85" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  <text x="635" y="245" text-anchor="middle" class="subtitle">🎨 오차선 색상</text>
+  
+  <circle cx="530" cy="270" r="8" fill="#43A047"/>
+  <text x="550" y="274" class="small">녹색: 오차 작음 (예측 정확)</text>
+  
+  <circle cx="530" cy="292" r="8" fill="#E53935"/>
+  <text x="550" y="296" class="small">빨강: 오차 큼 (예측 부정확)</text>
+  
+  <!-- 교육 포인트 -->
+  <rect x="500" y="315" width="270" height="55" rx="12" fill="#E3F2FD" filter="url(#shadow)"/>
+  <text x="635" y="340" text-anchor="middle" class="label" style="fill:#1565C0">💡 교육 포인트</text>
+  <text x="635" y="358" text-anchor="middle" class="hint" style="fill:#1565C0">"AI는 항상 100% 정확하지 않다"</text>
+  
+  <!-- MSE 설명 -->
+  <rect x="30" y="380" width="450" height="10" rx="0" fill="none"/>
+</svg>

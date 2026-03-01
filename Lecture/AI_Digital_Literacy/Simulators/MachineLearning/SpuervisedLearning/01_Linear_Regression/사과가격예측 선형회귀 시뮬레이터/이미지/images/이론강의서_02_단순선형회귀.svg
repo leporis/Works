@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="800" height="500" fill="url(#bgGrad)"/>
+  
+  <!-- 제목 -->
+  <text x="400" y="40" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="24" font-weight="700" fill="#E53935">📈 단순 선형 회귀</text>
+  
+  <!-- 그래프 영역 배경 -->
+  <rect x="80" y="70" width="420" height="350" rx="12" fill="white" filter="url(#shadow)"/>
+  
+  <!-- 축 -->
+  <line x1="120" y1="380" x2="470" y2="380" stroke="#3E2723" stroke-width="2"/>
+  <line x1="120" y1="380" x2="120" y2="100" stroke="#3E2723" stroke-width="2"/>
+  
+  <!-- 축 화살표 -->
+  <polygon points="470,380 460,375 460,385" fill="#3E2723"/>
+  <polygon points="120,100 115,110 125,110" fill="#3E2723"/>
+  
+  <!-- 축 레이블 -->
+  <text x="295" y="420" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" font-weight="500" fill="#5D4037">품질 점수 (x)</text>
+  <text x="70" y="240" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" font-weight="500" fill="#5D4037" transform="rotate(-90 70 240)">가격 (y)</text>
+  
+  <!-- 데이터 포인트들 -->
+  <circle cx="150" cy="340" r="6" fill="#43A047" opacity="0.7"/>
+  <circle cx="180" cy="310" r="6" fill="#66BB6A" opacity="0.7"/>
+  <circle cx="200" cy="320" r="6" fill="#81C784" opacity="0.7"/>
+  <circle cx="230" cy="280" r="6" fill="#AED581" opacity="0.7"/>
+  <circle cx="260" cy="260" r="6" fill="#C5E1A5" opacity="0.7"/>
+  <circle cx="280" cy="250" r="6" fill="#DCE775" opacity="0.7"/>
+  <circle cx="310" cy="220" r="6" fill="#FFF176" opacity="0.7"/>
+  <circle cx="340" cy="200" r="6" fill="#FFD54F" opacity="0.7"/>
+  <circle cx="360" cy="180" r="6" fill="#FFB74D" opacity="0.7"/>
+  <circle cx="390" cy="160" r="6" fill="#FF8A65" opacity="0.7"/>
+  <circle cx="420" cy="140" r="6" fill="#E57373" opacity="0.7"/>
+  <circle cx="450" cy="130" r="6" fill="#E53935" opacity="0.7"/>
+  
+  <!-- 회귀선 -->
+  <line x1="130" y1="360" x2="460" y2="110" stroke="#E53935" stroke-width="4"/>
+  
+  <!-- 회귀선 레이블 -->
+  <rect x="380" y="85" width="100" height="25" rx="4" fill="#E53935"/>
+  <text x="430" y="103" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="500" fill="white">회귀선</text>
+  
+  <!-- 수식 박스: y=80, height=130, 하단=210, 마지막 텍스트 y=200 → 간격 10px -->
+  <g filter="url(#shadow)">
+    <rect x="530" y="80" width="240" height="130" rx="16" fill="white" stroke="#E53935" stroke-width="2"/>
+    <rect x="530" y="80" width="240" height="40" rx="16" fill="#E53935"/>
+    <text x="650" y="108" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="16" font-weight="600" fill="white">📐 회귀 수식</text>
+    
+    <text x="650" y="145" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="22" font-weight="700" fill="#3E2723">y = wx + b</text>
+    <text x="650" y="200" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#E53935">가격 = w × 품질 + b</text>
+  </g>
+  
+  <!-- 파라미터 설명 -->
+  <g filter="url(#shadow)">
+    <rect x="530" y="240" width="240" height="180" rx="16" fill="white" stroke="#FFCCBC" stroke-width="2"/>
+    
+    <!-- w 설명 -->
+    <rect x="550" y="260" width="200" height="50" rx="8" fill="#FFF3E0"/>
+    <text x="570" y="285" font-family="JetBrains Mono, monospace" font-size="18" font-weight="700" fill="#E53935">w</text>
+    <text x="600" y="280" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#5D4037">= 가중치 (기울기)</text>
+    <text x="600" y="298" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#8D6E63">품질 1점↑ → 가격 w원↑</text>
+    
+    <!-- b 설명 -->
+    <rect x="550" y="320" width="200" height="50" rx="8" fill="#E3F2FD"/>
+    <text x="570" y="345" font-family="JetBrains Mono, monospace" font-size="18" font-weight="700" fill="#1976D2">b</text>
+    <text x="600" y="340" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#5D4037">= 편향 (y절편)</text>
+    <text x="600" y="358" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#8D6E63">품질 0점일 때 기본 가격</text>
+    
+    <!-- 예시 -->
+    <rect x="550" y="380" width="200" height="30" rx="6" fill="#E8F5E9"/>
+    <text x="650" y="400" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#2E7D32">예: 가격 = 30×품질 + 1000</text>
+  </g>
+  
+  <!-- 그래프 내 w, b 표시 -->
+  <!-- b (y절편) -->
+  <line x1="120" y1="360" x2="120" y2="380" stroke="#1976D2" stroke-width="3" stroke-dasharray="5,3"/>
+  <circle cx="120" cy="360" r="5" fill="#1976D2"/>
+  <text x="105" y="370" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#1976D2">b</text>
+  
+  <!-- w (기울기) 표시 -->
+  <line x1="200" y1="320" x2="280" y2="320" stroke="#E53935" stroke-width="2" stroke-dasharray="5,3"/>
+  <line x1="280" y1="320" x2="280" y2="260" stroke="#E53935" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="240" y="340" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#E53935">Δx</text>
+  <text x="295" y="295" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#E53935">Δy</text>
+  <text x="260" y="280" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#E53935">w = Δy/Δx</text>
+  
+  <!-- 하단 설명 -->
+  <rect x="80" y="450" width="640" height="35" rx="8" fill="#FCE4EC"/>
+  <text x="400" y="473" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="14" fill="#C62828">💡 학습 목표: 데이터에 가장 잘 맞는 w와 b 값을 찾는 것!</text>
+</svg>

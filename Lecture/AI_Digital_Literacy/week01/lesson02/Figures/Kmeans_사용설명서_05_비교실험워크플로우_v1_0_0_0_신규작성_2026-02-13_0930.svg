@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-auto">
+      <path d="M 0 0 L 10 3.5 L 0 7 z" fill="#666"/>
+    </marker>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="300" rx="12" fill="url(#bgGrad)"/>
+  <text x="400" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#333">🔬 K-Means 비교 실험 워크플로우</text>
+  <text x="400" y="46" text-anchor="middle" font-size="9" fill="#795548">3가지 실험으로 파라미터의 영향을 탐구</text>
+
+  <!-- 실험 A: K값 비교 -->
+  <rect x="20" y="60" width="250" height="100" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="20" y="60" width="250" height="24" rx="10" fill="#FFEBEE"/>
+  <rect x="20" y="78" width="250" height="6" fill="#FFEBEE"/>
+  <text x="145" y="78" text-anchor="middle" font-size="10" font-weight="600" fill="#E53935">🅰️ 같은 데이터, 다른 K값</text>
+
+  <text x="36" y="100" font-size="8" fill="#555">① 데이터 100개, K=3 → 실행 → Inertia 기록</text>
+  <text x="36" y="114" font-size="8" fill="#555">② K=4로 변경 → 재생성 → 실행 → 비교</text>
+
+  <rect x="36" y="124" width="218" height="26" rx="4" fill="#FFF8E1"/>
+  <text x="145" y="138" text-anchor="middle" font-size="7" font-weight="600" fill="#E65100">🔍 관찰: K↑ → Inertia↓ 확인</text>
+  <text x="145" y="150" text-anchor="middle" font-size="6" fill="#888">너무 큰 K는 의미 없는 분류</text>
+
+  <!-- 실험 B: 초기화 방법 비교 -->
+  <rect x="280" y="60" width="250" height="100" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="280" y="60" width="250" height="24" rx="10" fill="#E8F5E9"/>
+  <rect x="280" y="78" width="250" height="6" fill="#E8F5E9"/>
+  <text x="405" y="78" text-anchor="middle" font-size="10" font-weight="600" fill="#2E7D32">🅱️ 같은 데이터, 다른 초기화</text>
+
+  <text x="296" y="100" font-size="8" fill="#555">① K-means++ 실행 → 결과 기록</text>
+  <text x="296" y="114" font-size="8" fill="#555">② 🗑️ 초기화 → 랜덤 실행 → 비교</text>
+
+  <rect x="296" y="124" width="218" height="26" rx="4" fill="#FFF8E1"/>
+  <text x="405" y="138" text-anchor="middle" font-size="7" font-weight="600" fill="#E65100">🔍 관찰: K-means++ vs 랜덤</text>
+  <text x="405" y="150" text-anchor="middle" font-size="6" fill="#888">초기 중심점 배치의 영향</text>
+
+  <!-- 실험 C: 분산도 비교 -->
+  <rect x="540" y="60" width="240" height="100" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="540" y="60" width="240" height="24" rx="10" fill="#E3F2FD"/>
+  <rect x="540" y="78" width="240" height="6" fill="#E3F2FD"/>
+  <text x="660" y="78" text-anchor="middle" font-size="10" font-weight="600" fill="#1565C0">🅲 분산도에 따른 품질</text>
+
+  <text x="556" y="100" font-size="8" fill="#555">① 분산도 "낮음" → 실행 → 기록</text>
+  <text x="556" y="114" font-size="8" fill="#555">② 분산도 "높음" → 실행 → 비교</text>
+
+  <rect x="556" y="124" width="208" height="26" rx="4" fill="#FFF8E1"/>
+  <text x="660" y="138" text-anchor="middle" font-size="7" font-weight="600" fill="#E65100">🔍 관찰: 분산↑ → 분류 어려움</text>
+  <text x="660" y="150" text-anchor="middle" font-size="6" fill="#888">데이터 분포가 결과에 미치는 영향</text>
+
+  <!-- 하단: 공통 워크플로우 흐름 -->
+  <rect x="20" y="176" width="760" height="110" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <text x="400" y="198" text-anchor="middle" font-size="10" font-weight="600" fill="#333">📋 모든 실험의 공통 흐름</text>
+
+  <rect x="42" y="210" width="120" height="50" rx="8" fill="#FFEBEE"/>
+  <text x="102" y="230" text-anchor="middle" font-size="8" font-weight="600" fill="#E53935">① 조건 설정</text>
+  <text x="102" y="244" text-anchor="middle" font-size="7" fill="#555">K값, 초기화, 분산도</text>
+  <text x="102" y="256" text-anchor="middle" font-size="7" fill="#555">파라미터 결정</text>
+
+  <line x1="162" y1="235" x2="186" y2="235" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="188" y="210" width="120" height="50" rx="8" fill="#FFF8E1"/>
+  <text x="248" y="230" text-anchor="middle" font-size="8" font-weight="600" fill="#E65100">② 실행 & 기록</text>
+  <text x="248" y="244" text-anchor="middle" font-size="7" fill="#555">✨ 데이터 생성</text>
+  <text x="248" y="256" text-anchor="middle" font-size="7" fill="#555">⚡ 클러스터링 실행</text>
+
+  <line x1="308" y1="235" x2="332" y2="235" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="334" y="210" width="120" height="50" rx="8" fill="#E8F5E9"/>
+  <text x="394" y="230" text-anchor="middle" font-size="8" font-weight="600" fill="#2E7D32">③ 조건 변경</text>
+  <text x="394" y="244" text-anchor="middle" font-size="7" fill="#555">파라미터 수정</text>
+  <text x="394" y="256" text-anchor="middle" font-size="7" fill="#555">🗑️ 초기화 후 재실행</text>
+
+  <line x1="454" y1="235" x2="478" y2="235" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="480" y="210" width="120" height="50" rx="8" fill="#E3F2FD"/>
+  <text x="540" y="230" text-anchor="middle" font-size="8" font-weight="600" fill="#1565C0">④ 결과 비교</text>
+  <text x="540" y="244" text-anchor="middle" font-size="7" fill="#555">Inertia, 반복 횟수</text>
+  <text x="540" y="256" text-anchor="middle" font-size="7" fill="#555">시각적 패턴 비교</text>
+
+  <line x1="600" y1="235" x2="624" y2="235" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="626" y="210" width="140" height="50" rx="8" fill="#F3E5F5"/>
+  <text x="696" y="230" text-anchor="middle" font-size="8" font-weight="600" fill="#7B1FA2">⑤ 결론 도출</text>
+  <text x="696" y="244" text-anchor="middle" font-size="7" fill="#555">"어떤 조건이 더 좋고</text>
+  <text x="696" y="256" text-anchor="middle" font-size="7" fill="#555">왜 그런지" 정리</text>
+</svg>

@@ -1,0 +1,450 @@
+% 🍎 선형 회귀 학습 수업지도안 【예비교사용】
+% XeLaTeX로 컴파일: xelatex 파일명.tex (2회)
+
+\documentclass[11pt,a4paper]{article}
+
+% 한글 지원
+\usepackage{fontspec}
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+
+% 컬러 이모지
+\usepackage{twemojis}
+
+% 수학
+\usepackage{amsmath,amssymb}
+
+% 색상
+\usepackage{xcolor}
+\definecolor{applered}{RGB}{229,57,53}
+\definecolor{applegreen}{RGB}{67,160,71}
+\definecolor{teal}{RGB}{0,131,143}
+\definecolor{darkblue}{RGB}{21,101,192}
+\definecolor{orange}{RGB}{255,152,0}
+\definecolor{lightcyan}{RGB}{224,247,250}
+\definecolor{lightblue}{RGB}{227,242,253}
+\definecolor{lightyellow}{RGB}{255,249,196}
+\definecolor{lightgreen}{RGB}{232,245,233}
+\definecolor{lightgray}{RGB}{245,245,245}
+\definecolor{warmcream}{RGB}{255,251,245}
+
+% 박스
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+% 표
+\usepackage{array,booktabs,longtable,multirow,makecell}
+
+% 페이지
+\usepackage[margin=2cm]{geometry}
+
+% 제목 스타일
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries\color{applered}}{\Roman{section}.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries\color{teal}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{darkblue}}{\thesubsubsection}{0.5em}{}
+
+% 하이퍼링크
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=teal,urlcolor=darkblue}
+
+% 열거형
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=*,itemsep=2pt}
+\setlist[enumerate]{leftmargin=*,itemsep=2pt}
+
+% 머리글/바닥글
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{gray}선형 회귀 학습 수업지도안 【예비교사용】}
+\fancyhead[R]{\small\color{gray}v1.2.1.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+% 표지
+\begin{center}
+\vspace*{0.5cm}
+{\Huge\bfseries\color{applered} \texttwemoji{red apple} 선형 회귀 학습 수업지도안}
+
+\vspace{0.4cm}
+{\LARGE\bfseries 【예비교사용】}
+
+\vspace{0.2cm}
+{\large 품질 점수 기반 단순 선형 회귀}
+
+\vspace{0.8cm}
+\begin{tcolorbox}[colback=lightcyan,colframe=teal,width=0.7\textwidth]
+\centering
+\large 시뮬레이터 v1.2.4.1 \quad | \quad 문서 버전: v1.2.1.0
+\end{tcolorbox}
+\end{center}
+
+\vspace{0.5cm}
+\tableofcontents
+\newpage
+
+%=============================================
+\section{수업 개요}
+%=============================================
+
+\begin{center}
+\begin{tabular}{|>{\bfseries}p{2.5cm}|p{4.5cm}|>{\bfseries}p{2cm}|p{4.5cm}|}
+\hline
+단원명 & 인공지능과 머신러닝의 이해 & 대상 & 초등 예비교사 (대학생) \\
+\hline
+차시 & 1\textasciitilde2차시 (총 90분) & 장소 & 대학 컴퓨터실 \\
+\hline
+주제 & \multicolumn{3}{p{11cm}|}{품질 점수 기반 단순 선형 회귀의 원리 이해 및 교수법 탐구} \\
+\hline
+학습 도구 & \multicolumn{3}{p{11cm}|}{사과 가격 예측 시뮬레이터 v1.2.4.1 (품질→가격, 2D 시각화)} \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=lightyellow,colframe=orange,title=\textbf{\texttwemoji{pushpin} 본 수업지도안의 대상}]
+이 수업지도안은 초등학교 교사가 되기 위해 학습하는 \textbf{'예비교사(대학생)'}를 대상으로 합니다.
+
+예비교사들이 AI 원리를 이해한 후, 추후 초등학생에게 가르칠 때 어떻게 '쉽게 변환'할 수 있는지 논의합니다.
+
+\vspace{0.2cm}
+\texttwemoji{light bulb} 초등학생 직접 대상 수업은 별도의 \textbf{'초등학생용 수업지도안'}을 참고하세요.
+\end{tcolorbox}
+
+%=============================================
+\section{학습 목표}
+%=============================================
+
+\begin{center}
+\begin{tabular}{|>{\centering\arraybackslash}p{1.5cm}|p{12.5cm}|}
+\hline
+\textbf{지식} & 품질 점수 계산 방법(당도점수+무게점수)과 단순 선형 회귀($y=wx+b$)의 수학적 원리를 설명할 수 있다. \\
+\hline
+\textbf{기능} & 시뮬레이터를 활용하여 경사하강법, 오차선, R² 점수를 분석하고 학습 과정을 해석할 수 있다. \\
+\hline
+\textbf{태도} & AI 모델의 한계(오차 불가피성)를 비판적으로 평가하고, 초등학생에게 적합한 교수 전략을 탐색한다. \\
+\hline
+\end{tabular}
+\end{center}
+
+%=============================================
+\section{핵심 개념 정리}
+%=============================================
+
+\subsection{품질 점수 계산}
+
+\begin{tcolorbox}[colback=lightcyan,colframe=teal,title=\textbf{\texttwemoji{triangular ruler} 품질 점수 공식}]
+\begin{equation}
+\text{품질} = \text{당도점수}(50\%) + \text{무게점수}(50\%)
+\end{equation}
+
+\begin{itemize}
+    \item \textbf{당도점수} = $\displaystyle\frac{\text{당도} - 10}{8} \times 50$ \quad (10\textasciitilde18 Brix → 0\textasciitilde50점)
+    \item \textbf{무게점수} = $\displaystyle\frac{\text{무게} - 150}{200} \times 50$ \quad (150\textasciitilde350g → 0\textasciitilde50점)
+\end{itemize}
+
+\vspace{0.2cm}
+\texttwemoji{light bulb} 이 공식은 \textbf{Min-Max 정규화}의 변형으로, 두 특성을 동일한 스케일(0\textasciitilde50)로 변환합니다.
+\end{tcolorbox}
+
+\subsection{선형 회귀 모델}
+
+\begin{tcolorbox}[colback=lightblue,colframe=darkblue,title=\textbf{\texttwemoji{chart increasing} 회귀식과 경사 하강법}]
+\textbf{모델:} \quad $\text{가격} = w \times \text{품질} + b$
+
+\begin{itemize}
+    \item $w$ (가중치/기울기): 품질 1점 증가 시 가격 변화량
+    \item $b$ (편향/y절편): 품질이 0일 때 기본 가격
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{경사 하강법 (Gradient Descent):}
+\begin{align}
+w &\leftarrow w - \eta \cdot \frac{\partial \text{Loss}}{\partial w} \\
+b &\leftarrow b - \eta \cdot \frac{\partial \text{Loss}}{\partial b}
+\end{align}
+
+여기서 $\eta$는 학습률, Loss는 MSE(평균 제곱 오차)
+\end{tcolorbox}
+
+\subsection{핵심 용어}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{11cm}|}
+\hline
+\textbf{용어} & \textbf{의미} \\
+\hline
+학습률 ($\eta$) & 가중치 업데이트 크기. 너무 크면 발산, 너무 작으면 수렴 느림 \\
+\hline
+에포크 (Epoch) & 전체 데이터를 한 번 학습하는 단위 \\
+\hline
+MSE & Mean Squared Error = $\sum(\text{실제}-\text{예측})^2/n$ \\
+\hline
+R² (결정계수) & $1 - \frac{\text{잔차제곱합}}{\text{총제곱합}}$. 1에 가까울수록 좋은 적합 \\
+\hline
+잔차 (Residual) & 실제값 $-$ 예측값. 오차선으로 시각화 \\
+\hline
+정규화 & 변수들의 스케일을 동일하게 맞추는 전처리 \\
+\hline
+\end{tabular}
+\end{center}
+
+%=============================================
+\section{교수-학습 지도안}
+%=============================================
+
+\subsection{1차시: 개념 이해 (45분)}
+
+\subsubsection{도입 (10분)}
+
+\begin{tcolorbox}[colback=lightgreen,colframe=applegreen,title=\textbf{【동기유발 - 5분】}]
+\texttwemoji{man teacher} \textbf{교사:} 사과 한 개의 가격은 어떻게 정해질까요? 마트에서 '특', '대' 등급은 무엇을 기준으로 할까요?
+
+\vspace{0.2cm}
+\texttwemoji{girl} \textbf{학생:} 당도, 크기, 색상, 흠집 유무 등이요.
+
+\vspace{0.2cm}
+\texttwemoji{man teacher} \textbf{교사:} 좋습니다. 오늘은 '당도'와 '무게' 두 가지 특성을 '품질 점수'로 통합하고, 이 점수로 가격을 예측하는 선형 회귀 모델을 학습시켜 봅니다.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=warmcream,colframe=applered,title=\textbf{【학습 목표 제시 - 5분】}]
+\begin{itemize}
+    \item 품질 점수 계산의 수학적 원리 (Min-Max 정규화)
+    \item 선형 회귀 모델의 파라미터($w$, $b$) 의미
+    \item 경사 하강법을 통한 학습 과정 이해
+\end{itemize}
+\end{tcolorbox}
+
+\subsubsection{전개 (30분)}
+
+\begin{tcolorbox}[colback=lightgray,colframe=gray,title=\textbf{【시뮬레이터 탐색 - 10분】}]
+\texttwemoji{man teacher} \textbf{교사:} 시뮬레이터를 열어보세요. 3열 레이아웃입니다. 왼쪽은 데이터 생성, 가운데는 시각화, 오른쪽은 학습 설정입니다.
+
+\vspace{0.3cm}
+\textbf{활동:}
+\begin{itemize}
+    \item 데이터 30개 생성 (노이즈 10\%)
+    \item 산점도에서 X축(품질), Y축(가격) 확인
+    \item 점 색상이 품질에 따라 녹색→빨강으로 변화하는 것 관찰
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightgray,colframe=gray,title=\textbf{【첫 학습 실행 - 15분】}]
+\texttwemoji{man teacher} \textbf{교사:} 학습률 0.01, 에포크 500으로 설정하고 '\texttwemoji{high voltage} 학습 실행'을 누르세요.
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=lightyellow,colframe=orange,title=\textbf{\texttwemoji{warning} 예상 결과}]
+\begin{itemize}
+    \item 손실 그래프: 빠르게 감소 후 수렴
+    \item 회귀선: 산점도에 빨간 직선 표시
+    \item R² 값: 0.85\textasciitilde0.95 (노이즈 10\% 기준)
+    \item 회귀식 예: 가격 = 30.2 × 품질 + 987
+\end{itemize}
+\end{tcolorbox}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightgray,colframe=gray,title=\textbf{【회귀식 해석 - 5분】}]
+\texttwemoji{man teacher} \textbf{교사:} 회귀식 '가격 = 30 × 품질 + 1000'의 의미는 무엇일까요?
+
+\vspace{0.2cm}
+\texttwemoji{girl} \textbf{학생:} 품질 1점 증가 시 가격이 30원 오르고, 품질 0점이면 기본 1000원입니다.
+
+\vspace{0.2cm}
+\texttwemoji{man teacher} \textbf{교사:} 맞습니다. $w$=30은 기울기, $b$=1000은 y절편입니다. 이 값들이 학습을 통해 데이터에 맞게 조정됩니다.
+\end{tcolorbox}
+
+\subsubsection{정리 (5분)}
+
+\begin{itemize}
+    \item \textbf{핵심 요약:} 품질 점수 계산 → 선형 회귀 학습 → 회귀식 해석
+    \item \textbf{다음 차시 예고:} 학습률 실험, 노이즈 영향, AI 한계 논의
+\end{itemize}
+
+\subsection{2차시: 실험과 탐구 (45분)}
+
+\subsubsection{도입 (5분)}
+
+\begin{tcolorbox}[colback=lightcyan,colframe=teal]
+\texttwemoji{man teacher} \textbf{교사:} 오늘의 탐구 질문입니다: \textbf{'오차를 완전히 0으로 만들 수 있을까요?'}
+\end{tcolorbox}
+
+\subsubsection{전개 (35분)}
+
+\begin{tcolorbox}[colback=lightgray,colframe=gray,title=\textbf{【탐구 1: 학습률 실험 - 10분】}]
+\begin{center}
+\begin{tabular}{|c|p{5.5cm}|p{5.5cm}|}
+\hline
+\textbf{실험} & \textbf{절차} & \textbf{예상 결과} \\
+\hline
+A & 초기화 → 데이터 생성 → 학습률 0.001 & 수렴 매우 느림, 500 에포크로 부족 \\
+\hline
+B & 초기화 → 데이터 생성 → 학습률 0.1 & 손실 발산 또는 진동 \\
+\hline
+C & 초기화 → 데이터 생성 → 학습률 0.01 & 안정적 수렴 (적절한 학습률) \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\texttwemoji{man teacher} \textbf{교사:} \texttwemoji{film projector} 재생 버튼을 눌러 학습 과정을 관찰하세요.
+
+\texttwemoji{girl} \textbf{학생:} 처음에는 기울기가 맞지 않다가 점점 데이터 중심을 통과하도록 조정됩니다.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightgray,colframe=gray,title=\textbf{【탐구 2: 오차선 분석 - 8분】}]
+\texttwemoji{man teacher} \textbf{교사:} 결과 패널에서 '오차선 표시'를 체크하세요.
+
+\texttwemoji{girl} \textbf{학생:} 색상이 다르네요. 녹색은 오차가 작고 빨간색은 크다는 뜻인가요?
+
+\texttwemoji{man teacher} \textbf{교사:} 정확합니다. 이 잔차들의 제곱 평균이 MSE입니다.
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=lightyellow,colframe=orange,title=\textbf{\texttwemoji{light bulb} 핵심 인사이트: 오차가 0이 될 수 없는 이유}]
+\begin{enumerate}
+    \item \textbf{노이즈}: 데이터 생성 시 무작위 변동 포함
+    \item \textbf{선형 모델의 한계}: 비선형 관계는 직선으로 표현 불가
+    \item \textbf{변수 누락}: 색상, 품종, 산지 등 다른 요인도 영향
+\end{enumerate}
+→ \textbf{'AI는 항상 맞지 않는다'}는 비판적 시각 강조
+\end{tcolorbox}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightgray,colframe=gray,title=\textbf{【탐구 3: 추론 실습 - 7분】}]
+\texttwemoji{man teacher} \textbf{교사:} \texttwemoji{crystal ball} 추론 모드로 전환하세요.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{사과} & \textbf{당도/무게} & \textbf{품질 점수} & \textbf{예측 가격} \\
+\hline
+고품질 & 16 Brix, 300g & 75점 & (기록) \\
+\hline
+저품질 & 12 Brix, 180g & 20점 & (기록) \\
+\hline
+\end{tabular}
+\end{center}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=lightgreen,colframe=applegreen,title=\textbf{【모둠 토론 - 10분】 \texttwemoji{graduation cap} 초등학생 대상 교수 전략}]
+\begin{itemize}
+    \item 선형 회귀 → '가격 규칙선 찾기'
+    \item 학습률 → '공부하는 발걸음 크기'
+    \item MSE/손실 → 'AI가 정답에서 떨어진 거리'
+    \item 수식 계산 대신 '품질 점수표' 활용
+    \item '예측 대결' 활동으로 AI 효율성 체감
+\end{itemize}
+\end{tcolorbox}
+
+\subsubsection{정리 (5분)}
+
+\begin{itemize}
+    \item \textbf{학습률의 중요성:} 너무 크면 발산, 너무 작으면 느림
+    \item \textbf{오차의 불가피성:} 노이즈, 모델 한계, 변수 누락
+    \item \textbf{초등학생 대상 교수 전략 논의}
+\end{itemize}
+
+%=============================================
+\section{평가 계획}
+%=============================================
+
+\begin{center}
+\small
+\begin{tabular}{|p{2.3cm}|p{3.5cm}|p{3.5cm}|p{3.5cm}|}
+\hline
+\textbf{평가 영역} & \textbf{상 (10점)} & \textbf{중 (7점)} & \textbf{하 (4점)} \\
+\hline
+품질점수 이해 & Min-Max 정규화 원리까지 설명 & 계산 과정 이해 & 공식만 암기 \\
+\hline
+회귀식 해석 & $w$, $b$의 수학적 의미와 실제 해석 연결 & 기본 해석 가능 & 해석 미흡 \\
+\hline
+경사하강법 이해 & 학습률과 수렴/발산 관계 설명 & 학습률 영향 인식 & 개념 이해 부족 \\
+\hline
+AI 한계 인식 & 오차 불가피성의 다양한 원인 분석 & AI가 완벽하지 않음 인식 & 비판적 시각 부족 \\
+\hline
+교수 전략 탐색 & 초등학생용 용어 재정의 및 활동 제안 & 난이도 조정 필요성 인식 & 고려 부족 \\
+\hline
+\end{tabular}
+\end{center}
+
+%=============================================
+\section{지도상의 유의점}
+%=============================================
+
+\begin{itemize}
+    \item 품질 점수 계산의 수학적 원리(Min-Max 정규화)를 먼저 설명한 후 시뮬레이터 사용
+    \item 학습률 실험 시 반드시 '\texttwemoji{wastebasket} 초기화' 버튼 클릭 후 진행
+    \item 오차선 시각화를 통해 잔차 개념과 MSE의 관계 강조
+    \item \texttwemoji{film projector} 재생 기능으로 경사 하강법의 동작 원리 시각적 이해
+    \item 마지막 10분은 '초등학생 대상 교수 전략' 논의에 할애
+\end{itemize}
+
+\subsection{트러블슈팅}
+
+\begin{center}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{문제 상황} & \textbf{해결 방법} \\
+\hline
+손실이 발산함 (NaN) & 학습률을 0.01 이하로 낮추고 초기화 후 재학습 \\
+\hline
+R²가 음수 & 에포크 늘리거나 데이터 더 생성 (최소 20개) \\
+\hline
+손실 그래프 안 그려짐 & 인터넷 연결 확인 (Chart.js CDN 필요) \\
+\hline
+화면 깨짐 & 브라우저 확대/축소 100\%, 해상도 1024×768 이상 \\
+\hline
+\end{tabular}
+\end{center}
+
+%=============================================
+\section{참고자료}
+%=============================================
+
+\begin{center}
+\begin{tabular}{|c|p{6.5cm}|c|p{4cm}|}
+\hline
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & 사과가격예측\_시뮬레이터\_v1.2.4.1.html & 파일 & 실습용 시뮬레이터 \\
+\hline
+2 & 사과가격예측\_개발일지\_v1.2.4.1.md & 문서 & 상세 기술 문서 \\
+\hline
+3 & 사과가격예측\_퀵가이드\_v1.2.4.1.md & 문서 & 사용자 가이드 \\
+\hline
+4 & 수업지도안\_초등학생용\_v1.0.1.0.docx & 문서 & 초등학생 대상 지도안 \\
+\hline
+\end{tabular}
+\end{center}
+
+%=============================================
+\section{생성/수정 이력}
+%=============================================
+
+\begin{center}
+\small
+\begin{tabular}{|c|c|c|c|p{4.5cm}|c|}
+\hline
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경} & \textbf{변경 내용} & \textbf{작성자} \\
+\hline
+v1.0.0.0 & 2026-01-31 & 15:10 & 최초 & 초안 작성 & Claude \\
+\hline
+v1.1.0.0 & 2026-01-31 & 15:40 & 마이너 & v1.2.4.1 기준 업데이트 & Claude \\
+\hline
+v1.2.0.0 & 2026-02-02 & 09:30 & 마이너 & 내용 대폭 보강 & Claude \\
+\hline
+v1.2.1.0 & 2026-02-02 & 10:00 & 리비전 & 예비교사용 명시, 초등화 전략 & Claude \\
+\hline
+\textbf{v1.2.1.0} & \textbf{2026-02-02} & \textbf{13:00} & \textbf{패치} & \textbf{LaTeX 변환, 컬러 이모지} & \textbf{Claude} \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+\begin{center}
+\large\itshape
+\texttwemoji{red apple} 사과 가격 예측 시뮬레이터 수업지도안 【예비교사용】
+\end{center}
+
+\end{document}

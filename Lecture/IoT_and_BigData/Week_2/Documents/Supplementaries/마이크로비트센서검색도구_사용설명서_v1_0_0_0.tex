@@ -1,0 +1,181 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}마이크로비트 센서 검색 도구 사용설명서 v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{magnifying-glass-tilted-left} 마이크로비트 센서 검색 도구}\\[0.5cm]
+{\Huge\bfseries\color{primary} 사용설명서}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v1.0.3.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 사용설명서는 마이크로비트 센서 검색 도구의 전체 기능을 상세히 설명합니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{1. 개요}
+
+\subsection*{1.1 목적}
+
+이 문서는 \textbf{마이크로비트 센서 검색 도구}의 전체 기능을 상세히 설명하는 사용설명서입니다. 시뮬레이터를 처음 사용하기 전에 읽거나, 특정 기능을 자세히 알고 싶을 때 참조합니다.
+
+
+\subsection*{1.2 관련 문서}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{5.5cm}|p{7.3cm}|p{2.3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{문서} & \textbf{용도} & \textbf{깊이} \\
+\hline
+퀵가이드 & 소프트웨어 사용 \textbf{중} 빠른 참조 & \emoji{star} \\
+\hline
+\textbf{사용설명서 (본 문서)} & \textbf{사용 전/후 전체 기능 이해} & \textbf{\emoji{star}\emoji{star}\emoji{star}} \\
+\hline
+이론해설서 & 배경 개념·원리 학습 & \emoji{star}\emoji{star}\emoji{star}\emoji{star} \\
+\hline
+활용가이드 & 수업 적용 방법 & \emoji{star}\emoji{star}\emoji{star} \\
+\hline
+개발참조문서 & 코드 구조·기술 사양 & \emoji{star}\emoji{star}\emoji{star}\emoji{star}\emoji{star} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{1.3 시스템 요구사항}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.6cm}|p{12.4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{항목} & \textbf{요구사항} \\
+\hline
+브라우저 & Chrome, Edge, Firefox (최신 버전) \\
+\hline
+화면 & 1024px 이상 권장 (반응형 지원) \\
+\hline
+인터넷 & 불필요 (단일 HTML, 오프라인 사용 가능) \\
+\hline
+설치 & 불필요 (HTML 파일 더블클릭으로 실행) \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{2. 화면 구성}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{images/S5_SensorSearch_screen.png}
+\end{center}
+
+
+\section*{3. 기능 상세}
+
+\subsection*{3.1 텍스트 검색}
+
+키워드로 센서 이름·설명 검색 (예: '온도', '거리')
+
+
+\subsection*{3.2 데이터 검색}
+
+필요한 측정 데이터 항목 체크 \textrightarrow{} 센서 조합 추천
+
+
+\subsection*{3.3 추천 키워드}
+
+미리 정의된 키워드 버튼으로 빠른 검색
+
+
+\subsection*{3.4 내장 충분 판정}
+
+내장 센서만으로 충분한지 자동 판별
+
+
+\subsection*{3.5 조합 추천}
+
+필요한 데이터를 충족하는 최소 센서 조합 계산
+
+
+\subsection*{3.6 결과 표시}
+
+센서별 I2C 주소, 측정 항목, 특징 상세 표시
+
+
+
+\section*{4. 조작 방법}
+
+\subsection*{4.1 기본 워크플로우}
+
+1. \textbf{방법 선택}: \emoji{speech-balloon} 텍스트 또는 \emoji{bar-chart} 데이터 탭 선택
+
+2. \textbf{검색 입력}: 키워드 입력 또는 데이터 항목 체크
+
+3. \textbf{결과 확인}: 추천 센서 목록과 내장 충분 여부 확인
+
+4. \textbf{조합 결정}: 프로젝트에 사용할 센서 조합 선택
+
+
+
+\section*{5. 자주 묻는 질문 (FAQ)}
+
+\textbf{Q: 848가지 조합은 어떻게 계산되나요?}
+
+
+A: 내장 센서 7항목은 항상 포함되고, 외장 10개 센서의 조합(2\textasciicircum{}10 - 1 = 1,023)에서 유효한 조합을 필터링한 결과입니다.
+
+
+\textbf{Q: 검색 결과가 없어요.}
+
+
+A: 키워드를 더 넓은 범위로 바꿔보세요. 예: '미세먼지' \textrightarrow{} '공기', '감지' \textrightarrow{} '측정'.
+
+
+\textbf{Q: 내장으로 충분하다는데 외장을 써야 하나요?}
+
+
+A: 프로젝트 목표에 따라 다릅니다. 대략적 추세만 필요하면 내장으로 충분하고, 정확한 수치가 필요하면 외장을 추천합니다.
+
+
+
+\section*{6. 참고자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{10.6cm}|p{2.9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{비고} \\
+\hline
+1 & 마이크로비트센서검색도구\_퀵가이드 & 빠른 참조 \\
+\hline
+2 & 마이크로비트센서검색도구\_개발참조 & 기술 사양 \\
+\hline
+3 & 마이크로비트센서검색도구\_활용가이드 & 수업 적용 \\
+\hline
+4 & 마이크로비트센서검색도구\_이론해설서 & 배경 이론 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{마이크로비트 센서 검색 도구 사용설명서}
+\end{center}
+\end{document}

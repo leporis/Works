@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <filter id="numShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="800" height="450" fill="url(#bgGrad)" rx="12"/>
+
+  <text x="400" y="26" text-anchor="middle" font-family="Noto Sans KR" font-size="15" font-weight="700" fill="#3E2723">⚙️ 학습 설정 패널 — 상세 구성</text>
+  <text x="400" y="42" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#8D6E63">학습 모드 오른쪽 상단 | 학습률과 에포크를 조절하고 학습을 시작합니다</text>
+
+  <!-- ===== 패널 확대도 (좌) ===== -->
+  <rect x="30" y="58" width="300" height="380" rx="12" fill="white" filter="url(#shadow)"/>
+  <rect x="30" y="58" width="300" height="32" rx="12" fill="#43A047"/>
+  <rect x="30" y="78" width="300" height="12" fill="#43A047"/>
+  <text x="180" y="79" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="white">⚙️ 학습 설정</text>
+
+  <!-- 학습률 -->
+  <text x="50" y="112" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#3E2723">학습률 (Learning Rate)</text>
+  <rect x="50" y="118" width="260" height="32" rx="6" fill="white" stroke="#FFCCBC" stroke-width="1.5"/>
+  <text x="62" y="139" font-family="Noto Sans KR" font-size="10" fill="#3E2723">0.01 (보통)  ▾</text>
+  <circle cx="42" cy="130" r="9" fill="#1565C0" filter="url(#numShadow)"/>
+  <text x="42" y="134" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">①</text>
+
+  <!-- 에포크 수 -->
+  <text x="50" y="168" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#3E2723">에포크 수</text>
+  <rect x="50" y="174" width="260" height="32" rx="6" fill="white" stroke="#FFCCBC" stroke-width="1.5"/>
+  <text x="62" y="195" font-family="Noto Sans KR" font-size="10" fill="#3E2723">30 에포크  ▾</text>
+  <circle cx="42" cy="186" r="9" fill="#1565C0" filter="url(#numShadow)"/>
+  <text x="42" y="190" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">②</text>
+
+  <!-- 시각화 간격 -->
+  <text x="50" y="224" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#3E2723">시각화 간격</text>
+  <rect x="50" y="230" width="260" height="32" rx="6" fill="white" stroke="#FFCCBC" stroke-width="1.5"/>
+  <text x="62" y="251" font-family="Noto Sans KR" font-size="10" fill="#3E2723">매 1 에포크마다  ▾</text>
+  <circle cx="42" cy="242" r="9" fill="#1565C0" filter="url(#numShadow)"/>
+  <text x="42" y="246" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">③</text>
+
+  <!-- 컨트롤 버튼 -->
+  <rect x="50" y="278" width="82" height="36" rx="8" fill="#43A047"/>
+  <text x="91" y="301" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="white">▶ 시작</text>
+  <rect x="140" y="278" width="78" height="36" rx="8" fill="#FFC107"/>
+  <text x="179" y="301" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="#3E2723">⏸ 정지</text>
+  <rect x="226" y="278" width="84" height="36" rx="8" fill="#2196F3"/>
+  <text x="268" y="301" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="white">⏭ 단계</text>
+  <circle cx="42" cy="292" r="9" fill="#43A047" filter="url(#numShadow)"/>
+  <text x="42" y="296" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">④</text>
+
+  <!-- 진행률 바 -->
+  <text x="50" y="334" font-family="Noto Sans KR" font-size="9" fill="#8D6E63">학습 진행</text>
+  <text x="310" y="334" text-anchor="end" font-family="JetBrains Mono" font-size="9" font-weight="600" fill="#E53935">15 / 30</text>
+  <rect x="50" y="340" width="260" height="10" rx="5" fill="#FFF3E0"/>
+  <rect x="50" y="340" width="130" height="10" rx="5" fill="#43A047"/>
+  <circle cx="42" cy="340" r="9" fill="#F57C00" filter="url(#numShadow)"/>
+  <text x="42" y="344" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">⑤</text>
+
+  <!-- 상태 배지 -->
+  <rect x="90" y="360" width="160" height="28" rx="8" fill="#E8F5E9" stroke="#43A047" stroke-width="1.5"/>
+  <text x="170" y="379" text-anchor="middle" font-family="Noto Sans KR" font-size="11" font-weight="700" fill="#2E7D32">▶ 학습 중...</text>
+  <circle cx="42" cy="370" r="9" fill="#43A047" filter="url(#numShadow)"/>
+  <text x="42" y="374" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">⑥</text>
+
+  <!-- 초기화 -->
+  <rect x="50" y="396" width="260" height="30" rx="6" fill="white" stroke="#FF5722" stroke-width="1.5"/>
+  <text x="180" y="416" text-anchor="middle" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#FF5722">🗑️ 전체 초기화</text>
+  <circle cx="42" cy="406" r="9" fill="#FF5722" filter="url(#numShadow)"/>
+  <text x="42" y="410" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">⑦</text>
+
+  <!-- ===== 설명 (우) ===== -->
+  <rect x="350" y="58" width="430" height="90" rx="10" fill="white" filter="url(#shadow)"/>
+  <text x="368" y="78" font-family="Noto Sans KR" font-size="10" font-weight="700" fill="#1565C0">① 학습률 (Learning Rate)</text>
+  <text x="368" y="96" font-family="Noto Sans KR" font-size="9" fill="#5D4037">한 번에 얼마나 많이 수정할지 결정합니다.</text>
+  <rect x="368" y="104" width="394" height="36" rx="4" fill="#FFF3E0"/>
+  <text x="378" y="118" font-family="Noto Sans KR" font-size="8" fill="#5D4037">• 0.001 (느림) — 천천히 정확하게, 많은 에포크 필요</text>
+  <text x="378" y="130" font-family="Noto Sans KR" font-size="8" fill="#5D4037">• 0.01 (보통) — 균형 잡힌 속도 ✅ 권장</text>
+  <text x="378" y="142" font-family="Noto Sans KR" font-size="8" fill="#5D4037">• 0.1 (빠름) — 빠르지만 불안정할 수 있음</text>
+
+  <rect x="350" y="156" width="430" height="56" rx="10" fill="white" filter="url(#shadow)"/>
+  <text x="368" y="176" font-family="Noto Sans KR" font-size="10" font-weight="700" fill="#1565C0">② 에포크 수</text>
+  <text x="368" y="194" font-family="Noto Sans KR" font-size="9" fill="#5D4037">전체 데이터를 몇 번 반복 학습할지 설정합니다.</text>
+  <text x="368" y="208" font-family="Noto Sans KR" font-size="8" fill="#8D6E63">10, 20, 30, 50, 100 중 선택 | 권장: 30 에포크</text>
+
+  <rect x="350" y="220" width="430" height="42" rx="10" fill="white" filter="url(#shadow)"/>
+  <text x="368" y="240" font-family="Noto Sans KR" font-size="10" font-weight="700" fill="#1565C0">③ 시각화 간격</text>
+  <text x="368" y="256" font-family="Noto Sans KR" font-size="9" fill="#5D4037">아키텍처 애니메이션을 몇 에포크마다 갱신할지 (1, 2, 5, 10)</text>
+
+  <rect x="350" y="270" width="430" height="76" rx="10" fill="white" filter="url(#shadow)"/>
+  <text x="368" y="290" font-family="Noto Sans KR" font-size="10" font-weight="700" fill="#43A047">④ 컨트롤 버튼</text>
+  <rect x="368" y="298" width="394" height="40" rx="4" fill="#FFF3E0"/>
+  <text x="378" y="312" font-family="Noto Sans KR" font-size="8.5" fill="#5D4037">▶ <tspan font-weight="600" fill="#43A047">시작</tspan> — 학습 시작 (데이터 생성 필수)</text>
+  <text x="378" y="326" font-family="Noto Sans KR" font-size="8.5" fill="#5D4037">⏸ <tspan font-weight="600" fill="#F57C00">정지</tspan> — 일시정지   ⏭ <tspan font-weight="600" fill="#1976D2">단계</tspan> — 1에포크씩 진행</text>
+
+  <rect x="350" y="354" width="210" height="38" rx="10" fill="white" filter="url(#shadow)"/>
+  <text x="368" y="374" font-family="Noto Sans KR" font-size="10" font-weight="700" fill="#F57C00">⑤ 진행률 바</text>
+  <text x="368" y="388" font-family="Noto Sans KR" font-size="8" fill="#8D6E63">현재 에포크 / 전체 에포크</text>
+
+  <rect x="568" y="354" width="212" height="38" rx="10" fill="white" filter="url(#shadow)"/>
+  <text x="586" y="374" font-family="Noto Sans KR" font-size="10" font-weight="700" fill="#43A047">⑥ 상태 배지</text>
+  <text x="586" y="388" font-family="Noto Sans KR" font-size="8" fill="#8D6E63">대기중/학습중/완료</text>
+
+  <rect x="350" y="400" width="430" height="38" rx="10" fill="white" filter="url(#shadow)"/>
+  <text x="368" y="420" font-family="Noto Sans KR" font-size="10" font-weight="700" fill="#FF5722">⑦ 전체 초기화</text>
+  <text x="368" y="434" font-family="Noto Sans KR" font-size="8" fill="#5D4037">모든 학습 데이터, 가중치, 차트를 초기 상태로 되돌립니다</text>
+</svg>

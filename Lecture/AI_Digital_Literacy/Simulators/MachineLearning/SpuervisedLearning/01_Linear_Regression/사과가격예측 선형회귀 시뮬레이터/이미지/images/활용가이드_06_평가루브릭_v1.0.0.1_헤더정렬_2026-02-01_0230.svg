@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="800" height="480" fill="url(#bgGrad)"/>
+  
+  <!-- 제목 -->
+  <text x="400" y="35" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="22" font-weight="700" fill="#E53935">📋 평가 루브릭 (3단계)</text>
+  <text x="400" y="58" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#5D4037">선형 회귀 시뮬레이터 활용 수업 평가 기준 | 40점 만점</text>
+  
+  <!-- 평가 영역 헤더 (셀 중앙 정렬: 상=230, 중=430, 하=650) -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="75" width="740" height="35" rx="8" fill="#3E2723"/>
+    <text x="80" y="98" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="white">평가 항목</text>
+    <text x="230" y="98" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="white">🌟 상 (10점)</text>
+    <text x="430" y="98" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="white">✅ 중 (7점)</text>
+    <text x="650" y="98" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="white">⚠️ 하 (4점)</text>
+  </g>
+  
+  <!-- 평가 영역 1: 품질점수 이해 -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="115" width="740" height="75" rx="0" fill="white" stroke="#FFCCBC" stroke-width="1"/>
+    <rect x="30" y="115" width="100" height="75" fill="#E53935"/>
+    <text x="80" y="145" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="white">📚</text>
+    <text x="80" y="162" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="white">품질점수</text>
+    <text x="80" y="178" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="white">이해</text>
+    
+    <rect x="130" y="115" width="200" height="75" fill="#E8F5E9"/>
+    <text x="230" y="140" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">당도+무게→품질 계산을</text>
+    <text x="230" y="157" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">정확히 설명하고</text>
+    <text x="230" y="174" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">새 사과에 적용 가능</text>
+    
+    <rect x="330" y="115" width="200" height="75" fill="#E3F2FD"/>
+    <text x="430" y="145" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#1565C0">품질 점수 계산 공식을</text>
+    <text x="430" y="162" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#1565C0">이해하고 설명 가능</text>
+    
+    <rect x="530" y="115" width="240" height="75" fill="#FFF8E1"/>
+    <text x="650" y="145" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#F57F17">품질 점수 개념을</text>
+    <text x="650" y="162" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#F57F17">부분적으로 이해</text>
+  </g>
+  
+  <!-- 평가 영역 2: 회귀식 해석 -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="195" width="740" height="75" rx="0" fill="white" stroke="#FFCCBC" stroke-width="1"/>
+    <rect x="30" y="195" width="100" height="75" fill="#43A047"/>
+    <text x="80" y="225" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="white">📈</text>
+    <text x="80" y="242" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="white">회귀식</text>
+    <text x="80" y="258" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="white">해석</text>
+    
+    <rect x="130" y="195" width="200" height="75" fill="#E8F5E9"/>
+    <text x="230" y="220" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">y=wx+b에서 w, b의</text>
+    <text x="230" y="237" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">의미를 정확히 설명하고</text>
+    <text x="230" y="254" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">예측 가격 계산 가능</text>
+    
+    <rect x="330" y="195" width="200" height="75" fill="#E3F2FD"/>
+    <text x="430" y="225" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#1565C0">회귀식의 기본 의미를</text>
+    <text x="430" y="242" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#1565C0">이해하고 설명 가능</text>
+    
+    <rect x="530" y="195" width="240" height="75" fill="#FFF8E1"/>
+    <text x="650" y="225" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#F57F17">회귀식 해석에</text>
+    <text x="650" y="242" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#F57F17">어려움을 보임</text>
+  </g>
+  
+  <!-- 평가 영역 3: 실험 수행 -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="275" width="740" height="75" rx="0" fill="white" stroke="#FFCCBC" stroke-width="1"/>
+    <rect x="30" y="275" width="100" height="75" fill="#FFC107"/>
+    <text x="80" y="305" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="#3E2723">🔬</text>
+    <text x="80" y="322" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="#3E2723">실험</text>
+    <text x="80" y="338" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="#3E2723">수행</text>
+    
+    <rect x="130" y="275" width="200" height="75" fill="#E8F5E9"/>
+    <text x="230" y="300" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">학습률/노이즈 실험을</text>
+    <text x="230" y="317" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">체계적으로 수행하고</text>
+    <text x="230" y="334" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">결과를 정확히 기록</text>
+    
+    <rect x="330" y="275" width="200" height="75" fill="#E3F2FD"/>
+    <text x="430" y="305" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#1565C0">실험을 수행하고</text>
+    <text x="430" y="322" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#1565C0">기본적인 결과 기록</text>
+    
+    <rect x="530" y="275" width="240" height="75" fill="#FFF8E1"/>
+    <text x="650" y="305" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#F57F17">실험 수행에</text>
+    <text x="650" y="322" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#F57F17">도움이 필요</text>
+  </g>
+  
+  <!-- 평가 영역 4: 결과 분석 -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="355" width="740" height="75" rx="0" fill="white" stroke="#FFCCBC" stroke-width="1"/>
+    <rect x="30" y="355" width="100" height="75" rx="0 0 0 8" fill="#9C27B0"/>
+    <text x="80" y="385" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="white">💡</text>
+    <text x="80" y="402" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="white">결과</text>
+    <text x="80" y="418" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="white">분석</text>
+    
+    <rect x="130" y="355" width="200" height="75" fill="#E8F5E9"/>
+    <text x="230" y="380" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">오차선/R² 분석으로</text>
+    <text x="230" y="397" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">AI 모델의 한계를</text>
+    <text x="230" y="414" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">비판적으로 평가</text>
+    
+    <rect x="330" y="355" width="200" height="75" fill="#E3F2FD"/>
+    <text x="430" y="385" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#1565C0">결과를 관찰하고</text>
+    <text x="430" y="402" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#1565C0">기본적인 해석 가능</text>
+    
+    <rect x="530" y="355" width="240" height="75" rx="0 0 8 0" fill="#FFF8E1"/>
+    <text x="650" y="385" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#F57F17">결과 분석에</text>
+    <text x="650" y="402" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#F57F17">어려움을 보임</text>
+  </g>
+  
+  <!-- 점수 환산 안내 -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="440" width="740" height="30" rx="10" fill="white" stroke="#E53935" stroke-width="2"/>
+    <text x="400" y="460" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#E53935">📊 총점: 40점 만점 (4개 항목 × 10점) | 상(32~40점) | 중(20~31점) | 하(16~19점)</text>
+  </g>
+</svg>

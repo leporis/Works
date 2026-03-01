@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#5D4037"/>
+    </marker>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="800" height="480" fill="url(#bgGrad)"/>
+  
+  <!-- 제목 -->
+  <text x="400" y="35" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="22" font-weight="700" fill="#3E2723">🤖 머신러닝의 종류</text>
+  <text x="400" y="58" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#8D6E63">Machine Learning Categories</text>
+  
+  <!-- 머신러닝 중앙 원 -->
+  <g filter="url(#shadow)">
+    <circle cx="400" cy="130" r="50" fill="white" stroke="#3E2723" stroke-width="3"/>
+    <text x="400" y="125" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" font-weight="700" fill="#3E2723">머신러닝</text>
+    <text x="400" y="142" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#8D6E63">Machine Learning</text>
+  </g>
+  
+  <!-- 연결선 -->
+  <line x1="350" y1="150" x2="150" y2="210" stroke="#5D4037" stroke-width="2"/>
+  <line x1="400" y1="180" x2="400" y2="210" stroke="#5D4037" stroke-width="2"/>
+  <line x1="450" y1="150" x2="650" y2="210" stroke="#5D4037" stroke-width="2"/>
+  
+  <!-- 1. 지도학습 (왼쪽) - 강조 -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="210" width="240" height="250" rx="16" fill="white" stroke="#E53935" stroke-width="3"/>
+    <rect x="30" y="210" width="240" height="45" rx="16" fill="#E53935"/>
+    <rect x="30" y="240" width="240" height="15" fill="#E53935"/>
+    <text x="150" y="240" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="white">📚 지도학습</text>
+    <text x="150" y="275" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#C62828">Supervised Learning</text>
+    
+    <!-- 설명 -->
+    <text x="150" y="305" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">정답(레이블)이 있는 데이터로 학습</text>
+    
+    <!-- 분류/회귀 박스 -->
+    <rect x="45" y="320" width="100" height="55" rx="8" fill="#FFEBEE"/>
+    <text x="95" y="342" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="600" fill="#C62828">분류</text>
+    <text x="95" y="358" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">Classification</text>
+    <text x="95" y="372" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#8D6E63">스팸/정상, 고양이/개</text>
+    
+    <!-- 회귀 박스 - 강조 -->
+    <rect x="155" y="320" width="100" height="55" rx="8" fill="#E53935"/>
+    <text x="205" y="342" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="700" fill="white">회귀 ⭐</text>
+    <text x="205" y="358" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#FFCDD2">Regression</text>
+    <text x="205" y="372" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#FFCDD2">가격, 온도 예측</text>
+    
+    <!-- 사과 시뮬레이터 표시 -->
+    <rect x="50" y="385" width="200" height="65" rx="8" fill="#FFF3E0" stroke="#FF5722" stroke-width="2" stroke-dasharray="4,2"/>
+    <text x="150" y="405" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="700" fill="#E65100">🍎 사과 시뮬레이터</text>
+    <text x="150" y="422" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">품질 → 가격 예측</text>
+    <text x="150" y="438" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#E65100" font-weight="600">단순 선형 회귀</text>
+  </g>
+  
+  <!-- 2. 비지도학습 (중앙) -->
+  <g filter="url(#shadow)">
+    <rect x="280" y="210" width="240" height="250" rx="16" fill="white" stroke="#43A047" stroke-width="2"/>
+    <rect x="280" y="210" width="240" height="45" rx="16" fill="#43A047"/>
+    <rect x="280" y="240" width="240" height="15" fill="#43A047"/>
+    <text x="400" y="240" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="white">🔍 비지도학습</text>
+    <text x="400" y="275" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#2E7D32">Unsupervised Learning</text>
+    
+    <!-- 설명 -->
+    <text x="400" y="305" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">정답 없이 패턴/구조 발견</text>
+    
+    <!-- 군집화 박스 -->
+    <rect x="295" y="320" width="100" height="55" rx="8" fill="#E8F5E9"/>
+    <text x="345" y="342" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="600" fill="#2E7D32">군집화</text>
+    <text x="345" y="358" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">Clustering</text>
+    <text x="345" y="372" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#8D6E63">고객 그룹 분류</text>
+    
+    <!-- 차원축소 박스 -->
+    <rect x="405" y="320" width="100" height="55" rx="8" fill="#E8F5E9"/>
+    <text x="455" y="342" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="600" fill="#2E7D32">차원축소</text>
+    <text x="455" y="358" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">Dim. Reduction</text>
+    <text x="455" y="372" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#8D6E63">데이터 압축</text>
+    
+    <!-- 예시 -->
+    <rect x="295" y="385" width="210" height="65" rx="8" fill="#F1F8E9"/>
+    <text x="400" y="410" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">📊 예시</text>
+    <text x="400" y="428" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">• K-평균 군집화</text>
+    <text x="400" y="444" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">• 추천 시스템</text>
+  </g>
+  
+  <!-- 3. 강화학습 (오른쪽) -->
+  <g filter="url(#shadow)">
+    <rect x="530" y="210" width="240" height="250" rx="16" fill="white" stroke="#1976D2" stroke-width="2"/>
+    <rect x="530" y="210" width="240" height="45" rx="16" fill="#1976D2"/>
+    <rect x="530" y="240" width="240" height="15" fill="#1976D2"/>
+    <text x="650" y="240" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="15" font-weight="700" fill="white">🎮 강화학습</text>
+    <text x="650" y="275" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#1565C0">Reinforcement Learning</text>
+    
+    <!-- 설명 -->
+    <text x="650" y="305" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">보상을 최대화하는 행동 학습</text>
+    
+    <!-- 구성요소 -->
+    <rect x="545" y="320" width="210" height="55" rx="8" fill="#E3F2FD"/>
+    <text x="650" y="340" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#1565C0" font-weight="600">에이전트 ↔ 환경</text>
+    <text x="650" y="358" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">행동 → 보상/벌칙 → 학습</text>
+    <text x="650" y="372" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="8" fill="#8D6E63">시행착오로 최적 전략 발견</text>
+    
+    <!-- 예시 -->
+    <rect x="545" y="385" width="210" height="65" rx="8" fill="#E3F2FD"/>
+    <text x="650" y="410" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#5D4037">🎯 예시</text>
+    <text x="650" y="428" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">• 게임 AI (알파고)</text>
+    <text x="650" y="444" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5D4037">• 로봇 제어, 자율주행</text>
+  </g>
+</svg>

@@ -1,0 +1,1823 @@
+\documentclass[a4paper, 11pt]{article}
+
+% === 폰트 ===
+\usepackage{fontspec}
+\usepackage[hangul]{luatexko}
+
+% Latin 폰트 (숫자, 영문, 기호)
+\setmainfont[Ligatures=TeX]{TeX Gyre Heros}
+\setsansfont{TeX Gyre Heros}
+\setmonofont{Noto Sans Mono}
+
+% 한글 폰트
+\setmainhangulfont{Noto Sans CJK KR}[
+  BoldFont={Noto Sans CJK KR Bold}
+]
+\setsanshangulfont{Noto Sans CJK KR}[
+  BoldFont={Noto Sans CJK KR Bold}
+]
+
+% === 레이아웃 ===
+\usepackage{geometry}
+\geometry{left=25mm, right=25mm, top=30mm, bottom=30mm, headheight=15pt}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{calc}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{emoji}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{float}
+
+% === 색상 ===
+\definecolor{mainblue}{HTML}{1976D2}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{lightgray}{HTML}{F5F5F5}
+\definecolor{warnbg}{HTML}{FFF8E1}
+
+% === 이모지 ===
+\setemojifont{Noto Color Emoji}
+
+% === 헤더/풋터 ===
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small AI디지털리터러시 — 1주차 2차시}
+\fancyhead[R]{\small 강의노트 v1.3.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% === 섹션 스타일 ===
+\titleformat{\section}
+  {\Large\bfseries\color{mainblue}}
+  {\thesection.}{0.5em}{}[\titlerule]
+\titleformat{\subsection}
+  {\large\bfseries}{}{0em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries}{}{0em}{}
+
+% === tcolorbox ===
+\tcbuselibrary{skins, breakable}
+\newtcolorbox{infobox}[1][]{
+  colback=lightblue, colframe=mainblue,
+  fonttitle=\bfseries, title=#1,
+  breakable, enhanced}
+\newtcolorbox{tipbox}[1][]{
+  colback=lightgray, colframe=gray,
+  fonttitle=\bfseries, title=#1,
+  breakable, enhanced}
+\newtcolorbox{warnbox}[1][]{
+  colback=warnbg, colframe=orange,
+  fonttitle=\bfseries, title=#1,
+  breakable, enhanced}
+
+% === hyperref ===
+\hypersetup{
+  unicode=true,
+  pdfencoding=unicode,
+  colorlinks=true,
+  linkcolor=mainblue,
+  urlcolor=mainblue
+}
+
+% === pandoc 호환 ===
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% blockquote 스타일
+\renewenvironment{quote}
+  {\begin{tcolorbox}[colback=lightblue!30, colframe=mainblue!50,
+   left=8pt, right=8pt, top=4pt, bottom=4pt, breakable]}
+  {\end{tcolorbox}}
+
+% code block 스타일
+
+\begin{document}
+
+% === 제목 ===
+\begin{center}
+{\LARGE\bfseries\color{mainblue} AI디지털리터러시 — 1주차 2차시 강의노트}\\[0.5em]
+{\Large\bfseries 기계학습의 원리}\\[0.5em]
+{\normalsize 문서 버전: v1.3.0.0}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+\hypertarget{uxc218uxc5c5-uxc815uxbcf4}{%
+\subsection{수업 정보}\label{uxc218uxc5c5-uxc815uxbcf4}}
+
+\begin{longtable}{p{3cm}p{11cm}}
+\toprule\noalign{}
+항목 & 내용 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{교과목명} & AI디지털리터러시 \\
+\textbf{주차/차시} & 1주차 2차시 \\
+\textbf{주제} & 기계학습의 원리 \\
+\textbf{수업 시간} & 50분 (1시간) \\
+\textbf{수업 대상} & 청주교육대학교 4학년 \\
+\textbf{CK 강화 목표} & 기계학습의 원리(지도/비지도/강화학습)를
+이해한다. \\
+\textbf{관련 성취기준} & {[}6실05-05{]} \\
+\end{longtable}
+
+\hypertarget{uxc218uxc5c5-uxd750uxb984-uxc694uxc57d}{%
+\subsection{수업 흐름
+요약}\label{uxc218uxc5c5-uxd750uxb984-uxc694uxc57d}}
+
+\begin{longtable}{p{4.5cm}p{4.5cm}p{5.0cm}}
+\toprule\noalign{}
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+5분 & \emoji{clapper-board} 도입 & AI, ML, DL의 포함 관계 \\
+15분 & \emoji{blue-book} 전개 1 & 기계학습의 정의: 데이터로부터 패턴을 학습하는 AI
+기술 \\
+15분 & \emoji{green-book} 전개 2 & 학습 유형: 지도학습(분류/예측), 비지도학습(군집화),
+강화학습(보상) \\
+10분 & \emoji{orange-book} 전개 3 & 머신러닝 학습 과정: 데이터 수집 → 학습 → 평가 →
+예측 \\
+5분 & \emoji{memo} 정리 & 지도학습 = 엔트리 AI 모델의 원리 연결, 다음 주 퀴즈
+안내 \\
+\end{longtable}
+
+\hypertarget{uxb3c4uxc785-ai-ml-dluxc758-uxd3ecuxd568-uxad00uxacc4-5uxbd84}{%
+\section{\emoji{clapper-board} 도입: AI, ML, DL의 포함 관계
+(5분)}\label{uxb3c4uxc785-ai-ml-dluxc758-uxd3ecuxd568-uxad00uxacc4-5uxbd84}}
+
+\hypertarget{uxcc28uxc2dc-uxbcf5uxc2b5}{%
+\subsection{1차시 복습}\label{uxcc28uxc2dc-uxbcf5uxc2b5}}
+
+\begin{quote}
+\emoji{pushpin} \textbf{핵심 질문}: ``1차시에서 배운 AI, 그 안에는 무엇이 있을까요?''
+\end{quote}
+
+지난 시간에 우리는 AI의 정의와 유형을 배웠어요. AI는 ``인간의 지능을
+모방하는 컴퓨터 시스템''이라고 했죠. 그런데 AI를 구현하는 방법은 여러
+가지가 있어요. 오늘은 그중에서도 가장 중요한 \textbf{기계학습(Machine
+Learning)}에 대해 알아보겠습니다.
+
+\hypertarget{ai-ml-dluxc758-uxd3ecuxd568-uxad00uxacc4}{%
+\subsection{AI, ML, DL의 포함
+관계}\label{ai-ml-dluxc758-uxd3ecuxd568-uxad00uxacc4}}
+
+\textbf{{[}그림 01{]} AI, ML, DL의 포함 관계}
+
+AI, ML, DL은 자주 혼동되는 용어입니다. 이 세 가지의 관계를 정확히
+이해하는 것이 중요해요.
+
+\begin{verbatim}
+AI (인공지능)
+ ⊃ ML (기계학습)
+    ⊃ DL (딥러닝)
+\end{verbatim}
+
+\hypertarget{ai-artificial-intelligence-uxc778uxacf5uxc9c0uxb2a5}{%
+\subsubsection{\emoji{robot} AI (Artificial Intelligence,
+인공지능)}\label{ai-artificial-intelligence-uxc778uxacf5uxc9c0uxb2a5}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{가장 큰 개념}: 인간의 지능을 모방하는 모든 기술
+\item
+  \textbf{범위}: 규칙 기반 시스템부터 최신 딥러닝까지 모두 포함
+\item
+  \textbf{예시}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    규칙 기반: 체스 프로그램 (if-then 규칙)
+  \item
+    기계학습: 스팸 필터, 추천 시스템
+  \item
+    전문가 시스템: 1980년대 의료 진단 시스템
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{ml-machine-learning-uxae30uxacc4uxd559uxc2b5}{%
+\subsubsection{\emoji{brain} ML (Machine Learning,
+기계학습)}\label{ml-machine-learning-uxae30uxacc4uxd559uxc2b5}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{AI의 하위 개념}: AI를 구현하는 대표적 방법
+\item
+  \textbf{핵심 특징}: 데이터로부터 패턴을 \textbf{자동으로 학습}
+\item
+  \textbf{차이점}: 사람이 규칙을 일일이 작성하지 않음
+\item
+  \textbf{예시}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    이메일 스팸 필터
+  \item
+    유튜브 추천 알고리즘
+  \item
+    날씨 예측 모델
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{dl-deep-learning-uxb525uxb7ecuxb2dd}{%
+\subsubsection{\emoji{fire} DL (Deep Learning,
+딥러닝)}\label{dl-deep-learning-uxb525uxb7ecuxb2dd}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{ML의 하위 개념}: 기계학습의 한 종류
+\item
+  \textbf{핵심 특징}: 인공신경망을 여러 층으로 쌓아 복잡한 패턴 학습
+\item
+  \textbf{``Deep''의 의미}: 신경망의 층(Layer)이 깊다(많다)
+\item
+  \textbf{예시}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    ChatGPT (자연어 처리)
+  \item
+    AlphaGo (바둑)
+  \item
+    자율주행 (이미지 인식)
+  \end{itemize}
+\end{itemize}
+
+\begin{quote}
+\emoji{light-bulb} \textbf{핵심 통찰}: AI ⊃ ML ⊃ DL 관계를 이해하면, 각 기술의 범위와
+특성을 명확히 구분할 수 있습니다.
+\end{quote}
+
+\hypertarget{uxbe44uxc720uxb85c-uxc774uxd574uxd558uxae30}{%
+\subsubsection{비유로
+이해하기}\label{uxbe44uxc720uxb85c-uxc774uxd574uxd558uxae30}}
+
+AI를 ``차량''에 비유하면: - \textbf{AI} = 모든 차량 (자전거, 오토바이,
+자동차, 비행기) - \textbf{ML} = 엔진이 있는 차량 (오토바이, 자동차,
+비행기) - \textbf{DL} = 첨단 전기차 (테슬라)
+
+기계학습은 AI의 일부이고, 딥러닝은 기계학습의 일부예요.
+
+\hypertarget{uxc804uxac1c-1-uxae30uxacc4uxd559uxc2b5uxc758-uxc815uxc758-15uxbd84}{%
+\section{\emoji{blue-book} 전개 1: 기계학습의 정의
+(15분)}\label{uxc804uxac1c-1-uxae30uxacc4uxd559uxc2b5uxc758-uxc815uxc758-15uxbd84}}
+
+\hypertarget{uxae30uxacc4uxd559uxc2b5uxc774uxb780}{%
+\subsection{기계학습이란?}\label{uxae30uxacc4uxd559uxc2b5uxc774uxb780}}
+
+\begin{quote}
+\textbf{기계학습(Machine Learning)}: 컴퓨터가 데이터로부터 패턴을 스스로
+학습하는 AI 기술
+\end{quote}
+
+기계학습은 1959년 아서 새뮤얼(Arthur Samuel)이 정의한 개념입니다:
+``명시적으로 프로그래밍하지 않고도 컴퓨터가 학습할 수 있는 능력''
+
+\hypertarget{uxc804uxd1b5uxc801-uxd504uxb85cuxadf8uxb798uxbc0d-vs-uxae30uxacc4uxd559uxc2b5}{%
+\subsection{전통적 프로그래밍 vs
+기계학습}\label{uxc804uxd1b5uxc801-uxd504uxb85cuxadf8uxb798uxbc0d-vs-uxae30uxacc4uxd559uxc2b5}}
+
+기계학습을 이해하려면, 먼저 전통적 프로그래밍과 어떻게 다른지 알아야
+해요.
+
+\hypertarget{uxc804uxd1b5uxc801-uxd504uxb85cuxadf8uxb798uxbc0d}{%
+\subsubsection{전통적
+프로그래밍}\label{uxc804uxd1b5uxc801-uxd504uxb85cuxadf8uxb798uxbc0d}}
+
+\begin{verbatim}
+규칙 + 데이터 → 결과
+\end{verbatim}
+
+\textbf{예시: 스팸 메일 필터 (전통적 방식)}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  프로그래머가 규칙 작성:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    IF ``무료'' 포함 AND ``당첨'' 포함 → 스팸
+  \item
+    IF ``대출'' 포함 AND ``즉시'' 포함 → 스팸
+  \item
+    IF 발신자가 블랙리스트 → 스팸
+  \end{itemize}
+\item
+  문제점:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    규칙을 모두 나열하기 불가능
+  \item
+    새로운 스팸 기법에 대응 어려움
+  \item
+    유지보수가 복잡
+  \end{itemize}
+\end{enumerate}
+
+\hypertarget{uxae30uxacc4uxd559uxc2b5}{%
+\subsubsection{기계학습}\label{uxae30uxacc4uxd559uxc2b5}}
+
+\begin{verbatim}
+데이터 + 결과 → 규칙 (패턴)
+\end{verbatim}
+
+\textbf{예시: 스팸 메일 필터 (기계학습 방식)}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  컴퓨터에게 수천 개의 메일 제공:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    스팸 메일 5,000개 (정답: 스팸)
+  \item
+    정상 메일 5,000개 (정답: 정상)
+  \end{itemize}
+\item
+  컴퓨터가 스스로 패턴 발견:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    ``무료'', ``당첨''이 자주 나오면 스팸일 확률 높음
+  \item
+    친구 이메일에는 이름이 자주 나옴
+  \item
+    스팸은 링크가 많음
+  \end{itemize}
+\item
+  장점:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    사람이 규칙을 작성하지 않아도 됨
+  \item
+    새로운 스팸 기법도 자동으로 학습
+  \item
+    데이터가 많을수록 성능 향상
+  \end{itemize}
+\end{enumerate}
+
+\hypertarget{uxc65c-uxae30uxacc4uxd559uxc2b5uxc774-uxd544uxc694uxd55cuxac00}{%
+\subsection{왜 기계학습이
+필요한가?}\label{uxc65c-uxae30uxacc4uxd559uxc2b5uxc774-uxd544uxc694uxd55cuxac00}}
+
+기계학습이 필요한 이유는 크게 세 가지예요.
+
+\hypertarget{uxaddcuxce59uxc744-uxc791uxc131uxd558uxae30-uxc5b4uxb824uxc6b4-uxbb38uxc81c}{%
+\subsubsection{\textbf{①} 규칙을 작성하기 어려운
+문제}\label{uxaddcuxce59uxc744-uxc791uxc131uxd558uxae30-uxc5b4uxb824uxc6b4-uxbb38uxc81c}}
+
+\textbf{예시: 고양이 vs 개 구분}
+
+전통적 프로그래밍으로 한다면: - IF 귀가 뾰족하면 → 고양이? - 하지만
+치와와도 귀가 뾰족함 - IF 수염이 있으면 → 고양이? - 하지만 일부 개도
+수염이 있음
+
+→ 규칙을 명확히 작성하기 불가능!
+
+기계학습으로 한다면: - 고양이 사진 1,000장 + 개 사진 1,000장 제공 -
+컴퓨터가 스스로 패턴 발견 - 우리가 모르는 미세한 차이까지 학습
+
+\hypertarget{uxbcf5uxc7a1uxd55c-uxd328uxd134uxc774-uxc788uxb294-uxbb38uxc81c}{%
+\subsubsection{\textbf{②} 복잡한 패턴이 있는
+문제}\label{uxbcf5uxc7a1uxd55c-uxd328uxd134uxc774-uxc788uxb294-uxbb38uxc81c}}
+
+\textbf{예시: 음성 인식}
+
+\begin{itemize}
+\tightlist
+\item
+  같은 단어도 사람마다 발음이 다름
+\item
+  억양, 속도, 음높이가 천차만별
+\item
+  규칙으로 모든 경우를 다루기 불가능
+\item
+  기계학습으로 수백만 개 음성 데이터 학습
+\end{itemize}
+
+\hypertarget{uxd658uxacbduxc774-uxacc4uxc18d-uxbcc0uxd558uxb294-uxbb38uxc81c}{%
+\subsubsection{\textbf{③} 환경이 계속 변하는
+문제}\label{uxd658uxacbduxc774-uxacc4uxc18d-uxbcc0uxd558uxb294-uxbb38uxc81c}}
+
+\textbf{예시: 주식 가격 예측}
+
+\begin{itemize}
+\tightlist
+\item
+  경제 상황이 계속 변함
+\item
+  과거 규칙이 미래에 안 맞을 수 있음
+\item
+  기계학습은 새 데이터로 계속 업데이트
+\end{itemize}
+
+\hypertarget{uxc77cuxc0c1-uxc18d-uxae30uxacc4uxd559uxc2b5-uxc608uxc2dc}{%
+\subsection{일상 속 기계학습
+예시}\label{uxc77cuxc0c1-uxc18d-uxae30uxacc4uxd559uxc2b5-uxc608uxc2dc}}
+
+우리는 이미 기계학습을 매일 사용하고 있어요.
+
+\begin{longtable}{p{4cm}p{10cm}}
+\toprule\noalign{}
+서비스 & 기계학습 활용 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\emoji{e-mail} \textbf{Gmail 스팸 필터} & 수십억 개의 메일 데이터로 스팸 패턴
+학습 \\
+\emoji{television} \textbf{유튜브 추천} & 시청 기록으로 취향 분석, 관련 영상 추천 \\
+\emoji{speaking-head} \textbf{Siri, Alexa} & 수백만 명의 음성으로 음성 인식 학습 \\
+\emoji{camera-with-flash} \textbf{얼굴 인식} & 수천 장의 얼굴 사진으로 특징 학습 \\
+\emoji{automobile} \textbf{자율주행} & 수백만 킬로미터 주행 데이터로 운전 학습 \\
+\emoji{shopping-cart} \textbf{쿠팡 추천} & 구매 기록으로 선호 상품 예측 \\
+\end{longtable}
+
+\begin{quote}
+\emoji{light-bulb} \textbf{핵심 메시지}: 기계학습은 ``사람이 규칙을 작성하는 대신,
+컴퓨터가 데이터에서 규칙을 찾는'' 기술입니다.
+\end{quote}
+
+\hypertarget{uxc804uxac1c-2-uxae30uxacc4uxd559uxc2b5uxc758-3uxac00uxc9c0-uxd559uxc2b5-uxc720uxd615-15uxbd84}{%
+\section{\emoji{green-book} 전개 2: 기계학습의 3가지 학습 유형
+(15분)}\label{uxc804uxac1c-2-uxae30uxacc4uxd559uxc2b5uxc758-3uxac00uxc9c0-uxd559uxc2b5-uxc720uxd615-15uxbd84}}
+
+기계학습은 크게 세 가지 방식으로 학습합니다. 각각의 특징을 이해해
+봅시다.
+
+\hypertarget{uxc9c0uxb3c4uxd559uxc2b5-supervised-learning}{%
+\subsection{\textbf{①} 지도학습 (Supervised
+Learning)}\label{uxc9c0uxb3c4uxd559uxc2b5-supervised-learning}}
+
+\begin{quote}
+\textbf{지도학습}: 정답이 있는 데이터로 학습하는 방식
+\end{quote}
+
+\hypertarget{uxd575uxc2ec-uxac1cuxb150}{%
+\subsubsection{핵심 개념}\label{uxd575uxc2ec-uxac1cuxb150}}
+
+``선생님이 문제와 정답을 주고 공부하는 것''과 같아요.
+
+\textbf{학습 과정}: 1. 데이터 + 정답(Label) 제공 2. 컴퓨터가 데이터와
+정답의 관계 학습 3. 새로운 데이터가 들어오면 정답 예측
+
+\hypertarget{uxc9c0uxb3c4uxd559uxc2b5uxc758-uxb450-uxac00uxc9c0-uxc885uxb958}{%
+\subsubsection{지도학습의 두 가지
+종류}\label{uxc9c0uxb3c4uxd559uxc2b5uxc758-uxb450-uxac00uxc9c0-uxc885uxb958}}
+
+\hypertarget{uxbd84uxb958-classification}{%
+\paragraph{\emoji{bar-chart} 분류 (Classification)}\label{uxbd84uxb958-classification}}
+
+\textbf{입력 → 범주(카테고리)}
+
+\begin{longtable}{p{3cm}p{4cm}p{7cm}}
+\toprule\noalign{}
+예시 & 입력 & 출력 (범주) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+이메일 스팸 판별 & 메일 내용 & 스팸 / 정상 \\
+질병 진단 & 증상, 검사 결과 & 독감 / 감기 / 정상 \\
+꽃 종류 분류 & 꽃잎 길이, 너비 등 & 장미 / 튤립 / 백합 \\
+고양이 vs 개 & 사진 & 고양이 / 개 \\
+\end{longtable}
+
+\hypertarget{uxc608uxce21-regression---uxd68cuxadc0}{%
+\paragraph{\emoji{chart-increasing} 예측 (Regression) -
+회귀}\label{uxc608uxce21-regression---uxd68cuxadc0}}
+
+\textbf{입력 → 숫자(연속적 값)}
+
+\emoji{light-bulb} \textbf{쉬운 이해}: - \textbf{회귀}는 ``\textbf{얼마나?}''라는 질문에
+답하는 것 - 연속적인 숫자를 맞히는 학습
+
+\textbf{교수 멘트}:
+
+\begin{verbatim}
+"회귀(Regression)라는 말이 어렵게 느껴지죠?
+간단하게 말하면 '숫자를 맞히는 것'이에요.
+
+예를 들어볼까요?
+- 이 집은 **얼마**일까? → 3억 5천만원
+- 시험 **몇 점** 받을까? → 85점
+- 내일 기온이 **몇 도**일까? → 18도
+
+이렇게 숫자로 된 답을 맞히는 게 회귀예요!"
+\end{verbatim}
+
+\textbf{회귀 vs 분류 비교표}:
+
+\begin{longtable}{p{2cm}p{4cm}p{8cm}}
+\toprule\noalign{}
+구분 & 회귀 & 분류 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{질문} & ``얼마나?'' & ``어느 것?'' \\
+\textbf{답 형태} & 숫자 (연속적) & 범주 (구분) \\
+\textbf{예시 1} & 시험 점수: 85점 & 합격/불합격: 합격 \\
+\textbf{예시 2} & 집값: 3억 5천 & 아파트/빌라: 아파트 \\
+\textbf{예시 3} & 기온: 18도 & 더위/추위: 더위 \\
+\textbf{예시 4} & 과일 무게: 180g & 과일 종류: 사과 \\
+\end{longtable}
+
+\textbf{강조}: - 회귀는 0\textasciitilde100점,
+0원\textasciitilde10억원처럼 \textbf{연속적인 범위}의 숫자 - 분류는
+합격/불합격, 고양이/개처럼 \textbf{정해진 범주} 중 하나
+
+\begin{longtable}{p{3cm}p{4cm}p{7cm}}
+\toprule\noalign{}
+예시 & 입력 & 출력 (숫자) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+집값 예측 & 평수, 위치, 연식 & 5억 2천만 원 \\
+성적 예측 & 공부 시간, 출석률 & 85점 \\
+기온 예측 & 시간, 계절, 습도 & 23.5도 \\
+주식 가격 예측 & 과거 가격, 거래량 & 52,300원 \\
+\end{longtable}
+
+\hypertarget{uxc9c0uxb3c4uxd559uxc2b5-uxc608uxc2dc-uxace0uxc591uxc774-vs-uxac1c}{%
+\subsubsection{지도학습 예시: 고양이 vs
+개}\label{uxc9c0uxb3c4uxd559uxc2b5-uxc608uxc2dc-uxace0uxc591uxc774-vs-uxac1c}}
+
+\textbf{데이터 준비}: - 고양이 사진 1,000장 (정답: 고양이) - 개 사진
+1,000장 (정답: 개)
+
+\textbf{AI가 보는 데이터의 모습} (특징 표 예시):
+
+\begin{longtable}{p{1.5cm}p{2cm}p{2.5cm}p{2.5cm}p{2.5cm}p{3cm}}
+\toprule\noalign{}
+사진 번호 & 귀 모양 & 수염 길이 & 눈 크기 & 털 색깔 & 라벨 (정답) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 뾰족 & 길다 & 크다 & 갈색 & 고양이 \emoji{check-mark-button} \\
+2 & 접힘 & 짧다 & 작다 & 검정 & 개 \emoji{check-mark-button} \\
+3 & 뾰족 & 길다 & 크다 & 흰색 & 고양이 \emoji{check-mark-button} \\
+4 & 접힘 & 짧다 & 중간 & 갈색 & 개 \emoji{check-mark-button} \\
+\ldots{} & \ldots{} & \ldots{} & \ldots{} & \ldots{} & \ldots{} \\
+\end{longtable}
+
+\emoji{light-bulb} \textbf{AI가 발견하는 패턴}:
+
+\begin{verbatim}
+"귀 모양이 뾰족하고 수염이 길면 → 고양이!"
+"귀가 접히고 수염이 짧으면 → 개!"
+\end{verbatim}
+
+\textbf{학습 과정}: 1. 컴퓨터에게 사진 + 정답 제공 2. 컴퓨터가 고양이와
+개의 \textbf{특징(Feature)} 학습 - 특징(Feature) = 데이터의 속성 (귀
+모양, 눈 모양, 털 패턴 등) 3. 특징들의 패턴을 스스로 발견
+
+\textbf{예측}: - 새로운 동물 사진 입력 - 특징 추출 (귀 모양, 수염 길이
+등) - 학습한 패턴과 비교 - 컴퓨터가 ``고양이'' 또는 ``개'' 판별
+
+\hypertarget{uxc5d4uxd2b8uxb9ac-ai-uxbaa8uxb378-uxc5f0uxacb0}{%
+\subsubsection{엔트리 AI 모델
+연결}\label{uxc5d4uxd2b8uxb9ac-ai-uxbaa8uxb378-uxc5f0uxacb0}}
+
+\emoji{light-bulb} \textbf{중요}: 3주차에 배울 \textbf{엔트리 AI 이미지 분류 모델}이
+바로 지도학습입니다!
+
+엔트리에서 여러분이 직접: 1. 고양이/개 사진 찍기 (데이터 수집) 2. ``이건
+고양이'', ``이건 개'' 라벨 붙이기 (정답 지정) 3. ``모델 학습하기'' 버튼
+클릭 (학습) 4. 새 사진으로 테스트 (예측)
+
+→ 이 전체 과정이 지도학습이에요!
+
+\hypertarget{uxbe44uxc9c0uxb3c4uxd559uxc2b5-unsupervised-learning}{%
+\subsection{\textbf{②} 비지도학습 (Unsupervised
+Learning)}\label{uxbe44uxc9c0uxb3c4uxd559uxc2b5-unsupervised-learning}}
+
+\begin{quote}
+\textbf{비지도학습}: 라벨(정답 표시) 없이 데이터의 패턴을 스스로 찾는
+방식
+\end{quote}
+
+\hypertarget{uxc815uxb2f5uxc774-uxc5c6uxb2e4uxc758-uxc815uxd655uxd55c-uxc758uxbbf8}{%
+\subsubsection{``정답이 없다''의 정확한
+의미}\label{uxc815uxb2f5uxc774-uxc5c6uxb2e4uxc758-uxc815uxd655uxd55c-uxc758uxbbf8}}
+
+\emoji{light-bulb} \textbf{매우 중요한 개념!}
+
+\textbf{교수 전략}:
+
+\begin{verbatim}
+"비지도학습을 설명할 때 '정답이 없다'고 하는데,
+이게 정확히 무슨 뜻일까요?
+
+여러분, 잘 들어보세요.
+'정답이 없다' = '라벨(정답 스티커)이 없다'는 뜻이에요!"
+\end{verbatim}
+
+\hypertarget{uxc9c0uxb3c4uxd559uxc2b5-vs-uxbe44uxc9c0uxb3c4uxd559uxc2b5-uxb370uxc774uxd130-uxad6cuxc870-uxbe44uxad50}{%
+\subsubsection{지도학습 vs 비지도학습 데이터 구조
+비교}\label{uxc9c0uxb3c4uxd559uxc2b5-vs-uxbe44uxc9c0uxb3c4uxd559uxc2b5-uxb370uxc774uxd130-uxad6cuxc870-uxbe44uxad50}}
+
+\textbf{판서 또는 슬라이드}:
+
+\begin{verbatim}
+지도학습 (Supervised Learning):
+  데이터 + 라벨(정답)
+
+  [고양이 사진] + "고양이" \emoji{check-mark-button}
+  [개 사진] + "개" \emoji{check-mark-button}
+  
+  → 모든 데이터에 정답 스티커가 붙어 있음!
+
+비지도학습 (Unsupervised Learning):
+  데이터만 (라벨 없음)
+
+  고객A: 25세, 구매액 10만원, 패션 선호
+  고객B: 45세, 구매액 200만원, 전자제품 선호
+  고객C: 28세, 구매액 15만원, 패션 선호
+  
+  → 어떤 그룹인지 정답 스티커가 없음! \emoji{cross-mark}
+  → AI가 스스로 비슷한 사람끼리 묶어서 그룹 발견!
+\end{verbatim}
+
+\textbf{강조할 점}:
+
+\begin{verbatim}
+지도학습: "이건 고양이"라는 라벨이 있음
+비지도학습: "이 고객은 알뜰형"이라는 라벨이 없음
+
+하지만 라벨이 없어도 AI는 스스로 패턴을 찾아
+의미 있는 그룹을 만들어요!
+\end{verbatim}
+
+\hypertarget{uxc65c-uxb77cuxbca8uxc774-uxc5c6uxc744uxae4c-3uxac00uxc9c0-uxc774uxc720}{%
+\subsubsection{왜 라벨이 없을까? (3가지
+이유)}\label{uxc65c-uxb77cuxbca8uxc774-uxc5c6uxc744uxae4c-3uxac00uxc9c0-uxc774uxc720}}
+
+\textbf{교수 전략}: 각 이유를 구체적 예시와 함께 설명
+
+\hypertarget{uxb77cuxbca8-uxc790uxccb4uxac00-uxc5c6uxc744-uxb54c}{%
+\paragraph{\textbf{①} 라벨 자체가 없을
+때}\label{uxb77cuxbca8-uxc790uxccb4uxac00-uxc5c6uxc744-uxb54c}}
+
+\textbf{예시: 쇼핑몰 신규 고객}
+
+\begin{verbatim}
+상황:
+  쇼핑몰에 신규 고객 10,000명이 가입했어요.
+
+문제:
+  이 고객들이 어떤 취향인지 아직 몰라요.
+  
+  "이 고객은 알뜰형"
+  "이 고객은 명품 선호형"
+  
+  이런 라벨을 붙일 수가 없어요!
+  왜? → 아직 정보가 없으니까!
+
+해결:
+  \emoji{cross-mark} 지도학습 불가능: 라벨이 없으니까
+  \emoji{check-mark-button} 비지도학습: 구매 패턴만 보고 자동 그룹화
+\end{verbatim}
+
+\textbf{교수 멘트}:
+
+\begin{verbatim}
+"여러분, 신규 고객의 취향을 어떻게 알 수 있을까요?
+구매 이력이 없는데 '이 사람은 이런 스타일'이라고
+라벨을 붙일 수가 없잖아요!
+
+하지만 AI는 나이, 첫 구매 품목, 검색 키워드 등을 보고
+비슷한 사람끼리 묶어서 그룹을 만들어요."
+\end{verbatim}
+
+\hypertarget{uxb77cuxbca8-uxb9ccuxb4e4uxae30-uxc5b4uxb824uxc6b8-uxb54c}{%
+\paragraph{\textbf{②} 라벨 만들기 어려울
+때}\label{uxb77cuxbca8-uxb9ccuxb4e4uxae30-uxc5b4uxb824uxc6b8-uxb54c}}
+
+\textbf{예시: 뉴스 기사 분류}
+
+\begin{verbatim}
+상황:
+  인터넷에 매일 수백만 개의 뉴스 기사가 올라와요.
+
+문제:
+  각 기사에 "정치", "경제", "스포츠" 라벨을 붙이려면?
+  
+  → 사람이 일일이 읽고 분류해야 함
+  → 하루에 100만 개? 불가능!
+  → 시간/비용이 너무 많이 듦
+
+해결:
+  \emoji{cross-mark} 지도학습: 라벨 만들기 불가능 (시간/비용)
+  \emoji{check-mark-button} 비지도학습: 단어 패턴만 보고 자동 분류
+\end{verbatim}
+
+\textbf{교수 멘트}:
+
+\begin{verbatim}
+"여러분이 매일 올라오는 100만 개 뉴스에
+일일이 '정치', '경제', '스포츠' 라벨을 붙인다고 상상해보세요.
+
+하루 종일 해도 못 끝나겠죠?
+
+하지만 AI는 기사에서 '국회', '의원' 같은 단어가 많으면
+정치 그룹으로, '주식', '환율' 같은 단어가 많으면
+경제 그룹으로 자동으로 묶어요!"
+\end{verbatim}
+
+\hypertarget{uxc228uxaca8uxc9c4-uxd328uxd134uxc744-uxbc1cuxacacuxd558uxace0-uxc2f6uxc744-uxb54c}{%
+\paragraph{\textbf{③} 숨겨진 패턴을 발견하고 싶을
+때}\label{uxc228uxaca8uxc9c4-uxd328uxd134uxc744-uxbc1cuxacacuxd558uxace0-uxc2f6uxc744-uxb54c}}
+
+\textbf{예시: 새로운 고객 그룹 발견}
+
+\begin{verbatim}
+상황:
+  기존에 알려진 고객 유형:
+  - 10대 학생
+  - 20대 직장인
+  - 30대 부모
+
+문제:
+  하지만 이것만으로는 부족해요!
+  사람도 몰랐던 새로운 패턴이 있을 수 있어요.
+
+AI 발견:
+  - "오전 출근 시간에 편의점에서 샐러드 사는 그룹"
+    → 건강 관심형 직장인
+  
+  - "주말 저녁에 온라인 쇼핑하는 그룹"
+    → 여가 시간 쇼핑형
+  
+  - "새벽 3시에 라면 구매하는 그룹"
+    → 야간 근무자 or 수험생
+
+해결:
+  사람이 미리 정의하지 않은 새로운 패턴을
+  AI가 데이터에서 스스로 발견!
+\end{verbatim}
+
+\textbf{교수 멘트}:
+
+\begin{verbatim}
+"이게 비지도학습의 진짜 힘이에요!
+
+사람이 생각하지 못한 패턴을 AI가 발견해요.
+
+예를 들어 넷플릭스는 비지도학습으로
+'금요일 밤 10시에 로맨스 영화 보는 사람들'
+이런 새로운 시청 패턴을 발견했어요.
+
+이건 사람이 미리 라벨로 만들 수 없는 거예요!"
+\end{verbatim}
+
+\hypertarget{uxad70uxc9d1uxd654-clustering-uxbe44uxc9c0uxb3c4uxd559uxc2b5uxc758-uxb300uxd45c-uxbc29uxbc95}{%
+\subsubsection{군집화 (Clustering): 비지도학습의 대표
+방법}\label{uxad70uxc9d1uxd654-clustering-uxbe44uxc9c0uxb3c4uxd559uxc2b5uxc758-uxb300uxd45c-uxbc29uxbc95}}
+
+\textbf{개념 설명}:
+
+\begin{verbatim}
+군집화 = 유사한 데이터끼리 묶어서 그룹(클러스터) 만들기
+\end{verbatim}
+
+\textbf{3단계 과정}:
+
+\begin{verbatim}
+1단계: 입력
+  고객 데이터만 제공 (라벨 없이)
+  - 고객A: 나이 25, 구매액 10만원, 패션 선호
+  - 고객B: 나이 45, 구매액 200만원, 전자제품 선호
+  - 고객C: 나이 28, 구매액 15만원, 패션 선호
+  ...
+
+2단계: 과정
+  AI가 유사한 고객끼리 자동 그룹화
+  (라벨 없이 패턴만으로!)
+  
+  어떻게?
+  - 나이가 비슷한 사람
+  - 구매 금액이 비슷한 사람
+  - 선호 카테고리가 비슷한 사람
+  → 이런 기준으로 자동 분류
+
+3단계: 출력
+  그룹 A, B, C... (AI가 스스로 발견한 그룹)
+  
+  사람이 나중에 이름 붙임:
+  - 그룹 A → "20대 패션 선호형"
+  - 그룹 B → "40대 전자제품 선호형"
+  - 그룹 C → "30대 생활용품 선호형"
+\end{verbatim}
+
+\hypertarget{uxad6cuxccb4uxc801-uxc608uxc2dc-3uxac00uxc9c0}{%
+\subsubsection{구체적 예시
+3가지}\label{uxad6cuxccb4uxc801-uxc608uxc2dc-3uxac00uxc9c0}}
+
+\hypertarget{uxc608uxc2dc-1-uxc1fcuxd551uxbab0-uxace0uxac1d-uxc138uxbd84uxd654-uxc0c1uxc138}{%
+\paragraph{예시 1: 쇼핑몰 고객 세분화
+(상세)}\label{uxc608uxc2dc-1-uxc1fcuxd551uxbab0-uxace0uxac1d-uxc138uxbd84uxd654-uxc0c1uxc138}}
+
+\begin{verbatim}
+┌─────────────────────────────────────┐
+│ 예시 1: 쇼핑몰 고객 세분화          │
+└─────────────────────────────────────┘
+
+상황:
+  신규 고객 10,000명
+  취향 라벨 없음 (어떤 고객인지 모름)
+
+\emoji{cross-mark} 지도학습이 불가능한 이유:
+  "이 고객은 알뜰형"이라는 라벨이 없음!
+  
+\emoji{check-mark-button} 비지도학습 적용:
+  1. 데이터 입력: 나이, 구매액, 선호 카테고리
+  2. AI 분석: 구매 패턴 자동 분석
+  3. 자동 그룹화: 3~5개 그룹 발견
+
+결과:
+  그룹 1 (30%): 알뜰형
+    - 특징: 저가 제품, 할인 쿠폰 활용
+    - 나이: 20~30대
+    - 구매액: 평균 5만원
+  
+  그룹 2 (20%): 명품 선호형
+    - 특징: 고가 제품, 브랜드 중시
+    - 나이: 30~50대
+    - 구매액: 평균 50만원
+  
+  그룹 3 (25%): 트렌드 민감형
+    - 특징: 신상품, 유행 제품
+    - 나이: 10~20대
+    - 구매액: 평균 15만원
+  
+  그룹 4 (25%): 실속형
+    - 특징: 가성비 중시, 리뷰 확인
+    - 나이: 전 연령
+    - 구매액: 평균 10만원
+
+활용:
+  각 그룹에 맞춤 마케팅!
+  - 알뜰형 → 할인 쿠폰 발송
+  - 명품 선호형 → 신상 명품 소개
+  - 트렌드 민감형 → 최신 트렌드 정보
+  - 실속형 → 가성비 제품 추천
+\end{verbatim}
+
+\textbf{교수 팁}:
+
+\begin{verbatim}
+"이 예시를 설명할 때:
+
+1. 먼저 '신규 고객은 라벨이 없다'를 강조
+2. 지도학습이 왜 불가능한지 명확히
+3. 비지도학습으로 어떻게 해결하는지 설명
+4. 결과가 실제 비즈니스에 어떻게 활용되는지 연결
+
+학생들이 '아, 이래서 비지도학습이 필요하구나!'
+하고 납득할 수 있도록!"
+\end{verbatim}
+
+\hypertarget{uxc608uxc2dc-2-uxb137uxd50cuxb9aduxc2a4-uxcd94uxcc9c-uxc2dcuxc2a4uxd15c}{%
+\paragraph{예시 2: 넷플릭스 추천
+시스템}\label{uxc608uxc2dc-2-uxb137uxd50cuxb9aduxc2a4-uxcd94uxcc9c-uxc2dcuxc2a4uxd15c}}
+
+\begin{verbatim}
+┌─────────────────────────────────────┐
+│ 예시 2: 넷플릭스 추천               │
+└─────────────────────────────────────┘
+
+상황:
+  "좋아요" 데이터만으로는 취향 파악 어려움
+  사용자가 무엇을 좋아할지 정확한 라벨 없음
+
+비지도학습 적용:
+  1. 시청 기록 수집
+     - 어떤 영화를 봤나?
+     - 언제 봤나?
+     - 얼마나 봤나? (중간에 껐나?)
+  
+  2. 비슷한 시청 패턴을 가진 사용자끼리 그룹화
+  
+  3. 그룹 내 다른 사람들이 본 영화 추천
+
+결과:
+  "이 영화를 본 사람은 저 영화도 봤어요"
+  
+  → 이게 바로 비지도학습 결과!
+
+왜 비지도학습?
+  - "이 사람은 액션 선호형"이라는 명확한 라벨 없음
+  - 사람의 취향은 복잡함 (액션+코미디+로맨스)
+  - AI가 패턴을 발견해서 비슷한 사람 찾음
+\end{verbatim}
+
+\hypertarget{uxc608uxc2dc-3-uxb274uxc2a4-uxc790uxb3d9-uxbd84uxb958}{%
+\paragraph{예시 3: 뉴스 자동
+분류}\label{uxc608uxc2dc-3-uxb274uxc2a4-uxc790uxb3d9-uxbd84uxb958}}
+
+\begin{verbatim}
+┌─────────────────────────────────────┐
+│ 예시 3: 뉴스 자동 분류              │
+└─────────────────────────────────────┘
+
+상황:
+  매일 수백만 개 뉴스 기사 생성
+  일일이 라벨 붙이기 불가능
+
+비지도학습 적용:
+  1. 뉴스 기사 텍스트 입력
+  
+  2. 단어 패턴 분석
+     - "국회", "의원", "법안" → ?
+     - "주식", "환율", "기업" → ?
+     - "축구", "야구", "승리" → ?
+  
+  3. 유사한 단어 패턴끼리 자동 그룹화
+
+결과:
+  그룹 A: 정치 기사 (국회, 선거, 정당...)
+  그룹 B: 경제 기사 (주식, 환율, 기업...)
+  그룹 C: 스포츠 기사 (축구, 야구, 올림픽...)
+  그룹 D: IT 기사 (AI, 스마트폰, 앱...)
+
+활용:
+  - 자동 카테고리 분류
+  - 유사 기사 묶기
+  - 뉴스 추천 시스템
+\end{verbatim}
+
+\hypertarget{uxcd08uxb4f1uxad50uxc721-uxbe44uxc720}{%
+\subsubsection{초등교육
+비유}\label{uxcd08uxb4f1uxad50uxc721-uxbe44uxc720}}
+
+\textbf{교수 전략}:
+
+\begin{verbatim}
+"초등학생에게 어떻게 설명할까요?"
+\end{verbatim}
+
+\textbf{비유 1: 친구 그룹 나누기}
+
+\begin{verbatim}
+상황:
+  교실에 30명의 친구가 있어요.
+  
+지도학습:
+  선생님이 "철수는 활발한 그룹", "영희는 조용한 그룹"
+  이렇게 정답표를 미리 만들어 줌
+
+비지도학습:
+  선생님의 정답표가 없어요!
+  
+  AI가 스스로 관찰:
+  - 쉬는 시간에 운동장 가는 친구들
+  - 도서관에서 책 읽는 친구들
+  - 미술실에서 그림 그리는 친구들
+  
+  → 비슷한 친구들끼리 자동으로 그룹을 만들어요!
+\end{verbatim}
+
+\textbf{비유 2: 과일 분류}
+
+\begin{verbatim}
+지도학습:
+  엄마가 "이건 사과", "이건 바나나"라고 알려주며 학습
+
+비지도학습:
+  과일을 보고 스스로:
+  - 빨간색 과일끼리 묶기
+  - 노란색 과일끼리 묶기
+  - 둥근 과일끼리 묶기
+  
+  정답표 없이 패턴으로 분류!
+\end{verbatim}
+
+\hypertarget{uxc624uxac1cuxb150-uxb300uxc751}{%
+\subsubsection{오개념 대응}\label{uxc624uxac1cuxb150-uxb300uxc751}}
+
+\begin{longtable}{p{4.5cm}p{4.5cm}p{5.0cm}}
+\toprule\noalign{}
+\textbf{학생 오개념} & \textbf{올바른 이해} & \textbf{대응 방법} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+``비지도학습은 아무렇게나 해도 된다'' & 의미 있는 패턴을 찾아야 함 &
+``라벨이 없어도 품질 기준은 있어요'' \\
+``정답이 없으면 틀려도 괜찮다'' & 결과의 품질은 평가 가능 & ``실루엣
+스코어 등으로 품질 측정'' \\
+``지도학습보다 성능이 낮다'' & 목적이 다름 (발견 vs 예측) & ``새로운
+패턴 발견에 강점'' \\
+``비지도학습은 쓸모없다'' & 많은 실제 활용 사례 존재 & ``추천 시스템,
+이상 탐지 등'' \\
+\end{longtable}
+
+\textbf{대응 전략}:
+
+\begin{verbatim}
+"여러분, 비지도학습은 '정답이 없어서 아무렇게나'가 아니에요!
+
+오히려 '정답을 모를 때' 또는 '새로운 패턴을 찾고 싶을 때'
+사용하는 강력한 도구예요!
+
+넷플릭스, 유튜브, 쇼핑몰 추천이 모두 비지도학습을 사용해요.
+정답 라벨이 없어도 의미 있는 결과를 만들어내죠!"
+\end{verbatim}
+
+\hypertarget{uxac15uxd654uxd559uxc2b5-reinforcement-learning}{%
+\subsection{\textbf{③} 강화학습 (Reinforcement
+Learning)}\label{uxac15uxd654uxd559uxc2b5-reinforcement-learning}}
+
+\begin{quote}
+\textbf{강화학습}: 시행착오를 통해 보상을 최대화하는 방향으로 학습
+\end{quote}
+
+\hypertarget{uxd575uxc2ec-uxac1cuxb150-1}{%
+\subsubsection{핵심 개념}\label{uxd575uxc2ec-uxac1cuxb150-1}}
+
+``게임하면서 점수로 배우기''
+
+\textbf{학습 과정}: 1. AI가 행동(Action) 선택 2. 환경이 보상(Reward)
+제공 - 좋은 행동 → + 보상 - 나쁜 행동 → - 보상 3. 보상을 최대화하는
+방향으로 학습 4. 반복하며 최적의 전략 발견
+
+\hypertarget{uxac15uxd654uxd559uxc2b5uxc758-uxad6cuxc131-uxc694uxc18c}{%
+\subsubsection{강화학습의 구성
+요소}\label{uxac15uxd654uxd559uxc2b5uxc758-uxad6cuxc131-uxc694uxc18c}}
+
+\begin{longtable}{p{4.5cm}p{4.5cm}p{5.0cm}}
+\toprule\noalign{}
+\textbf{요소} & \textbf{설명} & \textbf{예시 (게임)} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Agent (에이전트)} & 학습하는 주체 & 게임 플레이어 \\
+\textbf{Environment (환경)} & 에이전트가 상호작용하는 세계 & 게임
+화면 \\
+\textbf{State (상태)} & 현재 상황 & 점수, 위치, 체력 \\
+\textbf{Action (행동)} & 에이전트가 선택할 수 있는 것 & 위/아래/좌/우
+이동 \\
+\textbf{Reward (보상)} & 행동에 대한 피드백 & 점수 +10, -5 \\
+\end{longtable}
+
+\hypertarget{uxc608uxc2dc-1-alphago-uxbc14uxb451}{%
+\subsubsection{예시 1: AlphaGo
+(바둑)}\label{uxc608uxc2dc-1-alphago-uxbc14uxb451}}
+
+\textbf{목표}: 바둑에서 이기기
+
+\textbf{학습 과정}: 1. AlphaGo가 바둑돌 놓기 (행동) 2. 게임 결과에 따라
+보상: - 이기면 → +1 (큰 보상) - 지면 → -1 (큰 벌점) - 좋은 수 → +0.1
+(작은 보상) 3. 수백만 번 자기 자신과 대국하며 학습 4. 이길 확률을 높이는
+전략 발견
+
+\textbf{결과}: 2016년 이세돌 9단을 4:1로 격파
+
+\hypertarget{uxc608uxc2dc-2-uxc790uxc728uxc8fcuxd589}{%
+\subsubsection{예시 2:
+자율주행}\label{uxc608uxc2dc-2-uxc790uxc728uxc8fcuxd589}}
+
+\textbf{목표}: 안전하고 효율적으로 운전
+
+\textbf{학습 과정}: 1. AI가 핸들 조작 (행동) 2. 결과에 따라 보상: - 차선
+유지 → +1 - 차선 이탈 → -5 - 사고 → -100 - 목적지 도착 → +10 3.
+시뮬레이션에서 수백만 번 주행하며 학습 4. 보상을 최대화하는 운전 기술
+습득
+
+\hypertarget{uxc608uxc2dc-3-uxac8cuxc784-ai}{%
+\subsubsection{예시 3: 게임 AI}\label{uxc608uxc2dc-3-uxac8cuxc784-ai}}
+
+\textbf{게임}: 슈퍼마리오
+
+\textbf{학습 과정}: 1. AI가 버튼 누르기 (점프, 이동) 2. 보상: - 코인
+획득 → +10 - 적 제거 → +50 - 게임 오버 → -100 - 목표 도달 → +1000 3.
+수천 번 게임하며 학습 4. 최고 점수를 얻는 플레이 방법 발견
+
+\hypertarget{uxc2dcuxac01uxd654uxb85c-uxc774uxd574uxd558uxae30}{%
+\subsubsection{시각화로
+이해하기}\label{uxc2dcuxac01uxd654uxb85c-uxc774uxd574uxd558uxae30}}
+
+\hypertarget{uxadf8uxb9bc-19-uxac15uxc544uxc9c0-uxd6c8uxb828uxc73cuxb85c-uxc774uxd574uxd558uxae30}{%
+\paragraph{\texorpdfstring{\textbf{{[}그림 02{]} 강아지 훈련으로
+이해하기}
+\emoji{dog}}{{[}그림 02{]} 강아지 훈련으로 이해하기 \emoji{dog}}}\label{uxadf8uxb9bc-19-uxac15uxc544uxc9c0-uxd6c8uxb828uxc73cuxb85c-uxc774uxd574uxd558uxae30}}
+
+강화학습의 원리를 일상 생활의 강아지 훈련으로 쉽게 설명합니다.
+
+\textbf{교수 전략}:
+
+\begin{verbatim}
+"강화학습을 강아지 훈련으로 생각해볼까요?
+
+1. 상황 (State): 강아지가 마당에 있어요
+2. 행동 (Action): '앉아!' 명령 → 강아지가 앉음
+3. 보상 (Reward): 잘했어! 간식 제공! \emoji{bone}
+4. 학습 (Learning): '앉아 = 간식'으로 기억
+
+다음번엔? 앉아 명령만 들어도 바로 앉아요!
+왜? 간식을 받았던 기억 때문이죠.
+
+AI도 똑같이 배워요!
+- 좋은 결과 → 그 방법 기억
+- 나쁜 결과 → 다른 방법 시도"
+\end{verbatim}
+
+\textbf{초등학생 설명}:
+
+\begin{verbatim}
+"여러분이 강아지를 훈련시킨다고 생각해보세요.
+강아지가 앉으면 간식을 주고,
+앉지 않으면 아무것도 안 주죠?
+
+그럼 강아지는 어떻게 할까요?
+간식을 받기 위해 계속 앉으려고 하겠죠!
+
+AI도 똑같아요!
+좋은 점수를 받으면 그 방법을 기억하고,
+나쁜 점수를 받으면 다른 방법을 시도해요."
+\end{verbatim}
+
+\hypertarget{uxadf8uxb9bc-20-uxac8cuxc784-uxc810uxc218-uxd68duxb4dd-uxacfcuxc815}{%
+\paragraph{\texorpdfstring{\textbf{{[}그림 03{]} 게임 점수 획득 과정}
+\emoji{video-game}}{{[}그림 03{]} 게임 점수 획득 과정 \emoji{video-game}}}\label{uxadf8uxb9bc-20-uxac8cuxc784-uxc810uxc218-uxd68duxb4dd-uxacfcuxc815}}
+
+게임 AI의 시행착오 학습 과정을 시각화합니다.
+
+\textbf{교수 전략}:
+
+\begin{verbatim}
+"게임으로 더 재미있게 이해해볼까요?
+
+게임 목표: 장애물 피하면서 최대한 멀리 가기
+
+시도 1 (실패):
+- 장애물 앞 → 점프 → 부딪힘! \emoji{collision}
+- 점수: -10점 \emoji{cross-mark}
+- 학습: "점프는 위험해..."
+
+시도 2 (성공):
+- 장애물 앞 → 옆으로 피함 → 성공! \emoji{sparkles}
+- 점수: +50점 \emoji{check-mark-button}
+- 학습: "옆으로 피하는 게 좋구나!"
+
+100만 번 반복하면?
+- 1,000번: 50점 \emoji{crying-face}
+- 10,000번: 300점 \emoji{slightly-smiling-face}
+- 100,000번: 850점 \emoji{smiling-face-with-smiling-eyes}
+- 1,000,000번: 2,500점 \emoji{trophy}
+
+→ 최고 점수 달성!
+
+AI는 지치지 않고 24시간 연습할 수 있어요!"
+\end{verbatim}
+
+\textbf{오개념 방지}:
+
+\begin{longtable}{p{5.0cm}p{9.0cm}}
+\toprule\noalign{}
+\textbf{학생 질문} & \textbf{교사 답변} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+``선생님, AI는 한 번에 잘하나요?'' & ``아니요! 처음엔 우리보다
+못해요.하지만 백만 번 연습하면서 점점 좋아지죠.결국 우리보다 훨씬 잘하게
+돼요!'' \\
+``정답을 알려주나요?'' & ``아니요! 점수만 줘요.'이렇게 해라'가 아니라
+'이건 50점이야'라고만 말해주죠.그럼 AI가 스스로 점수 높이는 방법을
+찾아요!'' \\
+``사람처럼 생각하나요?'' & ``아니요! 단순히 '높은 점수 = 좋은 행동'으로
+배워요.의미를 이해하는 건 아니에요.'' \\
+\end{longtable}
+
+\hypertarget{uxbe44uxc720uxb85c-uxc774uxd574uxd558uxae30-1}{%
+\subsubsection{비유로
+이해하기}\label{uxbe44uxc720uxb85c-uxc774uxd574uxd558uxae30-1}}
+
+\textbf{지도학습}: 선생님이 정답 알려주며 공부 \textbf{비지도학습}:
+혼자서 패턴 찾기 \textbf{강화학습}: 게임하며 점수로 배우기 (시행착오)
+
+\hypertarget{uxc138-uxac00uxc9c0-uxd559uxc2b5-uxc720uxd615-uxbe44uxad50}{%
+\subsection{세 가지 학습 유형
+비교}\label{uxc138-uxac00uxc9c0-uxd559uxc2b5-uxc720uxd615-uxbe44uxad50}}
+
+\begin{longtable}{p{2.5cm}p{3.5cm}p{4.0cm}p{4.0cm}}
+\toprule\noalign{}
+\textbf{구분} & \textbf{지도학습} & \textbf{비지도학습} & \textbf{강화학습} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{정답} & \emoji{hollow-red-circle} 있음 & \emoji{cross-mark} 없음 & \emoji{bullseye} 보상 \\
+\textbf{목표} & 정답 맞추기 & 패턴 찾기 & 보상 최대화 \\
+\textbf{비유} & 시험 공부 & 그룹 나누기 & 게임 연습 \\
+\textbf{데이터} & 입력 + 정답 & 입력만 & 상태 + 행동 + 보상 \\
+\textbf{예시} & 스팸 필터질병 진단집값 예측 & 고객 세분화뉴스 분류추천
+시스템 & AlphaGo자율주행게임 AI \\
+\end{longtable}
+
+\begin{quote}
+\emoji{light-bulb} \textbf{핵심 메시지}: 문제 유형에 따라 적절한 학습 방식을 선택하는
+것이 중요합니다. 초등학교 AI 교육에서는 주로 \textbf{지도학습}(엔트리
+이미지 분류)을 다룹니다.
+\end{quote}
+
+\hypertarget{uxc804uxac1c-3-uxba38uxc2e0uxb7ecuxb2dd-uxd559uxc2b5-uxacfcuxc815-10uxbd84}{%
+\section{\emoji{orange-book} 전개 3: 머신러닝 학습 과정
+(10분)}\label{uxc804uxac1c-3-uxba38uxc2e0uxb7ecuxb2dd-uxd559uxc2b5-uxacfcuxc815-10uxbd84}}
+
+기계학습이 실제로 어떻게 작동하는지 4단계 과정을 알아봅시다.
+
+\textbf{{[}그림 04{]} 머신러닝 학습 과정}
+
+\begin{verbatim}
+데이터 수집 → 학습 → 평가 → 예측
+\end{verbatim}
+
+\hypertarget{uxb2e8uxacc4-uxb370uxc774uxd130-uxc218uxc9d1-data-collection}{%
+\subsection{1단계: 데이터 수집 (Data
+Collection)}\label{uxb2e8uxacc4-uxb370uxc774uxd130-uxc218uxc9d1-data-collection}}
+
+\begin{quote}
+\textbf{``좋은 데이터 = 좋은 AI''}
+\end{quote}
+
+\hypertarget{uxb370uxc774uxd130uxb780}{%
+\subsubsection{데이터란?}\label{uxb370uxc774uxd130uxb780}}
+
+기계학습에서 데이터는 ``학습 재료''예요. 음식을 만들 때 재료가 좋아야
+맛있는 요리가 나오듯, 좋은 데이터가 있어야 좋은 AI가 만들어집니다.
+
+\hypertarget{uxb370uxc774uxd130-uxc218uxc9d1-uxc608uxc2dc}{%
+\subsubsection{데이터 수집
+예시}\label{uxb370uxc774uxd130-uxc218uxc9d1-uxc608uxc2dc}}
+
+\textbf{고양이 vs 개 분류 모델 만들기}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  고양이 사진 1,000장 수집
+\item
+  개 사진 1,000장 수집
+\item
+  각 사진에 라벨 붙이기:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    cat\_001.jpg → ``고양이''
+  \item
+    dog\_001.jpg → ``개''
+  \end{itemize}
+\end{enumerate}
+
+\hypertarget{uxc88buxc740-uxb370uxc774uxd130uxc758-uxc870uxac74}{%
+\subsubsection{좋은 데이터의
+조건}\label{uxc88buxc740-uxb370uxc774uxd130uxc758-uxc870uxac74}}
+
+\hypertarget{uxcda9uxbd84uxd55c-uxc591}{%
+\paragraph{\emoji{check-mark-button} 1. 충분한 양}\label{uxcda9uxbd84uxd55c-uxc591}}
+
+\begin{itemize}
+\tightlist
+\item
+  적은 데이터: 100장 → 성능 낮음
+\item
+  많은 데이터: 10,000장 → 성능 높음
+\item
+  일반적으로 수백\textasciitilde 수천 개 필요
+\end{itemize}
+
+\hypertarget{uxb192uxc740-uxd488uxc9c8}{%
+\paragraph{\emoji{check-mark-button} 2. 높은 품질}\label{uxb192uxc740-uxd488uxc9c8}}
+
+\begin{itemize}
+\tightlist
+\item
+  정확한 라벨 (고양이를 개라고 잘못 표시 X)
+\item
+  선명한 이미지 (흐릿한 사진 X)
+\item
+  오류가 없는 데이터
+\end{itemize}
+
+\hypertarget{uxb2e4uxc591uxc131}{%
+\paragraph{\emoji{check-mark-button} 3. 다양성}\label{uxb2e4uxc591uxc131}}
+
+\begin{itemize}
+\tightlist
+\item
+  다양한 품종 포함
+\item
+  다양한 각도의 사진
+\item
+  다양한 배경, 조명
+\end{itemize}
+
+\hypertarget{uxd3b8uxd5a5uxb41c-uxb370uxc774uxd130-uxc8fcuxc758}{%
+\paragraph{\emoji{cross-mark} 편향된 데이터
+주의}\label{uxd3b8uxd5a5uxb41c-uxb370uxc774uxd130-uxc8fcuxc758}}
+
+\textbf{나쁜 예시}: - 고양이는 실내 사진만 - 개는 야외 사진만 - → AI가
+``실내 = 고양이''로 잘못 학습
+
+\textbf{좋은 예시}: - 고양이: 실내 50\% + 야외 50\% - 개: 실내 50\% +
+야외 50\%
+
+\hypertarget{uxc5d4uxd2b8uxb9ac-uxc5f0uxacb0}{%
+\subsubsection{엔트리 연결}\label{uxc5d4uxd2b8uxb9ac-uxc5f0uxacb0}}
+
+엔트리 AI 모델에서: 1. 웹캠으로 직접 사진 촬영 (데이터 수집) 2. ``클래스
+1'', ``클래스 2''로 분류 (라벨링) 3. 각 클래스당 20\textasciitilde30장
+권장
+
+\hypertarget{uxb2e8uxacc4-uxd559uxc2b5-training}{%
+\subsection{2단계: 학습
+(Training)}\label{uxb2e8uxacc4-uxd559uxc2b5-training}}
+
+\begin{quote}
+\textbf{컴퓨터가 데이터에서 패턴을 찾는 과정}
+\end{quote}
+
+\hypertarget{uxd559uxc2b5uxc774uxb780}{%
+\subsubsection{학습이란?}\label{uxd559uxc2b5uxc774uxb780}}
+
+컴퓨터가 수많은 예시를 보며 ``고양이는 이런 특징이 있구나'', ``개는 저런
+특징이 있구나''를 스스로 발견하는 과정이에요.
+
+\hypertarget{uxd559uxc2b5-uxacfcuxc815}{%
+\subsubsection{학습 과정}\label{uxd559uxc2b5-uxacfcuxc815}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{초기 상태}: 아무것도 모름
+
+  \begin{itemize}
+  \tightlist
+  \item
+    고양이인지 개인지 랜덤으로 맞춤
+  \item
+    정확도 50\% (동전 던지기 수준)
+  \end{itemize}
+\item
+  \textbf{학습 시작}: 데이터를 반복해서 봄
+
+  \begin{itemize}
+  \tightlist
+  \item
+    1회 (Epoch 1): ``아, 귀 모양이 중요하구나''
+  \item
+    2회 (Epoch 2): ``수염도 중요하네''
+  \item
+    3회 (Epoch 3): ``눈 모양도 봐야겠다''
+  \end{itemize}
+\item
+  \textbf{가중치 조정}: 중요한 특징에 더 큰 점수 부여
+
+  \begin{itemize}
+  \tightlist
+  \item
+    귀 모양: 가중치 높임
+  \item
+    털 색깔: 가중치 낮춤 (고양이/개 모두 다양)
+  \end{itemize}
+\item
+  \textbf{반복 학습}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    10회, 20회, 50회\ldots{} 반복
+  \item
+    점점 정확도 향상
+  \end{itemize}
+\end{enumerate}
+
+\hypertarget{uxd559uxc2b5-uxc2dcuxac04}{%
+\subsubsection{학습 시간}\label{uxd559uxc2b5-uxc2dcuxac04}}
+
+\begin{longtable}{p{4.5cm}p{4.5cm}p{5.0cm}}
+\toprule\noalign{}
+데이터 크기 & 모델 복잡도 & 학습 시간 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+작음 & 간단 & 수 초 \textasciitilde{} 수 분 \\
+보통 & 보통 & 수 시간 \textasciitilde{} 수 일 \\
+큼 & 복잡 (딥러닝) & 수 주 \textasciitilde{} 수 개월 \\
+\end{longtable}
+
+ChatGPT 같은 대형 모델은 수천 개의 GPU로 수개월간 학습했어요!
+
+\hypertarget{uxc5d4uxd2b8uxb9ac-uxc5f0uxacb0-1}{%
+\subsubsection{엔트리 연결}\label{uxc5d4uxd2b8uxb9ac-uxc5f0uxacb0-1}}
+
+엔트리 AI 모델: 1. ``모델 학습하기'' 버튼 클릭 2. 진행 바가 100\%까지
+진행 3. 수십 초 \textasciitilde{} 수 분 소요 (간단한 모델이라 빠름)
+
+\hypertarget{uxb2e8uxacc4-uxd3c9uxac00-testing}{%
+\subsection{3단계: 평가
+(Testing)}\label{uxb2e8uxacc4-uxd3c9uxac00-testing}}
+
+\begin{quote}
+\textbf{학습한 모델이 얼마나 정확한지 확인}
+\end{quote}
+
+\hypertarget{uxd3c9uxac00uxb780}{%
+\subsubsection{평가란?}\label{uxd3c9uxac00uxb780}}
+
+시험을 본다고 생각하면 돼요. 학습할 때 보지 못한 \textbf{새로운
+데이터}로 테스트합니다.
+
+\hypertarget{uxc65c-uxc0c8uxb85cuxc6b4-uxb370uxc774uxd130uxb85c-uxd3c9uxac00uxd560uxae4c}{%
+\subsubsection{왜 새로운 데이터로
+평가할까?}\label{uxc65c-uxc0c8uxb85cuxc6b4-uxb370uxc774uxd130uxb85c-uxd3c9uxac00uxd560uxae4c}}
+
+\textbf{나쁜 평가 방법}: 학습 데이터로 평가 - 학생이 시험에 나온 문제를
+미리 외워버림 - 100점을 받아도 진짜 실력인지 알 수 없음
+
+\textbf{좋은 평가 방법}: 새로운 데이터로 평가 - 처음 보는 문제로 시험 -
+진짜 실력을 측정 가능
+
+\hypertarget{uxb370uxc774uxd130-uxbd84uxd560}{%
+\subsubsection{데이터 분할}\label{uxb370uxc774uxd130-uxbd84uxd560}}
+
+일반적으로 데이터를 다음과 같이 나눕니다:
+
+\begin{verbatim}
+전체 데이터 1,000장
+ ├─ 학습 데이터 (Training): 700장 (70%)
+ ├─ 검증 데이터 (Validation): 150장 (15%)
+ └─ 테스트 데이터 (Testing): 150장 (15%)
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{학습 데이터}: 모델 학습에 사용
+\item
+  \textbf{검증 데이터}: 학습 중간에 성능 확인
+\item
+  \textbf{테스트 데이터}: 최종 성능 평가
+\end{itemize}
+
+\hypertarget{uxd3c9uxac00-uxc9c0uxd45c-uxc815uxd655uxb3c4-accuracy}{%
+\subsubsection{평가 지표: 정확도
+(Accuracy)}\label{uxd3c9uxac00-uxc9c0uxd45c-uxc815uxd655uxb3c4-accuracy}}
+
+\textbf{정확도 = (맞춘 개수 / 전체 개수) × 100\%}
+
+예시: - 테스트 데이터 100장 - 90장 맞춤, 10장 틀림 - 정확도 = 90\%
+
+\hypertarget{uxc131uxb2a5-uxac1cuxc120}{%
+\subsubsection{성능 개선}\label{uxc131uxb2a5-uxac1cuxc120}}
+
+정확도가 낮으면? 1. 데이터 더 수집 2. 모델 구조 변경 3. 학습 시간 늘리기
+4. 다시 학습 (2단계로 돌아가기)
+
+\hypertarget{uxc5d4uxd2b8uxb9ac-uxc5f0uxacb0-2}{%
+\subsubsection{엔트리 연결}\label{uxc5d4uxd2b8uxb9ac-uxc5f0uxacb0-2}}
+
+엔트리 AI 모델: 1. 학습 완료 후 정확도 표시 (예: 92\%) 2. 웹캠으로
+실시간 테스트 3. 잘못 분류하면 데이터 추가 후 재학습
+
+\hypertarget{uxb2e8uxacc4-uxc608uxce21-prediction}{%
+\subsection{4단계: 예측
+(Prediction)}\label{uxb2e8uxacc4-uxc608uxce21-prediction}}
+
+\begin{quote}
+\textbf{학습한 모델을 실전에 적용}
+\end{quote}
+
+\hypertarget{uxc608uxce21uxc774uxb780}{%
+\subsubsection{예측이란?}\label{uxc608uxce21uxc774uxb780}}
+
+드디어 완성된 AI 모델을 실제로 사용하는 단계예요!
+
+\hypertarget{uxc608uxce21-uxacfcuxc815}{%
+\subsubsection{예측 과정}\label{uxc608uxce21-uxacfcuxc815}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{새로운 입력}: 처음 보는 고양이 사진
+\item
+  \textbf{모델 적용}: 학습한 패턴으로 분석
+\item
+  \textbf{결과 출력}: ``고양이입니다'' (확률 95\%)
+\end{enumerate}
+
+\hypertarget{uxc2e4uxc804-uxbc30uxd3ec}{%
+\subsubsection{실전 배포}\label{uxc2e4uxc804-uxbc30uxd3ec}}
+
+완성된 모델을 다양한 곳에 활용:
+
+\begin{longtable}{p{4cm}p{10cm}}
+\toprule\noalign{}
+분야 & 활용 예시 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\emoji{mobile-phone} \textbf{앱} & 구글 포토 (사진 자동 분류) \\
+\emoji{globe-with-meridians} \textbf{웹사이트} & Gmail (스팸 필터) \\
+\emoji{robot} \textbf{로봇} & 로봇 청소기 (장애물 인식) \\
+\emoji{automobile} \textbf{자동차} & 테슬라 (자율주행) \\
+\emoji{hospital} \textbf{병원} & AI 영상 진단 시스템 \\
+\end{longtable}
+
+\hypertarget{uxc9c0uxc18duxc801uxc778-uxbaa8uxb2c8uxd130uxb9c1}{%
+\subsubsection{지속적인
+모니터링}\label{uxc9c0uxc18duxc801uxc778-uxbaa8uxb2c8uxd130uxb9c1}}
+
+배포 후에도 계속 관리가 필요해요:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{성능 모니터링}: 정확도가 떨어지지 않는지 확인
+\item
+  \textbf{새 데이터 수집}: 환경이 변하면 새 데이터 추가
+\item
+  \textbf{재학습}: 주기적으로 모델 업데이트
+\end{enumerate}
+
+예시: Gmail 스팸 필터 - 매일 새로운 스팸 기법 등장 - 지속적으로 데이터
+수집 및 재학습 - 모델 계속 개선
+
+\hypertarget{uxc5d4uxd2b8uxb9ac-uxc5f0uxacb0-3}{%
+\subsubsection{엔트리 연결}\label{uxc5d4uxd2b8uxb9ac-uxc5f0uxacb0-3}}
+
+엔트리 AI 모델: 1. 웹캠으로 새 이미지 입력 2. 실시간으로 분류 결과 표시
+3. 블록 코딩과 연동하여 작품 제작 - ``만약 고양이면 → 야옹 소리'' -
+``만약 개면 → 멍멍 소리''
+
+\hypertarget{uxb2e8uxacc4-uxacfcuxc815-uxc694uxc57d}{%
+\subsection{4단계 과정
+요약}\label{uxb2e8uxacc4-uxacfcuxc815-uxc694uxc57d}}
+
+\begin{longtable}{p{2.0cm}p{4.0cm}p{4.0cm}p{4.0cm}}
+\toprule\noalign{}
+단계 & 이름 & 설명 & 엔트리 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 데이터 수집 & 학습할 재료 모으기 & 웹캠으로 사진 촬영 \\
+2 & 학습 & 패턴 발견 & ``모델 학습하기'' 버튼 \\
+3 & 평가 & 정확도 확인 & 정확도 \% 표시 \\
+4 & 예측 & 실전 적용 & 새 이미지 분류 \\
+\end{longtable}
+
+\begin{quote}
+\emoji{light-bulb} \textbf{핵심 메시지}: 기계학습은 ``데이터 수집 → 학습 → 평가 →
+예측''의 4단계로 이루어집니다. 3주차 엔트리 실습에서 이 전 과정을 직접
+체험하게 됩니다!
+\end{quote}
+
+\hypertarget{uxc815uxb9ac-5uxbd84}{%
+\section{\emoji{memo} 정리 (5분)}\label{uxc815uxb9ac-5uxbd84}}
+
+\hypertarget{uxd575uxc2ec-uxac1cuxb150-uxc694uxc57d}{%
+\subsection{핵심 개념
+요약}\label{uxd575uxc2ec-uxac1cuxb150-uxc694uxc57d}}
+
+오늘 배운 내용을 4가지로 정리해 봅시다.
+
+\hypertarget{ai-ml-dl-uxd3ecuxd568-uxad00uxacc4}{%
+\subsubsection{\textbf{①} AI ⊃ ML ⊃ DL 포함
+관계}\label{ai-ml-dl-uxd3ecuxd568-uxad00uxacc4}}
+
+\begin{verbatim}
+AI (인공지능) - 가장 큰 개념
+ ⊃ ML (기계학습) - 데이터로 학습하는 AI
+    ⊃ DL (딥러닝) - 신경망이 깊은 ML
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  AI는 인간의 지능을 모방하는 모든 기술
+\item
+  기계학습은 AI를 구현하는 대표적 방법
+\item
+  딥러닝은 기계학습의 한 종류
+\end{itemize}
+
+\hypertarget{uxae30uxacc4uxd559uxc2b5uxc758-uxc815uxc758}{%
+\subsubsection{\textbf{②} 기계학습의
+정의}\label{uxae30uxacc4uxd559uxc2b5uxc758-uxc815uxc758}}
+
+\begin{quote}
+\textbf{기계학습}: 데이터로부터 패턴을 스스로 학습하는 AI 기술
+\end{quote}
+
+\textbf{전통적 프로그래밍 vs 기계학습} - 전통적: 규칙 작성 → 결과 -
+기계학습: 데이터 + 결과 → 규칙 발견
+
+\hypertarget{uxac00uxc9c0-uxd559uxc2b5-uxc720uxd615}{%
+\subsubsection{\textbf{③} 3가지 학습
+유형}\label{uxac00uxc9c0-uxd559uxc2b5-uxc720uxd615}}
+
+\begin{longtable}{p{2.5cm}p{3.5cm}p{4.0cm}p{4.0cm}}
+\toprule\noalign{}
+\textbf{유형} & \textbf{특징} & \textbf{비유} & \textbf{대표 예시} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{지도학습} & 정답 있는 데이터로 학습 & 시험 공부 & 스팸 필터,
+질병 진단 \\
+\textbf{비지도학습} & 정답 없이 패턴 발견 & 그룹 나누기 & 고객 세분화 \\
+\textbf{강화학습} & 시행착오로 보상 최대화 & 게임 연습 & AlphaGo,
+자율주행 \\
+\end{longtable}
+
+\textbf{\emoji{light-bulb} 초등 AI 교육에서는 주로 지도학습을 다룹니다!}
+
+\hypertarget{uxba38uxc2e0uxb7ecuxb2dd-4uxb2e8uxacc4-uxacfcuxc815}{%
+\subsubsection{\textbf{④} 머신러닝 4단계
+과정}\label{uxba38uxc2e0uxb7ecuxb2dd-4uxb2e8uxacc4-uxacfcuxc815}}
+
+\begin{verbatim}
+1. 데이터 수집 → 2. 학습 → 3. 평가 → 4. 예측
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{1단계}: 좋은 데이터 모으기 (양, 질, 다양성)
+\item
+  \textbf{2단계}: 패턴 발견 (반복 학습, 가중치 조정)
+\item
+  \textbf{3단계}: 성능 확인 (새 데이터로 테스트)
+\item
+  \textbf{4단계}: 실전 적용 (새로운 입력 예측)
+\end{itemize}
+
+\hypertarget{uxc5d4uxd2b8uxb9ac-ai-uxbaa8uxb378-uxc5f0uxacb0-1}{%
+\subsection{엔트리 AI 모델
+연결}\label{uxc5d4uxd2b8uxb9ac-ai-uxbaa8uxb378-uxc5f0uxacb0-1}}
+
+오늘 배운 이론이 3주차 엔트리 실습으로 연결됩니다!
+
+\textbf{엔트리 이미지 분류 모델}: - \textbf{학습 유형}: 지도학습 -
+\textbf{1단계}: 웹캠으로 고양이/개 사진 촬영 - \textbf{2단계}: ``모델
+학습하기'' 버튼 클릭 - \textbf{3단계}: 정확도 확인 (예: 92\%) -
+\textbf{4단계}: 새 이미지 실시간 분류
+
+→ \textbf{이 모든 것이 바로 지도학습입니다!}
+
+\hypertarget{uxb2e4uxc74c-uxc8fc-uxd034uxc988-uxc548uxb0b4}{%
+\subsection{다음 주 퀴즈
+안내}\label{uxb2e4uxc74c-uxc8fc-uxd034uxc988-uxc548uxb0b4}}
+
+\textbf{2주차 1차시 시작 시 1주차 전체 퀴즈 실시}
+
+\begin{longtable}{p{4cm}p{10cm}}
+\toprule\noalign{}
+항목 & 내용 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{시간} & 10분 \\
+\textbf{문항} & 5지선다형 10문항 + 단답형 5문항 \\
+\textbf{배점} & 10점 (5지선다 0.5점 × 10 + 단답형 1점 × 5) \\
+\textbf{출제 범위} & 1주차 1차시 + 1주차 2차시 전체 \\
+\end{longtable}
+
+\textbf{복습 포인트}: - 1차시: AI 정의, 약한/강한 AI, 기능별 분류, AI
+봄과 겨울 - 2차시: AI/ML/DL 포함 관계, 3가지 학습 유형, 머신러닝 4단계
+
+\textbf{복습 권장!}
+
+\hypertarget{uxb2e4uxc74c-uxcc28uxc2dc-uxc608uxace0}{%
+\subsection{다음 차시
+예고}\label{uxb2e4uxc74c-uxcc28uxc2dc-uxc608uxace0}}
+
+\textbf{2주차 1차시: 데이터와 딥러닝}
+
+\begin{itemize}
+\tightlist
+\item
+  데이터의 역할과 중요성
+\item
+  데이터 편향 문제
+\item
+  신경망과 딥러닝의 기초
+\item
+  AI 시대의 데이터 윤리
+\end{itemize}
+
+\textbf{준비물}: 없음 (이론 강의)
+
+\hypertarget{uxcc38uxace0uxc790uxb8cc}{%
+\subsection{참고자료}\label{uxcc38uxace0uxc790uxb8cc}}
+
+\begin{longtable}{p{2.5cm}p{3.5cm}p{4.0cm}p{4.0cm}}
+\toprule\noalign{}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & AI디지털리터러시\_강의계획서\_v1.2.0.0 & 프로젝트 문서 & 1주차 2차시
+수업 계획 \\
+2 & AI디지털리터러시\_1주차2차시\_강의개요\_v1.2.0.0 & 프로젝트 문서 &
+수업 진행 가이드 \\
+3 & 2022 개정 교육과정 (교육부 고시 제2022-33호) & 교육부 문서 &
+{[}6실05-05{]} 성취기준 \\
+4 & AI 기초 (한국정보교육학회 편) & 도서 & 기계학습 원리 참고 \\
+5 & 교수 제공 AI/ML 시뮬레이터 & 교수 제공 & 지도/비지도학습 시연 \\
+6 & 강화학습 테트리스 시뮬레이터 & 교수 제공 & 강화학습 개념 시연 \\
+7 & AI과수원 애니메이션 & 교수 제공 & 기계학습 과정 시각화 \\
+8 & 엔트리 (playentry.org) & 웹사이트 & 이미지 분류 모델 예시 \\
+9 & 문서작성지침서\_v1.7.2.0 & 프로젝트 문서 & 강의자료 작성 절차 \\
+10 & 버전관리지침\_v1.3.0 & 프로젝트 문서 & 문서 버전 체계 \\
+\end{longtable}
+
+\hypertarget{uxc0dduxc131uxc218uxc815-uxc774uxb825}{%
+\subsection{생성/수정
+이력}\label{uxc0dduxc131uxc218uxc815-uxc774uxb825}}
+
+\begin{longtable}{p{1.5cm}p{2.0cm}p{2.5cm}p{2.5cm}p{2.5cm}p{3.0cm}}
+\toprule\noalign{}
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경 수준} & \textbf{변경 내용} & \textbf{작성자} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+v1.0.0.0 & 2026-02-08 & 16:30 & 최초 & 1주차 2차시 강의노트 신규 작성.
+1주차 1차시 구조(이모지, 상세 설명, 표 활용) 참조. AI/ML/DL 포함관계,
+3가지 학습 유형(지도/비지도/강화) 상세 설명, 머신러닝 4단계 프로세스
+정리, 엔트리 AI 모델 연결 강조, 일상 예시 풍부하게 제공 & Claude \\
+v1.2.0.0 & 2026-02-08 & 19:30 & 마이너 & 비지도학습 ``정답이 없다''의
+의미 명확화. ① ``정답 없이'' → ``라벨(정답 표시) 없이''로 수정 ②
+지도학습과의 데이터 구조 비교 추가 ③ 라벨이 없는 3가지 이유 상세 설명
+(예시 확대) ④ 군집화 3단계 과정 구조화 ⑤ 구체적 예시 3개 확대 및 재구성
+⑥ 초등교육 비유 2가지 추가 ⑦ 오개념 대응 전략 표 신설 ⑧ 참고자료 추가
+(테트리스 시뮬레이터, AI과수원) & Claude \\
+v1.2.1.0 & 2026-02-08 & 20:45 & 리비전 & 전문가 검토 의견 반영. ①
+회귀(Regression) 용어 구체화: ``시험 점수 맞히기 vs 합격/불합격'' 비유
+추가, 과일 무게 예측 비유 추가 ② 특징(Feature) 개념 확장: 고양이/개 특징
+데이터 표 추가, AI가 발견하는 패턴 명시, 특징 추출 과정 상세화 ③ 초보자
+및 예비 교사 관점 접근성 강화 & Claude \\
+\textbf{v1.3.0.0} & \textbf{2026-02-08} & \textbf{21:45} &
+\textbf{마이너} & \textbf{완전한 개선 반영 (전문가 검토 의견 3가지 모두
+반영). ① 회귀 용어 완전 구체화: ``얼마나?'' 질문 추가, 회귀 vs 분류
+비교표 신설, 교수 멘트 추가, 4개 예시 확대 ② 강화학습 시각화 완성: 그림
+19(강아지 훈련) 추가, 그림 20(게임 점수) 추가, 교수 전략 상세화,
+초등학생 설명 추가, 오개념 방지 표 신설 ③ 교육적 접근성 극대화: 시각
+자료 2개 추가, 일상 비유 확대, 단계별 교수 멘트 보강} &
+\textbf{Claude} \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\emph{AI디지털리터러시 1주차 2차시 강의노트 --- 기계학습의 원리}
+
+\end{document}

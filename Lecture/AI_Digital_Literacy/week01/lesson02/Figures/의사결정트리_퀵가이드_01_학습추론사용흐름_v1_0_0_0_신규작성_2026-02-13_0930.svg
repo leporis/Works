@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-auto">
+      <path d="M 0 0 L 10 3.5 L 0 7 z" fill="#666"/>
+    </marker>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="300" rx="12" fill="url(#bgGrad)"/>
+  <text x="400" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#333">🐧 의사결정트리 — 학습→추론 사용 흐름</text>
+  <text x="400" y="46" text-anchor="middle" font-size="9" fill="#795548">트리 구축에서 분류 예측까지</text>
+  <rect x="20" y="70" width="128" height="80" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="20" y="70" width="128" height="24" rx="10" fill="#1565C0" opacity="0.15"/>
+  <rect x="20" y="86" width="128" height="8" fill="#1565C0" opacity="0.15"/>
+  <text x="84" y="87" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">STEP 1</text>
+  <text x="84" y="112" text-anchor="middle" font-size="10" font-weight="600" fill="#333">데이터 선택</text>
+  <text x="84" y="128" text-anchor="middle" font-size="7" fill="#888">펭귄/아이리스</text>
+  <text x="84" y="141" text-anchor="middle" font-size="7" fill="#888">데이터셋 선택</text>
+  <line x1="150" y1="110" x2="176" y2="110" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="178" y="70" width="128" height="80" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="178" y="70" width="128" height="24" rx="10" fill="#1565C0" opacity="0.15"/>
+  <rect x="178" y="86" width="128" height="8" fill="#1565C0" opacity="0.15"/>
+  <text x="242" y="87" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">STEP 2</text>
+  <text x="242" y="112" text-anchor="middle" font-size="10" font-weight="600" fill="#333">트리 설정</text>
+  <text x="242" y="128" text-anchor="middle" font-size="7" fill="#888">최대 깊이</text>
+  <text x="242" y="141" text-anchor="middle" font-size="7" fill="#888">최소 샘플 수</text>
+  <line x1="308" y1="110" x2="334" y2="110" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="336" y="70" width="128" height="80" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="336" y="70" width="128" height="24" rx="10" fill="#FF9800" opacity="0.15"/>
+  <rect x="336" y="86" width="128" height="8" fill="#FF9800" opacity="0.15"/>
+  <text x="400" y="87" text-anchor="middle" font-size="9" font-weight="600" fill="#FF9800">STEP 3</text>
+  <text x="400" y="112" text-anchor="middle" font-size="10" font-weight="600" fill="#333">트리 학습</text>
+  <text x="400" y="128" text-anchor="middle" font-size="7" fill="#888">⚡ 의사결정트리</text>
+  <text x="400" y="141" text-anchor="middle" font-size="7" fill="#888">구축</text>
+  <line x1="466" y1="110" x2="492" y2="110" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="494" y="70" width="128" height="80" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="494" y="70" width="128" height="24" rx="10" fill="#7B1FA2" opacity="0.15"/>
+  <rect x="494" y="86" width="128" height="8" fill="#7B1FA2" opacity="0.15"/>
+  <text x="558" y="87" text-anchor="middle" font-size="9" font-weight="600" fill="#7B1FA2">STEP 4</text>
+  <text x="558" y="112" text-anchor="middle" font-size="10" font-weight="600" fill="#333">추론 전환</text>
+  <text x="558" y="128" text-anchor="middle" font-size="7" fill="#888">🔍 추론 모드</text>
+  <text x="558" y="141" text-anchor="middle" font-size="7" fill="#888">탭 클릭</text>
+  <line x1="624" y1="110" x2="650" y2="110" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="652" y="70" width="128" height="80" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="652" y="70" width="128" height="24" rx="10" fill="#2E7D32" opacity="0.15"/>
+  <rect x="652" y="86" width="128" height="8" fill="#2E7D32" opacity="0.15"/>
+  <text x="716" y="87" text-anchor="middle" font-size="9" font-weight="600" fill="#2E7D32">STEP 5</text>
+  <text x="716" y="112" text-anchor="middle" font-size="10" font-weight="600" fill="#333">분류 예측</text>
+  <text x="716" y="128" text-anchor="middle" font-size="7" fill="#888">특성 입력</text>
+  <text x="716" y="141" text-anchor="middle" font-size="7" fill="#888">경로 시각화</text>
+  <rect x="60" y="240" width="680" height="40" rx="8" fill="#FFF8E1" opacity="0.6"/>
+  <text x="400" y="265" text-anchor="middle" font-size="8" fill="#795548">💡 각 단계를 순서대로 수행하며, 결과를 확인한 후 다음 단계로 진행합니다.</text>
+</svg>

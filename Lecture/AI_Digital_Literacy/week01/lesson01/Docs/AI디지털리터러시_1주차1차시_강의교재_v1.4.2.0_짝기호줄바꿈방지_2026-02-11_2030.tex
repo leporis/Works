@@ -1,0 +1,1270 @@
+% LuaLaTeX 컴파일 필요 (컬러 이모지 + 한글 지원)
+\documentclass[11pt,a4paper]{article}
+
+% === 필수 패키지 ===
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{emoji}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{caption}
+
+% === 페이지 설정 ===
+\geometry{left=25mm, right=25mm, top=28mm, bottom=28mm}
+\setlength{\parskip}{0.3em}
+
+% === 섹션 전후 간격 ===
+\titlespacing*{\section}{0pt}{1.2em}{0.6em}
+\titlespacing*{\subsection}{0pt}{1.0em}{0.5em}
+\titlespacing*{\subsubsection}{0pt}{0.8em}{0.3em}
+
+% === 폰트 설정 ===
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setmonofont{Noto Sans Mono CJK KR}[Scale=0.85]
+\setemojifont{Noto Color Emoji}
+
+% === 색상 정의 (프로젝트 팔레트) ===
+\definecolor{primary}{HTML}{1976D2}
+\definecolor{darkblue}{HTML}{1565C0}
+\definecolor{teal}{HTML}{00897B}
+\definecolor{purple}{HTML}{7B1FA2}
+\definecolor{amber}{HTML}{FFA000}
+\definecolor{green}{HTML}{388E3C}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{lightgray}{HTML}{F5F5F5}
+\definecolor{lightteal}{HTML}{E0F2F1}
+\definecolor{cream}{HTML}{FFF8E1}
+\definecolor{tableheader}{HTML}{BBDEFB}
+\definecolor{darkgray}{HTML}{333333}
+
+% === 하이퍼링크 ===
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    citecolor=primary
+}
+
+% === 섹션 스타일 ===
+\titleformat{\section}
+  {\LARGE\bfseries\color{primary}}
+  {\thesection}{0.5em}{}
+
+\titleformat{\subsection}
+  {\Large\bfseries\color{darkblue}}
+  {\thesubsection}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\large\bfseries\color{teal}}
+  {\thesubsubsection}{0.5em}{}
+
+% === 머리글/바닥글 ===
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{primary}AI디지털리터러시}
+\fancyhead[R]{\small\color{primary}1주차 1차시 — AI의 이해}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% === tcolorbox 스타일 ===
+\tcbuselibrary{skins, breakable}
+
+\newtcolorbox{definitionbox}[1][]{
+    colback=lightblue,
+    colframe=primary,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={#1},
+    rounded corners,
+    boxrule=1pt,
+    breakable
+}
+
+\newtcolorbox{tipbox}[1][]{
+    colback=cream,
+    colframe=amber,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={#1},
+    rounded corners,
+    boxrule=1pt,
+    breakable
+}
+
+\newtcolorbox{keybox}[1][]{
+    colback=lightteal,
+    colframe=teal,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={#1},
+    rounded corners,
+    boxrule=1pt,
+    breakable
+}
+
+\newtcolorbox{questionbox}{
+    colback=lightgray,
+    colframe=primary!50,
+    rounded corners,
+    boxrule=0.5pt,
+    breakable
+}
+
+\newtcolorbox{summarybox}[1][]{
+    colback=lightblue!50,
+    colframe=primary,
+    coltitle=white,
+    fonttitle=\bfseries\large,
+    title={#1},
+    rounded corners,
+    boxrule=1.5pt,
+    breakable
+}
+
+% === 표 행 간격 ===
+\renewcommand{\arraystretch}{1.4}
+
+% === 목차 한글화 ===
+\renewcommand{\contentsname}{목차}
+\renewcommand{\figurename}{그림}
+\renewcommand{\tablename}{표}
+
+\begin{document}
+
+% === 표지 ===
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+
+{\Huge\bfseries\color{primary} AI디지털리터러시}
+
+\vspace{0.5cm}
+
+{\LARGE\color{darkblue} 1주차 1차시 강의교재}
+
+\vspace{1.5cm}
+
+{\Huge\bfseries AI의 이해}
+
+\vspace{0.5cm}
+
+{\Large\color{darkgray} 인공지능의 정의와 유형을 설명할 수 있다}
+
+\vspace{3cm}
+
+{\large 청주교육대학교}
+
+\vspace{0.3cm}
+
+{\large 2026학년도}
+
+\vspace{2cm}
+
+\begin{tcolorbox}[colback=lightblue, colframe=primary, width=0.8\textwidth, halign=center]
+\begin{tabular}{ll}
+\textbf{교과목명} & AI디지털리터러시 \\
+\textbf{수업 대상} & 청주교육대학교 4학년 \\
+\textbf{수업 시간} & 50분 \mbox{(1시간)} \\
+\textbf{관련 성취기준} & {[6실05-04]}, {[6실05-05]} \\
+\end{tabular}
+\end{tcolorbox}
+
+\end{titlepage}
+
+% === 목차 ===
+\tableofcontents
+\newpage
+
+% === 수업 흐름 ===
+\section*{\emoji{clipboard} 수업 흐름}
+\addcontentsline{toc}{section}{수업 흐름}
+
+\begin{center}
+\begin{tabular}{|c|c|p{10cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} \\
+\hline
+5분 & \emoji{clapper-board} 도입 & AI 시대와 우리 학생들의 미래, 교사의 역할 변화 \\
+\hline
+15분 & \emoji{blue-book} 전개 1 & 인공지능의 정의: 인간의 지능을 모방하는 컴퓨터 시스템 \\
+\hline
+15분 & \emoji{green-book} 전개 2 & AI 유형: 약한 AI vs 강한 AI, 기능별 분류\mbox{(인식/예측/분류/생성)} \\
+\hline
+10분 & \emoji{orange-book} 전개 3 & AI의 봄과 겨울: 1950년대\textasciitilde 현재까지의 발전 역사 \\
+\hline
+5분 & \emoji{memo} 정리 & 핵심 개념 요약, 2022 개정 교육과정과 AI 교육의 연결 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 이번 차시 학습 목표
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcolorbox}[colback=lightblue, colframe=primary, title={\emoji{bullseye} 이번 차시 학습 목표}, fonttitle=\bfseries\large]
+
+이번 차시를 마치면 다음을 할 수 있어야 합니다.
+
+\begin{enumerate}[leftmargin=*, itemsep=0.3cm]
+    \item \textbf{인공지능의 정의}를 ``인간의 지능을 모방하는 컴퓨터 시스템''으로 설명할 수 있다.
+    \item \textbf{약한 AI와 강한 AI}의 차이를 구분하고, 현재 모든 AI가 약한 AI임을 설명할 수 있다.
+    \item AI의 \textbf{기능별 분류} 4가지(인식, 예측, 분류, 생성)를 예시와 함께 설명할 수 있다.
+    \item AI의 \textbf{봄과 겨울}이 반복된 이유와 제3의 봄의 핵심 요소를 설명할 수 있다.
+    \item 초등학생의 흔한 AI \textbf{오개념}을 파악하고 교정할 수 있다.
+    \item 2022 개정 교육과정 성취기준 \textbf{[6실05-04], [6실05-05]}와 오늘 내용의 연결을 설명할 수 있다.
+\end{enumerate}
+
+\end{tcolorbox}
+
+\vspace{0.5cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 도입
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{clapper-board} 도입: AI 시대와 우리 학생들의 미래}
+
+\subsection{우리 학생들의 미래}
+
+\begin{questionbox}
+\emoji{pushpin} \textbf{핵심 질문}: ``지금 초등학생이 30살이 되는 2049년, 어떤 세상일까요?"
+\end{questionbox}
+
+여러분은 곧 초등학교 교실에서 아이들을 만나게 됩니다. 그 아이들이 살아갈 미래는 어떤 모습일까요? 잠시 상상해 볼까요?
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_01_우리학생들의미래_v2_0_0_0_연도수정2026_20260207_2330.png}
+\caption*{\textbf{[그림 01]} 우리 학생들의 미래 --- 2026년 초등학교 1학년이 사회에 나갈 때까지}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|p{2.5cm}|c|p{4.5cm}|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{시점} & \textbf{연도} & \textbf{상황} & \textbf{기술 환경} \\
+\hline
+\emoji{school} 초등 입학 & 2026 & AI 시대 시작을 경험 & ChatGPT, 생성형 AI가 이미 일상 \\
+\hline
+\emoji{graduation-cap} 초등 졸업 & 2032 & AI와 함께 성장한 세대 & AGI 근접? 로봇 대중화? \\
+\hline
+\emoji{backpack} 고등 졸업 & 2038 & 진로 선택의 갈림길 & 완전 자율주행, AI 협업 필수 \\
+\hline
+\emoji{briefcase} 사회 진출 & 2042 & 우리가 상상하지 못한 세상 & ??? 예측 불가 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+
+이 타임라인을 보면 세 가지 중요한 사실을 알 수 있어요.
+
+\textbf{\color{primary}\emoji{small-blue-diamond} 불과 10\textasciitilde 15년 후의 일입니다.} 지금 1학년이 사회에 나가는 시기는 생각보다 가깝습니다. 2022년에 ChatGPT가 나오기 전엔 상상도 못했잖아요.
+
+\textbf{\color{primary}\emoji{small-blue-diamond} 교사의 책임이 큽니다.} 우리는 ``미래를 살아갈 학생''을 가르칩니다. 10년 후는 예측할 수 없습니다. 그러면 우리는 무엇을 가르쳐야 할까요?
+
+\textbf{\color{primary}\emoji{small-blue-diamond} 변하지 않는 것에 집중해야 합니다.} 기술은 변해도 창의성, 비판적 사고, 공감, 협업은 여전히 중요합니다. 이것이 AI 시대 교육의 출발점이에요.
+
+
+
+\subsection{세 번의 기술 혁명과 교육의 변화}
+
+역사를 되돌아보면, 큰 기술 혁명이 올 때마다 ``교육이 바뀌어야 한다''는 요구가 있었어요.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_02_세번의기술혁명.png}
+\caption*{\textbf{[그림 02]} 세 번의 기술 혁명}
+\end{figure}
+
+\subsubsection{\emoji{factory} 산업혁명 (18\textasciitilde 19세기)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{핵심 기술}: 증기기관
+    \item \textbf{대체된 것}: 육체 노동
+    \item \textbf{교육의 변화}: 공교육 도입 — 읽기, 쓰기, 셈하기
+\end{itemize}
+
+공장에서 일하려면 기본적인 읽기·쓰기·셈하기가 필요했고, 이것이 공교육의 시작이었어요.
+
+\subsubsection{\emoji{desktop-computer} 정보혁명 (20세기 후반)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{핵심 기술}: 컴퓨터, 인터넷
+    \item \textbf{대체된 것}: 정보 처리
+    \item \textbf{교육의 변화}: 컴퓨터 교육 — 정보 리터러시
+\end{itemize}
+
+정보가 폭발적으로 늘어나면서 ``정보를 찾고, 평가하고, 활용하는 능력''이 중요해졌어요.
+
+\subsubsection{\emoji{robot} AI 혁명 (21세기, 현재)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{핵심 기술}: 딥러닝, 빅데이터
+    \item \textbf{대체된 것}: 지식 노동
+    \item \textbf{교육의 변화}: AI 리터러시 — 창의성, 비판적 사고
+\end{itemize}
+
+이번에는 단순 반복 작업뿐 아니라 \textbf{지식 노동}까지 대체되고 있어요. 그래서 ``AI를 이해하고 활용하는 능력''이 새로운 기본 소양이 되었습니다.
+
+\begin{tipbox}[\emoji{light-bulb} 핵심 통찰]
+각 혁명마다 ``대체되는 영역''이 확장되고, ``필요한 교육''도 변화했습니다. AI 혁명은 그 변화가 가장 빠르고 광범위해요.
+\end{tipbox}
+
+
+
+\subsection{4C 역량 — AI 시대의 핵심 능력}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{images/AI디지털리터러시_1주차1차시_03_4C역량_v2_0_2_2_설명한줄정리_20260207_2355.png}
+\caption*{\textbf{[그림 03]} 4C 역량}
+\end{figure}
+
+AI 시대에 학생들에게 길러줘야 할 핵심 역량을 ``4C''라고 불러요.
+
+\begin{center}
+\begin{tabular}{|p{2cm}|p{2.5cm}|p{3.5cm}|p{5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{역량} & \textbf{영문} & \textbf{의미} & \textbf{AI 시대 중요성} \\
+\hline
+\emoji{brain} 비판적 사고 & Critical Thinking & 정보를 분석하고 판단 & AI 결과물을 평가·검증하는 데 필수 \\
+\hline
+\emoji{light-bulb} 창의성 & Creativity & 새로운 아이디어 창출 & AI가 생성한 것을 넘어서는 독창적 사고 \\
+\hline
+\emoji{speech-balloon} 소통 & Communication & 생각을 효과적으로 전달 & AI와의 협업\mbox{(프롬프트 작성)}에도 필요 \\
+\hline
+\emoji{handshake} 협업 & Collaboration & 함께 문제 해결 & AI + 인간 협업 시대의 핵심 \\
+\hline
+\end{tabular}
+\end{center}
+
+이 4C 역량은 기술이 아무리 변해도 변하지 않는 핵심 능력입니다.
+
+\subsection{교사 역할의 변화}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_04_교사역할변화.png}
+\caption*{\textbf{[그림 04]} AI 시대, 교사 역할의 변화 --- 지식 전달자에서 학습 촉진자로}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|p{5.5cm}|c|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{과거} & & \textbf{AI 시대} \\
+\hline
+\emoji{open-book} 지식 전달자 & \emoji{arrow-right} & \emoji{star} 학습 촉진자, 코치 \\
+\hline
+\emoji{magnifying-glass-tilted-left} 정보의 원천 & \emoji{arrow-right} & \emoji{magnifying-glass-tilted-right} 정보 큐레이터 \\
+\hline
+\emoji{memo} 평가자 & \emoji{arrow-right} & \emoji{growing-heart} 성장 지원자, 멘토 \\
+\hline
+\emoji{bullseye} 수업 진행자 & \emoji{arrow-right} & \emoji{building-construction} 학습 환경 설계자 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+
+AI가 지식 전달, 정보 제공, 반복 평가를 대신할 수 있게 되었지만, \textbf{AI가 절대 대체할 수 없는 것}이 있어요.
+
+\begin{keybox}[\emoji{star} AI가 대체할 수 없는 교사의 가치]
+\begin{itemize}[leftmargin=*]
+    \item \emoji{eyes} \textbf{학생의 눈을 보며 격려하는 것} — AI가 대체할 수 없습니다
+    \item \emoji{handshake} \textbf{어려움에 처한 학생에게 다가가는 것} — AI가 대체할 수 없습니다
+    \item \emoji{party-popper} \textbf{성장의 기쁨을 함께 나누는 것} — AI가 대체할 수 없습니다
+\end{itemize}
+이것이 교사의 본질적 가치이며, AI 시대에도 교사가 필요한 이유입니다.
+\end{keybox}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 전개 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{blue-book} 전개 1: 인공지능의 정의}
+
+\subsection{인공지능이란 무엇일까요?}
+
+여러분에게 질문 하나 드릴게요. \textbf{``인공지능''하면 무엇이 떠오르나요?}
+
+많은 사람들이 영화 속 로봇이나 터미네이터를 떠올려요. 하지만 실제 AI는 그것과 많이 달라요.
+
+\begin{definitionbox}[\emoji{light-bulb} 인공지능(Artificial Intelligence, AI)]
+\textbf{\large 인간의 지능을 모방하는 컴퓨터 시스템}
+
+\vspace{0.3cm}
+사람이 하는 것처럼 보고(시각), 듣고(청각), 읽고(언어 이해), 판단하는(추론) 능력을 컴퓨터가 수행하도록 만드는 기술입니다.
+\end{definitionbox}
+
+쉽게 말하면, 사람처럼 ``똑똑하게'' 행동하도록 만든 컴퓨터 프로그램이에요. 하지만 중요한 점이 있어요 — AI는 \textbf{진짜로 생각하는 것이 아니라}, 생각하는 것처럼 \textbf{보이도록} 프로그래밍된 거예요.
+
+\subsection{AI의 4가지 능력 — 보고, 듣고, 읽고, 판단하기}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/AI의4가지능력.jpg}
+\caption*{\textbf{[그림 05]} AI의 4가지 능력}
+\end{figure}
+
+
+AI가 ``인간의 지능을 모방한다''는 것은 구체적으로 어떤 능력을 말하는 걸까요? 크게 4가지로 나눌 수 있어요.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|p{2.8cm}|p{3.7cm}|p{4.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{능력} & \textbf{인간의 지능} & \textbf{AI의 구현} & \textbf{대표 사례} \\
+\hline
+\emoji{eye} \textbf{보기} & 눈으로 사물을 인식 & 컴퓨터 비전 \mbox{(이미지 분석)} & 얼굴 인식, 자율주행 카메라 \\
+\hline
+\emoji{ear} \textbf{듣기} & 귀로 소리를 구분 & 음성 인식 \mbox{(소리→텍스트)} & 시리, 빅스비, 받아쓰기 \\
+\hline
+\emoji{open-book} \textbf{읽기} & 글을 읽고 의미 파악 & 자연어 처리 \mbox{(텍스트 분석)} & ChatGPT, 파파고, 맞춤법 검사 \\
+\hline
+\emoji{brain} \textbf{판단하기} & 정보를 종합하여 결론 도출 & 추론 엔진 \mbox{(패턴 기반 판단)} & 의료 진단 AI, 바둑 AI \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tipbox}[\emoji{light-bulb} 핵심]
+현재 AI는 이 4가지 중 \textbf{한두 가지만} 잘합니다. 네 가지를 모두 인간처럼 잘하는 AI는 아직 없어요. 이것이 바로 ``약한 AI''와 ``강한 AI''의 차이인데, 뒤에서 자세히 배울 거예요.
+\end{tipbox}
+
+\subsection{사람이 잘하는 것 vs AI가 잘하는 것}
+
+AI를 제대로 이해하려면 ``AI가 잘하는 영역''과 ``사람이 여전히 더 잘하는 영역''을 구분할 줄 알아야 해요. 이 구분은 AI 시대에 \textbf{교사가 무엇에 집중해야 하는지}를 알려줍니다.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.8cm}|p{5.5cm}|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{영역} & \emoji{robot} \textbf{AI가 잘하는 것} & \emoji{person-raising-hand} \textbf{사람이 더 잘하는 것} \\
+\hline
+속도 & 1초에 수백만 건 처리 & 한 번에 한 가지씩 \\
+\hline
+반복 & 지치지 않고 24시간 작업 & 피로, 실수 발생 \\
+\hline
+패턴 & 대량 데이터에서 패턴 발견 & 소량 데이터로도 직관적 판단 \\
+\hline
+맥락 & 학습된 범위 내에서만 작동 & 새로운 상황에 유연하게 대응 \\
+\hline
+감정 & 감정을 이해하지 못함 & 공감, 위로, 격려 가능 \\
+\hline
+창의성 & 기존 패턴의 조합 & 진정한 새로움 창조 \\
+\hline
+윤리 & 판단 기준 없음 & 옳고 그름을 판단 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tipbox}[\emoji{bullseye} 예비교사 팁]
+이 표를 활용하면 학생들에게 ``AI가 만능이 아니다''라는 점과 ``사람만이 할 수 있는 일이 있다''는 메시지를 효과적으로 전달할 수 있어요.
+\end{tipbox}
+
+\subsection{초등학생들의 흔한 오개념}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/초등학생AI오개념vs실제.jpg}
+\caption*{\textbf{[그림 06]} 초등학생이 자주 하는 AI 오해}
+\end{figure}
+
+
+여러분이 교실에서 만나게 될 학생들은 AI에 대해 이런 오해를 가지고 있을 수 있어요.
+
+\begin{center}
+\begin{tabular}{|p{4.5cm}|p{4cm}|p{4.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{오개념} & \textbf{실제} & \textbf{교정 포인트} \\
+\hline
+\mbox{``AI = 로봇''} & AI는 소프트웨어, 로봇은 하드웨어 & AI는 눈에 보이지 않는 프로그램이에요 \\
+\hline
+\mbox{``AI는 스스로 생각해요''} & AI는 데이터 패턴을 학습할 뿐 & \mbox{``생각''}이 아니라 \mbox{``계산''}에 가까워요 \\
+\hline
+\mbox{``AI는 뭐든지 할 수 있어요''} & 현재 AI는 특정 작업만 가능 & 시리에게 수학 문제를 풀어달라고 해보세요 \\
+\hline
+\mbox{``AI는 위험해요''} & AI는 도구, 사용 방법이 중요 & 칼도 요리에 쓰면 유용하잖아요 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{교실 속 오개념 교정 대화 예시}
+
+교실에서 학생들의 오개념을 어떻게 자연스럽게 교정할 수 있을까요?
+
+\textbf{상황 1: ``AI = 로봇'' 오개념}
+
+\begin{quote}
+\emoji{girl} \textbf{학생}: ``선생님, AI는 로봇이잖아요!''
+
+\emoji{woman-teacher} \textbf{교사}: ``좋은 생각이야! 그런데 한번 생각해보자. 시리(Siri)한테 말 걸어본 적 있지? 시리는 로봇이야?''
+
+\emoji{girl} \textbf{학생}: ``아니요, 폰에 들어있어요.''
+
+\emoji{woman-teacher} \textbf{교사}: ``맞아! AI는 눈에 보이지 않는 \textbf{프로그램}이야. AI는 `뇌' 같은 거고, 로봇은 `몸' 같은 거라고 생각하면 돼.''
+\end{quote}
+
+\textbf{상황 2: ``AI는 뭐든지 할 수 있어요'' 오개념}
+
+\begin{quote}
+\emoji{boy} \textbf{학생}: ``ChatGPT는 뭐든지 다 할 수 있지 않아요?''
+
+\emoji{woman-teacher} \textbf{교사}: ``그렇게 느낄 수 있어! ChatGPT한테 `내 표정이 어떻게 보여?'라고 물어보면 어떻게 될까?''
+
+\emoji{boy} \textbf{학생}: ``못 보겠죠... 카메라가 없으니까.''
+
+\emoji{woman-teacher} \textbf{교사}: ``바로 그거야! ChatGPT는 글을 쓰는 건 아주 잘하지만, 보거나 듣는 건 못해. 한 가지를 아주 잘하는 AI인 거지. 이런 걸 \textbf{`약한 AI'}라고 해.''
+\end{quote}
+
+\begin{tipbox}[\emoji{bullseye} 예비교사 팁]
+학생들의 오개념을 먼저 파악하고, 수업에서 자연스럽게 교정해 주는 것이 효과적이에요. 직접 반박하기보다 \textbf{질문을 통해 스스로 깨닫게} 하는 것이 좋습니다.
+\end{tipbox}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 전개 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{green-book} 전개 2: AI 유형과 분류}
+
+\subsection{약한 AI vs 강한 AI}
+
+AI를 크게 두 가지로 나눌 수 있어요.
+
+\subsubsection{\emoji{small-blue-diamond} 약한 AI (Narrow AI)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{정의}: 특정 작업 하나에 특화된 인공지능
+    \item \textbf{특징}: 한 가지를 아주 잘하지만, 다른 것은 못함
+    \item \textbf{현재 상태}: 현재 세상에 존재하는 \textbf{모든 AI}가 약한 AI
+    \item \textbf{예시}:
+    \begin{itemize}
+        \item \emoji{speaking-head} 시리, 빅스비, 구글 어시스턴트 — 음성 인식과 간단한 명령 수행
+        \item \emoji{camera-with-flash} 구글 포토 — 얼굴 인식, 사진 자동 분류
+        \item \emoji{musical-note} 스포티파이, 유튜브 — 취향 기반 추천
+        \item \emoji{automobile} 테슬라 오토파일럿 — 자율주행 보조
+        \item \emoji{speech-balloon} ChatGPT — 텍스트 생성, 대화
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{\emoji{small-orange-diamond} 강한 AI (General AI, AGI)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{정의}: 인간처럼 다양한 작업을 수행할 수 있는 범용 인공지능
+    \item \textbf{특징}: 어떤 상황에서든 인간 수준으로 사고하고 판단
+    \item \textbf{현재 상태}: \textbf{아직 실현되지 않음} — 연구 중인 목표
+    \item \textbf{예시}: SF 영화 속 AI (아이언맨의 자비스, 터미네이터의 스카이넷)
+\end{itemize}
+
+\begin{tipbox}[\emoji{light-bulb} 쉬운 비유]
+약한 AI는 ``한 과목만 잘하는 학생'', 강한 AI는 ``모든 과목을 다 잘하는 학생''에 비유할 수 있어요. 현재는 한 과목만 잘하는 학생만 있는 거죠.
+\end{tipbox}
+
+ChatGPT가 대화도 하고, 글도 쓰고, 코딩도 해서 ``이건 강한 AI 아닌가?''라고 생각할 수 있지만, ChatGPT도 결국 \textbf{텍스트 생성이라는 하나의 작업}에 특화된 약한 AI예요. 다만 그 하나의 작업이 워낙 범용적이라 다재다능해 보이는 거죠.
+
+
+
+\subsection{기능별 분류}
+
+AI를 ``무엇을 할 수 있는가''로 분류하면 크게 4가지로 나눌 수 있어요.
+
+\begin{center}
+\begin{tabular}{|p{2.2cm}|p{3.5cm}|p{3.8cm}|p{3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{유형} & \textbf{하는 일} & \textbf{일상 속 예시} & \textbf{교육 현장 예시} \\
+\hline
+\emoji{eye} \textbf{인식 AI} & 이미지·음성·텍스트를 알아봄 & 얼굴 잠금 해제, 음성 비서 & 손글씨 인식, 출석 체크 \\
+\hline
+\emoji{bar-chart} \textbf{예측 AI} & 미래 값을 예측 & 날씨 예보, 교통 예측 & 학습 성취도 예측 \\
+\hline
+\emoji{label} \textbf{분류 AI} & 데이터를 범주로 나눔 & 스팸 메일 필터, 질병 진단 & 학생 답안 자동 분류 \\
+\hline
+\emoji{sparkles} \textbf{생성 AI} & 새로운 콘텐츠 생성 & ChatGPT, 이미지 생성 & 학습 자료 자동 생성 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{4가지 유형 자세히 알아보기}
+
+\textbf{\emoji{eye} 인식 AI — ``보고, 듣고, 읽는'' AI}
+
+인식 AI는 인간의 감각 능력을 모방해요. 이미지, 음성, 텍스트 등 다양한 데이터를 ``알아보는'' 역할을 합니다.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{이미지 인식}: 사진 속 얼굴, 사물, 글자를 구별 (예: 구글 렌즈)
+    \item \textbf{음성 인식}: 말소리를 텍스트로 변환 (예: 시리의 ``안녕 시리'')
+    \item \textbf{텍스트 인식}: 손글씨나 인쇄체를 디지털 텍스트로 변환 (예: OCR 스캔)
+\end{itemize}
+
+\begin{tipbox}[\emoji{school} 교실 활용]
+학생들이 손으로 그린 그림을 AI에게 인식시키는 활동을 해볼 수 있어요. 구글의 ``Quick, Draw!'' 게임이 좋은 예시입니다.
+\end{tipbox}
+
+\textbf{\emoji{bar-chart} 예측 AI — ``미래를 추측하는'' AI}
+
+예측 AI는 과거 데이터를 분석하여 앞으로 일어날 일을 추정해요.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{시계열 예측}: 내일 날씨, 주가 변동, 교통량 변화
+    \item \textbf{추천 예측}: ``이 사람은 이 영상을 좋아할 것'' (유튜브, 넷플릭스)
+    \item \textbf{위험 예측}: ``이 환자는 질병 위험이 높다'' (의료 AI)
+\end{itemize}
+
+\begin{tipbox}[\emoji{school} 교실 활용]
+``내일 급식 메뉴를 AI가 예측할 수 있을까?'' 같은 질문으로 예측 AI의 원리와 한계를 토론할 수 있어요.
+\end{tipbox}
+
+\textbf{\emoji{label} 분류 AI — ``나누고 정리하는'' AI}
+
+분류 AI는 데이터를 미리 정해진 범주로 나눠요. 인식과 비슷해 보이지만, 핵심은 ``어디에 속하는지 결정하는 것''이에요.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{이진 분류}: 스팸/정상, 합격/불합격, 양성/음성
+    \item \textbf{다중 분류}: 동물 종류 구분, 감정 분석 (긍정/부정/중립)
+    \item \textbf{이상 탐지}: 정상과 다른 패턴 발견 (신용카드 사기 탐지)
+\end{itemize}
+
+\begin{tipbox}[\emoji{school} 교실 활용]
+4주차 엔트리 실습에서 이미지 분류 모델을 직접 만들어볼 거예요. 오늘은 ``분류가 뭔지'' 이해하는 것이 목표입니다.
+\end{tipbox}
+
+\textbf{\emoji{sparkles} 생성 AI — ``새로운 것을 만드는'' AI}
+
+생성 AI는 학습한 패턴을 바탕으로 새로운 콘텐츠를 만들어내요. 2022년 ChatGPT 등장 이후 가장 주목받는 AI 유형이에요.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{텍스트 생성}: ChatGPT, 클로드 — 글쓰기, 요약, 번역
+    \item \textbf{이미지 생성}: DALL-E, 미드저니 — 텍스트 설명으로 이미지 제작
+    \item \textbf{코드 생성}: GitHub Copilot — 프로그래밍 코드 자동 작성
+    \item \textbf{음성 생성}: TTS(Text-to-Speech) — 텍스트를 자연스러운 음성으로
+\end{itemize}
+
+\begin{tipbox}[\emoji{school} 교실 활용]
+5주차에 생성형 AI(ChatGPT, 클로드)를 교육 현장에서 활용하는 방법을 배울 거예요.
+\end{tipbox}
+
+\newpage
+
+\subsubsection{고양이 vs 개 분류 — AI는 어떻게 구별할까?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{images/AI디지털리터러시_1주차1차시_05_고양이vs개분류.png}
+\caption*{\textbf{[그림 07]} 고양이 vs 개 분류}
+\end{figure}
+
+사람은 고양이와 개를 한눈에 구별할 수 있어요. 그런데 컴퓨터는 어떻게 할까요?
+
+\textbf{사람의 방식:} 직관적으로 전체 형태를 인식하고, 귀·코·체형 등을 종합 판단합니다. 한 번도 본 적 없는 품종도 구별 가능하죠.
+
+\textbf{AI의 방식:}
+\begin{enumerate}[leftmargin=*]
+    \item 수천\textasciitilde 수만 장의 고양이/개 사진 데이터를 수집
+    \item 각 사진에 ``이것은 고양이'', ``이것은 개''라는 \textbf{정답 레이블}을 붙임
+    \item AI가 사진 속 \textbf{패턴(특징)}을 스스로 찾아냄
+    \item 새로운 사진이 들어오면 학습한 패턴으로 분류
+\end{enumerate}
+
+\vspace{0.3cm}
+\textbf{\emoji{counterclockwise-arrows-button} 전통적 프로그래밍 vs 기계학습 --- 무엇이 다를까?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_08_전통프로그래밍vs기계학습.png}
+\caption*{\textbf{[그림 08]} 전통적 프로그래밍 vs 기계학습}
+\end{figure}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.8cm}|p{5.5cm}|p{5.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{구분} & \textbf{전통적 프로그래밍} & \textbf{기계학습} \\
+\hline
+방식 & 사람이 규칙을 직접 작성 & 데이터에서 컴퓨터가 규칙을 학습 \\
+\hline
+흐름 & 규칙 + 데이터 → 결과 & 데이터 + 정답 → 모델\mbox{(규칙)} \\
+\hline
+예시 & \mbox{``귀가 뾰족하면 고양이''} & 사진 1만 장 학습 → 스스로 구별 \\
+\hline
+한계 & 모든 경우의 규칙을 정의해야 함 & 충분한 양질의 데이터가 필요 \\
+\hline
+\end{tabular}
+\end{center}
+
+전통적 프로그래밍에서는 프로그래머가 ``귀가 뾰족하고 몸이 작으면 고양이''처럼 \textbf{규칙을 하나하나 정의}해야 해요. 하지만 고양이와 개의 품종이 수백 가지인데, 모든 경우를 규칙으로 만드는 것은 사실상 불가능하죠.
+
+기계학습은 이 문제를 뒤집어요. 규칙을 사람이 만드는 대신, \textbf{데이터를 주고 컴퓨터가 스스로 규칙(패턴)을 찾아내게} 하는 거예요. 이것이 바로 기계학습의 핵심 아이디어이고, 다음 차시에서 본격적으로 배울 내용이에요.
+
+\begin{keybox}[\emoji{light-bulb} 핵심 포인트]
+AI는 사람처럼 ``이해''하는 것이 아니라, 엄청나게 많은 데이터에서 \textbf{통계적 패턴}을 찾는 거예요. 이 차이를 학생들에게 알려주는 것이 중요합니다.
+\end{keybox}
+
+
+
+\subsection{AI, ML, DL의 포함 관계}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{images/AI디지털리터러시_1주차1차시_06_AI_ML_DL포함관계_v1_0_1_0_점선삭제_20260208_0010.png}
+\caption*{\textbf{[그림 09]} AI, ML, DL 포함 관계}
+\end{figure}
+
+인공지능 분야에는 비슷해 보이는 용어가 많아요. 이 세 가지의 관계를 간단히 정리해 볼게요.
+
+\begin{center}
+\begin{tabular}{|c|c|p{5.5cm}|p{3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{개념} & \textbf{영문} & \textbf{정의} & \textbf{비고} \\
+\hline
+\textbf{AI} & Artificial Intelligence & 인간의 지능을 모방하는 모든 기술 & 가장 큰 개념 \\
+\hline
+\textbf{ML} & Machine Learning & 데이터로부터 패턴을 자동으로 학습 & AI의 하위 분야 \\
+\hline
+\textbf{DL} & Deep Learning & 인공신경망으로 복잡한 패턴 학습 & ML의 하위 분야 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{definitionbox}[\emoji{star} 핵심: AI \(\supset\) ML \(\supset\) DL (포함 관계)]
+AI가 가장 큰 개념이고, 그 안에 ML이, ML 안에 DL이 있어요. 현재 AI의 발전을 이끄는 핵심 기술이 바로 DL(딥러닝)이에요.
+\end{definitionbox}
+
+이 관계는 다음 차시(기계학습의 원리)에서 본격적으로 다룰 거예요. 지금은 ``AI 안에 ML이 있고, ML 안에 DL이 있구나'' 정도만 기억해 두세요.
+
+
+
+\subsection{일상 속 AI 탐색}
+
+\subsubsection{스마트폰 속 AI}
+
+여러분의 스마트폰 속에는 이미 수많은 AI가 들어 있어요.
+
+\begin{center}
+\begin{tabular}{|p{3cm}|c|p{7.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{기능} & \textbf{AI 유형} & \textbf{하는 일} \\
+\hline
+얼굴 잠금 해제 & 인식 & 카메라로 얼굴을 인식하여 본인 확인 \\
+\hline
+사진 자동 분류 & 분류 & 인물, 장소, 사물별로 사진을 자동 정리 \\
+\hline
+키보드 자동 완성 & 예측 & 다음에 입력할 단어를 예측하여 추천 \\
+\hline
+음성 비서 & 인식 + 생성 & 음성을 인식하고, 적절한 답변 생성 \\
+\hline
+카메라 야간 모드 & 생성 & 어두운 사진을 밝고 선명하게 변환 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{일상 서비스 속 AI}
+
+\begin{center}
+\begin{tabular}{|p{2.5cm}|c|p{7.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{서비스} & \textbf{AI 유형} & \textbf{하는 일} \\
+\hline
+유튜브 추천 & 예측 & 시청 이력을 분석하여 좋아할 영상 추천 \\
+\hline
+네이버 지도 & 예측 & 교통 상황을 예측하여 최적 경로 제시 \\
+\hline
+쿠팡 상품 추천 & 예측 + 분류 & 구매 패턴을 분석하여 관심 상품 추천 \\
+\hline
+넷플릭스 추천 & 분류 + 예측 & 시청 취향을 분류하고 좋아할 콘텐츠 예측 \\
+\hline
+파파고 번역 & 인식 + 생성 & 한국어를 인식하고 외국어로 변환 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{questionbox}
+\emoji{thought-balloon} \textbf{생각해보기}: ``하루 동안 AI를 사용하지 않고 생활할 수 있을까요?''
+
+아침에 스마트폰 알람(AI 수면 분석)으로 일어나고, 날씨 앱(AI 예측)을 확인하고, 지도 앱(AI 경로)으로 출근하고, 점심에 배달 앱(AI 추천)으로 주문하고... 이미 우리 일상은 AI 없이는 불편한 세상이 되었어요.
+\end{questionbox}
+
+\subsubsection{활동: 내가 쓰는 AI 서비스 분석하기}
+
+학생들에게 다음과 같은 활동을 제시하면, AI의 기능별 분류를 자연스럽게 익힐 수 있어요.
+
+\textbf{활동 방법:}
+\begin{enumerate}[leftmargin=*]
+    \item 오늘 하루 동안 사용한 앱이나 서비스를 3개 이상 적어보세요
+    \item 각 서비스에 AI가 어떻게 활용되는지 찾아보세요
+    \item 인식/예측/분류/생성 중 어떤 유형인지 분류해 보세요
+\end{enumerate}
+
+\textbf{활동지 예시:}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|p{3.5cm}|p{5cm}|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{서비스/앱} & \textbf{AI가 하는 일} & \textbf{AI 유형} \\
+\hline
+\mbox{(예)} 유튜브 & 내가 좋아할 영상을 골라줌 & 예측 \\
+\hline
+\mbox{(예)} 카카오톡 번역 & 외국어를 한국어로 바꿔줌 & 인식 + 생성 \\
+\hline
+1. & & \\
+\hline
+2. & & \\
+\hline
+3. & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tipbox}[\emoji{bullseye} 예비교사 팁]
+이 활동은 성취기준 [6실05-04]와 직접 연결됩니다. 학생들이 ``AI가 어떤 데이터를 사용하는지'' 탐색하는 계기가 됩니다.
+\end{tipbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{orange-book} 전개 3: AI의 봄과 겨울}
+
+\subsection{AI 70년 역사 — 봄과 겨울의 반복}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_07_AI봄과겨울.png}
+\caption*{\textbf{[그림 10]} AI의 봄과 겨울}
+\end{figure}
+
+AI는 갑자기 등장한 기술이 아니에요. 무려 70년 이상의 역사가 있습니다. 흥미로운 점은 AI 연구가 \textbf{직선이 아니라 파도처럼} 올라갔다 내려갔다를 반복했다는 거예요.
+
+\subsubsection{\emoji{seedling} 탄생 (1950년대)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{1950년}: 앨런 튜링이 ``기계가 생각할 수 있는가?''라는 질문을 던짐
+    \begin{itemize}
+        \item \textbf{튜링 테스트}: 사람이 기계와 대화할 때, 상대가 기계인지 사람인지 구별할 수 없다면 그 기계는 ``생각한다''고 볼 수 있다
+    \end{itemize}
+    \item \textbf{1956년}: 다트머스 회의에서 \textbf{``인공지능(Artificial Intelligence)''}이라는 용어가 처음 사용됨
+\end{itemize}
+
+\subsubsection{\emoji{cherry-blossom} 제1의 봄 (1956\textasciitilde 1970년대 초)}
+
+\begin{itemize}[leftmargin=*]
+    \item 초기 AI 프로그램 등장: 체스 게임, 수학 증명, 간단한 대화
+    \item 정부와 기업의 대규모 투자
+    \item ``곧 인간 수준의 AI가 나올 것''이라는 기대
+\end{itemize}
+
+\textbf{이 시대의 대표 AI:}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|p{4cm}|p{4.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{AI 시스템} & \textbf{연도} & \textbf{기능} & \textbf{의의} \\
+\hline
+Logic Theorist & 1956 & 수학 정리 증명 & 최초의 AI 프로그램 \\
+\hline
+ELIZA & 1966 & 간단한 대화 \mbox{(심리상담사 역할)} & 최초의 챗봇 — ChatGPT의 먼 조상 \\
+\hline
+SHRDLU & 1970 & 블록 세계에서 자연어 명령 이해 & 언어 이해의 첫 시도 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_ELIZA대화예시.png}
+\caption*{\textbf{[그림 11]} ELIZA 대화 예시 --- 최초의 챗봇 (1966)}
+\end{figure}
+
+\begin{tipbox}[\emoji{light-bulb} 알고 가기]
+ELIZA는 단순히 사용자의 말을 되받아치는 패턴 매칭이었지만, 많은 사람들이 ``진짜 대화하는 것 같다''고 느꼈어요. 이를 \textbf{ELIZA 효과}라고 부릅니다. 이미 1960년대에 AI가 사람을 속일 수 있다는 것이 보여진 거죠.
+\end{tipbox}
+
+\subsubsection{\emoji{snowflake} 제1의 겨울 (1970년대\textasciitilde 1980년대 초)}
+
+\begin{itemize}[leftmargin=*]
+    \item 기대에 미치지 못하는 성과 \emoji{arrow-right} 투자 감소
+    \item 컴퓨터 성능의 한계: 당시 컴퓨터는 간단한 계산도 느렸음
+    \item 영국의 라이트힐 보고서(1973): ``AI 연구의 성과가 과장되었다''
+\end{itemize}
+
+왜 겨울이 왔을까요? 초기 AI는 ``규칙을 직접 입력하는 방식''이었어요. 세상은 너무 복잡해서 규칙만으로는 한계가 있었던 거죠. 이 문제는 나중에 ``기계학습''이라는 새로운 접근법으로 해결됩니다.
+
+\newpage
+
+\subsubsection{\emoji{cherry-blossom} 제2의 봄 (1980년대)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{전문가 시스템} 등장: 특정 분야 전문가의 지식을 규칙으로 입력
+    \item 일본의 ``5세대 컴퓨터 프로젝트'' 등 국가 차원 투자 재개
+    \item 기업들이 전문가 시스템 도입 \emoji{arrow-right} 상업적 성과
+\end{itemize}
+
+\textbf{이 시대의 대표 AI:}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|l|p{3.8cm}|p{3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{AI 시스템} & \textbf{분야} & \textbf{방식} & \textbf{한계} \\
+\hline
+MYCIN & 의료 \mbox{(혈액 감염 진단)} & 약 600개 규칙 입력 & 새로운 질병 대응 불가 \\
+\hline
+DENDRAL & 화학 \mbox{(분자 구조 분석)} & 전문가 지식 규칙화 & 규칙 유지보수 어려움 \\
+\hline
+XCON & 컴퓨터 주문 설정 & 약 2,500개 규칙 & 규칙 충돌 문제 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{\emoji{snowflake} 제2의 겨울 (1990년대\textasciitilde 2000년대 초)}
+
+\begin{itemize}[leftmargin=*]
+    \item 전문가 시스템의 한계 노출: 규칙을 일일이 입력해야 함 \emoji{arrow-right} 유지보수 어려움
+    \item 인터넷의 등장으로 관심이 웹 기술로 이동
+    \item AI 연구 투자 다시 감소
+\end{itemize}
+
+전문가 시스템의 교훈은 명확해요. ``규칙을 사람이 직접 만드는 방식''은 한계가 있다는 거예요. 이 교훈이 ``데이터에서 규칙을 자동으로 찾아내는'' 기계학습의 발전으로 이어집니다.
+
+그러나 겨울에도 빛나는 성과가 있었어요. 1997년 IBM의 \textbf{Deep Blue}가 체스 세계 챔피언 카스파로프를 이겼습니다. 초당 2억 개의 체스 수를 계산할 수 있는 슈퍼컴퓨터였지만, ``체스만'' 잘하는 \textbf{약한 AI}의 전형적인 예였어요.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_12_IBM_DeepBlue_1997_체스.png}
+\caption*{\textbf{[그림 12]} IBM Deep Blue --- 체스 세계 챔피언을 이기다 (1997)}
+\end{figure}
+
+
+
+\subsubsection{\emoji{cherry-blossom}\emoji{cherry-blossom}\emoji{cherry-blossom} 제3의 봄 (2010년대\textasciitilde 현재)}
+
+이번에는 이전과 \textbf{질적으로 다른 봄}이에요. 세 가지가 동시에 갖춰졌거든요.
+
+\begin{center}
+\begin{tabular}{|c|p{5.5cm}|p{5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{요소} & \textbf{설명} & \textbf{왜 중요한가} \\
+\hline
+\emoji{bar-chart} \textbf{빅데이터} & 인터넷·스마트폰으로 데이터 폭발 & AI가 똑똑해지기 위해 읽어야 할 \mbox{``엄청난 양의 문제집''} \\
+\hline
+\emoji{high-voltage} \textbf{GPU 발전} & 복잡한 계산을 동시에 처리하는 \mbox{``슈퍼 계산기''} & AI 학습 속도를 혁신적으로 향상 \\
+\hline
+\emoji{brain} \textbf{딥러닝 알고리즘} & 인간 뇌를 본뜬 여러 겹의 \mbox{``학습 필터''} & 복잡한 패턴까지 찾아낼 수 있게 됨 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{삼박자를 요리에 비유하면:}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|p{5.5cm}|p{4.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{요소} & \textbf{요리 비유} & \textbf{없으면?} \\
+\hline
+\emoji{bar-chart} 빅데이터 & 풍부한 \textbf{재료} \mbox{(신선한 채소, 고기, 양념)} & 재료가 없으면 요리 자체가 불가능 \\
+\hline
+\emoji{high-voltage} GPU & 강력한 \textbf{화력} \mbox{(센 불의 가스레인지)} & 약한 불로는 제대로 익히기 어려움 \\
+\hline
+\emoji{brain} 딥러닝 & 뛰어난 \textbf{레시피} \mbox{(조리법, 기술)} & 레시피가 없으면 재료를 낭비 \\
+\hline
+\end{tabular}
+\end{center}
+
+이전의 봄에는 이 중 하나 이상이 부족했어요. 제1의 봄에는 재료(데이터)도 화력(컴퓨터)도 부족했고, 제2의 봄에는 레시피(알고리즘)가 단순했어요. 제3의 봄에서 드디어 삼박자가 모두 갖춰진 거예요.
+
+\subsubsection{주요 이정표}
+
+\begin{center}
+\begin{tabular}{|c|p{6cm}|p{5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{연도} & \textbf{사건} & \textbf{의미} \\
+\hline
+2011 & \textbf{IBM Watson}: 미국 퀴즈쇼 제퍼디!에서 인간 챔피언 2명 격파 & 자연어 이해 능력으로 AI의 새 가능성 제시 \\
+\hline
+2012 & \textbf{ImageNet 대회}: 딥러닝\mbox{(AlexNet)}이 이미지 인식 대회에서 압도적 성능 & 딥러닝의 위력 입증 \\
+\hline
+2016 & \textbf{AlphaGo vs 이세돌}: AI가 바둑에서 인간 챔피언 승리 & AI의 가능성을 전 세계가 실감 \\
+\hline
+2022 & \textbf{ChatGPT 출시}: 일반인도 AI를 직접 사용 가능 & AI의 대중화, 생성형 AI 시대 개막 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{images/AI디지털리터러시_1주차1차시_13_IBM_Watson_2011_제퍼디.png}
+\caption*{\textbf{[그림 13]} IBM Watson --- 퀴즈쇼 챔피언을 이기다 (2011)}
+\end{figure}
+
+\begin{keybox}[\emoji{light-bulb} 핵심 메시지]
+AI는 70년 동안 봄과 겨울을 반복했지만, 현재 제3의 봄은 이전과 차원이 달라요. \textbf{빅데이터 + GPU + 딥러닝} 삼박자가 갖춰져 있기 때문이에요.
+\end{keybox}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 정리
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{memo} 정리: 핵심 요약과 교육과정 연결}
+
+\begin{summarybox}[\emoji{clipboard} 오늘 배운 핵심 개념 3가지 — 꼭 기억해 주세요!]
+
+\textbf{\large 1\emoji{keycap-1} AI는 인간의 지능을 모방하는 컴퓨터 시스템}
+\begin{itemize}[leftmargin=*]
+    \item ``생각''하는 것이 아니라 ``생각하는 것처럼 보이도록'' 만든 프로그램
+    \item 이미 우리 일상 곳곳에 들어와 있음
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{\large 2\emoji{keycap-2} 현재 모든 AI는 약한 AI (특정 작업에 특화)}
+\begin{itemize}[leftmargin=*]
+    \item 약한 AI: 한 가지를 잘함 (시리, ChatGPT, 자율주행 등)
+    \item 강한 AI: 모든 것을 잘함 \emoji{arrow-right} 아직 실현되지 않음
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{\large 3\emoji{keycap-3} AI 기술은 봄과 겨울을 반복하며 발전, 현재 제3의 봄}
+\begin{itemize}[leftmargin=*]
+    \item 1950년대 탄생 이후 70년의 역사
+    \item 빅데이터 + GPU + 딥러닝 = 현재의 제3의 봄
+\end{itemize}
+\end{summarybox}
+
+\subsection{2022 개정 교육과정과의 연결}
+
+\begin{center}
+\begin{tabular}{|c|p{5.5cm}|p{5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{성취기준} & \textbf{오늘 배운 내용} & \textbf{앞으로 배울 내용} \\
+\hline
+{[6실05-04]} & AI 기능별 분류 \emoji{arrow-right} 데이터 유형과의 연결 & 2주차: 데이터 편향, 딥러닝 \\
+\hline
+{[6실05-05]} & AI 정의·유형, 발전 역사 & 2차시: 기계학습 원리 \\
+\hline
+\end{tabular}
+\end{center}
+
+여러분이 교실에서 학생들에게 AI를 가르칠 때, 오늘 배운 내용이 탄탄한 기반이 될 거예요. ``AI가 뭐예요?''라는 학생의 질문에 자신 있게 대답할 수 있겠죠?
+
+\subsection{자기 점검 체크리스트}
+
+오늘 배운 내용을 잘 이해했는지 스스로 점검해 볼까요?
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|p{10cm}|c|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{점검 항목} & \textbf{\emoji{check-box-with-check}} \\
+\hline
+1 & \mbox{``인공지능''}을 한 문장으로 정의할 수 있다 & \(\square\) \\
+\hline
+2 & 약한 AI와 강한 AI의 차이를 설명할 수 있다 & \(\square\) \\
+\hline
+3 & ChatGPT가 왜 \mbox{``약한 AI''}인지 설명할 수 있다 & \(\square\) \\
+\hline
+4 & AI의 기능별 분류 4가지를 말할 수 있다 & \(\square\) \\
+\hline
+5 & AI의 봄과 겨울이 왜 반복되었는지 설명할 수 있다 & \(\square\) \\
+\hline
+6 & 제3의 봄의 3가지 핵심 요소를 말할 수 있다 & \(\square\) \\
+\hline
+7 & 초등학생의 AI 오개념 2가지 이상을 교정할 수 있다 & \(\square\) \\
+\hline
+8 & 성취기준 [6실05-04], [6실05-05]와 오늘 내용의 연결을 설명할 수 있다 & \(\square\) \\
+\hline
+\end{tabular}
+\end{center}
+
+8개 중 6개 이상 체크할 수 있다면 오늘 수업 내용을 잘 이해한 거예요! 부족한 부분은 교재를 다시 읽어보세요.
+
+\subsection{교실에서 바로 쓸 수 있는 활동 아이디어}
+
+오늘 배운 내용을 초등학교 수업에서 어떻게 활용할 수 있을까요?
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.3cm}|p{2.2cm}|c|p{6.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{활동명} & \textbf{관련 내용} & \textbf{시간} & \textbf{활동 설명} \\
+\hline
+\textbf{AI vs 사람 퀴즈} & AI 정의, 능력 비교 & 10분 & \mbox{``이 일은 AI가 잘할까, 사람이 잘할까?''} 카드 게임 \\
+\hline
+\textbf{우리 반 AI 탐정} & 기능별 분류 & 15분 & 교실/학교 안에서 AI가 쓰이는 곳 찾기 \\
+\hline
+\textbf{AI 타임라인} & 봄과 겨울 & 20분 & 모둠별로 AI 역사 연표 포스터 제작 \\
+\hline
+\textbf{AI 오개념 OX} & 오개념 교정 & 10분 & \mbox{``AI는 로봇이다''} 등의 문장에 O/X 판정 \\
+\hline
+\textbf{미래 직업 상상} & 도입 \mbox{(학생의 미래)} & 15분 & 2049년 학생들이 어떤 직업을 가질지 상상하여 그리기 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{\emoji{crystal-ball} 다음 차시 예고}
+
+다음 차시에서는 \textbf{기계학습(Machine Learning)의 원리}를 배울 거예요.
+
+\begin{itemize}[leftmargin=*]
+    \item AI는 어떻게 ``학습''할까?
+    \item 지도학습, 비지도학습, 강화학습은 무엇이 다를까?
+    \item 4주차에 엔트리로 직접 AI 모델을 학습시키는 방법은?
+\end{itemize}
+
+AI의 정의와 유형을 알았으니, 이제 AI가 \textbf{어떻게 똑똑해지는지} 그 비밀을 파헤쳐 볼 차례입니다!
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 학습 용어 정리
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\emoji{books} 학습 용어 정리}
+
+오늘 수업에서 등장한 주요 용어를 정리했어요. 시험 준비나 복습에 활용하세요.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|p{3cm}|p{3.5cm}|p{6.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{용어} & \textbf{영문} & \textbf{의미} \\
+\hline
+\textbf{인공지능} & Artificial Intelligence \mbox{(AI)} & 인간의 지능을 모방하는 컴퓨터 시스템. 보기, 듣기, 읽기, 판단하기 등 인간의 인지 능력을 컴퓨터로 구현하는 기술 \\
+\hline
+\textbf{약한 AI} & Narrow AI & 특정 작업 하나에 특화된 인공지능. 현재 존재하는 모든 AI가 이에 해당 \mbox{(예: 시리, ChatGPT, 자율주행)} \\
+\hline
+\textbf{강한 AI} & Artificial General Intelligence \mbox{(AGI)} & 인간처럼 다양한 작업을 수행할 수 있는 범용 인공지능. 아직 실현되지 않은 연구 목표 \\
+\hline
+\textbf{기계학습} & Machine Learning \mbox{(ML)} & 데이터로부터 패턴을 자동으로 찾아 학습하는 AI의 하위 분야. 사람이 규칙을 만드는 대신 컴퓨터가 스스로 규칙을 발견 \\
+\hline
+\textbf{딥러닝} & Deep Learning \mbox{(DL)} & 인간의 뇌\mbox{(신경망)}를 모방한 여러 겹의 구조로 복잡한 패턴을 학습하는 ML의 하위 분야 \\
+\hline
+\textbf{빅데이터} & Big Data & 인터넷·스마트폰 등에서 생성되는 대규모 데이터. AI 학습의 \mbox{``재료''} 역할 \\
+\hline
+\textbf{GPU} & Graphics Processing Unit & 복잡한 계산을 동시에 처리하는 프로세서. 원래 그래픽 처리용이었으나 AI 학습에 핵심 하드웨어로 활용 \\
+\hline
+\textbf{전문가 시스템} & Expert System & 특정 분야 전문가의 지식을 규칙으로 입력한 1980년대 AI. 규칙 기반으로 작동하여 한계가 있었음 \\
+\hline
+\textbf{튜링 테스트} & Turing Test & 1950년 앨런 튜링이 제안. 기계와 대화할 때 상대가 기계인지 구별할 수 없다면 \mbox{``생각한다''}고 볼 수 있다는 기준 \\
+\hline
+\textbf{인식 AI} & Recognition AI & 이미지·음성·텍스트를 알아보는 AI \mbox{(예: 얼굴 인식, 음성 비서)} \\
+\hline
+\textbf{예측 AI} & Prediction AI & 과거 데이터를 분석하여 미래를 추정하는 AI \mbox{(예: 날씨 예보, 추천 시스템)} \\
+\hline
+\textbf{분류 AI} & Classification AI & 데이터를 범주로 나누는 AI \mbox{(예: 스팸 필터, 질병 진단)} \\
+\hline
+\textbf{생성 AI} & Generative AI & 새로운 콘텐츠를 만드는 AI \mbox{(예: ChatGPT, DALL-E, 미드저니)} \\
+\hline
+\textbf{4C 역량} & 4C Competencies & AI 시대 핵심 역량: 비판적 사고\mbox{(Critical Thinking)}, 창의성\mbox{(Creativity)}, 소통\mbox{(Communication)}, 협업\mbox{(Collaboration)} \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{참고자료}
+\addcontentsline{toc}{section}{참고자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|p{6.5cm}|p{3cm}|p{3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & AI디지털리터러시\_강의계획서\_v1.2.0.0 & 프로젝트 문서 & 1주차 1차시 수업 계획 \\
+\hline
+2 & 1주차1차시\_강의개요\_v1.0.6.0 & 프로젝트 문서 & 강의개요 \\
+\hline
+3 & 1주차1차시\_강의노트\_v1.0.9.0 & 프로젝트 문서 & 본 교재의 기반 \\
+\hline
+4 & 2022 개정 교육과정 \mbox{(교육부 고시 제2022-33호)} & 교육부 문서 & 초등 실과 AI 영역 성취기준 \\
+\hline
+5 & 문서작성지침서\_v1.9.0.0 & 프로젝트 문서 & 강의자료 작성 절차 및 스타일 \\
+\hline
+6 & 버전관리지침\_v1.3.0 & 프로젝트 문서 & 문서 버전 체계 \\
+\hline
+7 & 교수 제공 AI/ML 시뮬레이터 & 교수 제공 & 기계학습 원리 시연 \\
+\hline
+\end{tabular}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 생성/수정 이력
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{생성/수정 이력}
+\addcontentsline{toc}{section}{생성/수정 이력}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|l|l|l|l|p{4.5cm}|l|}
+\hline
+\rowcolor{tableheader}
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경 수준} & \textbf{변경 내용} & \textbf{작성자} \\
+\hline
+v1.0.0.0 & 2026-02-08 & 04:10 & 최초 & 강의노트 v1.0.1.0 기반 강의교재 신규 작성. 그림 7종 삽입, 퀴즈 15문항 포함 & Claude \\
+\hline
+v1.0.1.0 & 2026-02-08 & 07:00 & 리비전 & 문서 간 불일치 수정: 수업흐름표 전개1·전개2 설명을 개요와 일치 & Claude \\
+\hline
+v1.0.2.0 & 2026-02-08 & 10:00 & 리비전 & 사실 오류 수정: ChatGPT ``2년 전''→``2022년'', ImageNet 2012 ``인간 수준 돌파''→``압도적 성능'' & Claude \\
+\hline
+v1.0.3.0 & 2026-02-08 & 12:00 & 리비전 & I1 구조정합: 전개1·전개2 재구성, 교육과정 연결을 정리로 이동. I2\textasciitilde I4 갱신 & Claude \\
+\hline
+v1.0.4.0 & 2026-02-08 & 20:00 & 리비전 & 초보자 배려: 전통 프로그래밍 vs 기계학습 대비 표·그림08 추가, 제3의봄 비유 추가 & Claude \\
+\hline
+v1.0.4.1 & 2026-02-08 & 21:00 & 패치 & 강의자료검토: 참고자료·이력 섹션 추가(tex), 참조 버전 갱신, 2회 컴파일 & Claude \\
+\hline
+v1.0.5.0 & 2026-02-08 & 22:00 & 리비전 & 퀴즈 재작성: 1차시 범위→1주차 전체(1·2차시) 확대, 루브릭 \S 2.2 배분 준수(학습유형 3문항·ML개념 2문항 추가), 정답/해설 별도 문서 분리 & Claude \\
+\hline
+v1.1.0.0 & 2026-02-08 & 22:00 & 마이너 & 교재 본문 보강: 전개1 AI 능력·사람vsAI·대화예시, 전개2 기능별 상세·활동지, 전개3 대표AI·삼박자비유, 정리 체크리스트·활동아이디어 & Claude \\
+\hline
+v1.2.0.0 & 2026-02-11 & 05:00 & 마이너 & 퀴즈 섹션 삭제: 연습 문제 15문항을 별도 문서로 분리 & Claude \\
+\hline
+v1.4.0.0 & 2026-02-11 & 15:30 & 마이너 & 전개1 그림 보강: 그림05(AI의4가지능력)·그림06(초등학생AI오개념vs실제) 삽입. 그림번호 재배정(9종→11종). 참고자료 버전 갱신 & Claude \\
+\hline
+v1.4.0.0 & 2026-02-11 & 17:00 & 마이너 & 전개3 그림 보강: 그림12(IBM DeepBlue 1997)·그림13(IBM Watson 2011) 삽입 (11종→13종) & Claude \\
+\hline
+v1.4.1.0 & 2026-02-11 & 19:00 & 리비전 & 그림 캡션 양식 통일(교재·노트 13종 동일화), 표 열 너비 텍스트 길이 기반 조정, 4C역량표 overfull 수정 & Claude \\
+\hline
+v1.4.2.0 & 2026-02-11 & 20:30 & 리비전 & 표 내 짝기호 줄바꿈 방지: 괄호·따옴표에 \textbackslash mbox 적용(43건), 오개념·활동제안 표 열 너비 재조정 & Claude \\
+\hline
+\end{tabular}
+\end{center}
+
+\end{document}

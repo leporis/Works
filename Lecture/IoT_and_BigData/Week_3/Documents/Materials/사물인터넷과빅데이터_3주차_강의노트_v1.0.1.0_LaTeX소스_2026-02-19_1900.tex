@@ -1,0 +1,501 @@
+% !TEX program = xelatex
+\documentclass[11pt, a4paper]{article}
+\usepackage[top=25mm, bottom=25mm, left=20mm, right=20mm]{geometry}
+\usepackage{fontspec}
+\setmainfont{Noto Serif CJK KR}[
+  Path=/usr/share/fonts/opentype/noto/,
+  Extension=.ttc,
+  UprightFont=NotoSerifCJK-Regular,
+  BoldFont=NotoSerifCJK-Bold,
+  FontIndex=1, BoldFontIndex=1
+]
+\setsansfont{Noto Sans CJK KR}[
+  Path=/usr/share/fonts/opentype/noto/,
+  Extension=.ttc,
+  UprightFont=NotoSansCJK-Regular,
+  BoldFont=NotoSansCJK-Bold,
+  FontIndex=1, BoldFontIndex=1
+]
+\setmonofont{Noto Sans Mono CJK KR}[
+  Path=/usr/share/fonts/opentype/noto/,
+  Extension=.ttc,
+  UprightFont=NotoSansCJK-Regular,
+  BoldFont=NotoSansCJK-Bold,
+  FontIndex=6, BoldFontIndex=6,
+  Scale=0.85
+]
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{amssymb}
+\usepackage{multirow}
+
+\definecolor{mainblue}{HTML}{1565C0}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{tipgreen}{HTML}{E8F5E9}
+\definecolor{warnamber}{HTML}{FFF8E1}
+\definecolor{keymsg}{HTML}{FCE4EC}
+\definecolor{sectioncolor}{HTML}{0D47A1}
+\definecolor{codebg}{HTML}{ECEFF1}
+\definecolor{darktext}{HTML}{263238}
+
+\hypersetup{colorlinks=true, linkcolor=mainblue, urlcolor=mainblue}
+
+\titleformat{\section}{\Large\bfseries\sffamily\color{sectioncolor}}{\thesection.}{0.5em}{}[\vspace{-2pt}\color{sectioncolor}\rule{\textwidth}{0.6pt}]
+\titleformat{\subsection}{\large\bfseries\sffamily\color{sectioncolor!80!black}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\sffamily}{\thesubsubsection}{0.5em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily 사물인터넷과 빅데이터 --- 3주차 강의노트}
+\fancyhead[R]{\small\sffamily 프로젝트 기획}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\tcbuselibrary{skins, breakable}
+\newtcolorbox{tipbox}[1][]{ colback=tipgreen, colframe=green!50!black, fonttitle=\bfseries\sffamily, title={#1}, breakable, left=3mm, right=3mm, top=2mm, bottom=2mm, boxrule=0.5pt }
+\newtcolorbox{warnbox}[1][]{ colback=warnamber, colframe=orange!60!black, fonttitle=\bfseries\sffamily, title={#1}, breakable, left=3mm, right=3mm, top=2mm, bottom=2mm, boxrule=0.5pt }
+\newtcolorbox{keybox}[1][]{ colback=keymsg, colframe=red!40!black, fonttitle=\bfseries\sffamily, title={#1}, breakable, left=3mm, right=3mm, top=2mm, bottom=2mm, boxrule=0.5pt }
+\newtcolorbox{bluebox}[1][]{ colback=lightblue, colframe=mainblue, fonttitle=\bfseries\sffamily, title={#1}, breakable, left=3mm, right=3mm, top=2mm, bottom=2mm, boxrule=0.5pt }
+\newtcolorbox{codebox}{ colback=codebg, colframe=codebg!80!black, breakable, left=3mm, right=3mm, top=2mm, bottom=2mm, boxrule=0.3pt }
+
+\graphicspath{{images/}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcommand{\COtwo}{CO\textsubscript{2}}
+
+% ── 한글 레이블 ──
+\renewcommand{\contentsname}{목차}
+\renewcommand{\figurename}{그림}
+\renewcommand{\tablename}{표}
+
+\begin{document}
+
+% ── 표지 ──
+\begin{titlepage}
+\begin{center}
+\vspace*{2cm}
+{\sffamily\color{sectioncolor}\LARGE 사물인터넷과 빅데이터}\\[12pt]
+{\sffamily\Huge\bfseries 3주차 강의노트}\\[8pt]
+{\sffamily\huge\color{darktext} 프로젝트 기획}\\[30pt]
+\includegraphics[width=0.75\textwidth]{그림3-1_프로젝트4단계흐름도.pdf}\\[20pt]
+{\large 청주교육대학교 컴퓨터교육과}\\[6pt]
+{\normalsize 문서 버전: v1.0.1.0 \quad|\quad 2026년 2월}
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ── 수업 정보 ──
+\begin{bluebox}[수업 정보]
+\begin{tabularx}{\textwidth}{L{3.5cm}X}
+\textbf{주차 / 주제} & 3주차 --- 프로젝트 기획 \\
+\textbf{수업 시간} & 75분 (수요일 6--7교시) \\
+\textbf{수업 형태} & 대면 \quad / \quad 바이브코딩 미사용 \\
+\textbf{과제} & 데이터 수집 계획서 + 개발일지(PDF) / 5\% \\
+\end{tabularx}
+\end{bluebox}
+
+\begin{bluebox}[학습 목표]
+\begin{enumerate}[leftmargin=*, nosep]
+  \item 학교 현장에서 센서로 측정 가능한 프로젝트 주제를 선정할 수 있다.
+  \item 프로젝트 주제에 적합한 센서를 선택하고 그 이유를 설명할 수 있다.
+  \item 데이터 수집 계획서를 작성하여 수집 절차를 구체화할 수 있다.
+  \item ``측정 가능한 질문''과 ``측정 불가능한 질문''을 구분할 수 있다.
+\end{enumerate}
+\end{bluebox}
+
+%=================================================================
+\section{도입: 지금 어디쯤 왔을까? (5분)}
+%=================================================================
+
+\subsection{전체 프로젝트 흐름에서 오늘의 위치}
+
+지난 2주 동안 학생들은 바이브코딩으로 자기소개 홈페이지를 만들면서 ``AI에게 말로 설명하면 코드가 나온다''는 경험을 했다. 이번 주부터는 \textbf{학기 프로젝트의 본격적인 첫걸음}을 뗀다. 전체 프로젝트는 4단계로 진행된다.
+
+\begin{codebox}
+\texttt{[1단계] 기획 (3주차)} \hfill \textbf{지금 여기!}\\
+\quad ``무엇을 측정할까? 어떤 센서를 쓸까?''\\[2pt]
+\texttt{[2단계] 제작 (4주차)} --- ``MakeCode로 데이터수집기를 만들자''\\[2pt]
+\texttt{[3단계] 수집 (5{\raise.17ex\hbox{$\scriptstyle\sim$}}8주차)} --- ``실습학교에서 실제 데이터를 모으자''\\[2pt]
+\texttt{[4단계] 분석 (9{\raise.17ex\hbox{$\scriptstyle\sim$}}13주차)} --- ``바이브코딩으로 데이터를 시각화하고 해석하자''
+\end{codebox}
+
+\begin{keybox}[핵심 메시지]
+\textbf{오늘 만드는 데이터 수집 계획서}가 4주차 수집기 제작의 설계도가 되고, 5{\raise.17ex\hbox{$\scriptstyle\sim$}}8주차 현장 수집의 가이드가 된다. 오늘의 기획이 탄탄해야 나머지 10주가 순탄하다.
+\end{keybox}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{그림3-1_프로젝트4단계흐름도.pdf}
+\caption{프로젝트 진행 4단계 흐름도 (3주차 강조)}
+\end{figure}
+
+\subsection{지난 주 복습 (2분)}
+
+\begin{center}
+\begin{tabularx}{0.92\textwidth}{L{5.5cm}X}
+\toprule
+\textbf{2주차 활동} & \textbf{핵심 경험} \\
+\midrule
+Claude로 자기소개 홈페이지 제작 & AI에게 말로 설명하면 코드가 생성됨 \\
+센서 탐색 & 마이크로비트 내장 센서 + Grove 확장 센서 종류 확인 \\
+대화목록 PDF 작성 & AI와의 대화 기록을 문서로 정리하는 방법 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{tipbox}[교수자 멘트]
+``지난 주에 Claude에게 홈페이지를 만들어달라고 했죠? 오늘은 코딩 대신 \textbf{무엇을 측정할지 기획}하는 시간이에요. 프로그래밍이 아니라 \textbf{생각하는 시간}입니다.''
+\end{tipbox}
+
+%=================================================================
+\section{전개 1: 프로젝트 주제 탐색 (20분)}
+%=================================================================
+
+\subsection{좋은 프로젝트 주제의 조건 (5분)}
+
+좋은 프로젝트 주제는 4가지 조건을 만족해야 한다.
+
+\begin{center}
+\begin{tabularx}{0.95\textwidth}{C{0.6cm}L{3.5cm}X}
+\toprule
+\textbf{\#} & \textbf{조건} & \textbf{설명} \\
+\midrule
+1 & 센서로 측정 가능 & 숫자로 바꿀 수 있는 것만 측정 가능 \\
+2 & 학교에서 수집 가능 & 실습학교(5{\raise.17ex\hbox{$\scriptstyle\sim$}}8주)에서 설치{\textperiodcentered}운영 가능 \\
+3 & 비교{\textperiodcentered}분석 가능 & 시간/장소/조건별 차이가 존재해야 함 \\
+4 & 교육적 의미 & 학교 생활 개선에 기여하는 주제 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{그림3-2_좋은주제4조건.pdf}
+\caption{좋은 프로젝트 주제 4가지 조건}
+\end{figure}
+
+\subsection{프로젝트 주제 예시 카드 (10분)}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{그림3-3_주제카드8종.pdf}
+\caption{프로젝트 주제 예시 카드 8종}
+\end{figure}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{C{0.4cm}L{2.8cm}L{4.2cm}L{3.5cm}C{0.8cm}}
+\toprule
+\textbf{\#} & \textbf{주제} & \textbf{연구 질문} & \textbf{센서} & \textbf{난이도} \\
+\midrule
+1 & 교실 쾌적도 측정 & ``언제 교실이 가장 쾌적할까?'' & SHT40 + SGP30 & 중 \\
+2 & 복도 소음 패턴 & ``쉬는 시간 소음이 얼마나 클까?'' & 내장 마이크 & 하 \\
+3 & 급식실 대기 환경 & ``급식 대기 줄이 길 때 온도는?'' & VL53L0X + SHT40 & 중 \\
+4 & 운동장 활동 환경 & ``운동하기 좋은 날씨 조건은?'' & SHT40 + TSL2561 & 중 \\
+5 & 도서관 조용함 & ``어느 자리가 집중하기 좋을까?'' & 내장 마이크 + 빛 센서 & 하 \\
+6 & 화장실 사용 패턴 & ``쉬는 시간 사용 빈도는?'' & VL53L0X & 중 \\
+7 & 교실 환기 알림 & ``언제 창문을 열어야 할까?'' & SGP30 + SHT40 & 상 \\
+8 & 자연광 변화 관찰 & ``교실 밝기가 시간대별로 변할까?'' & TSL2561 & 하 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{``측정 가능''과 ``측정 불가능'' 구분 연습 (5분)}
+
+\begin{center}
+\begin{tabularx}{0.95\textwidth}{L{4cm}C{1.5cm}X}
+\toprule
+\textbf{질문} & \textbf{측정?} & \textbf{이유} \\
+\midrule
+``교실이 덥다'' & 변환 가능 & ``온도가 28℃ 이상이다''로 변환하면 측정 가능 \\
+``학생들이 집중하고 있다'' & 불가 & 집중은 센서로 직접 측정 불가 \\
+``교실 소음이 50 이하'' & 가능 & 마이크 센서로 측정 \\
+``급식이 맛있다'' & 불가 & 맛은 센서로 측정 불가 \\
+``\COtwo{} 농도 1000ppm 초과'' & 가능 & 공기질 센서로 측정 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{그림3-4_측정가능vs불가능.pdf}
+\caption{``측정 가능 vs 측정 불가능'' 비교 다이어그램}
+\end{figure}
+
+\begin{keybox}[핵심 포인트]
+\textbf{센서는 현재 상태만 측정한다. 미래를 예측하지 않는다.}
+
+``측정 불가능''을 ``측정 가능''으로 바꾸는 방법 --- 추상적 개념을 구체적 지표로 변환:
+\begin{itemize}[nosep]
+  \item ``집중'' $\rightarrow$ ``소음 수준 50 이하인 시간 비율''
+  \item ``쾌적함'' $\rightarrow$ ``온도 22{\raise.17ex\hbox{$\scriptstyle\sim$}}26℃이고 습도 40{\raise.17ex\hbox{$\scriptstyle\sim$}}60\%인 시간 비율''
+  \item ``혼잡함'' $\rightarrow$ ``1분 동안 거리 센서에 감지된 횟수''
+\end{itemize}
+\end{keybox}
+
+%=================================================================
+\section{전개 2: 센서 선택 실습 (20분)}
+%=================================================================
+
+\subsection{마이크로비트 V2 내장 센서 복습 (3분)}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{L{1.8cm}L{2.2cm}L{2.2cm}L{3.5cm}X}
+\toprule
+\textbf{센서} & \textbf{측정 항목} & \textbf{범위} & \textbf{특징} & \textbf{적합한 주제} \\
+\midrule
+온도 센서 & 온도 (℃) & --5{\raise.17ex\hbox{$\scriptstyle\sim$}}50℃ & CPU 기반, +2{\raise.17ex\hbox{$\scriptstyle\sim$}}3℃ 오차 & 교실 온도 변화 \\
+빛 센서 & 밝기 (0{\raise.17ex\hbox{$\scriptstyle\sim$}}255) & 상대값 & LED를 수광소자로 활용 & 자연광 변화 \\
+마이크 & 소리 (0{\raise.17ex\hbox{$\scriptstyle\sim$}}255) & 상대값 & V2 전용 & 소음 패턴 \\
+가속도 센서 & 움직임 (mg) & $\pm$2g & X/Y/Z 3축 & 움직임 감지 \\
+나침반 & 방위각 & 0{\raise.17ex\hbox{$\scriptstyle\sim$}}360° & 자기장 기반 & (활용도 낮음) \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{warnbox}[내장 온도 센서 주의]
+CPU 발열 때문에 실제 기온보다 2{\raise.17ex\hbox{$\scriptstyle\sim$}}3℃ 높게 나올 수 있다. 정밀 온도 측정이 필요하면 Grove SHT40을 사용한다.
+\end{warnbox}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{그림3-5_마이크로비트V2센서배치도.pdf}
+\caption{마이크로비트 V2 내장 센서 배치도}
+\end{figure}
+
+\subsection{Grove 확장 센서 소개 (5분)}
+
+Grove 시스템은 \textbf{I2C 통신}으로 마이크로비트에 연결되며, 커넥터를 꽂기만 하면 된다.
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{L{1.2cm}L{1.5cm}X L{1.2cm}L{1cm}L{1.5cm}}
+\toprule
+\textbf{센서} & \textbf{모듈} & \textbf{측정 항목} & \textbf{정밀도} & \textbf{I2C} & \textbf{활용} \\
+\midrule
+온습도 & SHT40 & 온도 $\pm$0.2℃, 습도 $\pm$1.8\% & 매우높음 & 0x44 & 쾌적도 \\
+공기질 & SGP30 & \COtwo{} 400{\raise.17ex\hbox{$\scriptstyle\sim$}}60,000ppm & 높음 & 0x58 & 환기 \\
+거리 & VL53L0X & 30{\raise.17ex\hbox{$\scriptstyle\sim$}}2,000mm & 높음 & 0x29 & 통행량 \\
+조도 & TSL2561 & 0.1{\raise.17ex\hbox{$\scriptstyle\sim$}}40,000lux & 높음 & 0x39 & 자연광 \\
+기압 & BMP280 & 300{\raise.17ex\hbox{$\scriptstyle\sim$}}1,100hPa & 높음 & 0x76 & 날씨 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{tipbox}[I2C란?]
+각 센서에는 고유한 ``주소''가 있어서 마이크로비트가 ``0x44번 센서야, 온도 알려줘''라고 요청하면 센서가 값을 보내준다. I2C 포트에는 \textbf{최대 4개 센서}를 동시에 연결할 수 있다.
+\end{tipbox}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{그림3-6_GroveI2C연결도_3주차용.pdf}
+\caption{Grove 확장 센서 I2C 연결 다이어그램}
+\end{figure}
+
+\subsection{센서 선택 도구 3종 실습 (12분)}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{그림3-8_도구3종화면.png}
+\caption{센서 선택 도구 3종 활용 화면}
+\end{figure}
+
+\subsubsection{도구 1: 센서 시뮬레이터 --- 5분}
+
+드래그앤드롭으로 센서를 마이크로비트에 연결해보면서 조합을 체험한다.
+
+\begin{enumerate}[nosep]
+  \item 센서 시뮬레이터 HTML 파일을 웹 브라우저에서 연다
+  \item 좌측 센서 목록에서 센서를 드래그하여 I2C 포트에 놓는다
+  \item 연결된 센서의 측정값 범위와 단위를 확인한다
+  \item 최대 6개 센서(내장 + 외부)까지 조합을 시도한다
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{그림3-7_시뮬레이터v9화면.png}
+\caption{센서 시뮬레이터 v9 화면}
+\end{figure}
+
+\subsubsection{도구 2: 센서 조합 카탈로그 (Excel) --- 3분}
+
+848가지 센서 조합 중 프로젝트에 적합한 조합을 필터링하여 찾는다.
+
+\subsubsection{도구 3: 센서 검색 도구 (HTML) --- 4분}
+
+\begin{center}
+\begin{tabularx}{0.92\textwidth}{L{2.5cm}L{3cm}X}
+\toprule
+\textbf{입력 키워드} & \textbf{추천 센서} & \textbf{추천 이유} \\
+\midrule
+``교실 환경'' & SHT40, SGP30 & 온습도 + 공기질로 쾌적도 종합 측정 \\
+``소음'' & 내장 마이크 & 별도 센서 없이 바로 측정 가능 \\
+``밝기 정밀'' & TSL2561 & 정확한 lux 단위 제공 \\
+``사람 감지'' & VL53L0X & 거리 변화로 통행 감지 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{센서 선택 의사결정 가이드}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{그림3-9_센서선택플로차트.pdf}
+\caption{센서 선택 의사결정 플로차트}
+\end{figure}
+
+%=================================================================
+\section{전개 3: 데이터 수집 계획서 작성 (20분)}
+%=================================================================
+
+\subsection{계획서 양식 소개 (3분)}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{C{0.4cm}L{2.3cm}L{3.8cm}X}
+\toprule
+\textbf{\#} & \textbf{항목} & \textbf{작성 가이드} & \textbf{예시 (교실 쾌적도)} \\
+\midrule
+1 & 프로젝트 제목 & 한 문장으로 핵심 요약 & ``교실 쾌적도 시간대별 변화 측정'' \\
+2 & 연구 질문 & ``{\raise.17ex\hbox{$\scriptstyle\sim$}}할까?'' 형태 & ``1교시와 5교시 중 언제가 더 쾌적할까?'' \\
+3 & 측정 항목 & 수집할 데이터 종류 & 온도, 습도, \COtwo{} \\
+4 & 사용 센서 & 내장/Grove 선택 & SHT40 + SGP30 \\
+5 & 수집 장소 & 학교 내 구체적 위치 & 3-1 교실 창가 \\
+6 & 수집 간격 & 몇 초/분마다 기록 & 5분 간격 \\
+7 & 수집 기간 & 며칠, 하루 몇 시간 & 5일, 09:00{\raise.17ex\hbox{$\scriptstyle\sim$}}15:00 \\
+8 & 예상 데이터 양 & 간격$\times$시간$\times$일수 & 360개 \\
+9 & 예상 결과 & 예상 패턴 & ``오후가 온도{\textperiodcentered}\COtwo{} 높을 것'' \\
+10 & 주의 사항 & 기기 보관, 방해 요소 & ``쉬는 시간 주의'' \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{그림3-10_수집계획서양식.pdf}
+\caption{데이터 수집 계획서 양식}
+\end{figure}
+
+\subsection{수집 간격과 데이터 양 계산 (5분)}
+
+\begin{center}
+\begin{tabularx}{0.95\textwidth}{L{2.5cm}C{1.8cm}C{2cm}X}
+\toprule
+\textbf{측정 대상} & \textbf{변화 속도} & \textbf{권장 간격} & \textbf{이유} \\
+\midrule
+온도{\textperiodcentered}습도 & 느림 & 5분 & 급변하지 않음 \\
+\COtwo{} 농도 & 느림{\raise.17ex\hbox{$\scriptstyle\sim$}}보통 & 5분 & 환기 효과 확인에 적절 \\
+밝기 (자연광) & 보통 & 1{\raise.17ex\hbox{$\scriptstyle\sim$}}5분 & 큰 추세는 느림 \\
+소음 & 빠름 & 10초{\raise.17ex\hbox{$\scriptstyle\sim$}}1분 & 시간 전환 포착 \\
+거리 (통행량) & 매우 빠름 & 1초 & 사람 지나가는 순간 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{codebox}
+\textbf{데이터 양 계산 공식:} 예상 데이터 개수 = (하루 수집 시간 $\div$ 수집 간격) $\times$ 수집 일수\\[4pt]
+\textbf{예시:} 6시간 $\div$ 5분 $\times$ 5일 = 72개/일 $\times$ 5일 = \textbf{360개}
+\end{codebox}
+
+\begin{warnbox}[너무 짧은 간격 주의]
+1초 간격으로 6시간 수집하면 \textbf{21,600개}! 마이크로비트 Data Logger 저장 용량(약 64KB)을 초과할 수 있다.
+\end{warnbox}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{그림3-11_수집간격별데이터양.pdf}
+\caption{수집 간격별 데이터 양 비교}
+\end{figure}
+
+\subsection{개별 작성 시간 (12분)}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{L{4.8cm}X}
+\toprule
+\textbf{학생 질문} & \textbf{교수자 답변} \\
+\midrule
+``주제를 두 개 중 못 고르겠어요'' & ``둘 다 가능하면 측정 항목이 겹치는지 확인해봐요'' \\
+``센서 2개면 충분한가요?'' & ``처음엔 2개가 적당해요. 나중에 추가할 수 있어요'' \\
+``수집 장소를 아직 못 정했어요'' & ``5주차에 실습학교 가서 정해도 돼요'' \\
+``예상 결과를 모르겠어요'' & ``틀려도 괜찮아요! 예상과 다르면 더 재미있는 분석이 됩니다'' \\
+``배터리가 하루 종일 버틸까요?'' & ``AAA 배터리 2개로 약 8{\raise.17ex\hbox{$\scriptstyle\sim$}}12시간 가능'' \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+%=================================================================
+\section{정리: 계획서 발표 + 과제 안내 (10분)}
+%=================================================================
+
+\subsection{계획서 간단 발표 (7분)}
+
+2{\raise.17ex\hbox{$\scriptstyle\sim$}}3명의 학생이 자신의 계획서를 간단히 발표한다. 핵심 3가지를 반드시 포함:
+
+\begin{enumerate}[nosep]
+  \item \textbf{연구 질문} --- ``나는 {\raise.17ex\hbox{$\scriptstyle\sim$}}를 알고 싶다''
+  \item \textbf{센서 선택} --- ``{\raise.17ex\hbox{$\scriptstyle\sim$}}센서를 사용할 것이다. 왜냐하면 {\raise.17ex\hbox{$\scriptstyle\sim$}}''
+  \item \textbf{예상 결과} --- ``{\raise.17ex\hbox{$\scriptstyle\sim$}}일 것이라고 예상한다''
+\end{enumerate}
+
+\begin{center}
+\begin{tabularx}{0.85\textwidth}{L{3cm}X}
+\toprule
+\textbf{피드백 항목} & \textbf{확인 질문} \\
+\midrule
+연구 질문 & 센서로 측정 가능한 질문인가? \\
+센서 선택 & 연구 질문에 적합한 센서인가? \\
+실현 가능성 & 학교에서 실제로 수집할 수 있는가? \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{과제 안내 (3분)}
+
+\begin{bluebox}[과제]
+\begin{tabularx}{\textwidth}{L{3cm}X}
+\textbf{과제명} & 데이터 수집 계획서 \\
+\textbf{제출물} & 데이터 수집 계획서 (양식 작성) + 개발일지 (PDF) \\
+\textbf{제출 기한} & 일요일 자정 (LMS) \\
+\textbf{배점} & 5\% \\
+\end{tabularx}
+\end{bluebox}
+
+\vspace{2mm}
+\textbf{등급 기준:}
+
+\begin{center}
+\begin{tabularx}{0.92\textwidth}{C{0.8cm}C{1cm}X}
+\toprule
+\textbf{등급} & \textbf{점수} & \textbf{기준} \\
+\midrule
+A & 100\% & 연구 질문 명확 + 센서 선택 타당 + 수집 계획 구체적 + 개발일지 충실 + 추가 시도/통찰 \\
+B & 85\% & 대부분 항목 작성 + 개발일지 충실 \\
+C & 70\% & 일부 항목 미흡 또는 개발일지 기본 수준 \\
+D & 55\% & 다수 항목 미흡 \\
+F & 0\% & 미제출 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{다음 주 예고}
+
+\begin{tipbox}[교수자 멘트]
+``오늘 여러분이 만든 계획서가 다음 주 \textbf{설계도}가 됩니다. 4주차에는 MakeCode에서 블록 코딩으로 \textbf{실제 데이터수집기}를 만들어요.''
+\end{tipbox}
+
+\end{document}

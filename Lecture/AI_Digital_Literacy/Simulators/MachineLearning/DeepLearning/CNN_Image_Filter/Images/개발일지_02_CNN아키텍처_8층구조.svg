@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#5D4037"/>
+    </marker>
+    <marker id="arrowDown" markerWidth="6" markerHeight="8" refX="3" refY="7" orient="auto">
+      <polygon points="0 0, 3 8, 6 0" fill="#8D6E63"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="360" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- 타이틀 -->
+  <text x="400" y="24" text-anchor="middle" font-family="Noto Sans KR" font-size="15" font-weight="700" fill="#3E2723">CNN 아키텍처 — 8층 파이프라인 상세</text>
+  <text x="400" y="40" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#8D6E63">사과 이미지 분류를 위한 합성곱 신경망 구조</text>
+
+  <!-- ===== 레이어 블록들 (상단) ===== -->
+  <!-- 1. Input -->
+  <rect x="20" y="60" width="76" height="68" rx="8" fill="white" filter="url(#shadow)" stroke="#E53935" stroke-width="1.5"/>
+  <rect x="20" y="60" width="76" height="18" rx="8" fill="#E53935"/>
+  <rect x="20" y="70" width="76" height="8" fill="#E53935"/>
+  <text x="58" y="73" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">① Input</text>
+  <text x="58" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="600" fill="#E53935">64×64×3</text>
+  <text x="58" y="104" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" fill="#8D6E63">RGB 이미지</text>
+  <text x="58" y="116" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#8D6E63">12,288 px</text>
+
+  <!-- 화살표 1→2 -->
+  <line x1="98" y1="94" x2="114" y2="94" stroke="#5D4037" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 2. Conv1 -->
+  <rect x="116" y="60" width="76" height="68" rx="8" fill="white" filter="url(#shadow)" stroke="#7B1FA2" stroke-width="1.5"/>
+  <rect x="116" y="60" width="76" height="18" rx="8" fill="#7B1FA2"/>
+  <rect x="116" y="70" width="76" height="8" fill="#7B1FA2"/>
+  <text x="154" y="73" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">② Conv1</text>
+  <text x="154" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="600" fill="#7B1FA2">62×62×8</text>
+  <text x="154" y="104" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" fill="#8D6E63">3×3 필터 ×8</text>
+  <text x="154" y="116" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">ReLU 활성화</text>
+
+  <!-- 화살표 2→3 -->
+  <line x1="194" y1="94" x2="210" y2="94" stroke="#5D4037" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 3. Pool1 -->
+  <rect x="212" y="60" width="76" height="68" rx="8" fill="white" filter="url(#shadow)" stroke="#F57C00" stroke-width="1.5"/>
+  <rect x="212" y="60" width="76" height="18" rx="8" fill="#F57C00"/>
+  <rect x="212" y="70" width="76" height="8" fill="#F57C00"/>
+  <text x="250" y="73" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">③ Pool1</text>
+  <text x="250" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="600" fill="#F57C00">31×31×8</text>
+  <text x="250" y="104" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" fill="#8D6E63">MaxPool 2×2</text>
+  <text x="250" y="116" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">크기 1/2 축소</text>
+
+  <!-- 화살표 3→4 -->
+  <line x1="290" y1="94" x2="306" y2="94" stroke="#5D4037" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 4. Conv2 -->
+  <rect x="308" y="60" width="76" height="68" rx="8" fill="white" filter="url(#shadow)" stroke="#7B1FA2" stroke-width="1.5"/>
+  <rect x="308" y="60" width="76" height="18" rx="8" fill="#7B1FA2"/>
+  <rect x="308" y="70" width="76" height="8" fill="#7B1FA2"/>
+  <text x="346" y="73" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">④ Conv2</text>
+  <text x="346" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="600" fill="#7B1FA2">29×29×16</text>
+  <text x="346" y="104" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" fill="#8D6E63">3×3 필터 ×16</text>
+  <text x="346" y="116" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">고수준 특징</text>
+
+  <!-- 화살표 4→5 -->
+  <line x1="386" y1="94" x2="402" y2="94" stroke="#5D4037" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 5. Pool2 -->
+  <rect x="404" y="60" width="76" height="68" rx="8" fill="white" filter="url(#shadow)" stroke="#F57C00" stroke-width="1.5"/>
+  <rect x="404" y="60" width="76" height="18" rx="8" fill="#F57C00"/>
+  <rect x="404" y="70" width="76" height="8" fill="#F57C00"/>
+  <text x="442" y="73" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">⑤ Pool2</text>
+  <text x="442" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="600" fill="#F57C00">14×14×16</text>
+  <text x="442" y="104" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" fill="#8D6E63">MaxPool 2×2</text>
+  <text x="442" y="116" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">핵심 유지</text>
+
+  <!-- 화살표 5→6 -->
+  <line x1="482" y1="94" x2="498" y2="94" stroke="#5D4037" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 6. Flatten -->
+  <rect x="500" y="60" width="76" height="68" rx="8" fill="white" filter="url(#shadow)" stroke="#1976D2" stroke-width="1.5"/>
+  <rect x="500" y="60" width="76" height="18" rx="8" fill="#1976D2"/>
+  <rect x="500" y="70" width="76" height="8" fill="#1976D2"/>
+  <text x="538" y="73" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">⑥ Flatten</text>
+  <text x="538" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="600" fill="#1976D2">3,136</text>
+  <text x="538" y="104" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" fill="#8D6E63">2D → 1D</text>
+  <text x="538" y="116" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#8D6E63">14×14×16</text>
+
+  <!-- 화살표 6→7 -->
+  <line x1="578" y1="94" x2="594" y2="94" stroke="#5D4037" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 7. Dense -->
+  <rect x="596" y="60" width="76" height="68" rx="8" fill="white" filter="url(#shadow)" stroke="#00897B" stroke-width="1.5"/>
+  <rect x="596" y="60" width="76" height="18" rx="8" fill="#00897B"/>
+  <rect x="596" y="70" width="76" height="8" fill="#00897B"/>
+  <text x="634" y="73" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">⑦ Dense</text>
+  <text x="634" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="600" fill="#00897B">64 → 2</text>
+  <text x="634" y="104" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" fill="#8D6E63">완전연결</text>
+  <text x="634" y="116" text-anchor="middle" font-family="Noto Sans KR" font-size="6" fill="#8D6E63">특징 조합</text>
+
+  <!-- 화살표 7→8 -->
+  <line x1="674" y1="94" x2="690" y2="94" stroke="#5D4037" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 8. Output -->
+  <rect x="692" y="60" width="86" height="68" rx="8" fill="white" filter="url(#shadow)" stroke="#43A047" stroke-width="1.5"/>
+  <rect x="692" y="60" width="86" height="18" rx="8" fill="#43A047"/>
+  <rect x="692" y="70" width="86" height="8" fill="#43A047"/>
+  <text x="735" y="73" text-anchor="middle" font-family="Noto Sans KR" font-size="8" font-weight="700" fill="white">⑧ Softmax</text>
+  <text x="735" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="600" fill="#43A047">2 classes</text>
+  <text x="735" y="104" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" fill="#8D6E63">🍎 익은 사과</text>
+  <text x="735" y="116" text-anchor="middle" font-family="Noto Sans KR" font-size="6.5" fill="#8D6E63">🍏 덜 익은 사과</text>
+
+  <!-- ===== 중단: 수식 & 연산 상세 ===== -->
+  <rect x="20" y="142" width="758" height="52" rx="8" fill="white" filter="url(#shadow)"/>
+  <text x="400" y="158" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#3E2723">📐 핵심 수식</text>
+
+  <!-- Conv 수식 -->
+  <text x="50" y="176" font-family="JetBrains Mono" font-size="8" fill="#7B1FA2">Conv: output = (W−F+2P)/S + 1</text>
+  <text x="50" y="188" font-family="JetBrains Mono" font-size="7" fill="#8D6E63">  Conv1: (64−3+0)/1 + 1 = 62  |  Conv2: (31−3+0)/1 + 1 = 29</text>
+
+  <!-- Pool 수식 -->
+  <text x="420" y="176" font-family="JetBrains Mono" font-size="8" fill="#F57C00">Pool: output = floor(W/2)</text>
+  <text x="420" y="188" font-family="JetBrains Mono" font-size="7" fill="#8D6E63">  Pool1: 62/2 = 31  |  Pool2: 29/2 ≈ 14</text>
+
+  <!-- Softmax 수식 -->
+  <text x="660" y="176" font-family="JetBrains Mono" font-size="8" fill="#43A047">Softmax:</text>
+  <text x="660" y="188" font-family="JetBrains Mono" font-size="7" fill="#8D6E63">P(k) = eᶻᵏ / Σeᶻʲ</text>
+
+  <!-- ===== 하단: 필터 상세 ===== -->
+  <rect x="20" y="204" width="370" height="146" rx="8" fill="white" filter="url(#shadow)"/>
+  <text x="205" y="222" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#7B1FA2">🔍 Conv1 필터 커널 (3×3) × 8</text>
+
+  <!-- 필터 그리드 -->
+  <g transform="translate(32, 232)">
+    <!-- 필터 1: 수평 에지 -->
+    <rect x="0" y="0" width="72" height="48" rx="4" fill="#F3E5F5"/>
+    <text x="36" y="14" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#7B1FA2">수평에지</text>
+    <text x="36" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#5D4037">-1 -1 -1</text>
+    <text x="36" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#5D4037"> 0  0  0</text>
+    <text x="36" y="46" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#5D4037"> 1  1  1</text>
+
+    <!-- 필터 2: 수직 에지 -->
+    <rect x="80" y="0" width="72" height="48" rx="4" fill="#F3E5F5"/>
+    <text x="116" y="14" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#7B1FA2">수직에지</text>
+    <text x="116" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#5D4037">-1  0  1</text>
+    <text x="116" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#5D4037">-1  0  1</text>
+    <text x="116" y="46" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#5D4037">-1  0  1</text>
+
+    <!-- 필터 5: 밝기 -->
+    <rect x="160" y="0" width="72" height="48" rx="4" fill="#F3E5F5"/>
+    <text x="196" y="14" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#7B1FA2">밝기</text>
+    <text x="196" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#5D4037"> 0  0  0</text>
+    <text x="196" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#5D4037"> 0  2  0</text>
+    <text x="196" y="46" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#5D4037"> 0  0  0</text>
+
+    <!-- 필터 7: 샤프닝 -->
+    <rect x="240" y="0" width="72" height="48" rx="4" fill="#F3E5F5"/>
+    <text x="276" y="14" text-anchor="middle" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#7B1FA2">샤프닝</text>
+    <text x="276" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#5D4037"> 0 -1  0</text>
+    <text x="276" y="37" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#5D4037">-1  5 -1</text>
+    <text x="276" y="46" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#5D4037"> 0 -1  0</text>
+  </g>
+  <text x="205" y="294" text-anchor="middle" font-family="Noto Sans KR" font-size="7" fill="#8D6E63">+ 대각↘, 대각↗, 반전, 블러 (총 8개)</text>
+  <text x="205" y="308" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#8D6E63">FILTERS_CONV1[8][3][3] — 채널: R(0~3), G(4~5), R(6~7)</text>
+
+  <!-- ===== 하단 오른쪽: 분류 로직 ===== -->
+  <rect x="400" y="204" width="378" height="146" rx="8" fill="white" filter="url(#shadow)"/>
+  <text x="589" y="222" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#43A047">🧠 분류 로직 (performClassification)</text>
+
+  <!-- 가중치 기반 분류 -->
+  <text x="416" y="242" font-family="JetBrains Mono" font-size="7.5" fill="#3E2723">logit = w.red × avgR + w.green × avgG</text>
+  <text x="416" y="254" font-family="JetBrains Mono" font-size="7.5" fill="#3E2723">       + w.texture × (avgR - avgG) + bias</text>
+
+  <text x="416" y="272" font-family="JetBrains Mono" font-size="7.5" fill="#3E2723">ripeP = σ(logit × (2 + epoch × 0.3))</text>
+  <text x="416" y="284" font-family="JetBrains Mono" font-size="7.5" fill="#8D6E63">  σ = sigmoid: 1/(1+e⁻ˣ)</text>
+
+  <!-- 타겟 가중치 -->
+  <rect x="416" y="294" width="350" height="46" rx="6" fill="#E8F5E9"/>
+  <text x="420" y="308" font-family="Noto Sans KR" font-size="7" font-weight="600" fill="#2E7D32">학습 목표 가중치 (TARGET):</text>
+  <text x="420" y="322" font-family="JetBrains Mono" font-size="7" fill="#3E2723">Red: +2.5  |  Green: -2.0  |  Texture: +1.0  |  Bias: -0.3</text>
+  <text x="420" y="334" font-family="Noto Sans KR" font-size="6.5" fill="#8D6E63">경사하강법: w += (target − w) × lr × (0.8 + noise)</text>
+</svg>

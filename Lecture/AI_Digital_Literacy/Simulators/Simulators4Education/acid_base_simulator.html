@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 산성액과 알카리액 혼합 시뮬레이터 v1.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --acid-color: #ff5252;
+            --base-color: #448aff;
+            --neutral-color: #66bb6a;
+            --bg-lab: #f5f5f5;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Nanum Gothic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .control-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #dee2e6;
+        }
+
+        .solution-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .solution-icon {
+            font-size: 2rem;
+        }
+
+        .solution-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        input[type=range] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type=range].acid {
+            background: linear-gradient(to right, #ffebee, #ff5252);
+        }
+
+        input[type=range].base {
+            background: linear-gradient(to right, #e3f2fd, #448aff);
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #333;
+            cursor: pointer;
+        }
+
+        input[type=range]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #333;
+            cursor: pointer;
+        }
+
+        .value-badge {
+            display: inline-block;
+            background: #333;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 8px 0;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        #labCanvas {
+            width: 100%;
+            height: 600px;
+            border-radius: 15px;
+            background: linear-gradient(to bottom, #e3f2fd, #f5f5f5);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .ph-scale {
+            margin: 20px 0;
+        }
+
+        .ph-bar {
+            height: 40px;
+            border-radius: 20px;
+            background: linear-gradient(to right, 
+                #d32f2f 0%, #f44336 7%, #ff5722 14%, 
+                #ff9800 21%, #ffc107 28%, #ffeb3b 35%,
+                #cddc39 42%, #66bb6a 50%, #26a69a 57%,
+                #00acc1 64%, #0097a7 71%, #0288d1 78%,
+                #1976d2 85%, #1565c0 92%, #0d47a1 100%);
+            position: relative;
+            margin: 10px 0;
+        }
+
+        .ph-indicator {
+            position: absolute;
+            top: -10px;
+            width: 4px;
+            height: 60px;
+            background: black;
+            transition: left 0.3s;
+        }
+
+        .ph-indicator::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 12px solid black;
+        }
+
+        .ph-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .result-box {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .info-card {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #2196f3;
+        }
+
+        .info-card h4 {
+            margin-top: 0;
+            color: #1565c0;
+        }
+
+        .chemical-equation {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .indicator-row {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+        }
+
+        .indicator-item {
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .quiz-section {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #ff9800;
+            margin-top: 15px;
+        }
+
+        .quiz-btn {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            margin: 5px 0;
+            transition: all 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+
+        .quiz-btn:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+
+        .quiz-btn.correct {
+            background: #c8e6c9;
+            border-color: #4caf50;
+        }
+
+        .quiz-btn.wrong {
+            background: #ffcdd2;
+            border-color: #f44336;
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🧪 산성액과 알카리액 혼합 시뮬레이터<span class="badge">v1.0</span></h1>
+    <p style="margin: 10px 0 0 0; font-size: 1.1rem;">pH 변화를 눈으로 확인하며 중화반응을 배워요!</p>
+</header>
+
+<div class="main-layout">
+    <!-- 왼쪽 패널: 용액 조절 -->
+    <aside class="panel">
+        <h2 style="margin-top: 0;">⚗️ 용액 조절</h2>
+
+        <div class="control-section" style="border-color: #ff5252;">
+            <div class="solution-header">
+                <div>
+                    <div class="solution-icon">🔴</div>
+                    <div class="solution-name" style="color: #ff5252;">산성 용액</div>
+                </div>
+            </div>
+            
+            <div class="control-row">
+                <span>부피 (mL):</span>
+                <span class="value-badge" id="acidVolume">50</span>
+            </div>
+            <input type="range" id="acidVolumeSlider" class="acid" min="0" max="100" value="50" step="5">
+            
+            <div class="control-row" style="margin-top: 15px;">
+                <span>농도 (M):</span>
+                <span class="value-badge" id="acidConc">0.1</span>
+            </div>
+            <input type="range" id="acidConcSlider" class="acid" min="0.01" max="0.5" value="0.1" step="0.01">
+        </div>
+
+        <div class="control-section" style="border-color: #448aff;">
+            <div class="solution-header">
+                <div>
+                    <div class="solution-icon">🔵</div>
+                    <div class="solution-name" style="color: #448aff;">알카리 용액</div>
+                </div>
+            </div>
+            
+            <div class="control-row">
+                <span>부피 (mL):</span>
+                <span class="value-badge" id="baseVolume">50</span>
+            </div>
+            <input type="range" id="baseVolumeSlider" class="base" min="0" max="100" value="50" step="5">
+            
+            <div class="control-row" style="margin-top: 15px;">
+                <span>농도 (M):</span>
+                <span class="value-badge" id="baseConc">0.1</span>
+            </div>
+            <input type="range" id="baseConcSlider" class="base" min="0.01" max="0.5" value="0.1" step="0.01">
+        </div>
+
+        <button class="btn btn-primary" onclick="SimApp.mix()">
+            🧪 용액 혼합하기
+        </button>
+
+        <button class="btn btn-secondary" onclick="SimApp.reset()">
+            🔄 초기화
+        </button>
+
+        <div class="info-card">
+            <h4>💡 실험 팁</h4>
+            <p style="font-size: 0.9rem; line-height: 1.6; margin: 5px 0;">
+                • 산과 염기의 부피와 농도를 조절하세요<br>
+                • 같은 농도와 부피를 혼합하면 중성이 돼요<br>
+                • pH 7이 완전한 중화반응입니다
+            </p>
+        </div>
+    </aside>
+
+    <!-- 중앙 패널: 실험 시각화 -->
+    <main class="panel">
+        <canvas id="labCanvas"></canvas>
+    </main>
+
+    <!-- 오른쪽 패널: 결과 및 분석 -->
+    <aside class="panel">
+        <h2 style="margin-top: 0;">📊 실험 결과</h2>
+
+        <div class="ph-scale">
+            <h3 style="margin: 10px 0;">pH 측정</h3>
+            <div id="phValue" style="text-align: center; font-size: 2.5rem; font-weight: bold; margin: 10px 0;">
+                7.0
+            </div>
+            <div class="ph-bar">
+                <div class="ph-indicator" id="phIndicator" style="left: 50%;"></div>
+            </div>
+            <div class="ph-labels">
+                <span>0<br>강산성</span>
+                <span>7<br>중성</span>
+                <span>14<br>강염기성</span>
+            </div>
+        </div>
+
+        <div id="resultBox" class="result-box" style="background: #c8e6c9; color: #1b5e20;">
+            중성 용액
+        </div>
+
+        <div class="chemical-equation">
+            <div style="color: #666; font-size: 0.85rem; margin-bottom: 5px;">중화 반응식</div>
+            <div id="equation">H⁺ + OH⁻ → H₂O</div>
+        </div>
+
+        <div class="info-card" style="background: #f3e5f5; border-left-color: #9c27b0;">
+            <h4 style="color: #6a1b9a;">🔬 반응 정보</h4>
+            <div id="reactionInfo" style="font-size: 0.9rem; line-height: 1.8;">
+                산의 H⁺: <strong id="hIons">0.005</strong> mol<br>
+                염기의 OH⁻: <strong id="ohIons">0.005</strong> mol<br>
+                남은 H⁺: <strong id="excessH">0.000</strong> mol<br>
+                남은 OH⁻: <strong id="excessOH">0.000</strong> mol
+            </div>
+        </div>
+
+        <div class="indicator-row">
+            <div class="indicator-item" id="litmusRed" style="background: #ffcdd2;">
+                <div style="font-size: 1.5rem;">🧪</div>
+                <div style="font-size: 0.85rem;">리트머스<br>(빨강)</div>
+            </div>
+            <div class="indicator-item" id="litmusBlue" style="background: #bbdefb;">
+                <div style="font-size: 1.5rem;">🧪</div>
+                <div style="font-size: 0.85rem;">리트머스<br>(파랑)</div>
+            </div>
+            <div class="indicator-item" id="phenol" style="background: #fff9c4;">
+                <div style="font-size: 1.5rem;">🧪</div>
+                <div style="font-size: 0.85rem;">페놀프탈레인</div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h4 style="margin-top: 0; color: #e65100;">🎯 퀴즈</h4>
+            <div id="quizQuestion" style="font-weight: bold; margin-bottom: 10px;">
+                문제를 시작하려면 아래 버튼을 누르세요!
+            </div>
+            <div id="quizOptions">
+                <button class="btn btn-primary" onclick="SimApp.quiz.start()">
+                    📝 퀴즈 시작
+                </button>
+            </div>
+            <div id="quizScore" style="text-align: center; margin-top: 10px; font-weight: bold;">
+                점수: 0/0
+            </div>
+        </div>
+    </aside>
+</div>
+
+<script>
+const SimApp = {
+    state: {
+        acidVolume: 50,    // mL
+        acidConc: 0.1,     // M (mol/L)
+        baseVolume: 50,    // mL
+        baseConc: 0.1,     // M
+        pH: 7.0,
+        hIons: 0,
+        ohIons: 0,
+        excessH: 0,
+        excessOH: 0,
+        mixedColor: '#66bb6a',
+        quiz: {
+            score: 0,
+            total: 0,
+            currentQuestion: null
+        }
+    },
+
+    viz: {
+        ctx: null,
+        canvas: null,
+
+        init() {
+            this.canvas = document.getElementById('labCanvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.resize();
+            window.addEventListener('resize', () => this.resize());
+            this.draw();
+        },
+
+        resize() {
+            const parent = this.canvas.parentElement;
+            this.canvas.width = parent.clientWidth - 50;
+            this.canvas.height = 600;
+        },
+
+        draw() {
+            const ctx = this.ctx;
+            const w = this.canvas.width;
+            const h = this.canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // 배경 그라데이션
+            const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+            bgGrad.addColorStop(0, '#e3f2fd');
+            bgGrad.addColorStop(1, '#f5f5f5');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, w, h);
+
+            // 실험대 그리기
+            this.drawTable(ctx, w, h);
+
+            // 비커 그리기
+            this.drawBeaker(ctx, w * 0.25, h * 0.4, 150, 200, SimApp.state.acidVolume, '#ff5252', '산성액');
+            this.drawBeaker(ctx, w * 0.75, h * 0.4, 150, 200, SimApp.state.baseVolume, '#448aff', '알카리액');
+            
+            // 혼합 비커 (중앙, 더 크게)
+            const totalVolume = SimApp.state.acidVolume + SimApp.state.baseVolume;
+            this.drawMixedBeaker(ctx, w * 0.5, h * 0.65, 200, 250, totalVolume, SimApp.state.mixedColor);
+        },
+
+        drawTable(ctx, w, h) {
+            // 실험대
+            ctx.fillStyle = '#8d6e63';
+            ctx.fillRect(0, h * 0.85, w, h * 0.15);
+            
+            // 실험대 그림자
+            const grad = ctx.createLinearGradient(0, h * 0.85, 0, h * 0.9);
+            grad.addColorStop(0, 'rgba(0,0,0,0.2)');
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, h * 0.85, w, 50);
+        },
+
+        drawBeaker(ctx, x, y, width, height, volume, color, label) {
+            // 비커 외곽
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(x - width/2, y);
+            ctx.lineTo(x - width/2, y + height);
+            ctx.lineTo(x + width/2, y + height);
+            ctx.lineTo(x + width/2, y);
+            ctx.stroke();
+
+            // 용액
+            if (volume > 0) {
+                const liquidHeight = (volume / 100) * height * 0.8;
+                const gradient = ctx.createLinearGradient(x, y + height - liquidHeight, x, y + height);
+                gradient.addColorStop(0, this.lightenColor(color, 30));
+                gradient.addColorStop(1, color);
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(x - width/2 + 3, y + height - liquidHeight, width - 6, liquidHeight);
+                
+                // 액체 표면 하이라이트
+                ctx.fillStyle = 'rgba(255,255,255,0.3)';
+                ctx.fillRect(x - width/2 + 3, y + height - liquidHeight, width - 6, 5);
+            }
+
+            // 눈금
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 1;
+            for (let i = 1; i <= 4; i++) {
+                const markY = y + height * 0.2 * i;
+                ctx.beginPath();
+                ctx.moveTo(x - width/2, markY);
+                ctx.lineTo(x - width/2 + 10, markY);
+                ctx.stroke();
+            }
+
+            // 라벨
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 16px Nanum Gothic';
+            ctx.textAlign = 'center';
+            ctx.fillText(label, x, y - 10);
+            ctx.font = '14px Nanum Gothic';
+            ctx.fillText(`${volume} mL`, x, y + height + 25);
+        },
+
+        drawMixedBeaker(ctx, x, y, width, height, volume, color) {
+            // 비커 외곽 (둥근 플라스크 스타일)
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(x, y, width/2, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // 혼합 용액
+            if (volume > 0) {
+                const fillRatio = Math.min(volume / 150, 0.9);
+                const liquidRadius = (width / 2 - 5) * fillRatio;
+                
+                const gradient = ctx.createRadialGradient(x, y - 20, 0, x, y, liquidRadius);
+                gradient.addColorStop(0, this.lightenColor(color, 40));
+                gradient.addColorStop(0.7, color);
+                gradient.addColorStop(1, this.darkenColor(color, 20));
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(x, y, liquidRadius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 반짝이는 효과
+                ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                ctx.beginPath();
+                ctx.arc(x - liquidRadius * 0.3, y - liquidRadius * 0.3, liquidRadius * 0.2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 라벨
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 18px Nanum Gothic';
+            ctx.textAlign = 'center';
+            ctx.fillText('혼합 용액', x, y - width/2 - 15);
+            ctx.font = '16px Nanum Gothic';
+            ctx.fillText(`${volume} mL`, x, y + width/2 + 30);
+            
+            // pH 표시
+            ctx.font = 'bold 20px Nanum Gothic';
+            ctx.fillStyle = '#fff';
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 3;
+            ctx.strokeText(`pH ${SimApp.state.pH.toFixed(2)}`, x, y);
+            ctx.fillText(`pH ${SimApp.state.pH.toFixed(2)}`, x, y);
+        },
+
+        lightenColor(color, percent) {
+            const num = parseInt(color.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = Math.min(255, (num >> 16) + amt);
+            const G = Math.min(255, ((num >> 8) & 0x00FF) + amt);
+            const B = Math.min(255, (num & 0x0000FF) + amt);
+            return `#${((R << 16) | (G << 8) | B).toString(16).padStart(6, '0')}`;
+        },
+
+        darkenColor(color, percent) {
+            const num = parseInt(color.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = Math.max(0, (num >> 16) - amt);
+            const G = Math.max(0, ((num >> 8) & 0x00FF) - amt);
+            const B = Math.max(0, (num & 0x0000FF) - amt);
+            return `#${((R << 16) | (G << 8) | B).toString(16).padStart(6, '0')}`;
+        }
+    },
+
+    init() {
+        this.viz.init();
+        this.setupEventListeners();
+        this.updateDisplay();
+    },
+
+    setupEventListeners() {
+        document.getElementById('acidVolumeSlider').oninput = (e) => {
+            this.state.acidVolume = parseFloat(e.target.value);
+            document.getElementById('acidVolume').textContent = this.state.acidVolume;
+            this.viz.draw();
+        };
+
+        document.getElementById('acidConcSlider').oninput = (e) => {
+            this.state.acidConc = parseFloat(e.target.value);
+            document.getElementById('acidConc').textContent = this.state.acidConc.toFixed(2);
+        };
+
+        document.getElementById('baseVolumeSlider').oninput = (e) => {
+            this.state.baseVolume = parseFloat(e.target.value);
+            document.getElementById('baseVolume').textContent = this.state.baseVolume;
+            this.viz.draw();
+        };
+
+        document.getElementById('baseConcSlider').oninput = (e) => {
+            this.state.baseConc = parseFloat(e.target.value);
+            document.getElementById('baseConc').textContent = this.state.baseConc.toFixed(2);
+        };
+    },
+
+    mix() {
+        // 몰 수 계산 (부피를 L로 변환)
+        const acidMoles = (this.state.acidVolume / 1000) * this.state.acidConc;
+        const baseMoles = (this.state.baseVolume / 1000) * this.state.baseConc;
+
+        this.state.hIons = acidMoles;
+        this.state.ohIons = baseMoles;
+
+        // 중화 반응 계산
+        const totalVolume = (this.state.acidVolume + this.state.baseVolume) / 1000; // L
+
+        if (acidMoles > baseMoles) {
+            // 산 과잉
+            this.state.excessH = acidMoles - baseMoles;
+            this.state.excessOH = 0;
+            const hConcentration = this.state.excessH / totalVolume;
+            this.state.pH = -Math.log10(hConcentration);
+        } else if (baseMoles > acidMoles) {
+            // 염기 과잉
+            this.state.excessOH = baseMoles - acidMoles;
+            this.state.excessH = 0;
+            const ohConcentration = this.state.excessOH / totalVolume;
+            const pOH = -Math.log10(ohConcentration);
+            this.state.pH = 14 - pOH;
+        } else {
+            // 완전 중화
+            this.state.excessH = 0;
+            this.state.excessOH = 0;
+            this.state.pH = 7.0;
+        }
+
+        // pH에 따른 색상 결정
+        this.state.mixedColor = this.getColorByPH(this.state.pH);
+
+        this.updateDisplay();
+        this.viz.draw();
+    },
+
+    getColorByPH(pH) {
+        // pH 0-14에 따른 색상 그라데이션
+        const colors = [
+            '#d32f2f', '#f44336', '#ff5722', '#ff9800', 
+            '#ffc107', '#ffeb3b', '#cddc39', '#66bb6a', 
+            '#26a69a', '#00acc1', '#0097a7', '#0288d1', 
+            '#1976d2', '#1565c0', '#0d47a1'
+        ];
+        const index = Math.floor(pH);
+        const clampedIndex = Math.max(0, Math.min(14, index));
+        return colors[clampedIndex];
+    },
+
+    updateDisplay() {
+        // pH 표시
+        document.getElementById('phValue').textContent = this.state.pH.toFixed(2);
+        document.getElementById('phValue').style.color = this.state.mixedColor;
+        
+        // pH 인디케이터 위치
+        const position = (this.state.pH / 14) * 100;
+        document.getElementById('phIndicator').style.left = `${position}%`;
+
+        // 결과 박스
+        const resultBox = document.getElementById('resultBox');
+        if (this.state.pH < 6.5) {
+            resultBox.textContent = '산성 용액';
+            resultBox.style.background = '#ffcdd2';
+            resultBox.style.color = '#b71c1c';
+        } else if (this.state.pH > 7.5) {
+            resultBox.textContent = '염기성 용액';
+            resultBox.style.background = '#bbdefb';
+            resultBox.style.color = '#0d47a1';
+        } else {
+            resultBox.textContent = '중성 용액';
+            resultBox.style.background = '#c8e6c9';
+            resultBox.style.color = '#1b5e20';
+        }
+
+        // 반응 정보
+        document.getElementById('hIons').textContent = this.state.hIons.toFixed(4);
+        document.getElementById('ohIons').textContent = this.state.ohIons.toFixed(4);
+        document.getElementById('excessH').textContent = this.state.excessH.toFixed(4);
+        document.getElementById('excessOH').textContent = this.state.excessOH.toFixed(4);
+
+        // 지시약 색 변화
+        this.updateIndicators();
+    },
+
+    updateIndicators() {
+        const litmusRed = document.getElementById('litmusRed');
+        const litmusBlue = document.getElementById('litmusBlue');
+        const phenol = document.getElementById('phenol');
+
+        if (this.state.pH < 7) {
+            // 산성
+            litmusRed.style.background = '#ff5252';
+            litmusRed.innerHTML = '<div style="font-size: 1.5rem;">🔴</div><div style="font-size: 0.85rem;">빨강</div>';
+            litmusBlue.style.background = '#ff5252';
+            litmusBlue.innerHTML = '<div style="font-size: 1.5rem;">🔴</div><div style="font-size: 0.85rem;">빨강으로 변색</div>';
+            phenol.style.background = '#fff';
+            phenol.innerHTML = '<div style="font-size: 1.5rem;">⚪</div><div style="font-size: 0.85rem;">무색</div>';
+        } else if (this.state.pH > 7) {
+            // 염기성
+            litmusRed.style.background = '#448aff';
+            litmusRed.innerHTML = '<div style="font-size: 1.5rem;">🔵</div><div style="font-size: 0.85rem;">파랑으로 변색</div>';
+            litmusBlue.style.background = '#448aff';
+            litmusBlue.innerHTML = '<div style="font-size: 1.5rem;">🔵</div><div style="font-size: 0.85rem;">파랑</div>';
+            phenol.style.background = '#ff1493';
+            phenol.innerHTML = '<div style="font-size: 1.5rem;">🌸</div><div style="font-size: 0.85rem;">붉은색</div>';
+        } else {
+            // 중성
+            litmusRed.style.background = '#ffcdd2';
+            litmusRed.innerHTML = '<div style="font-size: 1.5rem;">🔴</div><div style="font-size: 0.85rem;">빨강</div>';
+            litmusBlue.style.background = '#bbdefb';
+            litmusBlue.innerHTML = '<div style="font-size: 1.5rem;">🔵</div><div style="font-size: 0.85rem;">파랑</div>';
+            phenol.style.background = '#fff';
+            phenol.innerHTML = '<div style="font-size: 1.5rem;">⚪</div><div style="font-size: 0.85rem;">무색</div>';
+        }
+    },
+
+    reset() {
+        this.state.acidVolume = 50;
+        this.state.acidConc = 0.1;
+        this.state.baseVolume = 50;
+        this.state.baseConc = 0.1;
+        this.state.pH = 7.0;
+        this.state.mixedColor = '#66bb6a';
+        this.state.hIons = 0;
+        this.state.ohIons = 0;
+        this.state.excessH = 0;
+        this.state.excessOH = 0;
+
+        document.getElementById('acidVolumeSlider').value = 50;
+        document.getElementById('acidConcSlider').value = 0.1;
+        document.getElementById('baseVolumeSlider').value = 50;
+        document.getElementById('baseConcSlider').value = 0.1;
+
+        document.getElementById('acidVolume').textContent = 50;
+        document.getElementById('acidConc').textContent = '0.10';
+        document.getElementById('baseVolume').textContent = 50;
+        document.getElementById('baseConc').textContent = '0.10';
+
+        this.updateDisplay();
+        this.viz.draw();
+    },
+
+    quiz: {
+        questions: [
+            {
+                q: "pH 7인 용액의 성질은?",
+                options: ["산성", "중성", "염기성", "알 수 없음"],
+                answer: 1
+            },
+            {
+                q: "산성 용액에서 빨간색 리트머스 종이는?",
+                options: ["파란색으로 변한다", "변화없다", "노란색으로 변한다", "초록색으로 변한다"],
+                answer: 1
+            },
+            {
+                q: "중화반응에서 생성되는 물질은?",
+                options: ["물과 염", "산소", "수소", "이산화탄소"],
+                answer: 0
+            },
+            {
+                q: "페놀프탈레인 용액이 붉은색을 띠는 조건은?",
+                options: ["산성 용액", "중성 용액", "염기성 용액", "모든 용액"],
+                answer: 2
+            },
+            {
+                q: "pH가 3인 용액과 pH가 11인 용액을 같은 양으로 섞으면?",
+                options: ["강한 산성", "약한 산성", "중성", "염기성"],
+                answer: 2
+            }
+        ],
+
+        start() {
+            const randomIndex = Math.floor(Math.random() * this.questions.length);
+            SimApp.state.quiz.currentQuestion = this.questions[randomIndex];
+            
+            const question = SimApp.state.quiz.currentQuestion;
+            document.getElementById('quizQuestion').textContent = question.q;
+            
+            let optionsHTML = '';
+            question.options.forEach((opt, index) => {
+                optionsHTML += `<button class="quiz-btn" onclick="SimApp.quiz.answer(${index})">${opt}</button>`;
+            });
+            document.getElementById('quizOptions').innerHTML = optionsHTML;
+        },
+
+        answer(selectedIndex) {
+            const question = SimApp.state.quiz.currentQuestion;
+            const buttons = document.querySelectorAll('.quiz-btn');
+            
+            SimApp.state.quiz.total++;
+            
+            if (selectedIndex === question.answer) {
+                // 정답
+                SimApp.state.quiz.score++;
+                buttons[selectedIndex].classList.add('correct');
+                buttons[selectedIndex].innerHTML += ' ✅ 정답!';
+            } else {
+                // 오답
+                buttons[selectedIndex].classList.add('wrong');
+                buttons[selectedIndex].innerHTML += ' ❌';
+                buttons[question.answer].classList.add('correct');
+                buttons[question.answer].innerHTML += ' ✅ 정답은 이것!';
+            }
+
+            // 모든 버튼 비활성화
+            buttons.forEach(btn => btn.disabled = true);
+
+            // 점수 업데이트
+            document.getElementById('quizScore').textContent = 
+                `점수: ${SimApp.state.quiz.score}/${SimApp.state.quiz.total}`;
+
+            // 다음 문제 버튼
+            setTimeout(() => {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'btn btn-primary';
+                nextBtn.textContent = '➡️ 다음 문제';
+                nextBtn.onclick = () => this.start();
+                document.getElementById('quizOptions').appendChild(nextBtn);
+            }, 1500);
+        }
+    }
+};
+
+// 초기화
+window.onload = () => {
+    SimApp.init();
+};
+</script>
+</body>
+</html>

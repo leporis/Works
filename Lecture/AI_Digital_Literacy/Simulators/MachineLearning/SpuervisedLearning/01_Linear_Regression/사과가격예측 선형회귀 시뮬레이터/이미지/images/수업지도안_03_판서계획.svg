@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <linearGradient id="boardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2E7D32"/>
+      <stop offset="100%" style="stop-color:#1B5E20"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <filter id="chalk" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
+      <feDiffuseLighting in="noise" lighting-color="white" surfaceScale="1" result="light">
+        <feDistantLight azimuth="45" elevation="60"/>
+      </feDiffuseLighting>
+      <feBlend in="SourceGraphic" in2="light" mode="multiply"/>
+    </filter>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="800" height="480" fill="url(#bgGrad)"/>
+  
+  <!-- 제목 -->
+  <text x="400" y="32" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="20" font-weight="700" fill="#E53935">📝 판서 계획</text>
+  <text x="400" y="52" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#5D4037">선형 회귀 시뮬레이터 수업 칠판 레이아웃</text>
+  
+  <!-- 칠판 프레임 -->
+  <rect x="30" y="68" width="740" height="360" rx="8" fill="#8D6E63" filter="url(#shadow)"/>
+  <rect x="40" y="78" width="720" height="340" rx="4" fill="url(#boardGrad)"/>
+  
+  <!-- 칠판 내용 - 분필 느낌의 흰색/노란색/분홍색 -->
+  
+  <!-- 제목 영역 (상단 중앙) -->
+  <rect x="250" y="88" width="300" height="35" rx="4" fill="rgba(255,255,255,0.1)"/>
+  <text x="400" y="113" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="18" font-weight="700" fill="#FFFDE7">🍎 사과 가격 예측 - 선형 회귀</text>
+  
+  <!-- 왼쪽 영역: 핵심 개념 -->
+  <rect x="50" y="130" width="210" height="155" rx="6" fill="rgba(255,255,255,0.08)"/>
+  <text x="155" y="150" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#FFC107">📚 핵심 개념</text>
+  <line x1="60" y1="158" x2="250" y2="158" stroke="#FFC107" stroke-width="1" stroke-dasharray="3,2"/>
+  
+  <text x="60" y="178" font-family="Noto Sans KR, sans-serif" font-size="11" fill="white">• 선형 회귀</text>
+  <text x="70" y="195" font-family="JetBrains Mono, monospace" font-size="10" fill="#FFC107">y = wx + b</text>
+  
+  <text x="60" y="218" font-family="Noto Sans KR, sans-serif" font-size="11" fill="white">• 경사 하강법</text>
+  <text x="70" y="235" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#BBDEFB">→ 손실을 줄이는 방향</text>
+  
+  <text x="60" y="258" font-family="Noto Sans KR, sans-serif" font-size="11" fill="white">• 품질 점수</text>
+  <text x="70" y="275" font-family="JetBrains Mono, monospace" font-size="9" fill="#FFC107">당도 + 무게 = 품질</text>
+  
+  <!-- 중앙 영역: 회귀식 & 그래프 -->
+  <rect x="270" y="130" width="260" height="155" rx="6" fill="rgba(255,255,255,0.08)"/>
+  <text x="400" y="150" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#FF8A80">📈 회귀 모델</text>
+  <line x1="280" y1="158" x2="520" y2="158" stroke="#FF8A80" stroke-width="1" stroke-dasharray="3,2"/>
+  
+  <!-- 회귀식 큰 글씨 -->
+  <text x="400" y="190" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#FFFDE7">가격 = w × 품질 + b</text>
+  
+  <!-- 간단한 그래프 그림 -->
+  <line x1="295" y1="270" x2="505" y2="270" stroke="white" stroke-width="1.5"/>
+  <line x1="295" y1="270" x2="295" y2="200" stroke="white" stroke-width="1.5"/>
+  <text x="400" y="285" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="white">품질 (0~100)</text>
+  <text x="285" y="235" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="8" fill="white" transform="rotate(-90,285,235)">가격</text>
+  
+  <!-- 회귀선 -->
+  <line x1="310" y1="260" x2="490" y2="210" stroke="#FFC107" stroke-width="2"/>
+  <!-- 데이터 점 -->
+  <circle cx="330" cy="255" r="3" fill="#FF8A80"/>
+  <circle cx="360" cy="245" r="3" fill="#FF8A80"/>
+  <circle cx="390" cy="238" r="3" fill="#FF8A80"/>
+  <circle cx="420" cy="228" r="3" fill="#FF8A80"/>
+  <circle cx="450" cy="220" r="3" fill="#FF8A80"/>
+  <circle cx="480" cy="215" r="3" fill="#FF8A80"/>
+  
+  <!-- 오른쪽 영역: 학습 파라미터 -->
+  <rect x="540" y="130" width="210" height="155" rx="6" fill="rgba(255,255,255,0.08)"/>
+  <text x="645" y="150" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#81D4FA">⚙️ 학습 파라미터</text>
+  <line x1="550" y1="158" x2="740" y2="158" stroke="#81D4FA" stroke-width="1" stroke-dasharray="3,2"/>
+  
+  <text x="550" y="178" font-family="Noto Sans KR, sans-serif" font-size="11" fill="white">• 학습률 (η)</text>
+  <text x="560" y="195" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#BBDEFB">작으면 느림, 크면 발산</text>
+  
+  <text x="550" y="218" font-family="Noto Sans KR, sans-serif" font-size="11" fill="white">• 에포크</text>
+  <text x="560" y="235" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#BBDEFB">반복 학습 횟수</text>
+  
+  <text x="550" y="258" font-family="Noto Sans KR, sans-serif" font-size="11" fill="white">• R² 점수</text>
+  <text x="560" y="275" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#BBDEFB">1에 가까울수록 좋음</text>
+  
+  <!-- 하단 영역: 오늘의 탐구 질문 -->
+  <rect x="50" y="295" width="700" height="55" rx="6" fill="rgba(255,255,255,0.12)"/>
+  <text x="400" y="315" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" font-weight="600" fill="#FFC107">💡 오늘의 탐구 질문</text>
+  <text x="400" y="338" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" fill="white">"학습률을 바꾸면 결과가 어떻게 달라질까?"</text>
+  
+  <!-- 하단 보조 영역: 핵심 용어 -->
+  <rect x="50" y="358" width="340" height="50" rx="6" fill="rgba(255,255,255,0.08)"/>
+  <text x="220" y="375" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="#81D4FA">📖 핵심 용어</text>
+  <text x="60" y="395" font-family="Noto Sans KR, sans-serif" font-size="9" fill="white">가중치(w) | 편향(b) | 손실(MSE) | 오차선(잔차)</text>
+  
+  <!-- 하단 보조 영역: 시뮬레이터 단축키 -->
+  <rect x="410" y="358" width="340" height="50" rx="6" fill="rgba(255,255,255,0.08)"/>
+  <text x="580" y="375" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="#FF8A80">🖥️ 시뮬레이터</text>
+  <text x="420" y="395" font-family="Noto Sans KR, sans-serif" font-size="9" fill="white">✨생성 → ⚡학습 → 📏오차분석 → 🔮추론</text>
+  
+  <!-- 범례 -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="438" width="740" height="32" rx="6" fill="white"/>
+    <text x="50" y="458" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="600" fill="#3E2723">🎨 색상 구분:</text>
+    <circle cx="145" cy="454" r="6" fill="#FFFDE7"/>
+    <text x="155" y="458" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#3E2723">흰색=핵심 내용</text>
+    <circle cx="255" cy="454" r="6" fill="#FFC107"/>
+    <text x="265" y="458" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#3E2723">노란색=공식/강조</text>
+    <circle cx="375" cy="454" r="6" fill="#FF8A80"/>
+    <text x="385" y="458" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#3E2723">분홍색=그래프/시각</text>
+    <circle cx="505" cy="454" r="6" fill="#81D4FA"/>
+    <text x="515" y="458" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#3E2723">파란색=파라미터</text>
+    <rect x="600" y="448" width="150" height="16" rx="4" fill="#E3F2FD"/>
+    <text x="675" y="460" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#1565C0">💡 분필 색상 활용</text>
+  </g>
+</svg>

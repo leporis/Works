@@ -1,0 +1,486 @@
+% LuaLaTeX 컴파일 필요
+\documentclass[11pt,a4paper]{article}
+
+% === 필수 패키지 ===
+\usepackage{fontspec}
+\usepackage[hangul]{luatexko}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{calc}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{emoji}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{makecell}
+
+% === 페이지 설정 ===
+\geometry{left=25mm, right=25mm, top=30mm, bottom=30mm, headheight=15pt}
+
+% === 폰트 설정 ===
+\setmainfont[Ligatures=TeX]{TeX Gyre Heros}
+\setsansfont{TeX Gyre Heros}
+\setmonofont{Noto Sans Mono}
+\setmainhangulfont{Noto Sans CJK KR}[BoldFont={Noto Sans CJK KR Bold}]
+\setsanshangulfont{Noto Sans CJK KR}[BoldFont={Noto Sans CJK KR Bold}]
+\setemojifont{Noto Color Emoji}
+
+% === 색상 정의 ===
+\definecolor{mainblue}{HTML}{1976D2}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{maingreen}{HTML}{388E3C}
+\definecolor{lightgreen}{HTML}{E8F5E9}
+\definecolor{mainorange}{HTML}{F57C00}
+\definecolor{lightorange}{HTML}{FFF3E0}
+\definecolor{mainred}{HTML}{D32F2F}
+\definecolor{mainpurple}{HTML}{7B1FA2}
+\definecolor{lightpurple}{HTML}{F3E5F5}
+\definecolor{darkgray}{HTML}{424242}
+\definecolor{lightgray}{HTML}{F5F5F5}
+
+% === tcolorbox 스타일 ===
+\tcbuselibrary{skins,breakable}
+
+\newtcolorbox{infobox}[1][]{
+  colback=lightblue,
+  colframe=mainblue,
+  fonttitle=\bfseries,
+  title={#1},
+  breakable
+}
+
+\newtcolorbox{tipbox}[1][]{
+  colback=lightgreen,
+  colframe=maingreen,
+  fonttitle=\bfseries,
+  title={#1},
+  breakable
+}
+
+\newtcolorbox{warnbox}[1][]{
+  colback=lightorange,
+  colframe=mainorange,
+  fonttitle=\bfseries,
+  title={#1},
+  breakable
+}
+
+\newtcolorbox{keybox}[1][]{
+  colback=lightpurple,
+  colframe=mainpurple,
+  fonttitle=\bfseries,
+  title={#1},
+  breakable
+}
+
+% === 헤더/푸터 ===
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small AI디지털리터러시 — 1주차 2차시}
+\fancyhead[R]{\small 강의개요 v1.3.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% === 섹션 스타일 ===
+\titleformat{\section}
+  {\Large\bfseries\color{mainblue}}
+  {\thesection.}{0.5em}{}[\titlerule]
+\titleformat{\subsection}
+  {\large\bfseries\color{darkgray}}
+  {\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{darkgray}}
+  {\thesubsubsection}{0.5em}{}
+
+% === 표 열 타입 ===
+\newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}m{#1}}
+
+% === 하이퍼링크 ===
+\hypersetup{
+  unicode=true,
+  pdfencoding=unicode,
+  colorlinks=true,
+  linkcolor=mainblue,
+  urlcolor=mainblue
+}
+
+\begin{document}
+
+% === 제목 ===
+\begin{center}
+{\LARGE\bfseries\color{mainblue} AI디지털리터러시 — 1주차 2차시 강의개요}\\[0.5em]
+{\Large\bfseries 기계학습의 원리}\\[0.5em]
+{\normalsize 문서 버전: v1.3.0.0}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+% === 1. 기본 정보 ===
+\section{기본 정보}
+
+\begin{center}
+\begin{tabular}{C{3cm}L{10cm}}
+\toprule
+\textbf{항목} & \textbf{내용} \\
+\midrule
+\textbf{교과목명} & AI디지털리터러시 \\
+\textbf{주차/차시} & 1주차 2차시 \\
+\textbf{주제} & 기계학습의 원리 \\
+\textbf{수업 시간} & 50분 (1시간) \\
+\textbf{수업 형태} & 이론 강의 \\
+\textbf{수업 대상} & 청주교육대학교 4학년 \\
+\textbf{선수 학습} & 1주차 1차시 - AI의 이해 (AI 정의, 유형, 발전사) \\
+\textbf{CK 강화 목표} & 기계학습의 원리(지도/비지도/강화학습)를 이해한다. \\
+\textbf{관련 성취기준} & {[6실05-05]} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% === 2. 수업 목표 ===
+\section{수업 목표}
+
+\begin{enumerate}[leftmargin=2em]
+\item AI, ML, DL의 포함 관계를 설명할 수 있다.
+\item 기계학습의 정의를 자신의 말로 설명할 수 있다.
+\item 지도학습, 비지도학습, 강화학습의 차이를 구분하고 예시를 들 수 있다.
+\item 머신러닝의 학습 과정(데이터 수집 → 학습 → 평가 → 예측) 4단계를 설명할 수 있다.
+\item 엔트리 AI 모델이 지도학습 원리를 활용함을 이해한다.
+\end{enumerate}
+
+% === 3. 시간 배분 ===
+\section{시간 배분}
+
+\begin{center}
+\begin{tabular}{C{1.5cm}C{2cm}L{8cm}C{2cm}}
+\toprule
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} & \textbf{그림} \\
+\midrule
+5분 & 도입 & AI, ML, DL의 포함 관계 & 그림 08 \\
+15분 & 전개 1 & 기계학습의 정의: 데이터로부터 패턴을 학습하는 AI 기술 & — \\
+15분 & 전개 2 & 학습 유형: 지도학습(분류/예측), 비지도학습(군집화), 강화학습(보상) & — \\
+10분 & 전개 3 & 머신러닝 학습 과정: 데이터 수집 → 학습 → 평가 → 예측 & 그림 09 \\
+5분 & 정리 & 지도학습 = 엔트리 AI 모델의 원리 연결, 다음 주 퀴즈 안내 & — \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% === 4. 단계별 세부 내용 ===
+\section{단계별 세부 내용}
+
+\subsection{\emoji{clapper-board} 도입 (5분)}
+
+\begin{infobox}[\emoji{pushpin} 핵심 질문]
+"1차시에서 배운 AI, 그 안에는 무엇이 있을까요?"
+\end{infobox}
+
+\begin{center}
+\begin{tabular}{C{1cm}L{5.5cm}L{6.5cm}}
+\toprule
+\textbf{순서} & \textbf{내용} & \textbf{핵심 메시지} \\
+\midrule
+1 & 1차시 복습: AI의 정의와 유형 & 인간의 지능을 모방하는 컴퓨터 시스템 \\
+2 & AI ⊃ ML ⊃ DL 포함 관계 & AI > 기계학습 > 딥러닝 \\
+3 & 기계학습이란? & AI를 구현하는 대표적 방법 \\
+4 & 오늘의 목표 & 기계학습의 3가지 학습 유형 이해 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{사용 그림}: 그림 08 AI\_ML\_DL의\_포함\_관계
+
+\textbf{전환}: "그렇다면 기계는 어떻게 학습할까요?"
+
+\subsection{\emoji{blue-book} 전개 1: 기계학습의 정의 (15분)}
+
+\begin{center}
+\begin{tabular}{C{1cm}L{5.5cm}L{6.5cm}}
+\toprule
+\textbf{순서} & \textbf{내용} & \textbf{핵심 포인트} \\
+\midrule
+1 & 기계학습(Machine Learning) 정의 & 데이터로부터 패턴을 학습하는 AI 기술 \\
+2 & 전통적 프로그래밍 vs 기계학습 비교 & 규칙 작성 vs 데이터 학습 \\
+3 & 왜 기계학습이 필요한가? & 복잡한 패턴, 규칙 작성 불가능 \\
+4 & 일상 속 기계학습 예시 & 스팸 필터, 추천 시스템, 음성인식, 얼굴인식 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{keybox}[핵심 개념]
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{전통적 프로그래밍}: 사람이 규칙 작성 → 컴퓨터가 실행
+\item \textbf{기계학습}: 데이터 제공 → 컴퓨터가 스스로 규칙 발견
+\end{itemize}
+\end{keybox}
+
+\subsection{\emoji{green-book} 전개 2: 기계학습의 3가지 학습 유형 (15분)}
+
+\subsubsection{1) 지도학습 설명 (7분)}
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{비유}: 선생님이 문제와 정답을 주고 공부하는 것
+\item \textbf{분류 (Classification)}: 입력(이미지) → 출력("고양이" 또는 "개", 범주)
+\item \textbf{회귀 (Regression)}: "얼마나?"라는 질문에 답하기
+  \begin{itemize}
+  \item 이 집은 \textbf{얼마}일까? → 3억 5천만원
+  \item 시험 \textbf{몇 점} 받을까? → 85점
+  \item 내일 기온이 \textbf{몇 도}일까? → 18도
+  \end{itemize}
+\end{itemize}
+
+\begin{tipbox}[\emoji{light-bulb} 회귀 vs 분류 비교표]
+\begin{center}
+\begin{tabular}{C{2cm}C{5cm}C{5cm}}
+\toprule
+\textbf{구분} & \textbf{회귀} & \textbf{분류} \\
+\midrule
+질문 & "얼마나?" & "어느 것?" \\
+답 형태 & 숫자 (연속적) & 범주 (O/X) \\
+예시 & 시험 점수 맞히기 (0\textasciitilde100점) & 합격/불합격 나누기 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{tipbox}
+
+\textbf{엔트리 AI 모델 연결}: 3주차에 배울 엔트리의 이미지 분류 모델이 바로 지도학습!
+
+\subsubsection{2) 비지도학습 설명 (4분)}
+
+\begin{infobox}["정답이 없다"의 정확한 의미]
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{핵심}: "정답이 없다" = "라벨(정답 표시)이 없다"
+\item \textbf{지도학습}: 데이터 + 라벨(정답) → 예: 고양이 사진 + "고양이" 스티커 \emoji{check-mark-button}
+\item \textbf{비지도학습}: 데이터만 (라벨 없음) → 예: 고객 데이터 (스티커 없음) \emoji{cross-mark}
+\end{itemize}
+\end{infobox}
+
+\textbf{왜 비지도학습을 사용하는가?} (3가지 이유)
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{라벨 자체가 없을 때}: 신규 고객 10,000명의 취향을 아직 모름
+\item \textbf{라벨 만들기 어려울 때}: 매일 수백만 개 뉴스 기사에 일일이 라벨 붙이기 불가능
+\item \textbf{숨겨진 패턴을 발견하고 싶을 때}: 사람도 몰랐던 새로운 고객 그룹 찾기
+\end{enumerate}
+
+\textbf{군집화 (Clustering)}: 비지도학습의 대표 방법 — 유사한 데이터끼리 자동 그룹화
+
+\subsubsection{3) 강화학습 설명 (4분)}
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{비유}: 게임하며 점수로 배우기
+\item \textbf{그림 19 활용}: 강아지 훈련으로 이해하기 \emoji{dog} — 상황 → 행동 → 보상 → 학습 순환
+\item \textbf{그림 20 활용}: 게임 점수 획득 과정 \emoji{video-game} — 시도와 실패를 반복하며 학습
+\item \textbf{작동 원리}: 행동(Action) → 보상(Reward, 좋으면 +, 나쁘면 -) → 반복 학습
+\end{itemize}
+
+\subsubsection{비교표 (판서 또는 슬라이드)}
+
+\begin{center}
+\small
+\begin{tabular}{C{2.2cm}C{3.2cm}C{3.2cm}C{3.2cm}}
+\toprule
+\textbf{구분} & \textbf{지도학습} & \textbf{비지도학습} & \textbf{강화학습} \\
+\midrule
+\textbf{라벨(정답)} & \emoji{hollow-red-circle} 있음 & \emoji{cross-mark} 없음 & \emoji{bullseye} 보상 \\
+\textbf{데이터 구조} & 입력 + 라벨 & 입력만 & 입력 + 보상 \\
+\textbf{학습 목표} & 정답 맞추기 & 패턴 찾기 & 보상 최대화 \\
+\textbf{비유} & \makecell{시험 공부\\(문제+정답)} & \makecell{친구 그룹 나누기\\(정답표 없이)} & \makecell{게임 연습\\(점수로 배우기)} \\
+\textbf{예시} & \makecell{고양이/개 구분\\스팸 필터} & \makecell{고객 세분화\\뉴스 분류} & \makecell{AlphaGo\\자율주행} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{\emoji{orange-book} 전개 3: 머신러닝 학습 과정 (10분)}
+
+\begin{center}
+\begin{tabular}{C{1cm}L{3cm}L{4cm}L{4.5cm}}
+\toprule
+\textbf{순서} & \textbf{단계} & \textbf{설명} & \textbf{엔트리 연결} \\
+\midrule
+1 & \textbf{데이터 수집} & 학습할 데이터 모으기 & 고양이/개 사진 촬영 \\
+2 & \textbf{학습 (Training)} & 패턴 찾기 & "모델 학습하기" 버튼 \\
+3 & \textbf{평가 (Testing)} & 정확도 확인 & 정확도 \% 확인 \\
+4 & \textbf{예측 (Prediction)} & 새 데이터에 적용 & 새 사진 분류 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{사용 그림}: 그림 09 머신러닝프로세스
+
+\begin{warnbox}[\emoji{warning} 주의]
+편향된 데이터 → 편향된 AI. 데이터의 양뿐 아니라 질(정확성, 다양성)이 중요합니다.
+\end{warnbox}
+
+\subsection{\emoji{memo} 정리 (5분)}
+
+\begin{keybox}[\emoji{star} 핵심 개념 4가지 요약]
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{AI ⊃ ML ⊃ DL}: AI > 기계학습 > 딥러닝 포함 관계
+\item \textbf{기계학습}: 데이터로부터 패턴을 학습하는 AI 기술
+\item \textbf{3가지 학습 유형}: 지도학습(분류/예측), 비지도학습(군집화), 강화학습(보상)
+\item \textbf{머신러닝 과정}: 데이터 수집 → 학습 → 평가 → 예측
+\end{enumerate}
+\end{keybox}
+
+\textbf{엔트리 AI 연결}: 3주차에 배울 엔트리 AI 모델 학습은 바로 \textbf{지도학습} 원리!
+
+\textbf{다음 주 퀴즈 안내}:
+\begin{itemize}[leftmargin=1.5em]
+\item 2주차 1차시 시작 시 1주차 전체 내용 퀴즈 (10분)
+\item 5지선다형 10문항 + 단답형 5문항 = 10점
+\item 출제 범위: 1주차 1차시 (AI 이해) + 1주차 2차시 (기계학습 원리)
+\end{itemize}
+
+\textbf{다음 차시 예고}: 2주차 1차시 - 데이터와 딥러닝
+
+% === 5. 사용 그림 목록 ===
+\section{사용 그림 목록}
+
+\subsection{현재 사용 이미지}
+
+\begin{center}
+\begin{tabular}{C{1cm}L{5cm}C{2cm}L{5cm}}
+\toprule
+\textbf{\#} & \textbf{파일명} & \textbf{사용 단계} & \textbf{내용} \\
+\midrule
+08 & AI\_ML\_DL의\_포함\_관계 & 도입 & AI ⊃ ML ⊃ DL 다이어그램 \\
+09 & 머신러닝프로세스 & 전개 3 & 데이터 수집 → 학습 → 평가 → 예측 \\
+19 & 강아지훈련\_강화학습비유 & 전개 2 & 강화학습을 강아지 훈련으로 설명 \\
+20 & 게임점수획득\_강화학습과정 & 전개 2 & 게임 AI의 시행착오 학습 과정 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{추가 제작 필요 이미지}
+
+\textbf{필수 이미지 (2개):} 그림 10 (3가지 학습유형 비교), 그림 11 (데이터 분할)
+
+\textbf{권장 이미지 (3개):} 그림 12 (학습 곡선), 그림 13 (편향된 데이터 예시), 그림 14 (강화학습 루프)
+
+% === 6. 교수 전략 ===
+\section{교수 전략 및 유의사항}
+
+\subsection{학생 수준 고려}
+\begin{itemize}[leftmargin=1.5em]
+\item 기술적 세부사항보다 \textbf{교육적 의미} 강조
+\item 초등학생에게 어떻게 가르칠지 관점에서 접근
+\item 엔트리 AI 모델 실습과 연결
+\end{itemize}
+
+\subsection{개념 설명 전략}
+\textbf{추상적 개념을 구체화}:
+지도학습 = 시험 공부, 비지도학습 = 친구 그룹 나누기, 강화학습 = 게임 연습
+
+\subsection{학생 오개념 대응}
+
+\begin{center}
+\begin{tabular}{L{5.5cm}L{7.5cm}}
+\toprule
+\textbf{오개념} & \textbf{올바른 이해} \\
+\midrule
+"AI는 스스로 생각한다" & AI는 데이터 패턴을 학습할 뿐, 사고력 없음 \\
+"학습=사람처럼 이해" & 통계적 패턴 발견, 의미 이해 아님 \\
+"데이터 많으면 무조건 좋음" & 편향된 데이터 → 편향된 AI \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% === 7. 주요 용어 해설 ===
+\section{주요 용어 해설}
+
+\begin{center}
+\small
+\begin{longtable}{L{2cm}L{2cm}L{4cm}L{4.5cm}}
+\toprule
+\textbf{용어} & \textbf{영문} & \textbf{간단 정의} & \textbf{비유/예시} \\
+\midrule
+\endhead
+에포크 & Epoch & 전체 데이터를 1회 학습하는 단위 & 교과서 한 번 읽기 = 1에포크 \\
+\midrule
+가중치 & Weight & 각 특징의 중요도 수치 & 귀 모양(중요) = 높은 가중치 \\
+\midrule
+정확도 & Accuracy & 전체 중 맞춘 비율 & 90/100 = 90\% \\
+\midrule
+학습 & Training & 데이터에서 패턴을 배우는 과정 & 문제집 풀며 공부하기 \\
+\midrule
+평가 & Testing & 모델 성능 측정 & 처음 보는 문제로 시험 보기 \\
+\midrule
+검증 & Validation & 학습 중간 성능 확인 & 모의고사 - 중간 점검 \\
+\midrule
+라벨 & Label & 데이터의 정답 표시 & "고양이" 사진에 스티커 붙이기 \\
+\midrule
+특징 & Feature & 데이터의 속성/특성 & 귀 모양, 수염, 눈 모양 등 \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+% === 참고자료 ===
+\section*{참고자료}
+
+\begin{center}
+\small
+\begin{longtable}{C{0.5cm}L{5cm}L{2.5cm}L{4.5cm}}
+\toprule
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\midrule
+\endhead
+1 & AI디지털리터러시\_강의계획서\_v1.2.0.0 & 프로젝트 문서 & 1주차 2차시 수업 계획 \\
+\midrule
+2 & 2022 개정 교육과정 & 교육부 문서 & {[6실05-05]} 성취기준 \\
+\midrule
+3 & AI 기초 (한국정보교육학회 편) & 도서 & 기계학습 원리 참고 \\
+\midrule
+4 & 교수 제공 AI/ML 시뮬레이터 & 교수 제공 & 지도/비지도학습 시연 \\
+\midrule
+5 & 강화학습 테트리스 시뮬레이터 & 교수 제공 & 강화학습 개념 시연 \\
+\midrule
+6 & AI과수원 애니메이션 & 교수 제공 & 기계학습 과정 시각화 \\
+\midrule
+7 & 엔트리 (playentry.org) & 웹사이트 & 이미지 분류 모델 예시 \\
+\midrule
+8 & 문서작성지침서\_v1.7.2.0 & 프로젝트 문서 & 강의자료 작성 절차 \\
+\midrule
+9 & 버전관리지침\_v1.3.0 & 프로젝트 문서 & 문서 버전 체계 \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+% === 생성/수정 이력 ===
+\section*{생성/수정 이력}
+
+\begin{center}
+\footnotesize
+\begin{longtable}{C{1.2cm}C{1.8cm}C{1cm}C{1.2cm}L{5.5cm}C{1cm}}
+\toprule
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{수준} & \textbf{변경 내용} & \textbf{작성자} \\
+\midrule
+\endhead
+v1.0.0.0 & 2026-02-08 & 16:00 & 최초 & 강의계획서 v1.2.0.0 기반 신규 작성 & Claude \\
+\midrule
+v1.1.0.0 & 2026-02-08 & 17:30 & 마이너 & 참고자료 추가, 주요 용어 신설, 비지도학습 보강, 이미지 목록 제시 & Claude \\
+\midrule
+v1.2.0.0 & 2026-02-08 & 18:30 & 마이너 & 비지도학습 "라벨 없다" 명확화, 3가지 이유 상세, 예시 확대 & Claude \\
+\midrule
+v1.2.0.1 & 2026-02-08 & 20:45 & 패치 & 회귀 용어 비유 추가 & Claude \\
+\midrule
+\textbf{v1.3.0.0} & \textbf{2026-02-08} & \textbf{21:40} & \textbf{마이너} & \textbf{완전 개선: 회귀 구체화, 특징 개념 추가, 강화학습 시각화(그림 19, 20)} & \textbf{Claude} \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\vfill
+\begin{center}
+\small\textit{AI디지털리터러시 1주차 2차시 강의개요 — 기계학습의 원리}
+\end{center}
+
+\end{document}

@@ -1,0 +1,1055 @@
+% 소프트웨어교육론 2주차 2차시 강의교재
+% LuaLaTeX 컴파일 필요
+
+\documentclass[11pt,a4paper]{article}
+
+% === 필수 패키지 ===
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{emoji}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{tabularx}
+
+% === 페이지 설정 ===
+\geometry{left=25mm, right=25mm, top=30mm, bottom=30mm}
+
+% === 폰트 설정 ===
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setmonofont{Noto Sans Mono CJK KR}
+\setemojifont{Noto Color Emoji}
+
+% === 색상 정의 ===
+\definecolor{mainblue}{HTML}{1976D2}
+\definecolor{maingreen}{HTML}{388E3C}
+\definecolor{mainorange}{HTML}{FFA000}
+\definecolor{mainpurple}{HTML}{7B1FA2}
+\definecolor{mainteal}{HTML}{00897B}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{lightgreen}{HTML}{E8F5E9}
+\definecolor{lightorange}{HTML}{FFF8E1}
+\definecolor{lightgray}{HTML}{F5F5F5}
+\definecolor{textdark}{HTML}{333333}
+
+% === tcolorbox 스타일 ===
+\tcbuselibrary{skins, breakable}
+
+\newtcolorbox{infobox}[1][]{
+  colback=lightblue,
+  colframe=mainblue,
+  coltitle=white,
+  fonttitle=\bfseries,
+  title={#1},
+  breakable
+}
+
+\newtcolorbox{tipbox}[1][]{
+  colback=lightorange,
+  colframe=mainorange,
+  coltitle=white,
+  fonttitle=\bfseries,
+  title={#1},
+  breakable
+}
+
+\newtcolorbox{examplebox}[1][]{
+  colback=lightgreen,
+  colframe=maingreen,
+  coltitle=white,
+  fonttitle=\bfseries,
+  title={#1},
+  breakable
+}
+
+\newtcolorbox{warningbox}[1][]{
+  colback=lightorange,
+  colframe=mainorange,
+  coltitle=textdark,
+  fonttitle=\bfseries,
+  title={#1},
+  breakable
+}
+
+\newtcolorbox{codebox}{
+  colback=lightgray,
+  colframe=lightgray,
+  boxrule=0pt,
+  left=5mm,
+  right=5mm,
+  top=3mm,
+  bottom=3mm,
+  breakable
+}
+
+% === 섹션 스타일 ===
+\titleformat{\section}
+  {\Large\bfseries\color{mainblue}}
+  {\thesection.}{0.5em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{textdark}}
+  {\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{textdark}}
+  {\thesubsubsection}{0.5em}{}
+
+% === 헤더/푸터 ===
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{gray}소프트웨어교육론}
+\fancyhead[R]{\small\color{gray}2주차 2차시: 자료 제작 실습}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% === 하이퍼링크 ===
+\hypersetup{
+  colorlinks=true,
+  linkcolor=mainblue,
+  urlcolor=mainteal
+}
+
+% === 문서 시작 ===
+\begin{document}
+
+% === 표지 ===
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+
+{\Huge\bfseries\color{mainblue} 소프트웨어교육론}
+
+\vspace{1cm}
+
+{\LARGE 2주차 2차시}
+
+\vspace{0.5cm}
+
+{\huge\bfseries 자료 제작 실습}
+
+\vspace{2cm}
+
+{\Large 생성형 AI를 활용한 교육 자료 제작}
+
+\vspace{3cm}
+
+{\large 청주교육대학교}
+
+\vspace{0.5cm}
+
+{\large 2026학년도}
+
+\vfill
+
+{\normalsize 문서 버전: v1.0.0.0}
+
+\end{titlepage}
+
+% === 목차 ===
+\tableofcontents
+\newpage
+
+% === 본문 시작 ===
+
+\section{학습 목표}
+
+이번 차시를 마치면 다음을 할 수 있습니다.
+
+\begin{itemize}
+  \item 생성형 AI를 활용하여 다양한 형태의 교육 자료를 제작할 수 있다.
+  \item 프롬프트 작성 원칙을 실제 자료 제작에 적용할 수 있다.
+  \item 결과물의 품질을 평가하고 프롬프트를 개선할 수 있다.
+\end{itemize}
+
+\begin{infobox}[\emoji{books} 오늘의 핵심]
+1차시에서 배운 프롬프트 작성 5원칙을 \textbf{직접 적용}하여 교육 자료를 만들어 봅니다. 
+이론을 실제로 적용하면서 AI와 효과적으로 협업하는 방법을 익힙니다.
+\end{infobox}
+
+\newpage
+
+\section{도입: 오늘의 실습 안내}
+
+\subsection{과제 개요}
+
+오늘은 1차시에서 배운 프롬프트 작성 원칙을 실제로 적용해봅니다. 초등학교 현장에서 사용할 수 있는 교육 자료를 생성형 AI로 직접 제작하는 것이 과제입니다.
+
+\subsection{선택 가능한 자료 유형}
+
+아래 4가지 유형 중 하나를 선택하여 제작합니다.
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{자료 유형} & \textbf{설명} & \textbf{예시} \\
+\hline
+\textbf{학습지} & 특정 단원의 연습 문제, 활동지 & 3학년 수학 분수 학습지 \\
+\hline
+\textbf{안내문} & 현장학습 안내, 가정통신문 & 가을 현장학습 안내문 \\
+\hline
+\textbf{평가 문항} & 단원평가, 수행평가 문항 & 과학 단원평가 10문항 \\
+\hline
+\textbf{표/데이터} & 학습 자료용 데이터 표 & 세계 주요 국가 정보표 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{평가 기준}
+
+\begin{center}
+\begin{tabular}{|c|c|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{평가 영역} & \textbf{배점} & \textbf{세부 기준} \\
+\hline
+프롬프트 질 & 5점 & 명확성, 구체성, 형식 지정, 맥락 제공 \\
+\hline
+결과물 품질 & 10점 & 목표 달성도(5점), 완성도(3점), 활용 가능성(2점) \\
+\hline
+\textbf{합계} & \textbf{15점} & \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{제출 요건}
+
+\begin{itemize}
+  \item \textbf{제출 시한}: 수업 종료 후 10분 이내
+  \item \textbf{제출물}: 프롬프트 전문 + 최종 결과물
+  \item \textbf{형식}: 문서 파일 (한글, Word, PDF)
+\end{itemize}
+
+\begin{warningbox}[\emoji{warning} 주의]
+프롬프트 없이 결과물만 제출하면 프롬프트 점수(5점)를 받을 수 없습니다!
+\end{warningbox}
+
+\newpage
+
+\section{1차시 복습: 프롬프트 작성 5원칙}
+
+실습에 앞서 1차시에서 배운 프롬프트 작성 원칙을 복습합니다.
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{강의교재_그림2_프롬프트개선과정.svg}
+\end{center}
+
+\subsection{5원칙 요약}
+
+\begin{center}
+\begin{tabular}{|c|l|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{원칙} & \textbf{핵심 내용} & \textbf{적용 예시} \\
+\hline
+\textbf{명확성} & 모호하지 않게 구체적으로 요청 & ``수학 문제'' → ``3학년 분수 덧셈 5개'' \\
+\hline
+\textbf{맥락} & 배경 정보와 사용 목적 제공 & ``초등학교 3학년 수업용으로...'' \\
+\hline
+\textbf{형식} & 원하는 결과물의 형태 지정 & ``표 형식으로'', ``10문항으로'' \\
+\hline
+\textbf{단계} & 복잡한 요청은 단계별로 나눔 & ``조건1: ..., 조건2: ...'' \\
+\hline
+\textbf{예시} & 원하는 결과의 샘플 제시 & ``예시: 1/4 + 2/4 = \_\_'' \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{모호한 프롬프트 vs 명확한 프롬프트}
+
+\subsubsection{모호한 프롬프트}
+
+\begin{codebox}
+\texttt{``학습지 만들어줘''}
+\end{codebox}
+
+이 프롬프트의 문제점:
+\begin{itemize}
+  \item 학년: 불명확
+  \item 과목: 불명확
+  \item 문항 수: 불명확
+  \item 형식: 불명확
+\end{itemize}
+
+\subsubsection{명확한 프롬프트}
+
+\begin{codebox}
+\texttt{초등학교 3학년 수학 '분수의 덧셈' 학습지를 만들어줘.}
+
+\texttt{조건:}\\
+\texttt{- 문항 수: 8문항}\\
+\texttt{- 난이도: 기본 (분모가 같은 분수)}\\
+\texttt{- 형식: 빈칸 채우기 4문항 + 계산 문제 4문항}\\
+\texttt{- 상단에 이름 쓰는 란 포함}
+\end{codebox}
+
+이 프롬프트의 장점:
+\begin{itemize}
+  \item 학년: 초등학교 3학년 \checkmark
+  \item 과목: 수학 - 분수의 덧셈 \checkmark
+  \item 문항 수: 8문항 \checkmark
+  \item 형식: 빈칸 채우기 + 계산 문제 \checkmark
+\end{itemize}
+
+\newpage
+
+\section{실습 가이드}
+
+오늘 실습은 4단계로 진행됩니다. 각 단계에서 무엇을 해야 하는지 먼저 확인하세요.
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{강의교재_그림1_실습단계흐름도.svg}
+\end{center}
+
+\subsection{실습 단계}
+
+\begin{center}
+\begin{tabular}{|c|c|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{단계} & \textbf{시간} & \textbf{활동 내용} \\
+\hline
+1단계 & 5분 & 자료 유형 선택 및 프롬프트 초안 작성 \\
+\hline
+2단계 & 10분 & AI에게 요청, 결과물 확인 및 문제점 파악 \\
+\hline
+3단계 & 15분 & 프롬프트 수정, 반복 시도, 최적 결과물 도출 \\
+\hline
+4단계 & 5분 & 결과물 정리, 필요 시 직접 수정 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{실습 진행 순서}
+
+\subsubsection{1단계: 프롬프트 설계 (5분)}
+
+\begin{enumerate}
+  \item 만들고 싶은 자료 유형을 선택합니다.
+  \item 해당 자료에 필요한 조건을 정리합니다.
+  \item 5원칙을 적용하여 프롬프트 초안을 작성합니다.
+\end{enumerate}
+
+\subsubsection{2단계: 1차 시도 (10분)}
+
+\begin{enumerate}
+  \item 작성한 프롬프트를 AI에게 입력합니다.
+  \item 생성된 결과물을 꼼꼼히 확인합니다.
+  \item 문제점이나 개선할 점을 파악합니다.
+\end{enumerate}
+
+\subsubsection{3단계: 개선 및 재시도 (15분)}
+
+\begin{enumerate}
+  \item 파악한 문제점을 해결하도록 프롬프트를 수정합니다.
+  \item 수정된 프롬프트로 다시 요청합니다.
+  \item 만족스러운 결과물이 나올 때까지 반복합니다.
+\end{enumerate}
+
+\subsubsection{4단계: 마무리 (5분)}
+
+\begin{enumerate}
+  \item 최종 결과물을 선택합니다.
+  \item 필요하다면 직접 수정하여 완성도를 높입니다.
+  \item 프롬프트와 결과물을 제출 문서로 정리합니다.
+\end{enumerate}
+
+\begin{tipbox}[\emoji{light-bulb} 팁]
+한 번에 완벽한 결과를 기대하지 마세요! 프롬프트를 반복적으로 개선하는 과정이 핵심입니다.
+\end{tipbox}
+
+\newpage
+
+\section{자료 유형별 제작 가이드}
+
+\subsection{학습지 제작}
+
+학습지는 특정 단원의 학습 내용을 연습하기 위한 자료입니다.
+
+\subsubsection{프롬프트 작성 시 포함할 요소}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{요소} & \textbf{설명} & \textbf{예시} \\
+\hline
+학년 & 대상 학년 & 초등학교 3학년 \\
+\hline
+과목/단원 & 구체적인 단원명 & 수학 분수의 덧셈 \\
+\hline
+문항 수 & 필요한 문제 개수 & 10문항 \\
+\hline
+난이도 & 상/중/하 또는 구체적 기준 & 기본 난이도 \\
+\hline
+형식 & 문항 유형, 배치 방식 & 객관식 5 + 서술형 5 \\
+\hline
+부가 요소 & 이름란, 풀이 공간 등 & 상단에 이름란 포함 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{examplebox}[\emoji{check-mark} 좋은 프롬프트 예시]
+초등학교 4학년 국어 '높임 표현' 단원 학습지를 만들어줘.
+
+조건:
+\begin{itemize}[noitemsep]
+  \item 문항 수: 총 6문항
+  \item 난이도: 기본
+  \item 형식: 
+    \begin{itemize}[noitemsep]
+      \item 1$\sim$3번: 높임 표현 찾기 (문장 속에서 높임 표현 밑줄 긋기)
+      \item 4$\sim$5번: 높임 표현으로 바꾸기 (일반체를 존칭으로)
+      \item 6번: 짧은 글쓰기 (선생님께 드리는 편지)
+    \end{itemize}
+  \item 상단에 이름 쓰는 란 포함
+  \item 각 문항 사이에 충분한 쓰기 공간 확보
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{결과물 점검 포인트}
+
+\begin{itemize}
+  \item 지정한 학년 수준에 맞는가?
+  \item 문항 수와 형식이 요청과 일치하는가?
+  \item 교육과정 성취기준과 연결되는가?
+\end{itemize}
+
+\newpage
+
+\subsection{안내문 제작}
+
+안내문은 학부모나 학생에게 정보를 전달하기 위한 문서입니다.
+
+\subsubsection{프롬프트 작성 시 포함할 요소}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{요소} & \textbf{설명} & \textbf{예시} \\
+\hline
+문서 종류 & 안내문의 유형 & 현장학습 안내문 \\
+\hline
+대상 & 수신자 명시 & 학부모님께 \\
+\hline
+목적 & 안내 목적 & 가을 현장학습 안내 \\
+\hline
+포함 정보 & 필수 기재 항목 & 날짜, 장소, 준비물, 비용 \\
+\hline
+톤 & 문체와 분위기 & 격식체, 정중한 어조 \\
+\hline
+분량 & 적정 길이 & A4 1장 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{examplebox}[\emoji{check-mark} 좋은 프롬프트 예시]
+초등학교 5학년 봄 운동회 안내문을 작성해줘.
+
+조건:
+\begin{itemize}[noitemsep]
+  \item 대상: 학부모님
+  \item 형식: 가정통신문
+  \item 포함 내용:
+    \begin{itemize}[noitemsep]
+      \item 일시: 5월 10일(금) 오전 9시$\sim$오후 2시
+      \item 장소: 학교 운동장
+      \item 준비물: 체육복, 모자, 물, 간식
+      \item 우천 시: 5월 17일로 연기
+    \end{itemize}
+  \item 분량: A4 1장
+  \item 톤: 정중하고 명확한 안내체
+  \item 하단에 참관 신청 회신란 포함
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{결과물 점검 포인트}
+
+\begin{itemize}
+  \item 필수 정보가 빠짐없이 포함되었는가?
+  \item 학부모가 읽기에 적절한 어조인가?
+  \item 회신이나 서명이 필요하면 해당 란이 있는가?
+\end{itemize}
+
+\newpage
+
+\subsection{평가 문항 제작}
+
+평가 문항은 학생들의 학습 성취도를 확인하기 위한 시험 문제입니다.
+
+\subsubsection{프롬프트 작성 시 포함할 요소}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{요소} & \textbf{설명} & \textbf{예시} \\
+\hline
+과목 & 평가 과목 & 과학 \\
+\hline
+단원/성취기준 & 평가 범위 & 식물의 한살이 \\
+\hline
+문항 유형 & 객관식, 서술형 등 & 4지선다형 \\
+\hline
+난이도 분포 & 난이도 비율 & 하 30\%, 중 50\%, 상 20\% \\
+\hline
+수량 & 총 문항 수 & 10문항 \\
+\hline
+정답 요청 & 정답 포함 여부 & 정답과 해설 별도 포함 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{examplebox}[\emoji{check-mark} 좋은 프롬프트 예시]
+초등학교 3학년 사회 '우리 고장의 모습' 단원평가 문제를 만들어줘.
+
+조건:
+\begin{itemize}[noitemsep]
+  \item 문항 수: 8문항
+  \item 유형: 4지선다형 객관식
+  \item 난이도: 쉬움 2문항, 보통 4문항, 어려움 2문항
+  \item 다루는 개념: 고장의 자연환경, 고장의 특산물, 고장의 축제
+  \item 정답과 간단한 해설을 문항 아래에 별도 제시
+\end{itemize}
+\end{examplebox}
+
+\begin{warningbox}[\emoji{warning} 중요: 정답 검증 필수]
+AI가 생성한 정답은 틀릴 수 있습니다! 특히 수학 계산 문제나 과학 개념 문제는 \textbf{반드시 직접 확인}하세요.
+\end{warningbox}
+
+\subsubsection{결과물 점검 포인트}
+
+\begin{itemize}
+  \item 성취기준에 부합하는 문항인가?
+  \item 난이도가 적절하게 분포되었는가?
+  \item 오답 선지가 그럴듯하게 구성되었는가?
+  \item \textbf{정답이 정확한가?} (반드시 검증!)
+\end{itemize}
+
+\newpage
+
+\subsection{표/데이터 제작}
+
+표/데이터는 정보를 정리하여 시각적으로 제시하는 자료입니다.
+
+\subsubsection{프롬프트 작성 시 포함할 요소}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{요소} & \textbf{설명} & \textbf{예시} \\
+\hline
+데이터 종류 & 어떤 내용의 데이터인지 & 세계 주요 국가별 인구 \\
+\hline
+열/행 구성 & 표의 구조 & 국가명, 인구, 수도, 대륙 \\
+\hline
+정렬 기준 & 데이터 정렬 방식 & 인구 많은 순 \\
+\hline
+출처/정확성 & 데이터의 근거 & 2024년 기준 추정치 \\
+\hline
+용도 & 활용 맥락 & 사회과 수업 자료용 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{examplebox}[\emoji{check-mark} 좋은 프롬프트 예시]
+초등학교 4학년 과학 '계절의 변화' 수업에 사용할 데이터 표를 만들어줘.
+
+조건:
+\begin{itemize}[noitemsep]
+  \item 내용: 우리나라 4계절의 평균 기온과 특징
+  \item 포함 항목: 계절, 대표 월, 평균 기온, 날씨 특징, 대표 행사
+  \item 형식: 표 형태로 정리
+  \item 기온 데이터는 서울 기준
+\end{itemize}
+\end{examplebox}
+
+\begin{warningbox}[\emoji{warning} 중요: 데이터 정확성]
+AI가 생성한 수치 데이터(인구, 면적, 기온 등)는 \textbf{부정확할 수 있습니다}. 중요한 수치는 공신력 있는 출처로 확인하세요.
+\end{warningbox}
+
+\subsubsection{결과물 점검 포인트}
+
+\begin{itemize}
+  \item 데이터가 학습 목적에 적합한가?
+  \item 표의 구조가 읽기 쉬운가?
+  \item 데이터의 정확성을 확인할 수 있는가?
+\end{itemize}
+
+\newpage
+
+\section{프롬프트 개선 전략}
+
+결과물이 만족스럽지 않을 때 프롬프트를 어떻게 개선할 수 있는지 알아봅니다.
+
+\subsection{일반적인 문제와 해결 방법}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{문제 상황} & \textbf{원인} & \textbf{해결 방법} \\
+\hline
+결과물이 너무 어려움 & 난이도 미지정 & ``초등학교 O학년 수준으로'' 추가 \\
+\hline
+문항 수가 다름 & 구체적 수량 미지정 & ``정확히 10문항으로'' 명시 \\
+\hline
+형식이 다름 & 형식 미지정 & ``표 형식으로'', ``번호 목록으로'' 지정 \\
+\hline
+내용이 빠짐 & 포함 항목 미명시 & 포함할 요소를 구체적으로 나열 \\
+\hline
+어조가 맞지 않음 & 톤 미지정 & ``정중한 어조로'', ``친근하게'' 추가 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{단계적 개선 예시}
+
+\begin{infobox}[\emoji{memo} 개선 과정]
+
+\textbf{1차 시도:}
+\begin{codebox}
+\texttt{분수 학습지 만들어줘}
+\end{codebox}
+\textbf{결과:} 중학교 수준의 어려운 문제 10개 생성
+
+\textbf{2차 시도 (학년 추가):}
+\begin{codebox}
+\texttt{초등학교 3학년 분수 학습지 만들어줘}
+\end{codebox}
+\textbf{결과:} 문항 수가 20개로 너무 많음
+
+\textbf{3차 시도 (문항 수 추가):}
+\begin{codebox}
+\texttt{초등학교 3학년 분수 학습지 만들어줘.}\\
+\texttt{- 문항 수: 8문항}
+\end{codebox}
+\textbf{결과:} 모든 문항이 같은 형식
+
+\textbf{4차 시도 (형식 추가):}
+\begin{codebox}
+\texttt{초등학교 3학년 분수 학습지 만들어줘.}\\
+\texttt{- 문항 수: 8문항}\\
+\texttt{- 형식: 빈칸 채우기 4문항 + 계산 문제 4문항}\\
+\texttt{- 난이도: 기본 (분모가 같은 분수)}
+\end{codebox}
+\textbf{결과:} 원하는 학습지 완성!
+\end{infobox}
+
+\newpage
+
+\section{결과물 검토 체크리스트}
+
+제출 전 다음 항목을 확인하세요.
+
+\subsection{프롬프트 검토}
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\rowcolor{lightblue}
+\textbf{검토 항목} & \textbf{확인} \\
+\hline
+학년/대상이 명시되어 있는가? & $\square$ \\
+\hline
+과목/단원이 명시되어 있는가? & $\square$ \\
+\hline
+수량/분량이 지정되어 있는가? & $\square$ \\
+\hline
+형식이 지정되어 있는가? & $\square$ \\
+\hline
+맥락이나 용도가 제시되어 있는가? & $\square$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{결과물 검토}
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\rowcolor{lightblue}
+\textbf{검토 항목} & \textbf{확인} \\
+\hline
+요청한 내용과 일치하는가? & $\square$ \\
+\hline
+오류나 부정확한 정보가 없는가? & $\square$ \\
+\hline
+초등학생 수준에 적합한가? & $\square$ \\
+\hline
+실제 수업에서 바로 활용할 수 있는가? & $\square$ \\
+\hline
+추가 수정 없이 사용 가능한가? & $\square$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+\section{제출 문서 작성법}
+
+\subsection{제출 문서 구성}
+
+제출 문서에는 다음 내용을 포함합니다.
+
+\textbf{필수 포함 항목:}
+\begin{enumerate}
+  \item 제작한 자료 유형
+  \item 최종 프롬프트 전문
+  \item AI 생성 결과물
+\end{enumerate}
+
+\textbf{선택 포함 항목 (가산점):}
+\begin{enumerate}
+  \setcounter{enumi}{3}
+  \item 중간 과정 프롬프트
+  \item 개선 과정 설명
+\end{enumerate}
+
+\subsection{제출 문서 예시}
+
+\begin{codebox}
+\texttt{==============================================}\\
+\texttt{소프트웨어교육론 2주차 2차시 실습 과제}\\
+\texttt{학번: 20XXXXXX  이름: OOO}\\
+\texttt{==============================================}\\
+\\
+\texttt{1. 제작 자료 유형: 학습지}\\
+\\
+\texttt{2. 최종 프롬프트:}\\
+\\
+\texttt{초등학교 3학년 수학 '분수의 덧셈' 학습지를 만들어줘.}\\
+\\
+\texttt{조건:}\\
+\texttt{- 문항 수: 8문항}\\
+\texttt{- 난이도: 기본 (분모가 같은 분수)}\\
+\texttt{- 형식: 빈칸 채우기 4문항 + 계산 문제 4문항}\\
+\texttt{- 상단에 이름 쓰는 란 포함}\\
+\texttt{- 각 문항 사이에 충분한 풀이 공간 확보}\\
+\\
+\texttt{3. AI 생성 결과물:}\\
+\\
+\texttt{[AI가 생성한 학습지 내용 붙여넣기]}
+\end{codebox}
+
+\newpage
+
+\section{수업 정리}
+
+\subsection{오늘 배운 내용}
+
+\begin{itemize}
+  \item 프롬프트 작성 5원칙을 실제 교육 자료 제작에 적용했습니다.
+  \item 프롬프트를 반복적으로 개선하여 결과물의 품질을 높이는 방법을 경험했습니다.
+  \item AI가 생성한 결과물을 비판적으로 검토하는 태도를 기를 수 있었습니다.
+\end{itemize}
+
+\subsection{핵심 교훈}
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{교훈} & \textbf{설명} \\
+\hline
+\textbf{구체성이 핵심} & 프롬프트가 구체적일수록 원하는 결과를 얻을 확률이 높아집니다. \\
+\hline
+\textbf{반복 개선} & 한 번에 완벽한 결과를 기대하기보다 점진적으로 개선합니다. \\
+\hline
+\textbf{비판적 검토} & AI 결과물을 무비판적으로 수용하지 않고 직접 확인합니다. \\
+\hline
+\textbf{인간이 주도} & AI는 도구이며, 최종 판단과 수정은 사람의 몫입니다. \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{다음 차시 예고}
+
+다음 차시부터는 AI가 어떻게 작동하는지, 그 원리를 배우게 됩니다.
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{차시} & \textbf{주제} \\
+\hline
+3주차 1차시 & 인공지능의 개념과 원리 \\
+\hline
+3주차 2차시 & 머신러닝의 기초 \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+\section{퀴즈}
+
+\subsection{객관식 문항 (5지선다형, 10문항)}
+
+\textbf{1. 프롬프트 작성 5원칙에 해당하지 않는 것은?}
+
+\begin{enumerate}[label=\textcircled{\small\arabic*}]
+  \item 명확성
+  \item 맥락
+  \item 형식
+  \item 속도
+  \item 예시
+\end{enumerate}
+
+\vspace{5mm}
+
+\textbf{2. 다음 중 좋은 프롬프트의 특징으로 가장 적절한 것은?}
+
+\begin{enumerate}[label=\textcircled{\small\arabic*}]
+  \item 최대한 짧게 작성한다.
+  \item 구체적인 조건을 포함한다.
+  \item 한글보다 영어로 작성한다.
+  \item 한 문장으로만 작성한다.
+  \item 예시는 포함하지 않는다.
+\end{enumerate}
+
+\vspace{5mm}
+
+\textbf{3. ``학습지 만들어줘''라는 프롬프트의 문제점으로 가장 적절한 것은?}
+
+\begin{enumerate}[label=\textcircled{\small\arabic*}]
+  \item 너무 길다.
+  \item 존댓말을 사용했다.
+  \item 학년, 과목, 형식 등이 불명확하다.
+  \item AI가 이해할 수 없는 표현이다.
+  \item 이모지를 사용하지 않았다.
+\end{enumerate}
+
+\vspace{5mm}
+
+\textbf{4. AI가 생성한 평가 문항을 사용할 때 반드시 해야 할 것은?}
+
+\begin{enumerate}[label=\textcircled{\small\arabic*}]
+  \item 문항 수 세기
+  \item 정답 검증
+  \item 글꼴 변경
+  \item 영어로 번역
+  \item 그림 추가
+\end{enumerate}
+
+\vspace{5mm}
+
+\textbf{5. 프롬프트에 '맥락'을 제공한다는 것의 의미로 가장 적절한 것은?}
+
+\begin{enumerate}[label=\textcircled{\small\arabic*}]
+  \item 요청을 짧게 줄인다.
+  \item 배경 정보와 사용 목적을 알려준다.
+  \item 결과물의 색상을 지정한다.
+  \item AI의 응답 속도를 높인다.
+  \item 오류 메시지를 포함한다.
+\end{enumerate}
+
+\newpage
+
+\textbf{6. 다음 중 안내문 프롬프트에 포함해야 할 요소로 가장 적절하지 않은 것은?}
+
+\begin{enumerate}[label=\textcircled{\small\arabic*}]
+  \item 대상 (수신자)
+  \item 목적
+  \item 포함 정보
+  \item AI 모델명
+  \item 분량
+\end{enumerate}
+
+\vspace{5mm}
+
+\textbf{7. AI 결과물이 만족스럽지 않을 때 취해야 할 행동으로 가장 적절한 것은?}
+
+\begin{enumerate}[label=\textcircled{\small\arabic*}]
+  \item 다른 AI 도구로 바꾼다.
+  \item 프롬프트를 수정하여 재시도한다.
+  \item 결과물을 그대로 사용한다.
+  \item 과제를 포기한다.
+  \item 인터넷을 검색한다.
+\end{enumerate}
+
+\vspace{5mm}
+
+\textbf{8. ``초등학교 3학년 수학 분수 학습지 8문항''이라는 프롬프트에서 '형식'에 해당하는 부분은?}
+
+\begin{enumerate}[label=\textcircled{\small\arabic*}]
+  \item 초등학교 3학년
+  \item 수학
+  \item 분수
+  \item 학습지
+  \item 8문항
+\end{enumerate}
+
+\vspace{5mm}
+
+\textbf{9. AI가 생성한 데이터 표에서 반드시 확인해야 할 것은?}
+
+\begin{enumerate}[label=\textcircled{\small\arabic*}]
+  \item 표의 색상
+  \item 데이터의 정확성
+  \item 표의 크기
+  \item 영어 표현
+  \item 이모지 포함 여부
+\end{enumerate}
+
+\vspace{5mm}
+
+\textbf{10. 생성형 AI를 활용한 자료 제작에서 '증강 관점'의 의미로 가장 적절한 것은?}
+
+\begin{enumerate}[label=\textcircled{\small\arabic*}]
+  \item AI가 모든 작업을 대신한다.
+  \item 인간이 주도하고 AI가 보조한다.
+  \item AI 없이 모든 작업을 수행한다.
+  \item AI와 인간이 경쟁한다.
+  \item AI가 인간을 평가한다.
+\end{enumerate}
+
+\newpage
+
+\subsection{단답형 문항 (5문항)}
+
+\textbf{11. 프롬프트 작성 5원칙을 순서대로 나열하시오.}
+
+\vspace{5mm}
+\noindent\rule{\textwidth}{0.4pt}
+\vspace{10mm}
+
+\textbf{12. ``분수 문제 만들어줘''라는 프롬프트를 개선하려면 최소한 어떤 정보를 추가해야 하는지 두 가지 이상 쓰시오.}
+
+\vspace{5mm}
+\noindent\rule{\textwidth}{0.4pt}
+\vspace{10mm}
+
+\textbf{13. AI가 생성한 결과물에서 특히 주의하여 검증해야 하는 요소 두 가지를 쓰시오.}
+
+\vspace{5mm}
+\noindent\rule{\textwidth}{0.4pt}
+\vspace{10mm}
+
+\textbf{14. 안내문 작성 시 프롬프트에 반드시 포함해야 할 요소 세 가지를 쓰시오.}
+
+\vspace{5mm}
+\noindent\rule{\textwidth}{0.4pt}
+\vspace{10mm}
+
+\textbf{15. 프롬프트를 한 번 작성한 후 결과물이 만족스럽지 않을 때 취해야 할 과정을 간략히 설명하시오.}
+
+\vspace{5mm}
+\noindent\rule{\textwidth}{0.4pt}
+\vspace{25mm}
+
+\newpage
+
+\section*{퀴즈 정답 및 해설}
+\addcontentsline{toc}{section}{퀴즈 정답 및 해설}
+
+\subsection*{객관식 정답}
+
+\begin{center}
+\begin{tabular}{|c|c|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{문항} & \textbf{정답} & \textbf{해설} \\
+\hline
+1 & \textcircled{\small 4} & 프롬프트 5원칙은 명확성, 맥락, 형식, 단계, 예시입니다. '속도'는 포함되지 않습니다. \\
+\hline
+2 & \textcircled{\small 2} & 좋은 프롬프트는 학년, 과목, 형식 등 구체적인 조건을 포함합니다. \\
+\hline
+3 & \textcircled{\small 3} & 학년, 과목, 문항 수, 형식 등 필수 정보가 모두 빠져 있어 모호합니다. \\
+\hline
+4 & \textcircled{\small 2} & AI가 생성한 정답은 틀릴 수 있으므로 반드시 검증해야 합니다. \\
+\hline
+5 & \textcircled{\small 2} & 맥락 제공이란 요청의 배경 정보와 사용 목적을 알려주는 것입니다. \\
+\hline
+6 & \textcircled{\small 4} & AI 모델명은 안내문 내용과 무관한 기술적 정보입니다. \\
+\hline
+7 & \textcircled{\small 2} & 결과물이 만족스럽지 않으면 프롬프트를 개선하여 재시도합니다. \\
+\hline
+8 & \textcircled{\small 4} & '학습지'는 결과물의 형식을 지정하는 요소입니다. \\
+\hline
+9 & \textcircled{\small 2} & AI가 생성한 수치 데이터는 부정확할 수 있어 정확성 검증이 필수입니다. \\
+\hline
+10 & \textcircled{\small 2} & 증강 관점은 인간이 주도하고 AI가 보조하는 협업 방식입니다. \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{단답형 정답}
+
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{문항} & \textbf{정답 예시} \\
+\hline
+11 & 명확성, 맥락, 형식, 단계, 예시 \\
+\hline
+12 & 학년, 과목(단원), 문항 수, 난이도, 형식 중 두 가지 이상 \\
+\hline
+13 & 정답의 정확성, 데이터의 정확성 (또는: 학년 수준 적합성, 내용의 정확성) \\
+\hline
+14 & 대상(수신자), 목적, 포함 정보 (또는: 톤, 분량 등) \\
+\hline
+15 & 문제점 파악 → 프롬프트 수정 → 재시도 → 결과물 확인 → 반복 \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+\section*{참고자료}
+\addcontentsline{toc}{section}{참고자료}
+
+\begin{center}
+\begin{tabular}{|c|l|l|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & 소프트웨어교육론 강의계획서 v5.1.0.0 & 프로젝트 문서 & 전체 강의 계획 \\
+\hline
+2 & 소프트웨어교육론 2주차 1차시 강의교재 & 강의교재 & 프롬프트 5원칙 \\
+\hline
+3 & 소프트웨어교육론 2주차 2차시 강의개요 v1.0.0.0 & 문서 & 본 차시 개요 \\
+\hline
+4 & 소프트웨어교육론 2주차 2차시 강의노트 v1.0.0.0 & 문서 & 본 차시 상세 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{10mm}
+
+\section*{생성/수정 이력}
+\addcontentsline{toc}{section}{생성/수정 이력}
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+\rowcolor{lightblue}
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경 수준} & \textbf{변경 내용} & \textbf{작성자} \\
+\hline
+\textbf{v1.0.0.0} & \textbf{2026-02-06} & \textbf{01:35} & \textbf{최초} & \textbf{LaTeX 문서 작성} & \textbf{Claude} \\
+\hline
+\end{tabular}
+\end{center}
+
+\vfill
+\begin{center}
+\textit{소프트웨어교육론 2주차 2차시 강의교재 v1.0.0.0}
+\end{center}
+
+\end{document}

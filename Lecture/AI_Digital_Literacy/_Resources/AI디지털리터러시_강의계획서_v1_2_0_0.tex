@@ -1,0 +1,752 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont[BoldFont={Noto Sans CJK KR Bold}]{Noto Sans CJK KR}
+\setCJKsansfont[BoldFont={Noto Sans CJK KR Bold}]{Noto Sans CJK KR}
+\setCJKmonofont[BoldFont={Noto Sans CJK KR Bold}]{Noto Sans CJK KR}
+\setmainfont[BoldFont={Noto Sans CJK KR Bold}]{Noto Sans CJK KR}
+\setsansfont[BoldFont={Noto Sans CJK KR Bold}]{Noto Sans CJK KR}
+\setmonofont[BoldFont={Noto Sans CJK KR Bold}]{Noto Sans CJK KR}
+
+\usepackage[a4paper, top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\renewcommand{\arraystretch}{1.35}
+
+\usepackage{titlesec}
+\usepackage{xcolor}
+\definecolor{secblue}{HTML}{1565C0}
+\titleformat{\section}{\Large\bfseries\color{secblue}}{}{0em}{}[\vspace{-0.3em}\textcolor{secblue}{\rule{\textwidth}{0.5pt}}\vspace{0.3em}]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{}{0em}{}
+\titlespacing{\section}{0pt}{1.5em}{0.8em}
+\titlespacing{\subsection}{0pt}{1em}{0.5em}
+\titlespacing{\subsubsection}{0pt}{0.8em}{0.4em}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=secblue, urlcolor=secblue}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\fancyhead[R]{\small\textcolor{gray}{AI디지털리터러시 강의계획서 v1.2.0.0}}
+\renewcommand{\headrulewidth}{0.3pt}
+
+\usepackage{mdframed}
+\newmdenv[
+  leftmargin=8pt, rightmargin=0pt,
+  innerleftmargin=10pt, innerrightmargin=10pt,
+  innertopmargin=6pt, innerbottommargin=6pt,
+  linewidth=3pt, linecolor=secblue!40,
+  topline=false, bottomline=false, rightline=false,
+  backgroundcolor=blue!3
+]{quoteblock}
+
+\renewcommand{\contentsname}{목 차}
+
+\begin{document}
+
+% 표지
+\begin{center}
+{\LARGE\bfseries AI디지털리터러시}\\[0.8em]
+{\Large 강 의 계 획 서}\\[0.5em]
+{\normalsize 문서 버전: v1.2.0.0}
+\end{center}
+\vspace{1em}
+\tableofcontents
+\newpage
+
+%% ─────────────────────────────────────────────
+\section{교과목 기본 정보}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\bfseries\arraybackslash}p{2.3cm}|X|>{\centering\bfseries\arraybackslash}p{2.3cm}|X|}
+\hline
+교과목명 & AI디지털리터러시 & 학점/시간 & 2학점 / 주 2시간 \\ \hline
+수업 기간 & 5주 (총 10시간) & 수업 대상 & 청주교육대학교 4학년 \\ \hline
+수업 방식 & 이론 강의 및 실습 병행 & 수강 인원 & 약 20명 \\ \hline
+설계 기반 & 예비교사 CK 강화 10시간 모델 (균형형) & 교육과정 & 2022 개정 교육과정 \\ \hline
+\end{tabularx}
+
+%% ─────────────────────────────────────────────
+\section{교과목 개요}
+
+본 교과목은 초등 예비교사가 인공지능의 기본 개념과 원리를 이해하고, 2022 개정 교육과정의 AI 관련 성취기준을 효과적으로 지도할 수 있는 내용 지식(Content Knowledge, CK)을 강화하는 것을 목표로 한다. 이론적 이해(AI/ML 원리)와 실천적 역량(도구 활용)을 균형 있게 배치하여, 생성형 인공지능을 통한 교육적 활용 역량과 엔트리 인공지능 프로그래밍을 통한 AI 제작 체험 역량을 함양한다.
+
+%% ─────────────────────────────────────────────
+\section{2022 개정 교육과정 연계}
+\subsection{관련 성취기준}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{2.2cm}|X|>{\centering\arraybackslash}p{2.8cm}|}
+\hline
+\textbf{성취기준} & \textbf{내용} & \textbf{관련 주차} \\ \hline
+{[6실05-01]} & 컴퓨터를 활용한 생활 속 문제해결 사례를 탐색하고 알고리즘을 다양한 방법으로 표현한다. & 1주차 \\ \hline
+{[6실05-02]} & 컴퓨터에게 명령하는 방법을 체험하고, 주어진 문제를 해결하는 프로그램을 작성한다. & 3, 4주차 \\ \hline
+{[6실05-03]} & 실생활의 문제를 해결하는 프로그램을 협력하여 작성하고, 산출물을 타인과 공유한다. & 3, 4주차 \\ \hline
+{[6실05-04]} & 디지털 데이터와 아날로그 데이터의 특징을 이해하고, 인공지능에 활용할 수 있는 데이터의 유형이나 형태를 탐색한다. & 1, 2, 4주차 \\ \hline
+{[6실05-05]} & 인공지능이 만들어지는 과정을 체험하고, 인공지능이 사회에 미치는 영향을 탐색한다. & 1, 2, 3, 4주차 \\ \hline
+\end{tabularx}
+
+\subsection{예비교사 필수 내용 지식(CK)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\arraybackslash}p{2.5cm}|X|}
+\hline
+\textbf{CK 영역} & \textbf{세부 내용} \\ \hline
+AI 개념 & 인공지능 정의, 유형(약한/강한 AI), 기능별 분류(인식/예측/분류/생성) \\ \hline
+기계학습 원리 & 지도학습/비지도학습/강화학습, 딥러닝과 신경망 구조 \\ \hline
+데이터 이해 & 디지털/아날로그 데이터, 데이터 유형(이미지/텍스트/소리), 편향 문제 \\ \hline
+생성형 AI & LLM 원리, 증강/자동화 관점의 활용 \\ \hline
+AI 윤리 & AI의 사회적 영향, 편향과 공정성, 책임 있는 AI 사용 \\ \hline
+학생 오개념 & AI=로봇, AI는 만능, AI는 스스로 생각한다 등의 오개념 교정 \\ \hline
+\end{tabularx}
+
+%% ─────────────────────────────────────────────
+\section{CK 강화 목표}
+
+\begin{itemize}[nosep]
+\item AI/ML의 기본 개념과 원리를 이해하고 설명할 수 있다.
+\item 기계학습의 학습 유형(지도/비지도/강화)을 구분하고 설명할 수 있다.
+\item 다양한 데이터 유형(이미지/텍스트/소리)과 AI 학습의 관계를 이해한다.
+\item 딥러닝과 신경망의 기초 개념을 이해하고 설명할 수 있다.
+\item 생성형 AI의 증강/자동화 관점을 이해하고 교육에 적용할 수 있다.
+\item 엔트리 AI 블록과 모델 학습 기능을 활용하여 AI 작품을 제작하고 지도할 수 있다.
+\item AI를 활용한 초등학교 수업을 설계하고 두 도구를 연계할 수 있다.
+\end{itemize}
+
+%% ─────────────────────────────────────────────
+\section{시간 및 영역 배분}
+
+\noindent
+\begin{tabularx}{\textwidth}{|X|>{\centering\arraybackslash}p{1.5cm}|>{\centering\arraybackslash}p{1.5cm}|X|}
+\hline
+\textbf{영역} & \textbf{시간} & \textbf{비율} & \textbf{주요 도구} \\ \hline
+이론 (AI/ML, 생성형 AI) & 4시간 & 40\% & AI 시뮬레이터 \\ \hline
+엔트리 AI 프로그래밍 & 3시간 & 30\% & 엔트리 \\ \hline
+생성형 AI 활용 & 2시간 & 20\% & ChatGPT, Claude, Gemini \\ \hline
+교육 현장 적용 & 1시간 & 10\% & 통합 \\ \hline
+\end{tabularx}
+
+%% ─────────────────────────────────────────────
+\section{평가 방법}
+
+\subsection{평가 체계 총괄}
+
+\noindent
+\begin{tabularx}{\textwidth}{|X|>{\centering\arraybackslash}p{1.3cm}|>{\centering\arraybackslash}p{2cm}|X|}
+\hline
+\textbf{평가 영역} & \textbf{배점} & \textbf{평가 주차} & \textbf{세부 내용} \\ \hline
+\textbf{이론 퀴즈} & \textbf{20점} & 1\textasciitilde{}2주차 & 1주차 10점 + 2주차 10점 \\ \hline
+\textbf{엔트리 AI 작품 실습} & \textbf{20점} & 3\textasciitilde{}4주차 & 3주차 10점 + 4주차 10점 \\ \hline
+\textbf{수업 지도안} & \textbf{10점} & 5주차 & 5주차 10점 \\ \hline
+\textbf{합계} & \textbf{50점} & & \\ \hline
+\end{tabularx}
+
+\subsection{주차별 평가 상세}
+
+{\small\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.9cm}|>{\centering\arraybackslash}p{0.9cm}|p{2.8cm}|p{3.2cm}|X|}
+\hline
+\textbf{주차} & \textbf{배점} & \textbf{평가 시기} & \textbf{평가 방법} & \textbf{평가 내용} \\ \hline
+\textbf{1주차} & 10점 & 2주차 시작 시 10분 & 이론 퀴즈 & 1주차 AI/ML 기초 내용 \\ \hline
+\textbf{2주차} & 10점 & 3주차 시작 시 10분 & 이론 퀴즈 & 2주차 데이터·딥러닝·생성형 AI 내용 \\ \hline
+\textbf{3주차} & 10점 & 3주차 종료 전 20분 & 엔트리 작품 제작·제출 & 엔트리 AI 블록을 활용한 작품 \\ \hline
+\textbf{4주차} & 10점 & 4주차 종료 전 30분 & 엔트리 작품 제작·제출 & 생성형 AI 도움을 받아 제작한 엔트리 AI 작품 \\ \hline
+\textbf{5주차} & 10점 & 5주차 종료 전 30분 & 수업 지도안 제작·제출 & 생성형 AI 도움을 받아 제작한 수업 지도안 \\ \hline
+\end{tabularx}
+}
+
+\subsection{이론 퀴즈 평가 (20점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|X|}
+\hline
+\textbf{항목} & \textbf{1주차 퀴즈 (10점)} & \textbf{2주차 퀴즈 (10점)} \\ \hline
+실시 시기 & 2주차 1차시 시작 & 3주차 1차시 시작 \\ \hline
+제한 시간 & 10분 & 10분 \\ \hline
+출제 범위 & 1주차 전체 내용 & 2주차 전체 내용 \\ \hline
+문항 구성 & 5지선다형 10문항 + 단답형 5문항 & 5지선다형 10문항 + 단답형 5문항 \\ \hline
+배점 방식 & 5지선다형 각 0.5점 + 단답형 각 1점 & 5지선다형 각 0.5점 + 단답형 각 1점 \\ \hline
+\end{tabularx}
+
+\begin{quoteblock}
+\textbf{배점 구조}: 5지선다형 10문항 × 0.5점 = 5점, 단답형 5문항 × 1점 = 5점, 합계 10점
+\end{quoteblock}
+
+\subsection{엔트리 AI 작품 실습 평가 (20점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|X|}
+\hline
+\textbf{항목} & \textbf{3주차 작품 (10점)} & \textbf{4주차 작품 (10점)} \\ \hline
+제작 시간 & 수업 종료 전 20분 & 수업 종료 전 30분 \\ \hline
+과제 내용 & 엔트리 AI 블록을 활용한 작품 & 생성형 AI 도움을 받아 제작한 엔트리 AI 작품 \\ \hline
+평가 기준 & AI 블록 활용, 블록 코딩 구현 & AI 모델 활용 + 생성형 AI 활용 과정 \\ \hline
+제출물 & 엔트리 작품 URL & 엔트리 작품 URL + 프롬프트 전문 \\ \hline
+\end{tabularx}
+
+\subsection{수업 지도안 평가 (10점)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|}
+\hline
+\textbf{항목} & \textbf{내용} \\ \hline
+제작 시간 & 5주차 종료 전 30분 \\ \hline
+과제 내용 & 생성형 AI 도움을 받아 AI 활용 수업 지도안 작성 \\ \hline
+분량 & A4 1\textasciitilde{}2쪽 \\ \hline
+포함 요소 & 학년/주제/성취기준/학습목표/도구활용계획/학생활동/평가계획 \\ \hline
+제출물 & 수업 지도안 (양식 활용) + 프롬프트 전문 \\ \hline
+\end{tabularx}
+
+\begin{quoteblock}
+평가 세부 기준은 「AI디지털리터러시\_실습과제평가루브릭\_v2.0.0.0」을 참고한다.
+\end{quoteblock}
+
+\subsubsection{수업 지도안 양식}
+
+\begin{center}
+\includegraphics[width=0.82\textwidth]{img_template.png}
+\end{center}
+
+%% ─────────────────────────────────────────────
+\section{주차별 수업 개요}
+
+{\small\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.7cm}|p{2.8cm}|X|>{\centering\arraybackslash}p{1.8cm}|p{4.2cm}|}
+\hline
+\textbf{주차} & \textbf{주제} & \textbf{주요 내용} & \textbf{도구} & \textbf{평가} \\ \hline
+\textbf{1} & AI/ML 기초 & AI 정의·유형, 기계학습 원리(지도/비지도/강화) & AI 시뮬레이터 & --- \\ \hline
+\textbf{2} & 데이터·딥러닝 + 생성형 AI & 데이터 편향, 신경망 구조, LLM 원리, 증강/자동화 & AI 시뮬레이터, 생성형 AI & 1차시 시작: 1주차 퀴즈 (10분) \\ \hline
+\textbf{3} & 엔트리 AI 블록 활용 & AI 블록(음성인식/번역/읽어주기/사물인식/사람인식) 활용 작품 & 엔트리 & 1차시: 2주차 퀴즈 (10분), 2차시 종료 전: 작품 (20분) \\ \hline
+\textbf{4} & 엔트리 AI 모델 학습 + 생성형 AI & 이미지 분류, 테이블(선형회귀/KNN/K평균), 생성형 AI 활용 & 엔트리, 생성형 AI & 2차시 종료 전: 작품 (30분) \\ \hline
+\textbf{5} & 생성형 AI 자동화 + 교육 현장 적용 & 콘텐츠 자동 생성, 수업 설계 & 생성형 AI, 통합 & 2차시 종료 전: 지도안 (30분) \\ \hline
+\end{tabularx}
+}
+
+\begin{center}
+\includegraphics[width=\textwidth]{img_flow.png}
+\end{center}
+
+%% ─────────────────────────────────────────────
+\section{주차별 상세 강의 계획}
+
+\subsection{1주차: AI/ML 기초 (2시간)}
+
+\subsubsection{1주차 1차시: AI의 이해 (50분)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\arraybackslash}p{2.5cm}|X|}
+\hline
+CK 강화 목표 & 인공지능의 정의와 유형을 설명할 수 있다. \\ \hline
+관련 성취기준 & {[6실05-04]}, {[6실05-05]} \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1.5cm}|X|}
+\hline
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} \\ \hline
+5분 & 도입 & AI 시대와 우리 학생들의 미래, 교사의 역할 변화 \\ \hline
+15분 & 전개 1 & 인공지능의 정의: 인간의 지능을 모방하는 컴퓨터 시스템 \\ \hline
+15분 & 전개 2 & AI 유형: 약한 AI vs 강한 AI, 기능별 분류(인식/예측/분류/생성) \\ \hline
+10분 & 전개 3 & AI의 봄과 겨울: 1950년대\textasciitilde{}현재까지의 발전 역사 \\ \hline
+5분 & 정리 & 핵심 개념 요약, 2022 개정 교육과정과 AI 교육의 연결 \\ \hline
+\end{tabularx}
+
+\textbf{주요 CK 내용:}
+\begin{enumerate}[nosep,start=1]
+\item 인공지능의 정의: 인간의 지능을 모방하는 컴퓨터 시스템
+\item AI 유형: 약한 AI vs 강한 AI
+\item 기능별 분류: 인식/예측/분류/생성 AI
+\item AI 발전 역사: 봄과 겨울의 반복, 현재 제3의 봄
+\end{enumerate}
+
+\subsubsection{1주차 2차시: 기계학습의 원리 (50분)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\arraybackslash}p{2.5cm}|X|}
+\hline
+CK 강화 목표 & 기계학습의 원리(지도/비지도/강화학습)를 이해한다. \\ \hline
+관련 성취기준 & {[6실05-05]} \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1.5cm}|X|}
+\hline
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} \\ \hline
+5분 & 도입 & AI, ML, DL의 포함 관계 \\ \hline
+15분 & 전개 1 & 기계학습의 정의: 데이터로부터 패턴을 학습하는 AI 기술 \\ \hline
+15분 & 전개 2 & 학습 유형: 지도학습(분류/예측), 비지도학습(군집화), 강화학습(보상) \\ \hline
+10분 & 전개 3 & 머신러닝 학습 과정: 데이터 수집 → 학습 → 평가 → 예측 \\ \hline
+5분 & 정리 & 지도학습 = 엔트리 AI 모델의 원리 연결, 다음 주 퀴즈 안내 \\ \hline
+\end{tabularx}
+
+\textbf{주요 CK 내용:}
+\begin{enumerate}[nosep,start=5]
+\item AI $\supset$ ML $\supset$ DL 포함 관계
+\item 기계학습: 데이터로부터 패턴을 학습하는 AI 기술
+\item 지도학습: 정답이 있는 데이터로 학습 (분류, 예측) → 엔트리 AI 모델
+\item 비지도학습: 정답 없이 패턴 발견 (군집화)
+\item 강화학습: 보상을 통한 학습 (게임 AI)
+\end{enumerate}
+
+\textbf{1주차 참고자료:}
+
+{\small\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.5cm}|X|p{2.3cm}|X|}
+\hline
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{활용} \\ \hline
+1 & 2022 개정 교육과정 (교육부 고시 제2022-33호) & 교육부 문서 & {[6실05-04]}, {[6실05-05]} 성취기준 확인 \\ \hline
+2 & AI 기초 (한국정보교육학회 편) & 도서 & AI 정의, 유형, 발전사 참고 \\ \hline
+3 & 교수 제공 AI/ML 시뮬레이터 & 교수 제공 & 기계학습 원리 시연 (분류/예측/군집화) \\ \hline
+\end{tabularx}
+}
+
+%% ─── 2주차 ───
+\subsection{2주차: 데이터·딥러닝 + 생성형 AI (2시간)}
+
+\subsubsection{2주차 1차시: 데이터와 딥러닝 (50분)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\arraybackslash}p{2.5cm}|X|}
+\hline
+CK 강화 목표 & 데이터의 역할과 편향 문제를 이해하고, 딥러닝과 신경망의 기초 개념을 이해한다. \\ \hline
+관련 성취기준 & {[6실05-04]}, {[6실05-05]} \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1.5cm}|X|}
+\hline
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} \\ \hline
+\textbf{10분} & \textbf{퀴즈} & \textbf{1주차 이론 퀴즈 (10점, 10분 제한)} \\ \hline
+10분 & 전개 1 & 데이터의 역할: AI 학습의 연료, 양과 질의 중요성 \\ \hline
+10분 & 전개 2 & 데이터 편향: 학습 데이터의 편향이 결과에 미치는 영향 (사례) \\ \hline
+15분 & 전개 3 & 딥러닝과 신경망: 입력층 → 은닉층 → 출력층 구조 \\ \hline
+5분 & 정리 & 딥러닝 성공 사례 (ImageNet, AlphaGo, GPT) \\ \hline
+\end{tabularx}
+
+\textbf{주요 CK 내용:}
+\begin{enumerate}[nosep,start=10]
+\item 데이터의 역할: AI 학습의 연료, 양과 질의 중요성
+\item 데이터 편향: 학습 데이터의 편향이 결과에 미치는 영향
+\item 딥러닝: 여러 층의 신경망을 활용한 학습
+\item 신경망 구조: 입력층 → 은닉층 → 출력층
+\end{enumerate}
+
+\subsubsection{2주차 2차시: 생성형 AI 심화 (50분)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\arraybackslash}p{2.5cm}|X|}
+\hline
+CK 강화 목표 & LLM의 기본 원리를 이해하고, 증강/자동화 관점에서 생성형 AI를 활용할 수 있다. \\ \hline
+관련 성취기준 & {[6실05-05]} \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1.5cm}|X|}
+\hline
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} \\ \hline
+5분 & 도입 & 전통 AI vs 생성형 AI 비교 \\ \hline
+15분 & 전개 1 & LLM의 원리: 대규모 텍스트 학습, 다음 단어 예측 \\ \hline
+15분 & 전개 2 & 증강(Augmentation) vs 자동화(Automation) 패러다임 \\ \hline
+10분 & 전개 3 & 프롬프트 엔지니어링 4원칙: 명확성, 맥락, 형식, 단계 \\ \hline
+5분 & 정리 & 생성형 AI 체험 안내, 다음 주 퀴즈 안내 \\ \hline
+\end{tabularx}
+
+\textbf{주요 CK 내용:}
+\begin{enumerate}[nosep,start=14]
+\item LLM (Large Language Model): 대규모 텍스트로 학습한 언어 모델
+\item 증강(Augmentation): AI가 인간 능력을 확장/보조 (인간 주도)
+\item 자동화(Automation): AI가 작업을 대신 수행 (AI 주체, 인간 검증)
+\item 프롬프트 엔지니어링: 효과적인 AI 활용을 위한 질문/명령 기법
+\end{enumerate}
+
+\textbf{2주차 참고자료:}
+
+{\small\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.5cm}|X|p{2.3cm}|X|}
+\hline
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{활용} \\ \hline
+1 & 교수 제공 딥러닝/신경망 시뮬레이터 & 교수 제공 & 신경망 구조 시각적 시연 \\ \hline
+2 & ChatGPT (chat.openai.com) & 웹사이트 & 생성형 AI 체험 도구 \\ \hline
+3 & Claude (claude.ai) & 웹사이트 & 생성형 AI 체험 도구 \\ \hline
+4 & Gemini (gemini.google.com) & 웹사이트 & 생성형 AI 체험 도구 \\ \hline
+\end{tabularx}
+}
+
+%% ─── 3주차 ───
+\subsection{3주차: 엔트리 AI 블록 활용 (2시간)}
+
+\subsubsection{3주차 1차시: 엔트리 인공지능 블록 --- 번역·사물 인식 (50분)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\arraybackslash}p{2.5cm}|X|}
+\hline
+CK 강화 목표 & 엔트리가 제공하는 인공지능 블록의 종류와 기능을 이해하고, 블록 코딩으로 AI 작품을 구현할 수 있다. \\ \hline
+관련 성취기준 & {[6실05-02]}, {[6실05-05]} \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1.5cm}|X|}
+\hline
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} \\ \hline
+\textbf{10분} & \textbf{퀴즈} & \textbf{2주차 이론 퀴즈 (10점, 10분 제한)} \\ \hline
+5분 & 도입 & 엔트리 인공지능 블록 소개: AI 기능을 바로 사용할 수 있는 블록 \\ \hline
+15분 & 시연 1 & \textbf{인공지능 번역기}: 음성 인식 → 번역 → 읽어주기 블록 조합 \\ \hline
+15분 & 시연 2 & \textbf{다이어트 도우미}: 사물 인식 블록으로 음식 인식 → 칼로리 안내 \\ \hline
+5분 & 정리 & 인공지능 블록 종류 정리 (음성인식, 번역, 읽어주기, 사물인식) \\ \hline
+\end{tabularx}
+
+\textbf{주요 CK 내용:}
+\begin{enumerate}[nosep,start=18]
+\item 엔트리 인공지능 블록: 별도 모델 학습 없이 바로 사용할 수 있는 AI 기능
+\item 음성 인식 블록: 마이크 입력을 텍스트로 변환
+\item 번역 블록: 텍스트를 다른 언어로 번역
+\item 읽어주기 블록: 텍스트를 음성으로 출력
+\item 사물 인식 블록: 카메라로 사물(음식, 동물 등)을 인식하고 분류
+\end{enumerate}
+
+\textbf{시연 작품 예시:}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{2.8cm}|p{3.3cm}|X|}
+\hline
+\textbf{작품명} & \textbf{사용 블록} & \textbf{동작 흐름} \\ \hline
+인공지능 번역기 & 음성인식 + 번역 + 읽어주기 & 말하기 → 텍스트 변환 → 번역 → 번역 결과 읽어주기 \\ \hline
+다이어트 도우미 & 사물인식 & 카메라로 음식 인식 → 음식 이름 출력 → 칼로리 정보 안내 \\ \hline
+\end{tabularx}
+
+\subsubsection{3주차 2차시: 엔트리 인공지능 블록 --- 사람 인식 + 작품 제작 (50분)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\arraybackslash}p{2.5cm}|X|}
+\hline
+CK 강화 목표 & 사람 인식 블록의 원리를 이해하고, 인공지능 블록을 활용한 창의적 작품을 제작할 수 있다. \\ \hline
+관련 성취기준 & {[6실05-02]}, {[6실05-03]} \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1.5cm}|X|}
+\hline
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} \\ \hline
+5분 & 도입 & 사람 인식 블록 소개: 얼굴/신체 부위 좌표 인식 \\ \hline
+10분 & 시연 1 & \textbf{인공지능 가면}: 얼굴 인식 → 얼굴 위치에 가면 이미지 표시 \\ \hline
+10분 & 시연 2 & \textbf{허공에 그림 그리기}: 손 좌표 인식 → 손 움직임 궤적으로 그림 \\ \hline
+5분 & 안내 & 작품 제작 요구사항 및 제출 방법 안내 \\ \hline
+\textbf{20분} & \textbf{평가} & \textbf{엔트리 AI 블록 활용 작품 제작 및 제출 (10점)} \\ \hline
+\end{tabularx}
+
+\begin{quoteblock}
+\textbf{3주차 작품 과제}: 1차시\textasciitilde{}2차시에서 체험한 인공지능 블록(음성인식, 번역, 읽어주기, 사물인식, 사람인식) 중 1종 이상을 활용하여 자유 주제 엔트리 AI 작품을 제작한다. 블록 코딩으로 AI 블록의 결과에 따른 동작을 구현해야 한다.
+\end{quoteblock}
+
+\textbf{주요 CK 내용:}
+\begin{enumerate}[nosep,start=23]
+\item 사람 인식 블록: 카메라로 얼굴·신체 부위의 좌표를 실시간 인식
+\item 좌표 활용: 인식된 좌표를 블록 코딩에 연동하여 인터랙티브 작품 구현
+\item AI 블록 조합: 여러 인공지능 블록을 조합하여 복합 기능 구현
+\end{enumerate}
+
+\textbf{시연 작품 예시:}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{2.8cm}|p{2.3cm}|X|}
+\hline
+\textbf{작품명} & \textbf{사용 블록} & \textbf{동작 흐름} \\ \hline
+인공지능 가면 & 사람인식 (얼굴) & 얼굴 좌표 인식 → 좌표 위치에 가면 이미지 표시 → 얼굴 따라 이동 \\ \hline
+허공에 그림 그리기 & 사람인식 (손) & 손 좌표 인식 → 손 움직임 궤적 기록 → 화면에 그림 표시 \\ \hline
+\end{tabularx}
+
+\textbf{3주차 참고자료:}
+
+{\small\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.5cm}|X|p{2.3cm}|X|}
+\hline
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{활용} \\ \hline
+1 & 엔트리 인공지능 블록 가이드 (playentry.org/learn) & 웹사이트 & AI 블록 종류 및 사용법 \\ \hline
+2 & 엔트리 작품 갤러리 (playentry.org/community) & 웹사이트 & AI 블록 활용 작품 예시 참고 \\ \hline
+3 & 엔트리 인공지능 블록 활용 (playentry.org) & 웹사이트 & 음성인식, 번역, 사물인식, 사람인식 블록 \\ \hline
+\end{tabularx}
+}
+
+%% ─── 4주차 ───
+\subsection{4주차: 엔트리 AI 모델 학습 + 생성형 AI (2시간)}
+
+\subsubsection{4주차 1차시: 엔트리 인공지능 모델 학습하기 (50분)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\arraybackslash}p{2.5cm}|X|}
+\hline
+CK 강화 목표 & 엔트리의 AI 모델 학습 기능을 이해하고, 이미지 분류와 테이블 기반 학습(선형회귀, KNN, K평균)을 체험한다. \\ \hline
+관련 성취기준 & {[6실05-04]}, {[6실05-05]} \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1.5cm}|X|}
+\hline
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} \\ \hline
+5분 & 도입 & 3주차(AI 블록)와 4주차(모델 학습)의 차이: 기성품 vs 직접 학습 \\ \hline
+15분 & 실습 1 & \textbf{이미지 분류}: 고양이/강아지 이미지 수집 → 모델 학습 → 테스트 \\ \hline
+10분 & 실습 2 & \textbf{엔트리 테이블 기능}: 데이터 테이블 불러오기, 데이터 탐색 \\ \hline
+15분 & 실습 3 & \textbf{테이블 기반 학습}: 선형회귀, KNN(K-최근접 이웃), K평균(K-Means) 알고리즘 작품 체험 \\ \hline
+5분 & 정리 & 모델 학습 과정 정리, AI 블록 vs 모델 학습 비교 \\ \hline
+\end{tabularx}
+
+\textbf{주요 CK 내용:}
+\begin{enumerate}[nosep,start=26]
+\item 이미지 분류 모델 학습: 클래스 생성 → 데이터 수집 → 학습 → 테스트 → 블록 코딩 연동
+\item 엔트리 테이블: 데이터를 행과 열로 정리하여 AI 학습에 활용
+\item 선형회귀: 데이터의 경향성을 직선으로 예측 (수치 예측)
+\item KNN (K-최근접 이웃): 가장 가까운 K개 데이터를 기준으로 분류
+\item K평균 (K-Means): 데이터를 K개 그룹으로 자동 군집화 (비지도학습)
+\end{enumerate}
+
+\textbf{AI 블록 vs 모델 학습 비교:}
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{2.3cm}|X|X|}
+\hline
+\textbf{구분} & \textbf{AI 블록 (3주차)} & \textbf{모델 학습 (4주차)} \\ \hline
+특징 & 미리 만들어진 AI 기능 사용 & 직접 데이터를 넣어 모델 학습 \\ \hline
+데이터 & 필요 없음 & 직접 수집·입력 필요 \\ \hline
+커스터마이징 & 제한적 & 자유로움 (원하는 분류 기준 설정) \\ \hline
+예시 & 번역, 사물인식, 사람인식 & 이미지 분류, 선형회귀, KNN, K평균 \\ \hline
+\end{tabularx}
+
+\subsubsection{4주차 2차시: 생성형 AI 활용 엔트리 작품 제작 (50분)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\arraybackslash}p{2.5cm}|X|}
+\hline
+CK 강화 목표 & 생성형 AI를 활용하여 엔트리 인공지능 작품을 설계하고 구현할 수 있다. \\ \hline
+관련 성취기준 & {[6실05-02]}, {[6실05-03]} \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1.5cm}|X|}
+\hline
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} \\ \hline
+10분 & 전개 1 & 생성형 AI로 엔트리 작품 만들기: 아이디어 구상, 코드 설계, 디버깅 활용법 \\ \hline
+5분 & 전개 2 & 프롬프트 작성 요령: 엔트리 AI 블록/모델 학습 기능 명시, 구체적 동작 설명 \\ \hline
+5분 & 안내 & 작품 제작 요구사항 및 제출 방법 안내 \\ \hline
+\textbf{30분} & \textbf{평가} & \textbf{생성형 AI 도움을 받은 엔트리 AI 작품 제작 및 제출 (10점)} \\ \hline
+\end{tabularx}
+
+\begin{quoteblock}
+\textbf{4주차 작품 과제}: 생성형 AI의 도움(아이디어 구상, 코드 설계, 디버깅 등)을 받아 엔트리 AI 작품을 제작한다. 3주차에서 배운 AI 블록 또는 4주차에서 배운 모델 학습 기능을 활용해야 한다. 작품 URL과 함께 생성형 AI 활용 프롬프트 전문을 제출한다.
+\end{quoteblock}
+
+\textbf{도구 활용 세부:}
+\begin{enumerate}[nosep,start=31]
+\item 생성형 AI 활용 단계: 아이디어 구상 → 코드 설계 요청 → 결과 검토·수정 → 디버깅
+\item 프롬프트 작성 시 포함 사항: 사용할 AI 기능(블록/모델), 원하는 동작, 대상 학년
+\item 비판적 검토: 생성형 AI가 제안한 코드의 적절성·정확성 확인
+\end{enumerate}
+
+\textbf{4주차 참고자료:}
+
+{\small\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.5cm}|X|p{2.3cm}|X|}
+\hline
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{활용} \\ \hline
+1 & 엔트리 AI 모델 학습 (playentry.org) & 웹사이트 & 이미지 분류, 테이블 기반 학습 \\ \hline
+2 & 엔트리 테이블 가이드 (playentry.org/learn) & 웹사이트 & 테이블 기능, 선형회귀/KNN/K평균 \\ \hline
+3 & ChatGPT / Claude / Gemini & 웹사이트 & 엔트리 작품 설계·코딩 지원 \\ \hline
+4 & 엔트리 인공지능 블록 가이드 (playentry.org/learn) & 웹사이트 & AI 블록 활용법 참고 \\ \hline
+\end{tabularx}
+}
+
+%% ─── 5주차 ───
+\subsection{5주차: 생성형 AI 자동화 + 교육 현장 적용 (2시간)}
+
+\subsubsection{5주차 1차시: 생성형 AI 자동화 활용 (50분)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\arraybackslash}p{2.5cm}|X|}
+\hline
+CK 강화 목표 & 생성형 AI를 활용한 콘텐츠 자동 생성과 자동화 워크플로우를 설계할 수 있다. \\ \hline
+관련 성취기준 & --- \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1.5cm}|X|}
+\hline
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} \\ \hline
+5분 & 도입 & 증강 vs 자동화 차이 복습 \\ \hline
+15분 & 실습 1 & 학습자료 자동 생성: 학습지, 퀴즈, 설명문 \\ \hline
+15분 & 실습 2 & 이미지 자동 생성 + 문서 자동화 (가정통신문, 평가 루브릭) \\ \hline
+10분 & 실습 3 & 검증 과정: 자동 생성물의 정확성·적절성 확인 \\ \hline
+5분 & 정리 & 자동화 워크플로우 설계 원칙, 수업 지도안 작성 안내 \\ \hline
+\end{tabularx}
+
+\textbf{도구 활용 세부:}
+\begin{enumerate}[nosep,start=34]
+\item 학습자료 자동 생성: 학습지, 퀴즈, 설명문
+\item 이미지 자동 생성: 수업 자료용 삽화, 다이어그램
+\item 문서 자동화: 가정통신문, 평가 루브릭
+\item 검증 과정: 자동 생성물의 정확성, 적절성 확인
+\end{enumerate}
+
+\subsubsection{5주차 2차시: 교육 현장 적용 + 수업 지도안 제출 (50분)}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\arraybackslash}p{2.5cm}|X|}
+\hline
+CK 강화 목표 & AI를 활용한 초등학교 수업을 설계하고, 두 도구(엔트리 AI + 생성형 AI)를 연계할 수 있다. \\ \hline
+관련 성취기준 & 전체 \\ \hline
+\end{tabularx}
+
+\vspace{0.3em}\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1.5cm}|X|}
+\hline
+\textbf{시간} & \textbf{단계} & \textbf{활동 내용} \\ \hline
+5분 & 도입 & 5주간 학습 내용 종합 정리 \\ \hline
+10분 & 전개 & 수업 지도안 작성 요령: 학년·주제·성취기준 선정, 도구 연계 방법, 양식 설명 \\ \hline
+5분 & 안내 & 지도안 제작 요구사항 및 제출 방법 안내 \\ \hline
+\textbf{30분} & \textbf{평가} & \textbf{생성형 AI 도움을 받은 수업 지도안 제작 및 제출 (10점)} \\ \hline
+\end{tabularx}
+
+\begin{quoteblock}
+\textbf{5주차 지도안 과제}: 생성형 AI의 도움을 받아 AI 활용 초등학교 수업 지도안을 작성한다. 제공된 양식을 활용하며, 엔트리 AI 블록/모델 학습과 생성형 AI 중 1종 이상의 도구를 활용하는 수업을 설계해야 한다. 지도안과 함께 생성형 AI 활용 프롬프트 전문을 제출한다.
+\end{quoteblock}
+
+\textbf{활동 내용:}
+\begin{enumerate}[nosep,start=38]
+\item 수업 설계: 학년, 주제, 성취기준 선정
+\item 학습자료 제작: 생성형 AI로 자료 개발 (자동화)
+\item 학생 활동 계획: 엔트리 AI 체험 활동 구성
+\item 평가 계획: AI 리터러시 역량 평가 방안
+\end{enumerate}
+
+\textbf{5주차 참고자료:}
+
+{\small\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.5cm}|X|p{2.3cm}|X|}
+\hline
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{활용} \\ \hline
+1 & 2022 개정 교육과정 (교육부 고시 제2022-33호) & 교육부 문서 & 성취기준 선정 \\ \hline
+2 & ChatGPT / Claude / Gemini & 웹사이트 & 수업 지도안 작성 지원 \\ \hline
+3 & 엔트리 (playentry.org) & 웹사이트 & 학생 활동 설계 참고 \\ \hline
+4 & 초등 AI 교육 수업 사례집 (한국교육학술정보원) & 도서/PDF & 수업 설계 참고 사례 \\ \hline
+\end{tabularx}
+}
+
+%% ─────────────────────────────────────────────
+\section{CK 숙달 항목}
+\subsection{10시간 모델 완료 후 숙달 항목}
+
+{\small\noindent
+\begin{tabularx}{\textwidth}{|X|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{2.5cm}|}
+\hline
+\textbf{CK 항목} & \textbf{숙달 수준} & \textbf{관련 성취기준} \\ \hline
+\textbf{AI 개념 및 유형} & ● 완전 숙달 & {[6실05-04,05]} \\ \hline
+\textbf{기계학습 원리 (지도/비지도/강화)} & ● 완전 숙달 & {[6실05-05]} \\ \hline
+\textbf{데이터 이해 (이미지/텍스트/소리)} & ● 완전 숙달 & {[6실05-04]} \\ \hline
+\textbf{딥러닝/신경망 기초} & ○ 활용 가능 & {[6실05-05]} \\ \hline
+\textbf{생성형 AI 활용 (증강/자동화)} & ● 완전 숙달 & {[6실05-05]} \\ \hline
+\textbf{프롬프트 엔지니어링} & ● 완전 숙달 & --- \\ \hline
+\textbf{엔트리 AI 블록 활용} & ● 완전 숙달 & {[6실05-02,03]} \\ \hline
+\textbf{엔트리 AI 모델 학습 (이미지/테이블)} & ● 완전 숙달 & {[6실05-04,05]} \\ \hline
+\textbf{테이블 기반 알고리즘} & ○ 활용 가능 & {[6실05-05]} \\ \hline
+\textbf{수업 설계 및 적용} & ● 완전 숙달 & 전체 \\ \hline
+\end{tabularx}
+}
+
+\begin{quoteblock}
+● 완전 숙달: 독립적으로 설명·적용 가능 / ○ 활용 가능: 지원 하에 적용 가능
+\end{quoteblock}
+
+\subsection{주차별 CK 누적 달성}
+
+{\small\noindent
+\begin{tabularx}{\textwidth}{|X|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1cm}|}
+\hline
+\textbf{CK 항목} & \textbf{1주차} & \textbf{2주차} & \textbf{3주차} & \textbf{4주차} & \textbf{5주차} \\ \hline
+AI 개념/유형 & ● & ● & ● & ● & ● \\ \hline
+기계학습 원리 & ● & ● & ● & ● & ● \\ \hline
+데이터 이해 & △ & ○ & ○ & ● & ● \\ \hline
+딥러닝/신경망 & --- & ○ & ○ & ○ & ○ \\ \hline
+생성형 AI 활용 & --- & △ & △ & ○ & ● \\ \hline
+프롬프트 엔지니어링 & --- & △ & △ & ● & ● \\ \hline
+엔트리 AI 블록 & --- & --- & ● & ● & ● \\ \hline
+엔트리 AI 모델 학습 & --- & --- & --- & ● & ● \\ \hline
+테이블 기반 알고리즘 & --- & --- & --- & ○ & ○ \\ \hline
+수업 설계 & --- & --- & --- & --- & ● \\ \hline
+\end{tabularx}
+}
+
+\begin{quoteblock}
+● 완전 숙달 / ○ 활용 가능 / △ 체험 / --- 미도달
+\end{quoteblock}
+
+%% ─────────────────────────────────────────────
+\section{과제 제출 안내}
+
+\subsection{이론 퀴즈 (1\textasciitilde{}2주차)}
+\begin{itemize}[nosep]
+\item 해당 주차 다음 주 1차시 시작 시 10분간 실시
+\item 5지선다형 10문항(각 0.5점) + 단답형 5문항(각 1점) = 10점
+\item 별도 제출물 없음 (시험지 회수)
+\end{itemize}
+
+\subsection{엔트리 AI 작품 (3\textasciitilde{}4주차)}
+\begin{itemize}[nosep]
+\item 3주차: 수업 종료 전 20분간 작품 제작 및 제출 (AI 블록 활용)
+\item 4주차: 수업 종료 전 30분간 작품 제작 및 제출 (생성형 AI 활용)
+\item 제출물: 엔트리 작품 URL (4주차는 프롬프트 전문 추가 제출)
+\item 수업 시간 내 제출 완료 필수
+\end{itemize}
+
+\subsection{수업 지도안 (5주차)}
+\begin{itemize}[nosep]
+\item 수업 종료 전 30분간 지도안 제작 및 제출
+\item 제공된 양식을 활용하여 A4 1\textasciitilde{}2쪽 분량 작성
+\item 포함 요소: 학년/주제/성취기준/학습목표/도구활용계획/학생활동/평가계획
+\item 제출물: 수업 지도안 + 프롬프트 전문
+\end{itemize}
+
+%% ─────────────────────────────────────────────
+\section*{참고자료}
+\addcontentsline{toc}{section}{참고자료}
+
+{\small\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.5cm}|X|p{2.3cm}|X|}
+\hline
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\ \hline
+1 & 2022 개정 교육과정 (교육부 고시 제2022-33호) & 교육부 문서 & 초등 실과 AI 영역 성취기준 \\ \hline
+2 & 예비교사CK강화\_10시간모델\_v1.1.0.0 & 프로젝트 문서 & 10시간 모델 차시별 CK 강화 계획 \\ \hline
+3 & 예비교사CK강화\_전체결과\_v1.1.0.0 & 프로젝트 문서 & 8/10/12시간 모델 비교, CK 숙달 수준 \\ \hline
+4 & 엔트리 (playentry.org) & 웹사이트 & AI 블록, AI 모델 학습, 블록 코딩 \\ \hline
+5 & AI디지털리터러시\_실습과제평가루브릭\_v2.0.0.0 & 프로젝트 문서 & 주차별 평가 루브릭 \\ \hline
+6 & 버전관리지침\_v1.3.0.0 & 프로젝트 문서 & 문서 형식 지침 \\ \hline
+7 & 교수 제공 AI/ML 시뮬레이터 & 교수 제공 & 기계학습, 신경망 원리 시연 \\ \hline
+\end{tabularx}
+}
+
+%% ─────────────────────────────────────────────
+\section*{생성/수정 이력}
+\addcontentsline{toc}{section}{생성/수정 이력}
+
+{\scriptsize\noindent
+\begin{tabularx}{\textwidth}{|p{1.2cm}|p{1.5cm}|p{0.8cm}|p{1cm}|X|p{0.8cm}|}
+\hline
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{수준} & \textbf{변경 내용} & \textbf{작성자} \\ \hline
+v1.0.0.0 & 2026-02-07 & 21:30 & 최초 & 10시간 모델 기반 신규 강의계획서 작성. 교과목명 AI디지털리터러시로 변경. 5주×2시간 체계 구성 & Claude \\ \hline
+v1.0.0.1 & 2026-02-07 & 22:30 & 패치 & 참고자료 표 루브릭 문서명 변경: 소프트웨어교육론→AI디지털리터러시 & Claude \\ \hline
+v1.1.0.0 & 2026-02-08 & 01:00 & 마이너 & 평가 체계 전면 개편: 100점→50점(이론퀴즈20+엔트리작품20+지도안10), 주차별 10점 체계, 수업 대상 청주교육대학교로 변경 & Claude \\ \hline
+\textbf{v1.2.0.0} & \textbf{2026-02-08} & \textbf{02:00} & \textbf{마이너} & \textbf{3\textasciitilde{}4주차 수업 재구성: 3주차=엔트리 AI 블록 활용, 4주차=모델 학습+생성형AI. 퀴즈 문항 변경(5지선다10×0.5+단답형5×1). 지도안 양식 추가.} & \textbf{Claude} \\ \hline
+\end{tabularx}
+}
+
+\vspace{2em}
+\begin{center}
+\textit{AI디지털리터러시 강의계획서 --- 예비교사 CK 강화 10시간 모델 기반}
+\end{center}
+
+\end{document}

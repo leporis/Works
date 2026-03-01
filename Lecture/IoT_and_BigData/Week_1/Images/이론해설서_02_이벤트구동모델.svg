@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400" font-family="Noto Sans CJK KR">
+  <rect width="700" height="400" fill="white"/>
+  <text x="350" y="30" text-anchor="middle" fill="#2c3e50" font-size="14" font-weight="bold">절차적 모델 vs 이벤트 구동 모델</text>
+
+  <!-- === 왼쪽: 절차적 모델 === -->
+  <rect x="30" y="50" width="280" height="340" rx="10" fill="#f0f4ff" stroke="#3498db" stroke-width="2"/>
+  <rect x="30" y="50" width="280" height="36" rx="10" fill="#3498db"/>
+  <rect x="30" y="76" width="280" height="10" fill="#3498db"/>
+  <text x="170" y="74" text-anchor="middle" fill="white" font-size="13" font-weight="bold">절차적 모델</text>
+
+  <!-- 시작 -->
+  <ellipse cx="170" cy="110" rx="40" ry="18" fill="#2ecc71"/>
+  <text x="170" y="115" text-anchor="middle" fill="white" font-size="11" font-weight="bold">시작</text>
+  <line x1="170" y1="128" x2="170" y2="148" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 명령1 -->
+  <rect x="120" y="148" width="100" height="34" rx="5" fill="#3498db"/>
+  <text x="170" y="170" text-anchor="middle" fill="white" font-size="11">명령 1</text>
+  <line x1="170" y1="182" x2="170" y2="200" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 명령2 -->
+  <rect x="120" y="200" width="100" height="34" rx="5" fill="#3498db"/>
+  <text x="170" y="222" text-anchor="middle" fill="white" font-size="11">명령 2</text>
+  <line x1="170" y1="234" x2="170" y2="252" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 명령3 -->
+  <rect x="120" y="252" width="100" height="34" rx="5" fill="#3498db"/>
+  <text x="170" y="274" text-anchor="middle" fill="white" font-size="11">명령 3</text>
+  <line x1="170" y1="286" x2="170" y2="310" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 끝 -->
+  <ellipse cx="170" cy="330" rx="40" ry="18" fill="#e74c3c"/>
+  <text x="170" y="335" text-anchor="middle" fill="white" font-size="11" font-weight="bold">끝</text>
+
+  <!-- 특징 라벨 -->
+  <text x="170" y="370" text-anchor="middle" fill="#3498db" font-size="9">위→아래 순서 실행, 1회 종료</text>
+
+  <!-- === 오른쪽: 이벤트 구동 모델 === -->
+  <rect x="390" y="50" width="280" height="340" rx="10" fill="#fef9e7" stroke="#f39c12" stroke-width="2"/>
+  <rect x="390" y="50" width="280" height="36" rx="10" fill="#f39c12"/>
+  <rect x="390" y="76" width="280" height="10" fill="#f39c12"/>
+  <text x="530" y="74" text-anchor="middle" fill="white" font-size="13" font-weight="bold">이벤트 구동 모델</text>
+
+  <!-- 시작 -->
+  <ellipse cx="530" cy="110" rx="40" ry="18" fill="#2ecc71"/>
+  <text x="530" y="115" text-anchor="middle" fill="white" font-size="11" font-weight="bold">시작</text>
+  <line x1="530" y1="128" x2="530" y2="150" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 이벤트 대기 -->
+  <rect x="470" y="150" width="120" height="34" rx="17" fill="#f39c12"/>
+  <text x="530" y="172" text-anchor="middle" fill="white" font-size="11">이벤트 대기</text>
+  <line x1="530" y1="184" x2="530" y2="206" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 이벤트 발생 -->
+  <polygon points="530,206 580,228 530,250 480,228" fill="#e74c3c"/>
+  <text x="530" y="232" text-anchor="middle" fill="white" font-size="10" font-weight="bold">이벤트!</text>
+  <line x1="530" y1="250" x2="530" y2="270" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 핸들러 실행 -->
+  <rect x="470" y="270" width="120" height="34" rx="5" fill="#9b59b6"/>
+  <text x="530" y="292" text-anchor="middle" fill="white" font-size="11">핸들러 실행</text>
+
+  <!-- 되돌아가는 화살표 -->
+  <path d="M 590,287 Q 640,287 640,220 Q 640,167 590,167" fill="none" stroke="#27ae60" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+  <text x="655" y="230" text-anchor="middle" fill="#27ae60" font-size="9" font-weight="bold">반복</text>
+
+  <!-- 특징 라벨 -->
+  <text x="530" y="340" text-anchor="middle" fill="#f39c12" font-size="9">이벤트 발생 시 반응, 계속 대기</text>
+
+  <!-- 일상 비유 -->
+  <rect x="420" y="355" width="220" height="28" rx="5" fill="#fef3cd"/>
+  <text x="530" y="374" text-anchor="middle" fill="#856404" font-size="9">💡 비유: 손님이 손들면 → 주문 받기</text>
+
+  <!-- VS 표시 -->
+  <circle cx="350" cy="220" r="22" fill="#2c3e50"/>
+  <text x="350" y="226" text-anchor="middle" fill="white" font-size="12" font-weight="bold">VS</text>
+
+  <!-- 화살표 마커 정의 -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#27ae60"/>
+    </marker>
+  </defs>
+</svg>

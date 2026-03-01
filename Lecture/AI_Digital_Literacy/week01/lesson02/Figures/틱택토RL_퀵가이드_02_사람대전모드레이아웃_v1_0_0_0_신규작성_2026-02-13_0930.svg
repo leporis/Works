@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFF8E1"/>
+      <stop offset="100%" style="stop-color:#FFECB3"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="400" rx="12" fill="url(#bgGrad)"/>
+
+  <rect x="16" y="12" width="768" height="48" rx="10" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <text x="300" y="42" text-anchor="middle" font-size="15" font-weight="700" fill="#5C6BC0">🤖 RL 틱택토 시뮬레이터 — 사람 대전 모드</text>
+  <rect x="540" y="24" width="62" height="20" rx="10" fill="#5C6BC0"/>
+  <text x="571" y="38" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">v3.0.0.0</text>
+
+  <!-- 모드 탭 -->
+  <rect x="200" y="68" width="110" height="26" rx="13" fill="#FFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="255" y="85" text-anchor="middle" font-size="9" font-weight="500" fill="#888">📊 대시보드</text>
+  <rect x="316" y="68" width="110" height="26" rx="13" fill="#26A69A"/>
+  <text x="371" y="85" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">👤 사람 대전</text>
+  <rect x="432" y="68" width="100" height="26" rx="13" fill="#FFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="482" y="85" text-anchor="middle" font-size="9" font-weight="500" fill="#888">⚔️ AI 대전</text>
+
+  <!-- 레이블 -->
+  <rect x="16" y="98" width="240" height="16" rx="8" fill="#5C6BC0" opacity="0.9"/>
+  <text x="136" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">① 대전 정보</text>
+  <rect x="266" y="98" width="240" height="16" rx="8" fill="#26A69A" opacity="0.9"/>
+  <text x="386" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">② 게임 보드</text>
+  <rect x="516" y="98" width="268" height="16" rx="8" fill="#FF9800" opacity="0.9"/>
+  <text x="650" y="109" text-anchor="middle" font-size="8" font-weight="600" fill="#FFF">③ 기보 기록</text>
+
+  <!-- 좌측: 대전 정보 -->
+  <rect x="16" y="118" width="240" height="270" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="16" y="118" width="240" height="28" rx="10" fill="#E8EAF6"/>
+  <rect x="16" y="138" width="240" height="8" fill="#E8EAF6"/>
+  <text x="136" y="137" text-anchor="middle" font-size="11" font-weight="600" fill="#5C6BC0">👤 대전 정보</text>
+
+  <text x="36" y="168" font-size="9" font-weight="600" fill="#555">현재 차례</text>
+  <rect x="36" y="175" width="200" height="30" rx="6" fill="#E8EAF6"/>
+  <text x="136" y="195" text-anchor="middle" font-size="11" font-weight="700" fill="#5C6BC0">🔵 X의 차례 (사람)</text>
+
+  <text x="36" y="225" font-size="9" font-weight="600" fill="#555">전적</text>
+  <rect x="36" y="232" width="60" height="40" rx="6" fill="#E3F2FD"/>
+  <text x="66" y="249" text-anchor="middle" font-size="8" font-weight="600" fill="#1565C0">X 승</text>
+  <text x="66" y="265" text-anchor="middle" font-size="14" font-weight="700" fill="#1565C0">3</text>
+  <rect x="106" y="232" width="60" height="40" rx="6" fill="#FFF3E0"/>
+  <text x="136" y="249" text-anchor="middle" font-size="8" font-weight="600" fill="#FF9800">무승부</text>
+  <text x="136" y="265" text-anchor="middle" font-size="14" font-weight="700" fill="#FF9800">1</text>
+  <rect x="176" y="232" width="60" height="40" rx="6" fill="#FFEBEE"/>
+  <text x="206" y="249" text-anchor="middle" font-size="8" font-weight="600" fill="#E53935">O 승</text>
+  <text x="206" y="265" text-anchor="middle" font-size="14" font-weight="700" fill="#E53935">2</text>
+
+  <text x="36" y="298" font-size="9" font-weight="600" fill="#555">AI 강도</text>
+  <text x="36" y="316" font-size="8" fill="#5C6BC0">X (Q-Learning): ⭐ 45</text>
+  <text x="36" y="332" font-size="8" fill="#E53935">O (랜덤): ⭐ 0</text>
+
+  <rect x="36" y="348" width="200" height="26" rx="6" fill="#26A69A"/>
+  <text x="136" y="365" text-anchor="middle" font-size="9" font-weight="600" fill="#FFF">🔄 새 게임</text>
+
+  <!-- 중앙: 3×3 보드 -->
+  <rect x="266" y="118" width="240" height="270" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <text x="386" y="145" text-anchor="middle" font-size="11" font-weight="600" fill="#26A69A">🎮 게임 보드</text>
+
+  <!-- 3x3 그리드 -->
+  <rect x="296" y="158" width="60" height="60" rx="4" fill="#E8EAF6" stroke="#C5CAE9" stroke-width="1"/>
+  <text x="326" y="197" text-anchor="middle" font-size="22" font-weight="700" fill="#1565C0">X</text>
+  <rect x="360" y="158" width="60" height="60" rx="4" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="424" y="158" width="60" height="60" rx="4" fill="#FFEBEE" stroke="#FFCDD2" stroke-width="1"/>
+  <text x="454" y="197" text-anchor="middle" font-size="22" font-weight="700" fill="#E53935">O</text>
+
+  <rect x="296" y="222" width="60" height="60" rx="4" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="360" y="222" width="60" height="60" rx="4" fill="#E8EAF6" stroke="#C5CAE9" stroke-width="1"/>
+  <text x="390" y="261" text-anchor="middle" font-size="22" font-weight="700" fill="#1565C0">X</text>
+  <rect x="424" y="222" width="60" height="60" rx="4" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+
+  <rect x="296" y="286" width="60" height="60" rx="4" fill="#FFEBEE" stroke="#FFCDD2" stroke-width="1"/>
+  <text x="326" y="325" text-anchor="middle" font-size="22" font-weight="700" fill="#E53935">O</text>
+  <rect x="360" y="286" width="60" height="60" rx="4" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="424" y="286" width="60" height="60" rx="4" fill="#E8EAF6" stroke="#5C6BC0" stroke-width="2" stroke-dasharray="4,2"/>
+  <text x="454" y="320" text-anchor="middle" font-size="8" fill="#5C6BC0">클릭!</text>
+
+  <!-- 우측: 기보 기록 -->
+  <rect x="516" y="118" width="268" height="270" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="516" y="118" width="268" height="28" rx="10" fill="#FFF8E1"/>
+  <rect x="516" y="138" width="268" height="8" fill="#FFF8E1"/>
+  <text x="650" y="137" text-anchor="middle" font-size="11" font-weight="600" fill="#E65100">📋 기보 기록</text>
+
+  <text x="530" y="162" font-size="8" font-weight="600" fill="#888">#</text>
+  <text x="560" y="162" font-size="8" font-weight="600" fill="#888">수</text>
+  <text x="600" y="162" font-size="8" font-weight="600" fill="#888">위치</text>
+  <text x="660" y="162" font-size="8" font-weight="600" fill="#888">Q값</text>
+  <text x="720" y="162" font-size="8" font-weight="600" fill="#888">승률</text>
+
+  <line x1="526" y1="168" x2="774" y2="168" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="530" y="182" font-size="8" fill="#555">1</text>
+  <text x="560" y="182" font-size="8" fill="#1565C0">X</text>
+  <text x="600" y="182" font-size="8" fill="#555">(0,0)</text>
+  <text x="660" y="182" font-size="8" fill="#555">0.85</text>
+  <text x="720" y="182" font-size="8" fill="#555">48%</text>
+
+  <text x="530" y="198" font-size="8" fill="#555">2</text>
+  <text x="560" y="198" font-size="8" fill="#E53935">O</text>
+  <text x="600" y="198" font-size="8" fill="#555">(0,2)</text>
+  <text x="660" y="198" font-size="8" fill="#555">—</text>
+  <text x="720" y="198" font-size="8" fill="#555">—</text>
+
+  <text x="530" y="214" font-size="8" fill="#555">3</text>
+  <text x="560" y="214" font-size="8" fill="#1565C0">X</text>
+  <text x="600" y="214" font-size="8" fill="#555">(1,1)</text>
+  <text x="660" y="214" font-size="8" fill="#555">0.92</text>
+  <text x="720" y="214" font-size="8" fill="#555">52%</text>
+
+  <text x="530" y="230" font-size="8" fill="#555">4</text>
+  <text x="560" y="230" font-size="8" fill="#E53935">O</text>
+  <text x="600" y="230" font-size="8" fill="#555">(2,0)</text>
+  <text x="660" y="230" font-size="8" fill="#555">—</text>
+  <text x="720" y="230" font-size="8" fill="#555">—</text>
+
+  <text x="530" y="246" font-size="8" fill="#5C6BC0">...</text>
+
+  <!-- Q값 히트맵 미니 -->
+  <rect x="530" y="268" width="240" height="105" rx="6" fill="#F5F5F5"/>
+  <text x="650" y="286" text-anchor="middle" font-size="9" font-weight="600" fill="#333">🧠 현재 상태 Q값</text>
+  <rect x="566" y="295" width="35" height="28" rx="3" fill="#BDBDBD"/>
+  <text x="583" y="313" text-anchor="middle" font-size="7" fill="#FFF">—</text>
+  <rect x="605" y="295" width="35" height="28" rx="3" fill="#5C6BC0" opacity="0.6"/>
+  <text x="622" y="313" text-anchor="middle" font-size="7" fill="#FFF">0.72</text>
+  <rect x="644" y="295" width="35" height="28" rx="3" fill="#BDBDBD"/>
+  <text x="661" y="313" text-anchor="middle" font-size="7" fill="#FFF">—</text>
+  <rect x="566" y="327" width="35" height="28" rx="3" fill="#5C6BC0" opacity="0.4"/>
+  <text x="583" y="345" text-anchor="middle" font-size="7" fill="#FFF">0.55</text>
+  <rect x="605" y="327" width="35" height="28" rx="3" fill="#BDBDBD"/>
+  <text x="622" y="345" text-anchor="middle" font-size="7" fill="#FFF">—</text>
+  <rect x="644" y="327" width="35" height="28" rx="3" fill="#5C6BC0" opacity="0.8"/>
+  <text x="661" y="345" text-anchor="middle" font-size="7" fill="#FFF">0.88</text>
+</svg>

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <linearGradient id="scaleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#F44336"/>
+      <stop offset="30%" style="stop-color:#FF9800"/>
+      <stop offset="55%" style="stop-color:#FFC107"/>
+      <stop offset="75%" style="stop-color:#8BC34A"/>
+      <stop offset="100%" style="stop-color:#4CAF50"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="200" rx="12" fill="url(#bgGrad)"/>
+  <text x="400" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#333">📏 R² (결정 계수) 해석 스케일</text>
+  <text x="400" y="46" text-anchor="middle" font-size="9" fill="#795548">R² = 1 − (SS_res / SS_tot) — 0에서 1까지, 클수록 모델 설명력 높음</text>
+
+  <!-- 스케일 바 배경 -->
+  <rect x="60" y="68" width="680" height="24" rx="12" fill="url(#scaleGrad)" filter="url(#shadow)"/>
+
+  <!-- 눈금 표시 -->
+  <line x1="60" y1="96" x2="60" y2="106" stroke="#666" stroke-width="1"/>
+  <text x="60" y="118" text-anchor="middle" font-size="9" font-weight="600" fill="#F44336">0.0</text>
+
+  <line x1="230" y1="96" x2="230" y2="106" stroke="#666" stroke-width="1"/>
+  <text x="230" y="118" text-anchor="middle" font-size="9" font-weight="600" fill="#FF9800">0.25</text>
+
+  <line x1="400" y1="96" x2="400" y2="106" stroke="#666" stroke-width="1"/>
+  <text x="400" y="118" text-anchor="middle" font-size="9" font-weight="600" fill="#FFC107">0.50</text>
+
+  <line x1="570" y1="96" x2="570" y2="106" stroke="#666" stroke-width="1"/>
+  <text x="570" y="118" text-anchor="middle" font-size="9" font-weight="600" fill="#8BC34A">0.75</text>
+
+  <line x1="740" y1="96" x2="740" y2="106" stroke="#666" stroke-width="1"/>
+  <text x="740" y="118" text-anchor="middle" font-size="9" font-weight="600" fill="#4CAF50">1.0</text>
+
+  <!-- 구간별 해석 라벨 -->
+  <rect x="60" y="130" width="170" height="28" rx="6" fill="#FFEBEE"/>
+  <text x="145" y="148" text-anchor="middle" font-size="8" font-weight="600" fill="#C62828">🚫 매우 낮음</text>
+  <text x="145" y="158" text-anchor="middle" font-size="6" fill="#888">모델이 패턴을 거의 못 잡음</text>
+
+  <rect x="232" y="130" width="166" height="28" rx="6" fill="#FFF3E0"/>
+  <text x="315" y="148" text-anchor="middle" font-size="8" font-weight="600" fill="#E65100">⚠️ 보통</text>
+  <text x="315" y="158" text-anchor="middle" font-size="6" fill="#888">약간의 관계 포착</text>
+
+  <rect x="400" y="130" width="170" height="28" rx="6" fill="#F1F8E9"/>
+  <text x="485" y="148" text-anchor="middle" font-size="8" font-weight="600" fill="#558B2F">👍 양호</text>
+  <text x="485" y="158" text-anchor="middle" font-size="6" fill="#888">대부분의 변동 설명</text>
+
+  <rect x="572" y="130" width="168" height="28" rx="6" fill="#E8F5E9"/>
+  <text x="656" y="148" text-anchor="middle" font-size="8" font-weight="600" fill="#2E7D32">✅ 매우 좋음</text>
+  <text x="656" y="158" text-anchor="middle" font-size="6" fill="#888">모델이 데이터를 잘 설명</text>
+
+  <!-- 수식 표시 -->
+  <rect x="180" y="172" width="440" height="20" rx="6" fill="#E3F2FD" opacity="0.5"/>
+  <text x="400" y="186" text-anchor="middle" font-size="9" fill="#1565C0">R² = 1 − Σ(실제 − 예측)² / Σ(실제 − 평균)²</text>
+</svg>

@@ -1,0 +1,295 @@
+\documentclass[11pt,a4paper]{article}
+\input{shared_preamble}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{lightbrown}MakeCode LED 이름 표시 시뮬레이터 퀵가이드 v1.0.0.0}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{primary}\emoji{desktop-computer} MakeCode LED 이름 표시 시뮬레이터}\\[0.5cm]
+{\Huge\bfseries\color{primary} 퀵가이드}
+\\[1.5cm]
+{\Large 시뮬레이터 버전: v1.0.2.0}
+\\[2cm]
+\begin{tcolorbox}[summarybox]
+\centering
+{\large 이 퀵가이드는 MakeCode LED 이름 표시 시뮬레이터와 함께 보는 내비게이션입니다.}
+\end{tcolorbox}
+\vfill
+{\large 사물인터넷과 빅데이터}\\[0.3cm]
+{\large 청주교육대학교 컴퓨터교육과}
+\vspace{1cm}
+\end{titlepage}
+
+\section*{\emoji{open-book} 이 문서 사용법}
+
+\begin{tcolorbox}[tipbox]
+\textbf{이 퀵가이드는 MakeCode 시뮬레이터와 함께 보는 내비게이션입니다.}
+
+\end{tcolorbox}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{9.6cm}|p{5.4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{상황} & \textbf{참조 섹션} \\
+\hline
+처음 시작 & \emoji{high-voltage} 초속성 실습 \\
+\hline
+블록을 어디에 놓을지 모름 & \emoji{desktop-computer} 화면 구성 \\
+\hline
+이름이 LED에 안 나와요 & \emoji{sos} 트러블슈팅 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{high-voltage} 1분 초속성 실습}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{8.9cm}|p{4.6cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{단계} & \textbf{행동} & \textbf{확인} \\
+\hline
+1 & 왼쪽 \textbf{기본} 카테고리에서 \textbf{"문자열 보여주기"} 블록을 찾으세요 & 보라색 블록 보이나요? \\
+\hline
+2 & 블록을 \textbf{드래그}하여 중앙 \textbf{\emoji{rocket} 시작하면 실행} 아래 영역에 \textbf{드롭}하세요 & 블록이 배치되었나요? \\
+\hline
+3 & 블록의 입력칸에 \textbf{자기 이름}을 입력하세요 &  \\
+\hline
+4 & 오른쪽 \textbf{\emoji{play-button} 실행} 버튼 클릭 & LED에 이름이 한 글자씩 나타나면 \emoji{party-popper} \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{rocket} 빠른 시작 (3단계)}
+
+\subsection*{\emoji{keycap-1} 블록 선택하기}
+
+왼쪽 \textbf{블록 팔레트}에서 사용할 블록을 고릅니다:
+
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{5.1cm}|p{8.5cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{블록} & \textbf{이름} & \textbf{하는 일} \\
+\hline
+\emoji{memo} & 문자열 보여주기 & LED에 글자를 한 자씩 표시 \\
+\hline
+\emoji{input-numbers} & 숫자 보여주기 & LED에 숫자 표시 \\
+\hline
+\emoji{red-heart} & 아이콘 보여주기 & LED에 하트 등 그림 표시 \\
+\hline
+\emoji{pause-button} & 일시정지 & 잠깐 멈추기 (밀리초) \\
+\hline
+\emoji{broom} & 화면 지우기 & LED 전체 끄기 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{\emoji{keycap-2} 블록 배치하기}
+
+블록을 드래그하여 코딩 영역의 이벤트 아래에 놓습니다:
+
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{7.2cm}|p{7.8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{이벤트} & \textbf{용도} \\
+\hline
+\emoji{rocket} \textbf{시작하면 실행} & 처음 한 번만 실행할 코드 \\
+\hline
+\emoji{infinity} \textbf{무한반복 실행} & 계속 반복할 코드 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[tipbox, title={\emoji{light-bulb} 팁}]
+\emoji{light-bulb} \textbf{팁}: 이름을 한 번만 보여주려면 \textbf{시작하면 실행}에, 계속 반복하려면 \textbf{무한반복}에 넣으세요!
+
+\end{tcolorbox}
+
+\subsection*{\emoji{keycap-3} 실행하기}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{4.2cm}|p{10.8cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{버튼} & \textbf{동작} \\
+\hline
+\emoji{play-button} \textbf{실행} & 코드 실행 시작 \textrightarrow{} LED에 결과 표시 \\
+\hline
+\emoji{stop-button} \textbf{정지} & 실행 중지 \\
+\hline
+\emoji{counterclockwise-arrows-button} \textbf{초기화} & 블록 제거 + LED 끄기 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{desktop-computer} 화면 구성}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{images/S1_MakeCode_LED_screen.png}
+\end{center}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{4.4cm}|p{1.5cm}|p{9.1cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{영역} & \textbf{위치} & \textbf{역할} \\
+\hline
+블록 팔레트 & 좌측 & 사용 가능한 블록 목록 (드래그 출발점) \\
+\hline
+코딩 워크스페이스 & 중앙 & 블록을 배치하는 곳 (이벤트 2개) \\
+\hline
+시뮬레이터 & 우측 & 5\texttimes{}5 LED 매트릭스 + 컨트롤 버튼 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{magnifying-glass-tilted-left} 관찰 포인트}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.7cm}|p{6.1cm}|p{6.2cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{관찰 대상} & \textbf{찾아볼 장면} & \textbf{의미} \\
+\hline
+LED 점등 순서 & 글자가 왼\textrightarrow{}오로 한 자씩 나타남 & "showString은 한 번에 한 글자만 표시" \\
+\hline
+시작 vs 무한반복 & 시작: 1회 실행 후 멈춤, 반복: 끝없이 & "이벤트에 따라 실행 방식이 다르다" \\
+\hline
+블록 순서 & 위\textrightarrow{}아래 순서대로 실행 & "코드는 위에서 아래로 실행된다" \\
+\hline
+일시정지 효과 & pause 블록 위치에서 잠깐 멈춤 & "컴퓨터에게 기다리라고 시킬 수 있다" \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{bullseye} 실습 활동}
+
+\subsection*{활동 1: 내 이름 표시하기}
+
+1. \textbf{문자열 보여주기} 블록을 \textbf{시작하면 실행}에 배치
+
+2. 입력칸에 자기 이름 입력
+
+3. \emoji{play-button} 실행 \textrightarrow{} LED에 이름이 나오는지 확인
+
+
+\subsection*{활동 2: 이름 + 하트 반복하기}
+
+1. \textbf{무한반복 실행}에 블록 3개 순서대로 배치:
+
+\hspace{1em}$\bullet$ \emoji{memo} 문자열 보여주기: "이름"
+
+\hspace{1em}$\bullet$ \emoji{pause-button} 일시정지: 500ms
+
+\hspace{1em}$\bullet$ \emoji{red-heart} 아이콘 보여주기: 하트
+
+2. \emoji{play-button} 실행 \textrightarrow{} 이름과 하트가 번갈아 나타나는지 관찰
+
+
+
+\section*{\emoji{sos} 도와주세요!}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.5cm}|p{4.1cm}|p{7.4cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{증상} & \textbf{원인} & \textbf{해결책} \\
+\hline
+블록이 안 놓여요 & 이벤트 영역 밖에 놓음 & \emoji{rocket} 또는 \emoji{infinity} \textbf{아래} 점선 영역에 드롭 \\
+\hline
+LED에 아무것도 안 나와요 & 블록을 배치했지만 실행 안 함 & \textbf{\emoji{play-button} 실행} 버튼을 클릭하세요 \\
+\hline
+글자가 너무 빨라요 & pause 블록 미사용 & \textbf{일시정지} 블록 추가 (1000 = 1초) \\
+\hline
+한글이 깨져 보여요 & 5\texttimes{}5 LED 해상도 한계 & 정상입니다! 자모 단위로 표시됩니다 \\
+\hline
+블록을 지우고 싶어요 & — & 배치된 블록의 \textbf{$\times$} 버튼 클릭, 또는 \textbf{\emoji{counterclockwise-arrows-button} 초기화} \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{key} 핵심 용어}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{2.2cm}|p{1.8cm}|p{3.7cm}|p{7.3cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{용어} & \textbf{학술 용어} & \textbf{의미} & \textbf{쉬운 설명} \\
+\hline
+블록 & Code Block & 하나의 명령어 & 레고 조각처럼 끼워 맞추는 코드 한 줄 \\
+\hline
+이벤트 & Event & 코드가 실행되는 시점 & "언제 실행할까?" — 시작할 때, 반복할 때 \\
+\hline
+LED 매트릭스 & LED Matrix & 5\texttimes{}5 발광 격자 & 작은 전구 25개로 글자·그림을 만드는 화면 \\
+\hline
+시뮬레이터 & Simulator & 모의 실험 장치 & 실제 마이크로비트 없이 화면에서 테스트 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{\emoji{thought-balloon} 생각해보기}
+
+\begin{tcolorbox}[summarybox]
+\textbf{블록의 순서를 바꾸면 결과가 달라질까?}
+
+\vspace{0.3em}
+"문자열 \textrightarrow{} 일시정지 \textrightarrow{} 아이콘" 순서와 "아이콘 \textrightarrow{} 일시정지 \textrightarrow{} 문자열" 순서를 비교해보세요.
+
+컴퓨터는 우리가 \textbf{정해준 순서대로} 실행합니다!
+
+\end{tcolorbox}
+
+
+\section*{참고자료}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1.5cm}|p{8.1cm}|p{2.5cm}|p{2.9cm}|}
+\hline
+\rowcolor{tableheader}
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\hline
+1 & MakeCode시뮬레이터LED이름표시\_v1.0.2.0 & HTML 파일 & 시뮬레이터 \\
+\hline
+2 & MakeCode시뮬레이터LED이름표시\_개발참조\_v1.0.0.0 & 문서 & 기술 상세 \\
+\hline
+3 & 코딩관리지침\_v4.0.0.0 \S{}17 & 프로젝트 문서 & 퀵가이드 작성법 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\vfill
+\begin{center}
+\small\color{lightbrown}
+\textit{MakeCode LED 이름 표시 시뮬레이터 퀵가이드}
+\end{center}
+\end{document}

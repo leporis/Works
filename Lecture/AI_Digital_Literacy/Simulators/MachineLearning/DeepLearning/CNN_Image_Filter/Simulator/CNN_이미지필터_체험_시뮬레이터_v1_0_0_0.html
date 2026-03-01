@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 CNN 이미지 필터 체험 시뮬레이터</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ===== CSS 변수 (소프트코딩) ===== */
+        :root {
+            /* 메인 컬러 */
+            --primary: #1565C0;
+            --primary-dark: #0D47A1;
+            --primary-light: #42A5F5;
+            --primary-bg: #E3F2FD;
+            --accent: #FF6F00;
+            --accent-light: #FFB74D;
+            --success: #2E7D32;
+            --success-light: #A5D6A7;
+
+            /* 텍스트 */
+            --text-dark: #1A237E;
+            --text-medium: #37474F;
+            --text-light: #78909C;
+            --text-white: #FFFFFF;
+
+            /* 배경 */
+            --bg-gradient-start: #E8EAF6;
+            --bg-gradient-end: #E3F2FD;
+            --bg-white: #FFFFFF;
+            --bg-panel: #F5F7FA;
+
+            /* 테두리/그림자 */
+            --border-color: #BBDEFB;
+            --border-strong: #90CAF9;
+            --shadow-soft: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-medium: 0 4px 16px rgba(0,0,0,0.12);
+            --shadow-strong: 0 8px 32px rgba(0,0,0,0.16);
+
+            /* 간격 */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+
+            /* 그리드 설정 */
+            --grid-size: 10;
+            --cell-size: 40px;
+            --cell-size-small: 28px;
+            --cell-size-kernel: 52px;
+            --cell-gap: 1px;
+
+            /* 애니메이션 */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --animation-speed: 300ms;
+
+            /* 레이아웃 */
+            --container-max-width: 1400px;
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 16px;
+
+            /* 필터 색상 */
+            --positive-color: #1565C0;
+            --negative-color: #C62828;
+            --zero-color: #ECEFF1;
+            --highlight-color: rgba(255, 193, 7, 0.4);
+            --highlight-border: #FF6F00;
+        }
+
+        /* ===== 리셋 ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-medium);
+            line-height: 1.6;
+        }
+
+        /* ===== 컨테이너 ===== */
+        .container {
+            max-width: var(--container-max-width);
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+        }
+
+        /* ===== 헤더 ===== */
+        .header {
+            text-align: center;
+            padding: var(--spacing-lg);
+            background: var(--bg-white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-soft);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .header p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--text-white);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            margin-left: var(--spacing-sm);
+            vertical-align: middle;
+        }
+
+        /* ===== 패널 공통 ===== */
+        .panel {
+            background: var(--bg-white);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-soft);
+            padding: var(--spacing-md);
+        }
+
+        .panel-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--primary-bg);
+        }
+
+        /* ===== 메인 레이아웃 ===== */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: var(--spacing-lg);
+            align-items: start;
+        }
+
+        /* ===== 왼쪽 사이드바 ===== */
+        .sidebar { display: flex; flex-direction: column; gap: var(--spacing-md); }
+
+        /* 프리셋 버튼 그룹 */
+        .preset-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+        }
+
+        .preset-btn {
+            padding: 8px 4px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background: var(--bg-white);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-medium);
+            text-align: center;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .preset-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--text-white);
+        }
+
+        /* 필터 선택 */
+        .filter-list { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: 10px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background: var(--bg-white);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: inherit;
+            font-size: 0.85rem;
+            color: var(--text-medium);
+            text-align: left;
+            width: 100%;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .filter-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--text-white);
+        }
+
+        .filter-btn .filter-icon {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .filter-btn .filter-name { flex: 1; font-weight: 500; }
+
+        /* 도구 버튼 */
+        .tool-group {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .tool-btn {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background: var(--bg-white);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-medium);
+        }
+
+        .tool-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .tool-btn.danger:hover {
+            border-color: var(--negative-color);
+            color: var(--negative-color);
+        }
+
+        /* ===== 메인 콘텐츠 영역 ===== */
+        .content-area { display: flex; flex-direction: column; gap: var(--spacing-lg); }
+
+        /* 컨볼루션 시각화 영역 */
+        .conv-visual {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: var(--spacing-xl);
+            flex-wrap: wrap;
+        }
+
+        .grid-section { text-align: center; }
+
+        .grid-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .grid-sublabel {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        /* 픽셀 그리드 */
+        .pixel-grid {
+            display: inline-grid;
+            gap: var(--cell-gap);
+            background: #CFD8DC;
+            padding: var(--cell-gap);
+            border-radius: var(--border-radius-sm);
+            border: 2px solid var(--border-color);
+        }
+
+        .pixel-cell {
+            width: var(--cell-size);
+            height: var(--cell-size);
+            border-radius: 2px;
+            cursor: crosshair;
+            transition: background-color 0.05s;
+            position: relative;
+        }
+
+        .pixel-cell.highlighted {
+            outline: 3px solid var(--highlight-border);
+            outline-offset: -1px;
+            z-index: 2;
+        }
+
+        .pixel-cell .cell-value {
+            display: none;
+            position: absolute;
+            inset: 0;
+            font-size: 0.6rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .show-values .pixel-cell .cell-value {
+            display: flex;
+        }
+
+        /* 출력 그리드 셀 */
+        .output-grid .pixel-cell {
+            cursor: default;
+            width: var(--cell-size);
+            height: var(--cell-size);
+        }
+
+        /* 커널 그리드 */
+        .kernel-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .kernel-grid {
+            display: inline-grid;
+            grid-template-columns: repeat(3, var(--cell-size-kernel));
+            gap: 2px;
+            background: #CFD8DC;
+            padding: 2px;
+            border-radius: var(--border-radius-sm);
+            border: 3px solid var(--accent);
+        }
+
+        .kernel-cell {
+            width: var(--cell-size-kernel);
+            height: var(--cell-size-kernel);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 2px;
+        }
+
+        /* 화살표 */
+        .arrow {
+            display: flex;
+            align-items: center;
+            font-size: 2rem;
+            color: var(--primary);
+            font-weight: 700;
+            padding-top: 40px;
+        }
+
+        /* ===== 컨볼루션 애니메이션 컨트롤 ===== */
+        .anim-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        .anim-btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .anim-btn.primary {
+            background: var(--primary);
+            color: var(--text-white);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .anim-btn.primary:hover { background: var(--primary-dark); }
+        .anim-btn.primary:disabled { background: #B0BEC5; cursor: not-allowed; }
+
+        .anim-btn.secondary {
+            background: var(--bg-panel);
+            color: var(--text-medium);
+            border: 2px solid var(--border-color);
+        }
+
+        .anim-btn.secondary:hover { border-color: var(--primary); color: var(--primary); }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+
+        .speed-control input[type="range"] {
+            width: 100px;
+            accent-color: var(--primary);
+        }
+
+        /* ===== 설명 패널 ===== */
+        .explanation-panel {
+            background: linear-gradient(135deg, var(--primary-bg) 0%, #BBDEFB 100%);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+        }
+
+        .explanation-panel h3 {
+            font-size: 1rem;
+            color: var(--primary-dark);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+        }
+
+        .step-num {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--text-white);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .step-text {
+            font-size: 0.88rem;
+            color: var(--text-medium);
+            padding-top: 3px;
+        }
+
+        /* 계산 과정 표시 */
+        .calc-display {
+            background: var(--bg-white);
+            border-radius: var(--border-radius-sm);
+            padding: var(--spacing-md);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+            border: 2px solid var(--border-color);
+            min-height: 80px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .calc-highlight { color: var(--primary); font-weight: 700; }
+        .calc-result { color: var(--accent); font-weight: 700; }
+        .calc-negative { color: var(--negative-color); font-weight: 600; }
+
+        /* ===== 현재 위치 인디케이터 ===== */
+        .position-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            font-size: 0.85rem;
+            color: var(--text-medium);
+            padding: var(--spacing-sm) 0;
+        }
+
+        .position-info span { font-weight: 600; }
+
+        /* ===== 값 표시 토글 ===== */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 0.82rem;
+            color: var(--text-light);
+        }
+
+        .toggle-row input[type="checkbox"] {
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ===== 반응형 ===== */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            .conv-visual {
+                gap: var(--spacing-md);
+            }
+            :root {
+                --cell-size: 32px;
+                --cell-size-kernel: 44px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --cell-size: 26px;
+                --cell-size-small: 22px;
+                --cell-size-kernel: 38px;
+            }
+            .container { padding: var(--spacing-md); }
+            .conv-visual { flex-direction: column; align-items: center; }
+            .arrow { transform: rotate(90deg); padding: 0; }
+        }
+
+        /* ===== 그리기 모드 인디케이터 ===== */
+        .draw-mode-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+
+        .draw-mode-indicator.draw {
+            background: #E8F5E9;
+            color: var(--success);
+        }
+
+        .draw-mode-indicator.erase {
+            background: #FFEBEE;
+            color: var(--negative-color);
+        }
+
+        /* ===== 알고리즘 정보 패널 ===== */
+        .info-panel {
+            background: linear-gradient(135deg, #FFF8E1, #FFF3E0);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            border-left: 4px solid var(--accent);
+        }
+
+        .info-panel h4 {
+            color: var(--accent);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .info-panel p {
+            font-size: 0.83rem;
+            color: var(--text-medium);
+            line-height: 1.7;
+        }
+
+        /* 강조 태그 */
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .tag.edge { background: #E3F2FD; color: var(--primary); }
+        .tag.blur { background: #F3E5F5; color: #7B1FA2; }
+        .tag.sharpen { background: #FFF3E0; color: #E65100; }
+        .tag.emboss { background: #E8F5E9; color: var(--success); }
+        .tag.identity { background: #ECEFF1; color: #546E7A; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 헤더 -->
+    <div class="header">
+        <h1>🔍 CNN 이미지 필터 체험 시뮬레이터 <span class="version-badge">v1.0.0.0</span></h1>
+        <p>합성곱 신경망(CNN)의 핵심 원리인 필터(커널)가 이미지에서 특징을 추출하는 과정을 직접 체험합니다</p>
+    </div>
+
+    <!-- 메인 레이아웃 -->
+    <div class="main-layout">
+        <!-- 왼쪽 사이드바 -->
+        <div class="sidebar">
+            <!-- 입력 이미지 프리셋 -->
+            <div class="panel">
+                <div class="panel-title">📋 입력 이미지</div>
+                <div class="preset-group" id="presetGroup">
+                    <button class="preset-btn" data-preset="horizontal">━ 가로선</button>
+                    <button class="preset-btn" data-preset="vertical">┃ 세로선</button>
+                    <button class="preset-btn" data-preset="cross">╋ 십자</button>
+                    <button class="preset-btn" data-preset="diagonal">╲ 대각선</button>
+                    <button class="preset-btn" data-preset="box">□ 사각형</button>
+                    <button class="preset-btn" data-preset="circle">○ 원형</button>
+                    <button class="preset-btn" data-preset="letterT">T 글자</button>
+                    <button class="preset-btn" data-preset="arrow">→ 화살표</button>
+                </div>
+                <div style="margin-top: var(--spacing-sm);">
+                    <div class="tool-group">
+                        <button class="tool-btn" id="btnClear" onclick="clearGrid()">🗑️ 지우기</button>
+                        <button class="tool-btn" id="btnInvert" onclick="invertGrid()">🔄 반전</button>
+                    </div>
+                </div>
+                <div style="margin-top: var(--spacing-sm);">
+                    <div class="draw-mode-indicator draw" id="drawModeIndicator">
+                        ✏️ 좌클릭: 그리기 / 우클릭: 지우기
+                    </div>
+                </div>
+            </div>
+
+            <!-- 필터 선택 -->
+            <div class="panel">
+                <div class="panel-title">🎛️ 필터(커널) 선택</div>
+                <div class="filter-list" id="filterList">
+                    <button class="filter-btn" data-filter="identity">
+                        <span class="filter-icon">⬜</span>
+                        <span class="filter-name">원본 (항등)</span>
+                        <span class="tag identity">기본</span>
+                    </button>
+                    <button class="filter-btn active" data-filter="edgeH">
+                        <span class="filter-icon">━</span>
+                        <span class="filter-name">가로 윤곽선</span>
+                        <span class="tag edge">윤곽</span>
+                    </button>
+                    <button class="filter-btn" data-filter="edgeV">
+                        <span class="filter-icon">┃</span>
+                        <span class="filter-name">세로 윤곽선</span>
+                        <span class="tag edge">윤곽</span>
+                    </button>
+                    <button class="filter-btn" data-filter="edgeAll">
+                        <span class="filter-icon">✦</span>
+                        <span class="filter-name">전체 윤곽선</span>
+                        <span class="tag edge">윤곽</span>
+                    </button>
+                    <button class="filter-btn" data-filter="sharpen">
+                        <span class="filter-icon">🔺</span>
+                        <span class="filter-name">선명하게</span>
+                        <span class="tag sharpen">선명</span>
+                    </button>
+                    <button class="filter-btn" data-filter="blur">
+                        <span class="filter-icon">🌫️</span>
+                        <span class="filter-name">흐리게 (블러)</span>
+                        <span class="tag blur">흐림</span>
+                    </button>
+                    <button class="filter-btn" data-filter="emboss">
+                        <span class="filter-icon">🏔️</span>
+                        <span class="filter-name">엠보싱</span>
+                        <span class="tag emboss">입체</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 옵션 -->
+            <div class="panel">
+                <div class="panel-title">⚙️ 옵션</div>
+                <div class="toggle-row" style="margin-bottom: var(--spacing-sm);">
+                    <input type="checkbox" id="chkShowValues" onchange="toggleValues()">
+                    <label for="chkShowValues">셀 값 표시</label>
+                </div>
+                <div class="toggle-row">
+                    <input type="checkbox" id="chkShowCalc" checked onchange="toggleCalc()">
+                    <label for="chkShowCalc">계산 과정 표시</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <div class="content-area">
+            <!-- 컨볼루션 시각화 -->
+            <div class="panel">
+                <div class="panel-title">🖼️ 컨볼루션 시각화</div>
+                <div class="conv-visual">
+                    <!-- 입력 그리드 -->
+                    <div class="grid-section">
+                        <div class="grid-label">입력 이미지</div>
+                        <div class="grid-sublabel">클릭/드래그로 그리기</div>
+                        <div class="pixel-grid" id="inputGrid"
+                             oncontextmenu="return false;"></div>
+                    </div>
+
+                    <!-- 필터 커널 -->
+                    <div class="grid-section">
+                        <div class="arrow">✱</div>
+                    </div>
+
+                    <div class="grid-section">
+                        <div class="grid-label">필터 (커널)</div>
+                        <div class="grid-sublabel" id="filterDescription">가로 윤곽선 검출</div>
+                        <div class="kernel-display">
+                            <div class="kernel-grid" id="kernelGrid"></div>
+                        </div>
+                    </div>
+
+                    <!-- 화살표 -->
+                    <div class="arrow">→</div>
+
+                    <!-- 출력 그리드 -->
+                    <div class="grid-section">
+                        <div class="grid-label">출력 결과</div>
+                        <div class="grid-sublabel" id="outputDescription">필터 적용 결과</div>
+                        <div class="pixel-grid output-grid" id="outputGrid"></div>
+                    </div>
+                </div>
+
+                <!-- 위치 정보 -->
+                <div class="position-info" id="positionInfo">
+                    현재 위치: <span>대기 중</span>
+                </div>
+
+                <!-- 애니메이션 컨트롤 -->
+                <div class="anim-controls">
+                    <button class="anim-btn primary" id="btnApply" onclick="applyFilter()">
+                        ⚡ 즉시 적용
+                    </button>
+                    <button class="anim-btn secondary" id="btnAnimate" onclick="startAnimation()">
+                        ▶️ 단계별 재생
+                    </button>
+                    <button class="anim-btn secondary" id="btnStep" onclick="stepOnce()">
+                        ⏭️ 한 칸 이동
+                    </button>
+                    <button class="anim-btn secondary" id="btnStop" onclick="stopAnimation()" style="display:none;">
+                        ⏹️ 정지
+                    </button>
+                    <div class="speed-control">
+                        <label>속도:</label>
+                        <input type="range" id="speedSlider" min="50" max="800" value="300" step="50">
+                        <span id="speedLabel">300ms</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 계산 과정 -->
+            <div class="panel" id="calcPanel">
+                <div class="panel-title">📐 계산 과정</div>
+                <div class="calc-display" id="calcDisplay">
+                    필터를 적용하면 각 위치에서의 계산 과정이 여기에 표시됩니다.<br>
+                    "단계별 재생" 또는 "한 칸 이동"을 눌러보세요!
+                </div>
+            </div>
+
+            <!-- 설명 패널 -->
+            <div class="explanation-panel">
+                <h3>📖 CNN 필터(커널)란?</h3>
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-text">
+                            <strong>필터(커널)</strong>는 작은 숫자 격자(보통 3×3)입니다. 이미지 위를 슬라이딩하며 특징을 찾습니다.
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-text">
+                            각 위치에서 <strong>입력값 × 필터값</strong>을 모두 계산한 뒤 합산합니다. 이것이 <strong>합성곱(Convolution)</strong>입니다.
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-text">
+                            필터의 숫자 배치에 따라 <strong>가로선, 세로선, 윤곽선</strong> 등 서로 다른 특징을 감지합니다.
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div class="step-text">
+                            CNN은 이런 필터를 <strong>수백 개</strong> 사용하고, 필터 값을 <strong>자동 학습</strong>합니다. 사람이 설계하지 않아도 최적의 특징을 스스로 찾아냅니다!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 필터별 설명 -->
+            <div class="info-panel" id="filterInfoPanel">
+                <h4>💡 가로 윤곽선 필터</h4>
+                <p id="filterInfoText">
+                    위쪽 행은 +1, 아래쪽 행은 -1로 설정되어 있습니다. 가로 방향으로 밝기가 급격히 변하는 부분(가로 윤곽선)을 강조합니다. 세로선에는 반응하지 않고, 가로선에만 강하게 반응하는 것을 확인해 보세요!
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===== CONFIG (소프트코딩) =====
+const CONFIG = {
+    GRID: {
+        SIZE: 10,                    // NxN 그리드 크기
+        CELL_ON_VALUE: 255,          // 채워진 셀 값 (흰색)
+        CELL_OFF_VALUE: 0,           // 빈 셀 값 (검정)
+        CELL_ON_COLOR: '#1A237E',    // 채워진 셀 표시색
+        CELL_OFF_COLOR: '#FAFAFA',   // 빈 셀 표시색
+    },
+    KERNEL: {
+        SIZE: 3,                     // 커널 크기 (3x3)
+    },
+    OUTPUT: {
+        POSITIVE_COLOR: [21, 101, 192],   // 양수 출력 RGB (파랑)
+        NEGATIVE_COLOR: [198, 40, 40],    // 음수 출력 RGB (빨강)
+        ZERO_COLOR: [236, 239, 241],      // 0 출력 RGB (회색)
+        CLAMP_VALUE: 255,                 // 출력 클램핑 최대값
+    },
+    ANIMATION: {
+        DEFAULT_SPEED: 300,          // 기본 애니메이션 속도 (ms)
+        MIN_SPEED: 50,
+        MAX_SPEED: 800,
+    }
+};
+
+// ===== 필터 정의 =====
+const FILTERS = {
+    identity: {
+        name: '원본 (항등)',
+        description: '원본 유지 필터',
+        kernel: [[0, 0, 0], [0, 1, 0], [0, 0, 0]],
+        info: '중앙만 1이고 나머지는 0입니다. 입력을 그대로 통과시킵니다. 다른 필터와 비교해보는 "기준선" 역할을 합니다.'
+    },
+    edgeH: {
+        name: '가로 윤곽선',
+        description: '가로 윤곽선 검출',
+        kernel: [[1, 1, 1], [0, 0, 0], [-1, -1, -1]],
+        info: '위쪽 행은 +1, 아래쪽 행은 -1로 설정되어 있습니다. 가로 방향으로 밝기가 급격히 변하는 부분(가로 윤곽선)을 강조합니다. 세로선에는 반응하지 않고, 가로선에만 강하게 반응하는 것을 확인해 보세요!'
+    },
+    edgeV: {
+        name: '세로 윤곽선',
+        description: '세로 윤곽선 검출',
+        kernel: [[1, 0, -1], [1, 0, -1], [1, 0, -1]],
+        info: '왼쪽 열은 +1, 오른쪽 열은 -1입니다. 세로 방향의 밝기 변화를 감지합니다. 가로선 프리셋과 세로선 프리셋을 번갈아 적용하며 차이를 관찰해 보세요!'
+    },
+    edgeAll: {
+        name: '전체 윤곽선',
+        description: '라플라시안 윤곽선 검출',
+        kernel: [[0, -1, 0], [-1, 4, -1], [0, -1, 0]],
+        info: '중앙은 +4, 상하좌우는 -1인 라플라시안(Laplacian) 필터입니다. 모든 방향의 윤곽선을 한꺼번에 감지합니다. 어떤 방향의 선이든 찾아내는 "만능 윤곽선 탐지기"입니다!'
+    },
+    sharpen: {
+        name: '선명하게',
+        description: '이미지 선명화',
+        kernel: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]],
+        info: '라플라시안 필터에 원본(항등)을 더한 구조입니다. 윤곽선 부분을 강조하면서 원본도 유지하므로, 이미지가 더 선명해집니다. 흐리게(블러) 필터와 비교해 보세요!'
+    },
+    blur: {
+        name: '흐리게 (블러)',
+        description: '평균값 흐림 처리',
+        kernel: [[1, 1, 1], [1, 1, 1], [1, 1, 1]],
+        divisor: 9,
+        info: '모든 값이 동일(1/9)합니다. 주변 9칸의 평균을 구하므로 이미지가 부드럽게 흐려집니다. 노이즈 제거에 사용되며, 선명하게 필터와 정반대 효과입니다.'
+    },
+    emboss: {
+        name: '엠보싱',
+        description: '입체감 효과',
+        kernel: [[-2, -1, 0], [-1, 1, 1], [0, 1, 2]],
+        info: '왼쪽 위는 음수, 오른쪽 아래는 양수입니다. 빛이 왼쪽 위에서 오른쪽 아래로 비추는 듯한 입체 효과를 만듭니다. 양각(볼록)과 음각(오목) 느낌을 관찰해 보세요!'
+    }
+};
+
+// ===== 프리셋 이미지 정의 =====
+const PRESETS = {
+    horizontal: () => {
+        const g = emptyGrid();
+        for (let c = 1; c <= 8; c++) { g[4][c] = 1; g[5][c] = 1; }
+        return g;
+    },
+    vertical: () => {
+        const g = emptyGrid();
+        for (let r = 1; r <= 8; r++) { g[r][4] = 1; g[r][5] = 1; }
+        return g;
+    },
+    cross: () => {
+        const g = emptyGrid();
+        for (let i = 1; i <= 8; i++) { g[4][i] = 1; g[5][i] = 1; g[i][4] = 1; g[i][5] = 1; }
+        return g;
+    },
+    diagonal: () => {
+        const g = emptyGrid();
+        for (let i = 0; i < CONFIG.GRID.SIZE; i++) { g[i][i] = 1; if (i + 1 < CONFIG.GRID.SIZE) g[i][i + 1] = 1; }
+        return g;
+    },
+    box: () => {
+        const g = emptyGrid();
+        for (let i = 2; i <= 7; i++) { g[2][i] = 1; g[7][i] = 1; g[i][2] = 1; g[i][7] = 1; }
+        return g;
+    },
+    circle: () => {
+        const g = emptyGrid();
+        const cx = 4.5, cy = 4.5, r = 3.5;
+        for (let row = 0; row < CONFIG.GRID.SIZE; row++) {
+            for (let col = 0; col < CONFIG.GRID.SIZE; col++) {
+                const dist = Math.sqrt((row - cy) ** 2 + (col - cx) ** 2);
+                if (dist >= r - 0.8 && dist <= r + 0.8) g[row][col] = 1;
+            }
+        }
+        return g;
+    },
+    letterT: () => {
+        const g = emptyGrid();
+        for (let c = 2; c <= 7; c++) { g[2][c] = 1; g[3][c] = 1; }
+        for (let r = 2; r <= 8; r++) { g[r][4] = 1; g[r][5] = 1; }
+        return g;
+    },
+    arrow: () => {
+        const g = emptyGrid();
+        for (let c = 1; c <= 8; c++) { g[4][c] = 1; g[5][c] = 1; }
+        g[2][6] = 1; g[3][7] = 1; g[3][6] = 1; g[6][6] = 1; g[6][7] = 1; g[7][6] = 1;
+        g[2][7] = 1; g[7][7] = 1;
+        return g;
+    }
+};
+
+// ===== 상태 변수 =====
+let state = {
+    grid: emptyGrid(),
+    outputGrid: null,
+    currentFilter: 'edgeH',
+    isDrawing: false,
+    drawValue: 1,
+    animationId: null,
+    animRow: 0,
+    animCol: 0,
+    isAnimating: false,
+};
+
+// ===== 유틸리티 함수 =====
+function emptyGrid() {
+    const N = CONFIG.GRID.SIZE;
+    return Array.from({ length: N }, () => Array(N).fill(0));
+}
+
+function $(id) { return document.getElementById(id); }
+
+// ===== 그리드 초기화 =====
+function initGrids() {
+    const N = CONFIG.GRID.SIZE;
+    const inputGrid = $('inputGrid');
+    const outputGrid = $('outputGrid');
+
+    inputGrid.style.gridTemplateColumns = `repeat(${N}, var(--cell-size))`;
+    outputGrid.style.gridTemplateColumns = `repeat(${N - CONFIG.KERNEL.SIZE + 1}, var(--cell-size))`;
+
+    inputGrid.innerHTML = '';
+    for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+            const cell = document.createElement('div');
+            cell.className = 'pixel-cell';
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+            cell.innerHTML = `<div class="cell-value">0</div>`;
+            cell.addEventListener('mousedown', onCellMouseDown);
+            cell.addEventListener('mouseenter', onCellMouseEnter);
+            cell.addEventListener('contextmenu', e => e.preventDefault());
+            inputGrid.appendChild(cell);
+        }
+    }
+
+    const outputSize = N - CONFIG.KERNEL.SIZE + 1;
+    outputGrid.innerHTML = '';
+    for (let r = 0; r < outputSize; r++) {
+        for (let c = 0; c < outputSize; c++) {
+            const cell = document.createElement('div');
+            cell.className = 'pixel-cell';
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+            cell.innerHTML = `<div class="cell-value">0</div>`;
+            outputGrid.appendChild(cell);
+        }
+    }
+
+    document.addEventListener('mouseup', () => { state.isDrawing = false; });
+
+    renderInputGrid();
+    renderKernel();
+    clearOutput();
+}
+
+// ===== 입력 그리드 렌더링 =====
+function renderInputGrid() {
+    const N = CONFIG.GRID.SIZE;
+    const cells = $('inputGrid').children;
+    for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+            const cell = cells[r * N + c];
+            const val = state.grid[r][c];
+            cell.style.backgroundColor = val ? CONFIG.GRID.CELL_ON_COLOR : CONFIG.GRID.CELL_OFF_COLOR;
+            cell.querySelector('.cell-value').textContent = val ? CONFIG.GRID.CELL_ON_VALUE : CONFIG.GRID.CELL_OFF_VALUE;
+            cell.querySelector('.cell-value').style.color = val ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.3)';
+        }
+    }
+}
+
+// ===== 커널 렌더링 =====
+function renderKernel() {
+    const filter = FILTERS[state.currentFilter];
+    const kernelGrid = $('kernelGrid');
+    kernelGrid.innerHTML = '';
+
+    for (let r = 0; r < CONFIG.KERNEL.SIZE; r++) {
+        for (let c = 0; c < CONFIG.KERNEL.SIZE; c++) {
+            const val = filter.kernel[r][c];
+            const cell = document.createElement('div');
+            cell.className = 'kernel-cell';
+
+            let displayVal = val;
+            if (filter.divisor) {
+                displayVal = `1/${filter.divisor}`;
+                cell.style.fontSize = '0.75rem';
+            }
+
+            cell.textContent = displayVal;
+
+            if (val > 0) {
+                const intensity = Math.min(val / 5, 1);
+                cell.style.backgroundColor = `rgba(21, 101, 192, ${0.15 + intensity * 0.45})`;
+                cell.style.color = intensity > 0.5 ? '#FFF' : '#0D47A1';
+            } else if (val < 0) {
+                const intensity = Math.min(Math.abs(val) / 5, 1);
+                cell.style.backgroundColor = `rgba(198, 40, 40, ${0.15 + intensity * 0.45})`;
+                cell.style.color = intensity > 0.5 ? '#FFF' : '#B71C1C';
+            } else {
+                cell.style.backgroundColor = '#ECEFF1';
+                cell.style.color = '#90A4AE';
+            }
+
+            kernelGrid.appendChild(cell);
+        }
+    }
+
+    $('filterDescription').textContent = filter.description;
+    $('filterInfoPanel').querySelector('h4').textContent = '💡 ' + filter.name + ' 필터';
+    $('filterInfoText').textContent = filter.info;
+}
+
+// ===== 출력 그리드 렌더링 =====
+function renderOutputGrid(output) {
+    const outputSize = CONFIG.GRID.SIZE - CONFIG.KERNEL.SIZE + 1;
+    const cells = $('outputGrid').children;
+
+    let maxAbs = 0;
+    for (let r = 0; r < outputSize; r++) {
+        for (let c = 0; c < outputSize; c++) {
+            maxAbs = Math.max(maxAbs, Math.abs(output[r][c]));
+        }
+    }
+    if (maxAbs === 0) maxAbs = 1;
+
+    for (let r = 0; r < outputSize; r++) {
+        for (let c = 0; c < outputSize; c++) {
+            const cell = cells[r * outputSize + c];
+            const val = output[r][c];
+            const norm = val / maxAbs;
+
+            let bgColor;
+            if (norm > 0.01) {
+                const t = norm;
+                const rgb = CONFIG.OUTPUT.POSITIVE_COLOR;
+                bgColor = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${t * 0.8 + 0.1})`;
+                cell.querySelector('.cell-value').style.color = t > 0.5 ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.5)';
+            } else if (norm < -0.01) {
+                const t = Math.abs(norm);
+                const rgb = CONFIG.OUTPUT.NEGATIVE_COLOR;
+                bgColor = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${t * 0.8 + 0.1})`;
+                cell.querySelector('.cell-value').style.color = t > 0.5 ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.5)';
+            } else {
+                bgColor = `rgb(${CONFIG.OUTPUT.ZERO_COLOR.join(',')})`;
+                cell.querySelector('.cell-value').style.color = 'rgba(0,0,0,0.3)';
+            }
+
+            cell.style.backgroundColor = bgColor;
+            cell.querySelector('.cell-value').textContent = Math.round(val);
+        }
+    }
+}
+
+function clearOutput() {
+    const outputSize = CONFIG.GRID.SIZE - CONFIG.KERNEL.SIZE + 1;
+    const cells = $('outputGrid').children;
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].style.backgroundColor = CONFIG.GRID.CELL_OFF_COLOR;
+        cells[i].querySelector('.cell-value').textContent = '0';
+    }
+    state.outputGrid = null;
+}
+
+// ===== 합성곱 계산 =====
+function convolve(grid, kernel, divisor) {
+    const N = CONFIG.GRID.SIZE;
+    const K = CONFIG.KERNEL.SIZE;
+    const outSize = N - K + 1;
+    const output = Array.from({ length: outSize }, () => Array(outSize).fill(0));
+
+    for (let r = 0; r < outSize; r++) {
+        for (let c = 0; c < outSize; c++) {
+            let sum = 0;
+            for (let kr = 0; kr < K; kr++) {
+                for (let kc = 0; kc < K; kc++) {
+                    sum += grid[r + kr][c + kc] * kernel[kr][kc];
+                }
+            }
+            if (divisor) sum /= divisor;
+            output[r][c] = sum;
+        }
+    }
+    return output;
+}
+
+// ===== 필터 즉시 적용 =====
+function applyFilter() {
+    stopAnimation();
+    const filter = FILTERS[state.currentFilter];
+    const inputValues = state.grid.map(row => row.map(v => v ? CONFIG.GRID.CELL_ON_VALUE : CONFIG.GRID.CELL_OFF_VALUE));
+    const output = convolve(inputValues, filter.kernel, filter.divisor);
+    state.outputGrid = output;
+    renderOutputGrid(output);
+    clearHighlights();
+
+    $('calcDisplay').innerHTML = '✅ 필터가 전체 이미지에 적용되었습니다.<br>각 위치의 세부 계산을 보려면 "단계별 재생" 또는 "한 칸 이동"을 사용하세요.';
+    $('positionInfo').innerHTML = '상태: <span>적용 완료</span>';
+}
+
+// ===== 단계별 애니메이션 =====
+function startAnimation() {
+    if (state.isAnimating) { stopAnimation(); return; }
+
+    state.animRow = 0;
+    state.animCol = 0;
+    state.isAnimating = true;
+    clearOutput();
+
+    const filter = FILTERS[state.currentFilter];
+    const inputValues = state.grid.map(row => row.map(v => v ? CONFIG.GRID.CELL_ON_VALUE : CONFIG.GRID.CELL_OFF_VALUE));
+    state.outputGrid = convolve(inputValues, filter.kernel, filter.divisor);
+
+    $('btnAnimate').style.display = 'none';
+    $('btnStop').style.display = '';
+    $('btnApply').disabled = true;
+    $('btnStep').disabled = true;
+
+    animateStep();
+}
+
+function animateStep() {
+    const outSize = CONFIG.GRID.SIZE - CONFIG.KERNEL.SIZE + 1;
+    if (state.animRow >= outSize) {
+        stopAnimation();
+        $('positionInfo').innerHTML = '상태: <span>재생 완료!</span>';
+        return;
+    }
+
+    showStepAt(state.animRow, state.animCol);
+
+    // 출력 셀 업데이트
+    updateOutputCell(state.animRow, state.animCol);
+
+    state.animCol++;
+    if (state.animCol >= outSize) {
+        state.animCol = 0;
+        state.animRow++;
+    }
+
+    const speed = parseInt($('speedSlider').value);
+    state.animationId = setTimeout(animateStep, speed);
+}
+
+function stopAnimation() {
+    if (state.animationId) {
+        clearTimeout(state.animationId);
+        state.animationId = null;
+    }
+    state.isAnimating = false;
+    $('btnAnimate').style.display = '';
+    $('btnStop').style.display = 'none';
+    $('btnApply').disabled = false;
+    $('btnStep').disabled = false;
+    clearHighlights();
+}
+
+function stepOnce() {
+    if (state.isAnimating) return;
+
+    const outSize = CONFIG.GRID.SIZE - CONFIG.KERNEL.SIZE + 1;
+
+    if (!state.outputGrid) {
+        const filter = FILTERS[state.currentFilter];
+        const inputValues = state.grid.map(row => row.map(v => v ? CONFIG.GRID.CELL_ON_VALUE : CONFIG.GRID.CELL_OFF_VALUE));
+        state.outputGrid = convolve(inputValues, filter.kernel, filter.divisor);
+        state.animRow = 0;
+        state.animCol = 0;
+    }
+
+    if (state.animRow >= outSize) {
+        state.animRow = 0;
+        state.animCol = 0;
+    }
+
+    showStepAt(state.animRow, state.animCol);
+    updateOutputCell(state.animRow, state.animCol);
+
+    state.animCol++;
+    if (state.animCol >= outSize) {
+        state.animCol = 0;
+        state.animRow++;
+    }
+
+    if (state.animRow >= outSize) {
+        $('positionInfo').innerHTML = '상태: <span>모든 위치 완료!</span>';
+    }
+}
+
+function updateOutputCell(row, col) {
+    if (!state.outputGrid) return;
+    const outSize = CONFIG.GRID.SIZE - CONFIG.KERNEL.SIZE + 1;
+    const cells = $('outputGrid').children;
+    const val = state.outputGrid[row][col];
+
+    let maxAbs = 0;
+    for (let r = 0; r < outSize; r++) {
+        for (let c = 0; c < outSize; c++) {
+            maxAbs = Math.max(maxAbs, Math.abs(state.outputGrid[r][c]));
+        }
+    }
+    if (maxAbs === 0) maxAbs = 1;
+
+    const norm = val / maxAbs;
+    const cell = cells[row * outSize + col];
+
+    if (norm > 0.01) {
+        const t = norm;
+        const rgb = CONFIG.OUTPUT.POSITIVE_COLOR;
+        cell.style.backgroundColor = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${t * 0.8 + 0.1})`;
+        cell.querySelector('.cell-value').style.color = t > 0.5 ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.5)';
+    } else if (norm < -0.01) {
+        const t = Math.abs(norm);
+        const rgb = CONFIG.OUTPUT.NEGATIVE_COLOR;
+        cell.style.backgroundColor = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${t * 0.8 + 0.1})`;
+        cell.querySelector('.cell-value').style.color = t > 0.5 ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.5)';
+    } else {
+        cell.style.backgroundColor = `rgb(${CONFIG.OUTPUT.ZERO_COLOR.join(',')})`;
+    }
+
+    cell.querySelector('.cell-value').textContent = Math.round(val);
+}
+
+// ===== 하이라이트 & 계산 표시 =====
+function showStepAt(row, col) {
+    const K = CONFIG.KERNEL.SIZE;
+    const N = CONFIG.GRID.SIZE;
+    const filter = FILTERS[state.currentFilter];
+
+    clearHighlights();
+
+    // 입력 그리드 하이라이트
+    const inputCells = $('inputGrid').children;
+    for (let kr = 0; kr < K; kr++) {
+        for (let kc = 0; kc < K; kc++) {
+            const idx = (row + kr) * N + (col + kc);
+            inputCells[idx].classList.add('highlighted');
+        }
+    }
+
+    // 출력 그리드 하이라이트
+    const outSize = N - K + 1;
+    const outputCells = $('outputGrid').children;
+    const outIdx = row * outSize + col;
+    if (outputCells[outIdx]) {
+        outputCells[outIdx].classList.add('highlighted');
+    }
+
+    // 위치 정보
+    $('positionInfo').innerHTML = `위치: <span>(${row}, ${col})</span> — 입력 영역: <span>(${row}~${row + K - 1}, ${col}~${col + K - 1})</span>`;
+
+    // 계산 과정 표시
+    if ($('chkShowCalc').checked) {
+        showCalculation(row, col, filter);
+    }
+}
+
+function showCalculation(row, col, filter) {
+    const K = CONFIG.KERNEL.SIZE;
+    const inputValues = state.grid.map(r => r.map(v => v ? CONFIG.GRID.CELL_ON_VALUE : CONFIG.GRID.CELL_OFF_VALUE));
+
+    let html = `<strong>위치 (${row}, ${col})</strong> 계산:<br>`;
+    let terms = [];
+    let sum = 0;
+
+    for (let kr = 0; kr < K; kr++) {
+        for (let kc = 0; kc < K; kc++) {
+            const iv = inputValues[row + kr][col + kc];
+            const kv = filter.kernel[kr][kc];
+            const product = iv * kv;
+            sum += product;
+
+            const ivStr = `<span class="calc-highlight">${iv}</span>`;
+            const kvStr = kv < 0
+                ? `<span class="calc-negative">(${kv})</span>`
+                : `<span class="calc-highlight">${kv}</span>`;
+            const prodStr = product !== 0
+                ? `<span class="calc-result">${product}</span>`
+                : `<span style="color:#90A4AE">0</span>`;
+
+            terms.push(`${ivStr}×${kvStr}=${prodStr}`);
+        }
+    }
+
+    html += terms.join(' + ') + '<br>';
+
+    if (filter.divisor) {
+        html += `합계 = ${sum} ÷ ${filter.divisor} = <span class="calc-result">${(sum / filter.divisor).toFixed(1)}</span>`;
+    } else {
+        html += `합계 = <span class="calc-result" style="font-size:1.1em">${sum}</span>`;
+    }
+
+    $('calcDisplay').innerHTML = html;
+}
+
+function clearHighlights() {
+    document.querySelectorAll('.pixel-cell.highlighted').forEach(el => el.classList.remove('highlighted'));
+}
+
+// ===== 그리기 이벤트 =====
+function onCellMouseDown(e) {
+    e.preventDefault();
+    state.isDrawing = true;
+    const r = parseInt(e.target.closest('.pixel-cell').dataset.row);
+    const c = parseInt(e.target.closest('.pixel-cell').dataset.col);
+
+    if (e.button === 2) {
+        state.drawValue = 0;
+    } else {
+        state.drawValue = state.grid[r][c] ? 0 : 1;
+    }
+
+    state.grid[r][c] = state.drawValue;
+    renderInputGrid();
+    clearOutput();
+}
+
+function onCellMouseEnter(e) {
+    if (!state.isDrawing) return;
+    const cell = e.target.closest('.pixel-cell');
+    if (!cell) return;
+    const r = parseInt(cell.dataset.row);
+    const c = parseInt(cell.dataset.col);
+    state.grid[r][c] = state.drawValue;
+    renderInputGrid();
+}
+
+// ===== 프리셋 로드 =====
+function loadPreset(name) {
+    stopAnimation();
+    state.grid = PRESETS[name]();
+    renderInputGrid();
+    clearOutput();
+
+    // 버튼 활성화 표시
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.preset === name);
+    });
+}
+
+// ===== 필터 선택 =====
+function selectFilter(name) {
+    state.currentFilter = name;
+    renderKernel();
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === name);
+    });
+
+    // 출력이 있으면 자동 재적용
+    if (state.outputGrid) {
+        applyFilter();
+    }
+}
+
+// ===== 그리드 조작 =====
+function clearGrid() {
+    stopAnimation();
+    state.grid = emptyGrid();
+    renderInputGrid();
+    clearOutput();
+    document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+    $('calcDisplay').innerHTML = '그리드가 초기화되었습니다. 그림을 그리거나 프리셋을 선택하세요.';
+}
+
+function invertGrid() {
+    const N = CONFIG.GRID.SIZE;
+    for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+            state.grid[r][c] = state.grid[r][c] ? 0 : 1;
+        }
+    }
+    renderInputGrid();
+    if (state.outputGrid) applyFilter();
+}
+
+// ===== 옵션 토글 =====
+function toggleValues() {
+    const show = $('chkShowValues').checked;
+    $('inputGrid').classList.toggle('show-values', show);
+    $('outputGrid').classList.toggle('show-values', show);
+}
+
+function toggleCalc() {
+    $('calcPanel').style.display = $('chkShowCalc').checked ? '' : 'none';
+}
+
+// ===== 속도 슬라이더 =====
+$('speedSlider').addEventListener('input', function () {
+    $('speedLabel').textContent = this.value + 'ms';
+});
+
+// ===== 이벤트 바인딩 =====
+function bindEvents() {
+    // 프리셋 버튼
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => loadPreset(btn.dataset.preset));
+    });
+
+    // 필터 버튼
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => selectFilter(btn.dataset.filter));
+    });
+}
+
+// ===== 초기화 =====
+function init() {
+    initGrids();
+    bindEvents();
+    loadPreset('horizontal');  // 기본 프리셋
+}
+
+init();
+</script>
+</body>
+</html>

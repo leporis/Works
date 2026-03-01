@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <linearGradient id="q1Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E53935"/>
+      <stop offset="100%" style="stop-color:#EF5350"/>
+    </linearGradient>
+    <linearGradient id="q2Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#43A047"/>
+      <stop offset="100%" style="stop-color:#66BB6A"/>
+    </linearGradient>
+    <linearGradient id="q3Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1976D2"/>
+      <stop offset="100%" style="stop-color:#42A5F5"/>
+    </linearGradient>
+    <linearGradient id="q4Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#7B1FA2"/>
+      <stop offset="100%" style="stop-color:#AB47BC"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="800" height="500" fill="url(#bgGrad)"/>
+  
+  <!-- 제목 -->
+  <text x="400" y="35" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="22" font-weight="700" fill="#E53935">❓ 핵심 탐구 질문</text>
+  <text x="400" y="58" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="12" fill="#5D4037">수업 중 학생들에게 던지는 사고 유발 질문</text>
+  
+  <!-- 중앙 물음표 원 (크기 축소: r=45→35) -->
+  <circle cx="400" cy="265" r="35" fill="#FFC107" filter="url(#shadow)"/>
+  <text x="400" y="278" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="28" font-weight="700" fill="#3E2723">?</text>
+  
+  <!-- 연결선 (원 경계 조정: r=35) -->
+  <line x1="365" y1="245" x2="250" y2="150" stroke="#E53935" stroke-width="2" stroke-dasharray="5,3"/>
+  <line x1="435" y1="245" x2="550" y2="150" stroke="#43A047" stroke-width="2" stroke-dasharray="5,3"/>
+  <line x1="365" y1="285" x2="250" y2="380" stroke="#1976D2" stroke-width="2" stroke-dasharray="5,3"/>
+  <line x1="435" y1="285" x2="550" y2="380" stroke="#7B1FA2" stroke-width="2" stroke-dasharray="5,3"/>
+  
+  <!-- 질문 1: 학습률 관련 (왼쪽 상단) -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="75" width="240" height="130" rx="16" fill="white" stroke="#E53935" stroke-width="2"/>
+    <rect x="30" y="75" width="240" height="40" rx="16" fill="url(#q1Grad)"/>
+    <rect x="30" y="103" width="240" height="12" fill="url(#q1Grad)"/>
+    <text x="150" y="102" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" font-weight="700" fill="white">🎯 Q1. 학습률</text>
+    
+    <text x="50" y="140" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#3E2723" font-weight="500">"학습률이 너무 크면</text>
+    <text x="50" y="158" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#3E2723" font-weight="500">어떤 현상이 발생할까요?"</text>
+    
+    <rect x="45" y="170" width="210" height="25" rx="4" fill="#FFEBEE"/>
+    <text x="150" y="187" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#C62828">💡 예상 답: 발산, 손실 증가, 불안정</text>
+  </g>
+  
+  <!-- 질문 2: R² 점수 관련 (오른쪽 상단) -->
+  <g filter="url(#shadow)">
+    <rect x="530" y="75" width="240" height="130" rx="16" fill="white" stroke="#43A047" stroke-width="2"/>
+    <rect x="530" y="75" width="240" height="40" rx="16" fill="url(#q2Grad)"/>
+    <rect x="530" y="103" width="240" height="12" fill="url(#q2Grad)"/>
+    <text x="650" y="102" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" font-weight="700" fill="white">📊 Q2. R² 점수</text>
+    
+    <text x="550" y="140" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#3E2723" font-weight="500">"R² 점수가 0.5라면</text>
+    <text x="550" y="158" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#3E2723" font-weight="500">모델을 신뢰할 수 있을까요?"</text>
+    
+    <rect x="545" y="170" width="210" height="25" rx="4" fill="#E8F5E9"/>
+    <text x="650" y="187" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#2E7D32">💡 예상 답: 보통, 개선 필요, 50% 설명</text>
+  </g>
+  
+  <!-- 질문 3: 오차선 관련 (왼쪽 하단) -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="320" width="240" height="130" rx="16" fill="white" stroke="#1976D2" stroke-width="2"/>
+    <rect x="30" y="320" width="240" height="40" rx="16" fill="url(#q3Grad)"/>
+    <rect x="30" y="348" width="240" height="12" fill="url(#q3Grad)"/>
+    <text x="150" y="347" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" font-weight="700" fill="white">📏 Q3. 오차선</text>
+    
+    <text x="50" y="385" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#3E2723" font-weight="500">"오차선이 긴 점은</text>
+    <text x="50" y="403" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#3E2723" font-weight="500">무엇을 의미할까요?"</text>
+    
+    <rect x="45" y="415" width="210" height="25" rx="4" fill="#E3F2FD"/>
+    <text x="150" y="432" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#1565C0">💡 예상 답: 예측 실패, 이상치, 큰 잔차</text>
+  </g>
+  
+  <!-- 질문 4: 노이즈 관련 (오른쪽 하단) -->
+  <g filter="url(#shadow)">
+    <rect x="530" y="320" width="240" height="130" rx="16" fill="white" stroke="#7B1FA2" stroke-width="2"/>
+    <rect x="530" y="320" width="240" height="40" rx="16" fill="url(#q4Grad)"/>
+    <rect x="530" y="348" width="240" height="12" fill="url(#q4Grad)"/>
+    <text x="650" y="347" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="13" font-weight="700" fill="white">🔊 Q4. 노이즈</text>
+    
+    <text x="550" y="385" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#3E2723" font-weight="500">"실제 세계 데이터에</text>
+    <text x="550" y="403" font-family="Noto Sans KR, sans-serif" font-size="11" fill="#3E2723" font-weight="500">노이즈가 있는 이유는?"</text>
+    
+    <rect x="545" y="415" width="210" height="25" rx="4" fill="#F3E5F5"/>
+    <text x="650" y="432" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#7B1FA2">💡 예상 답: 측정 오차, 변수 누락, 무작위</text>
+  </g>
+  
+  <!-- 심화 질문 (하단 중앙) -->
+  <g filter="url(#shadow)">
+    <rect x="200" y="460" width="400" height="35" rx="10" fill="white" stroke="#FFC107" stroke-width="2"/>
+    <text x="400" y="483" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="11" font-weight="600" fill="#F57F17">🚀 심화: "AI 예측은 항상 맞을까? AI의 한계는 무엇일까?"</text>
+  </g>
+  
+  <!-- 질문 활용 팁 (원의 좌우로 배치) -->
+  <rect x="180" y="250" width="160" height="30" rx="6" fill="#E3F2FD"/>
+  <text x="260" y="270" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#1565C0">💬 모둠 토론 → 전체 공유</text>
+  
+  <rect x="460" y="250" width="160" height="30" rx="6" fill="#FFF8E1"/>
+  <text x="540" y="270" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" fill="#F57F17">⏱️ 질문당 5분 토론</text>
+</svg>

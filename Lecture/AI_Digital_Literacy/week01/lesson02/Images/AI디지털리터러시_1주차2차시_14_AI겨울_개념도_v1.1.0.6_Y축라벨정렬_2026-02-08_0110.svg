@@ -1,0 +1,76 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#333" />
+    </marker>
+  </defs>
+  <rect x="10" y="10" width="780" height="580" fill="#ffffff" stroke="#333" stroke-width="2"/>
+  <rect x="12" y="12" width="776" height="60" fill="#1976D2" opacity="0.1"/>
+  <text x="400" y="40" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#1976D2" text-anchor="middle">AI 겨울 (AI Winter)</text>
+  <text x="400" y="65" font-family="Arial, sans-serif" font-size="16" fill="#333" text-anchor="middle">AI 연구에 대한 관심과 투자가 급격히 감소하는 시기</text>
+  <line x1="10" y1="80" x2="790" y2="80" stroke="#333" stroke-width="2"/>
+  <rect x="220" y="100" width="120" height="300" fill="#E3F2FD" stroke="none"/>
+  <rect x="380" y="100" width="110" height="300" fill="#E3F2FD" stroke="none"/>
+  <g transform="translate(70, 400)">
+    <line x1="0" y1="0" x2="0" y2="-300" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="-30" y="-305" font-family="Arial, sans-serif" font-size="12" fill="#333" text-anchor="middle">높음</text>
+    <text x="-30" y="-150" font-family="Arial, sans-serif" font-size="13" fill="#333" text-anchor="middle">관심/투자</text>
+    <text x="-30" y="0" font-family="Arial, sans-serif" font-size="12" fill="#333" text-anchor="middle">낮음</text>
+    <line x1="0" y1="0" x2="680" y2="0" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  </g>
+  <g transform="translate(70, 400)" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333">
+    <line x1="20" y1="-5" x2="20" y2="5" stroke="#333" stroke-width="2"/>
+    <text x="20" y="25">1950</text>
+    <text x="20" y="45">튜링</text>
+    <line x1="90" y1="-5" x2="90" y2="5" stroke="#333" stroke-width="2"/>
+    <text x="90" y="25">1956</text>
+    <text x="90" y="45">다트머스</text>
+    <line x1="180" y1="-5" x2="180" y2="5" stroke="#333" stroke-width="2"/>
+    <text x="180" y="25">1970s</text>
+    <line x1="340" y1="-5" x2="340" y2="5" stroke="#333" stroke-width="2"/>
+    <text x="340" y="25">1980s</text>
+    <line x1="460" y1="-5" x2="460" y2="5" stroke="#333" stroke-width="2"/>
+    <text x="460" y="25">1997</text>
+    <text x="460" y="45">딥블루</text>
+    <line x1="550" y1="-5" x2="550" y2="5" stroke="#333" stroke-width="2"/>
+    <text x="550" y="25">2010s</text>
+    <text x="550" y="45">딥러닝</text>
+    <line x1="640" y1="-5" x2="640" y2="5" stroke="#333" stroke-width="2"/>
+    <text x="640" y="25">2020s</text>
+    <text x="640" y="45">생성형AI</text>
+  </g>
+  <g transform="translate(70, 400)">
+    <path d="M 20,-250 C 150,-280 300,-280 650,-250" fill="none" stroke="#FF9800" stroke-width="3" stroke-dasharray="8,5"/>
+    <path d="M 20,-20 C 60,-50 90,-200 120,-200 C 140,-200 160,-220 180,-220 C 200,-220 220,-50 250,-50 C 280,-50 300,-180 330,-180 C 360,-180 380,-80 410,-80 C 440,-80 460,-150 480,-150 C 520,-150 550,-280 580,-280 C 610,-280 640,-320 660,-320" fill="none" stroke="#1976D2" stroke-width="3"/>
+    <text x="235" y="-70" font-family="Arial, sans-serif" font-size="14" fill="#1976D2" font-weight="bold">▼급락</text>
+  </g>
+  <g transform="translate(70, 460)">
+    <line x1="180" y1="-15" x2="180" y2="10" stroke="#1976D2" stroke-width="2"/>
+    <line x1="340" y1="-15" x2="340" y2="10" stroke="#1976D2" stroke-width="2"/>
+    <g transform="translate(110, 10)">
+      <rect x="0" y="0" width="140" height="115" fill="#E3F2FD" stroke="#1976D2" stroke-width="2" rx="5"/>
+      <text x="70" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1976D2" text-anchor="middle">1차 AI 겨울</text>
+      <text x="10" y="45" font-family="Arial, sans-serif" font-size="13" fill="#333">· 과대 기대</text>
+      <text x="10" y="65" font-family="Arial, sans-serif" font-size="13" fill="#333">· 컴퓨팅 부족</text>
+      <text x="10" y="85" font-family="Arial, sans-serif" font-size="13" fill="#333">· 데이터 부족</text>
+      <text x="10" y="105" font-family="Arial, sans-serif" font-size="13" fill="#333">· 자금 중단</text>
+    </g>
+    <g transform="translate(270, 10)">
+      <rect x="0" y="0" width="140" height="115" fill="#E3F2FD" stroke="#1976D2" stroke-width="2" rx="5"/>
+      <text x="70" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1976D2" text-anchor="middle">2차 AI 겨울</text>
+      <text x="10" y="45" font-family="Arial, sans-serif" font-size="13" fill="#333">· 지식 획득</text>
+      <text x="20" y="65" font-family="Arial, sans-serif" font-size="13" fill="#333">어려움</text>
+      <text x="10" y="85" font-family="Arial, sans-serif" font-size="13" fill="#333">· 유지보수</text>
+      <text x="20" y="105" font-family="Arial, sans-serif" font-size="13" fill="#333">불가능</text>
+    </g>
+  </g>
+  <g transform="translate(555, 335)">
+    <rect x="0" y="0" width="175" height="55" fill="#ffffff" stroke="#bbb" stroke-width="1" rx="4" opacity="0.92"/>
+    <line x1="8" y1="12" x2="28" y2="12" stroke="#1976D2" stroke-width="2.5"/>
+    <text x="33" y="15" font-family="Arial, sans-serif" font-size="9" fill="#333">실제 발전 (파란 실선)</text>
+    <line x1="8" y1="28" x2="28" y2="28" stroke="#FF9800" stroke-width="2.5" stroke-dasharray="4,3"/>
+    <text x="33" y="31" font-family="Arial, sans-serif" font-size="9" fill="#333">초기 기대 (주황 점선)</text>
+    <rect x="8" y="39" width="9" height="9" fill="#E3F2FD" stroke="#1976D2" stroke-width="0.8"/>
+    <text x="21" y="47" font-family="Arial, sans-serif" font-size="9" fill="#333">AI 겨울 구간</text>
+  </g>
+</svg>

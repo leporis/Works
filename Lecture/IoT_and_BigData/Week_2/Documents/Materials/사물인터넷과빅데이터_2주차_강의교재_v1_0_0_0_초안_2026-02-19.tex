@@ -1,0 +1,713 @@
+\documentclass[11pt, a4paper]{article}
+
+% === LuaLaTeX 패키지 ===
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{emoji}
+\setemojifont{Noto Color Emoji}
+
+% 이모지 폴백 폰트
+\directlua{
+  luaotfload.add_fallback("emojifb", {
+    "NotoColorEmoji:mode=harf;"
+  })
+}
+\setmainfont{Noto Sans CJK KR}[RawFeature={fallback=emojifb}]
+\setsansfont{Noto Sans CJK KR}[RawFeature={fallback=emojifb}]
+\setmonofont{Noto Sans Mono CJK KR}[Scale=0.85]
+
+% === 레이아웃 ===
+\usepackage[margin=2.3cm, top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% === 패키지 ===
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{float}
+
+% === 한글 캡션 ===
+\renewcommand{\contentsname}{목차}
+\renewcommand{\tablename}{표}
+\renewcommand{\figurename}{그림}
+\renewcommand{\abstractname}{학습 목표}
+
+% === 색상 정의 ===
+\definecolor{mainblue}{RGB}{21, 101, 192}
+\definecolor{accentgreen}{RGB}{46, 125, 50}
+\definecolor{warningorange}{RGB}{230, 81, 0}
+\definecolor{lightbg}{RGB}{245, 245, 245}
+\definecolor{tipbg}{RGB}{232, 245, 233}
+\definecolor{warnbg}{RGB}{255, 243, 224}
+\definecolor{corebg}{RGB}{227, 242, 253}
+
+% === tcolorbox 스타일 ===
+\tcbuselibrary{skins, breakable}
+\newtcolorbox{tipbox}[1][]{
+  colback=tipbg, colframe=accentgreen, boxrule=1pt, arc=4pt,
+  fonttitle=\bfseries\color{accentgreen}, title={#1}, breakable
+}
+\newtcolorbox{warnbox}[1][]{
+  colback=warnbg, colframe=warningorange, boxrule=1pt, arc=4pt,
+  fonttitle=\bfseries\color{warningorange}, title={#1}, breakable
+}
+\newtcolorbox{corebox}[1][]{
+  colback=corebg, colframe=mainblue, boxrule=1pt, arc=4pt,
+  fonttitle=\bfseries\color{mainblue}, title={#1}, breakable
+}
+\newtcolorbox{promptbox}{
+  colback=lightbg, colframe=gray!60, boxrule=0.5pt, arc=2pt,
+  fontupper=\ttfamily\small, breakable
+}
+
+% === 헤더/푸터 ===
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{mainblue}{사물인터넷과 빅데이터}}
+\fancyhead[R]{\small\textcolor{gray}{2주차: 바이브코딩 소개}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+
+% === 섹션 스타일 ===
+\titleformat{\section}{\Large\bfseries\color{mainblue}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries\color{mainblue!80}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{mainblue!60}}{\thesubsubsection}{0.5em}{}
+
+% === 하이퍼링크 ===
+\hypersetup{
+  colorlinks=true, linkcolor=mainblue, urlcolor=mainblue!70
+}
+
+% === 그래픽 경로 ===
+\graphicspath{{./figures/}{./screenshots/}}
+
+% ============================================================
+\begin{document}
+
+% === 표지 ===
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{mainblue} 사물인터넷과 빅데이터\par}
+\vspace{0.5cm}
+{\LARGE 2주차 강의교재\par}
+\vspace{1.5cm}
+{\Huge\bfseries 바이브코딩 소개\par}
+\vspace{2cm}
+{\large 청주교육대학교 컴퓨터교육과\par}
+\vspace{0.3cm}
+{\large 2026학년도 1학기\par}
+\vspace{3cm}
+{\normalsize 문서 버전: v1.0.0.0\par}
+{\normalsize 작성일: 2026-02-19\par}
+\end{titlepage}
+
+% === 목차 ===
+\tableofcontents
+\newpage
+
+% === 학습 목표 ===
+\begin{corebox}[학습 목표]
+\textbf{바이브코딩의 개념을 이해하고, 다양한 센서를 탐색한다.}
+\begin{enumerate}[leftmargin=1.5em]
+\item 바이브코딩의 정의와 전통 코딩과의 차이를 설명할 수 있다
+\item Claude를 활용하여 간단한 웹페이지를 만들 수 있다
+\item 마이크로비트 V2 내장 센서의 종류와 특징을 설명할 수 있다
+\item Grove I2C 확장 센서의 연결 방식과 주요 센서를 탐색할 수 있다
+\item 프로젝트 아이디어를 구상할 수 있다
+\end{enumerate}
+\end{corebox}
+
+% ============================================================
+\section{지난 주 돌아보기}
+% ============================================================
+
+\subsection{1주차 과제 점검}
+
+지난 시간에는 마이크로비트 LED에 자기 이름을 표시하는 과제를 했습니다. 간단히 점검해 봅시다.
+
+\begin{table}[H]\centering
+\caption{1주차 과제 점검표}
+\begin{tabular}{lc}\toprule
+\textbf{점검 항목} & \textbf{확인} \\\midrule
+MakeCode 에디터에 접속했나요? & $\square$ \\
+``시작하면'' 블록 안에 ``문자열 표시'' 블록을 넣었나요? & $\square$ \\
+시뮬레이터에서 LED가 스크롤되며 이름이 나타났나요? & $\square$ \\
+개발일지를 작성하여 제출했나요? & $\square$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+잘 됐든, 잘 안 됐든 괜찮습니다. 오늘부터는 블록 코딩 대신 \textbf{완전히 새로운 방식}으로 프로그래밍을 해봅니다. 바로 \textbf{바이브코딩}입니다!
+
+\subsection{오늘의 수업 흐름}
+
+\begin{table}[H]\centering
+\caption{2주차 수업 구성}
+\begin{tabular}{ccll}\toprule
+\textbf{순서} & \textbf{시간} & \textbf{내용} & \textbf{유형} \\\midrule
+1 & 20분 & 바이브코딩 개념 설명 & 강의 \\
+2 & 20분 & Claude 사용법 시연 & 시연 \\
+3 & 20분 & 바이브코딩 체험: 자기소개 홈페이지 & 실습 \\
+4 & 30분 & 센서 탐색: 내장 + Grove 확장 & 강의+탐색 \\
+5 & 10분 & 프로젝트 브레인스토밍 안내 & 안내 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{바이브코딩이란?}
+% ============================================================
+
+\subsection{코딩의 두 가지 방식}
+
+여러분이 알고 있는 코딩은 프로그래밍 언어를 공부하고, 문법을 암기하고, 코드를 한 줄씩 직접 작성하는 것입니다. 변수, 함수, 반복문, 조건문 등의 개념을 하나하나 배우고, 한 글자라도 틀리면 에러가 발생합니다. 전통 코딩에서는 \textbf{``어떻게(How) 만드는가''}에 많은 시간을 투자하게 됩니다.
+
+그런데 이제 완전히 다른 방식이 가능해졌습니다. AI에게 원하는 것을 \textbf{말로 설명}하면, AI가 코드를 생성해 줍니다. 결과를 보고 마음에 안 들면 ``이 부분 좀 바꿔줘''라고 요청하면 됩니다. 바이브코딩에서는 \textbf{``무엇을(What) 만들고 싶은가''}가 핵심입니다.
+
+\begin{figure}[H]\centering
+\includegraphics[width=\textwidth]{강의교재_2주차_그림01_전통코딩vs바이브코딩.pdf}
+\caption{전통 코딩 vs 바이브코딩 비교}
+\end{figure}
+
+\subsection{바이브코딩의 정의}
+
+바이브코딩(Vibe Coding)은 \textbf{코드를 직접 짜지 않고, AI에게 자연어로 설명하여 코드를 만드는 방법}입니다. ``바이브(vibe)''는 영어로 분위기, 느낌이라는 뜻입니다. 내가 원하는 느낌(vibe)을 AI에게 전달하면, AI가 그 느낌에 맞는 코드를 만들어줍니다.
+
+\begin{table}[H]\centering
+\caption{전통 코딩과 바이브코딩 비교}
+\begin{tabular}{p{3cm}p{5cm}p{5cm}}\toprule
+\textbf{항목} & \textbf{전통 코딩} & \textbf{바이브코딩} \\\midrule
+핵심 역량 & 프로그래밍 문법 지식 & 원하는 것을 명확히 설명하는 능력 \\
+소통 대상 & 컴퓨터 (코드로) & AI (자연어로) \\
+오류 수정 & 코드를 직접 디버깅 & AI에게 수정 요청 \\
+결과물 & 코드 파일 & 코드 파일 (AI가 생성) \\
+필요 지식 & 프로그래밍 언어, 알고리즘 & 문제 정의, 프롬프트 작성 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{바이브코딩의 장점}
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{진입 장벽이 낮습니다} — 프로그래밍 언어를 몰라도 프로그램을 만들 수 있습니다.
+\item \textbf{아이디어를 빠르게 구현합니다} — 전통 코딩으로 웹페이지 하나 만들려면 HTML, CSS, JavaScript를 배워야 하지만, 바이브코딩으로는 5분이면 됩니다.
+\item \textbf{진짜 중요한 것에 집중합니다} — 코드 문법 대신 ``무엇을 만들지'', ``데이터를 어떻게 해석할지'' 같은 문제 해결 과정에 집중할 수 있습니다.
+\item \textbf{점진적 개선이 쉽습니다} — 결과물을 보면서 ``이건 좀 바꿔줘''라고 계속 수정할 수 있습니다.
+\end{itemize}
+
+\subsection{바이브코딩의 한계}
+
+\begin{warnbox}[바이브코딩의 한계]
+\begin{itemize}[leftmargin=1.5em]
+\item AI가 만든 코드가 항상 완벽하지는 않습니다. 결과를 \textbf{반드시 확인}해야 합니다.
+\item AI는 코드를 ``이해''하는 게 아닙니다. 대량의 데이터에서 학습한 \textbf{패턴을 기반으로 생성}하는 것입니다.
+\item 복잡한 프로그램일수록 프롬프트를 매우 정교하게 써야 합니다.
+\item 결과를 판단하는 건 사람의 몫입니다.
+\end{itemize}
+\end{warnbox}
+
+\begin{corebox}[핵심 메시지]
+``AI는 코드를 이해하지 않습니다. 우리가 만든 설명을 바탕으로 코드를 생성할 뿐입니다. 그래서 결과를 꼭 확인해야 합니다!''
+\end{corebox}
+
+\subsection{이 수업에서 바이브코딩을 사용하는 이유}
+
+이 수업의 목표는 코딩 실력을 키우는 것이 아닙니다. 데이터를 수집하고, 분석하고, 해석하는 과정을 경험하는 것입니다.
+
+\begin{table}[H]\centering
+\caption{역할 분담: AI vs 학생}
+\begin{tabular}{p{5.5cm}p{7cm}}\toprule
+\textbf{바이브코딩으로 AI가 하는 일} & \textbf{여러분이 집중하는 일} \\\midrule
+HTML/CSS/JavaScript 코드 작성 & 어떤 센서로 뭘 측정할까? (문제 정의) \\
+그래프 그리는 코드 작성 & 수집한 데이터에서 어떤 패턴이 보일까? (데이터 분석) \\
+데이터 처리 코드 작성 & 이 패턴이 정말 원인--결과 관계일까? (비판적 사고) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Claude 사용법}
+% ============================================================
+
+\subsection{Claude란?}
+
+Claude는 Anthropic이라는 회사에서 만든 \textbf{대화형 AI}입니다. 이 수업에서는 Claude를 바이브코딩 도구로 사용합니다. Claude에게 ``이런 프로그램을 만들어줘''라고 요청하면 코드를 생성해 주고, ``이 부분을 수정해줘''라고 하면 코드를 고쳐줍니다.
+
+\subsection{접속 방법}
+
+웹 브라우저에서 \texttt{claude.ai}에 접속하여 학교에서 제공하는 계정으로 로그인합니다. 왼쪽 상단의 ``새 대화'' 버튼을 눌러 대화를 시작합니다.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.95\textwidth]{강의교재_2주차_그림02_Claude인터페이스.pdf}
+\caption{Claude 인터페이스 화면 구성}
+\end{figure}
+
+\subsection{화면 구성}
+
+Claude 화면은 크게 세 영역으로 나뉩니다.
+
+\begin{table}[H]\centering
+\caption{Claude 화면 영역}
+\begin{tabular}{lll}\toprule
+\textbf{영역} & \textbf{위치} & \textbf{기능} \\\midrule
+사이드바 & 왼쪽 & 이전 대화 목록, 새 대화 시작 \\
+대화 영역 & 가운데 & 입력한 메시지와 Claude 답변 표시 \\
+입력창 & 하단 & 프롬프트 입력, 파일 첨부 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+대화 영역에서 Claude가 코드를 생성하면, 별도의 \textbf{Artifact 패널}이 오른쪽에 나타납니다. 여기서 결과물을 미리보기하거나 다운로드할 수 있습니다.
+
+\subsection{좋은 프롬프트 작성법}
+
+프롬프트(Prompt)란 AI에게 보내는 요청 메시지입니다. 프롬프트를 어떻게 쓰느냐에 따라 결과 품질이 크게 달라집니다.
+
+\subsubsection{원칙 1: 구체적으로 쓰기}
+
+\begin{table}[H]\centering
+\caption{모호한 프롬프트 vs 구체적인 프롬프트}
+\begin{tabular}{p{4.5cm}p{8.5cm}}\toprule
+\textbf{모호한 프롬프트} & \textbf{구체적인 프롬프트} \\\midrule
+``웹페이지 만들어줘'' & ``내 이름, 취미, 좋아하는 과목을 소개하는 웹페이지를 만들어줘. 배경은 밝은 파란색으로 해줘.'' \\
+``그래프 그려줘'' & ``온도 데이터를 시간순으로 꺾은선 그래프로 그려줘. X축은 시간, Y축은 온도(\textcelsius)야.'' \\
+``데이터 분석해줘'' & ``CSV 파일의 온도와 소음 데이터에서 상관관계를 계산하고 산점도를 그려줘.'' \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{원칙 2: 단계적으로 요청하기}
+
+한 번에 모든 걸 요청하기보다, 단계별로 나눠서 요청하면 더 좋은 결과를 얻을 수 있습니다.
+
+\begin{promptbox}
+[1단계] ``자기소개 홈페이지를 만들어줘. 이름은 홍길동이야.''\\
+[2단계] ``배경색을 하늘색으로 바꿔줘.''\\
+[3단계] ``좋아하는 과목 목록을 표로 추가해줘.''\\
+[4단계] ``이모지를 넣어서 더 귀엽게 만들어줘.''
+\end{promptbox}
+
+\subsubsection{원칙 3: 예시를 포함하기}
+
+원하는 결과의 예시를 보여주면 AI가 더 정확하게 이해합니다.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.95\textwidth]{강의교재_2주차_그림03_바이브코딩워크플로.pdf}
+\caption{프롬프트 → 결과 → 수정의 반복 흐름}
+\end{figure}
+
+\subsection{Artifact: 결과물 확인과 다운로드}
+
+Claude가 코드를 생성하면 Artifact 패널에 결과가 표시됩니다.
+
+\begin{table}[H]\centering
+\caption{Artifact 패널 기능}
+\begin{tabular}{ll}\toprule
+\textbf{기능} & \textbf{설명} \\\midrule
+미리보기(Preview) & 웹페이지 결과를 바로 확인 \\
+코드 보기(Code) & 실제 생성된 HTML/CSS/JS 코드 확인 \\
+다운로드 & HTML 파일로 저장 (과제 제출용) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{대화목록 PDF 생성 방법}
+
+바이브코딩 활용 주차(2주차, 9\textasciitilde13주차)에는 대화목록 전문과 요약본을 PDF로 제출해야 합니다.
+
+\begin{promptbox}
+이 대화에서 사용한 프롬프트와 답변을 포함한 대화 전문과\\
+프롬프트와 답변을 정리한 요약본을 PDF 문서로 만들어줘.\\
+오늘 날짜, 수업주차 2주차, 작성자 이름 OOO, 학번 XXXXXX을 추가해줘.
+\end{promptbox}
+
+% ============================================================
+\section{바이브코딩 체험 실습}
+% ============================================================
+
+\subsection{실습 과제: 자기소개 홈페이지 만들기}
+
+Claude에게 자기소개 홈페이지를 만들어달라고 요청해 봅시다.
+
+\begin{promptbox}
+나를 소개하는 웹페이지를 만들어줘.\\
+- 이름: 홍길동\\
+- 학교: 청주교육대학교 컴퓨터교육과 4학년\\
+- 좋아하는 과목: 체육, 미술, 음악\\
+- 취미: 독서, 영화 감상, 요리\\
+- 장래 희망: 초등학교 선생님\\
+- 배경은 밝고 예쁘게, 이모지도 넣어줘
+\end{promptbox}
+
+\subsection{결과 확인과 수정 요청}
+
+Claude가 만든 결과물을 Artifact 패널에서 확인합니다. 내가 요청한 정보가 다 들어갔는지, 디자인이 마음에 드는지, 오류가 없는지 점검합니다.
+
+마음에 안 드는 부분이 있으면 수정을 요청합니다. 이것이 바이브코딩의 핵심 과정입니다.
+
+\begin{table}[H]\centering
+\caption{수정 요청 예시}
+\begin{tabular}{ll}\toprule
+\textbf{수정 요청} & \textbf{기대 효과} \\\midrule
+``글씨가 좀 작아. 제목을 더 크게 해줘.'' & 타이포그래피 개선 \\
+``사진 넣을 자리를 추가해줘.'' & 레이아웃 변경 \\
+``색깔을 좀 더 파스텔 톤으로 바꿔줘.'' & 색상 테마 변경 \\
+``좋아하는 과목을 카드 형태로 보여줘.'' & UI 컴포넌트 변경 \\
+``모바일에서도 잘 보이게 해줘.'' & 반응형 디자인 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{실습 후 생각해 볼 점}
+
+\begin{itemize}[leftmargin=1.5em]
+\item Claude가 내 의도를 잘 이해했나요? 프롬프트를 어떻게 바꾸면 좋을까요?
+\item 프롬프트를 구체적으로 쓸수록 결과가 좋아졌나요?
+\item Claude가 만든 코드에 이상한 부분이 있었나요?
+\item ``이 방법으로 데이터 분석 프로그램도 만들 수 있겠다!''라는 느낌이 오나요?
+\end{itemize}
+
+\begin{corebox}[기억하세요]
+Claude가 만든 결과를 그대로 믿지 말고, 꼭 확인하세요! 이 습관이 앞으로 데이터를 분석할 때도 정말 중요합니다.
+\end{corebox}
+
+% ============================================================
+\section{마이크로비트 V2 내장 센서}
+% ============================================================
+
+\subsection{마이크로비트 복습}
+
+마이크로비트 안에는 LED 말고도 여러 종류의 센서가 들어있습니다. 추가 장치를 연결하지 않아도 바로 사용할 수 있는 센서들입니다.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.85\textwidth]{강의교재_2주차_그림04_마이크로비트V2센서.pdf}
+\caption{마이크로비트 V2 내장 센서 배치도}
+\end{figure}
+
+\subsection{내장 센서 상세}
+
+\subsubsection{온도 센서}
+
+\begin{table}[H]\centering
+\begin{tabular}{ll}\toprule
+측정 대상 & 온도 (\textcelsius) \\
+값 범위 & $-5$\textcelsius{} \textasciitilde{} $50$\textcelsius \\
+위치 & 프로세서(CPU) 내부 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+마이크로비트의 온도 센서는 프로세서(CPU) 안에 있는 온도 센서입니다. CPU가 작동하면서 발생하는 열 때문에 실제 공기 온도보다 \textbf{2\textasciitilde5\textcelsius{} 높게} 측정될 수 있습니다. 정밀한 온도 측정이 필요하면 Grove 외부 온도 센서(SHT40)를 사용합니다.
+
+\subsubsection{마이크 (소음 센서)}
+
+\begin{table}[H]\centering
+\begin{tabular}{ll}\toprule
+측정 대상 & 소리 크기 \\
+값 범위 & 0 \textasciitilde{} 255 (상대값) \\
+위치 & 앞면 하단 \\
+특이사항 & V2에서 새로 추가 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+마이크가 측정하는 값은 상대적인 숫자(0\textasciitilde255)입니다. ``소리 크기 = 150''이라고 해서 150데시벨이 아닙니다! ``조용한 상태 vs 시끄러운 상태''를 비교하는 데 유용합니다.
+
+\subsubsection{조도 센서 (빛 센서)}
+
+5\texttimes5 LED를 거꾸로 사용해서 빛을 감지합니다. 값 범위는 0\textasciitilde255이며, ``밝음/어두움'' 정도의 구분은 잘 하지만 정확한 조도(lux)를 알기는 어렵습니다.
+
+\subsubsection{가속도계}
+
+3축(X, Y, Z) 방향으로 움직임을 감지합니다. 범위는 $\pm$2g이며, 기울기, 흔들림, 자유낙하까지 감지할 수 있습니다.
+
+\subsubsection{나침반과 터치 로고}
+
+나침반은 0\textdegree\textasciitilde360\textdegree{} 범위로 방향을 감지하고, 터치 로고는 V2에서 새로 추가된 정전식 터치 센서입니다.
+
+\subsection{내장 센서로 할 수 있는 것 vs 없는 것}
+
+\begin{table}[H]\centering
+\caption{내장 센서의 가능/불가능}
+\begin{tabular}{p{6cm}p{6.5cm}}\toprule
+\textbf{할 수 있는 것} & \textbf{할 수 없는 것} \\\midrule
+실내 온도 변화 추적 (대략적) & 정확한 기온 측정 (외부 센서 필요) \\
+소음 수준 비교 (상대값) & 정확한 데시벨(dB) 측정 \\
+밝음/어두움 구분 & 정확한 조도(lux) 측정 \\
+움직임, 기울기 감지 & 습도, 거리, 공기질 측정 \\
+방향 감지, 터치 입력 & 색상 인식 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Grove 확장 센서}
+% ============================================================
+
+\subsection{Grove 시스템이란?}
+
+Grove는 Seeed Studio에서 만든 \textbf{플러그앤플레이 센서 시스템}입니다. 전용 케이블을 꽂기만 하면 됩니다.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.95\textwidth]{강의교재_2주차_그림05_GroveShield연결.pdf}
+\caption{Grove Shield 연결 구조}
+\end{figure}
+
+\subsection{I2C 통신 이해하기}
+
+Grove 센서 대부분은 I2C(아이-투-씨) 통신 방식을 사용합니다.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.9\textwidth]{강의교재_2주차_그림06_I2C버스개념.pdf}
+\caption{I2C 버스 개념도 — 교실 인터콤 비유}
+\end{figure}
+
+마이크로비트(선생님=마스터)가 센서(학생=슬레이브)에게 고유 주소를 호출하여 데이터를 요청합니다. 하나의 버스에 여러 센서를 연결하되, \textbf{같은 주소의 센서는 동시 사용 불가}합니다.
+
+\subsection{주요 Grove I2C 센서}
+
+\begin{figure}[H]\centering
+\includegraphics[width=\textwidth]{강의교재_2주차_그림07_GroveI2C센서카탈로그.pdf}
+\caption{Grove I2C 센서 카탈로그}
+\end{figure}
+
+\subsubsection{SHT40 — 온도·습도 센서}
+
+I2C 주소 0x44. 온도 $-40$\textasciitilde$125$\textcelsius($\pm$0.2\textcelsius), 습도 0\textasciitilde100\%($\pm$1.8\%)를 측정합니다. 마이크로비트 내장 온도 센서보다 훨씬 정확하고, 습도까지 측정할 수 있습니다.
+
+\subsubsection{TSL2561 — 조도 센서}
+
+I2C 주소 0x29. 0.1\textasciitilde40,000 lux 범위의 실제 lux 값을 정확하게 측정합니다.
+
+\subsubsection{TCS34725 — 색상 센서}
+
+I2C 주소 0x29. RGB 색상값(빨강, 초록, 파랑)과 밝기를 측정합니다.
+
+\begin{warnbox}[주소 충돌 주의]
+TSL2561과 TCS34725는 I2C 주소가 동일(0x29)하므로 동시에 연결할 수 없습니다.
+\end{warnbox}
+
+\subsubsection{VL53L0X — 거리 센서 (ToF)}
+
+I2C 주소 0x29. 레이저를 이용해 30\textasciitilde2,000mm 거리를 측정합니다.
+
+\subsubsection{BMP280 — 기압 센서}
+
+I2C 주소 0x76. 기압(300\textasciitilde1,100 hPa)과 온도를 측정합니다.
+
+\subsubsection{BME680 — 환경 종합 센서}
+
+I2C 주소 0x76. 온도, 습도, 기압, 공기질(VOC) 4가지를 동시에 측정하는 만능 센서입니다.
+
+\begin{warnbox}[주소 충돌 주의]
+BMP280과 BME680은 I2C 주소가 동일(0x76)하므로 동시에 연결할 수 없습니다. BME680이 상위 호환입니다.
+\end{warnbox}
+
+\subsubsection{LIS3DHTR — 가속도 센서}
+
+I2C 주소 0x18. 마이크로비트 내장보다 정밀하고 설정 범위($\pm$2/4/8/16g)가 넓습니다.
+
+\subsection{센서 주소 충돌 정리}
+
+\begin{table}[H]\centering
+\caption{I2C 센서 주소 충돌표}
+\begin{tabular}{cll}\toprule
+\textbf{I2C 주소} & \textbf{해당 센서} & \textbf{동시 사용} \\\midrule
+0x18 & LIS3DHTR & 단독 사용 가능 \\
+0x29 & TSL2561, TCS34725, VL53L0X & 3개 중 1개만 선택 \\
+0x44 & SHT40 & 단독 사용 가능 \\
+0x76 & BMP280, BME680 & 2개 중 1개만 선택 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{센서 조합의 다양성}
+
+마이크로비트 내장 센서 4종과 Grove 외부 센서를 조합하면, \textbf{848가지 이상의 센서 조합}이 가능합니다.
+
+\begin{table}[H]\centering
+\caption{프로젝트별 추천 센서 조합}
+\begin{tabular}{p{3.5cm}p{2.5cm}p{4cm}c}\toprule
+\textbf{프로젝트 주제} & \textbf{내장 센서} & \textbf{Grove 센서} & \textbf{측정 항목 수} \\\midrule
+교실 환경 종합 & 소음, 빛 & BME680 & 6가지 \\
+교실 온습도·조도 & 소음 & SHT40, TSL2561 & 5가지 \\
+운동장 활동량 & 가속도 & LIS3DHTR, SHT40 & 5가지 \\
+사람 감지·환경 & 소음 & VL53L0X, SHT40 & 4가지 \\
+미니멀 환경 & 온도, 소음, 빛 & (없음) & 3가지 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{센서 시뮬레이터 소개}
+% ============================================================
+
+실제 마이크로비트와 Grove 센서는 다음 시간부터 사용합니다. 오늘은 시뮬레이터를 통해 센서 조합을 미리 체험합니다.
+
+\subsection{센서 시뮬레이터 v9}
+
+마이크로비트와 Grove Shield를 화면에서 보여주고, 최대 6개의 센서를 배치하면서 가상 데이터를 확인할 수 있는 웹 도구입니다.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.8\textwidth]{강의교재_2주차_캡처01상단_센서시뮬레이터.png}
+\caption{센서 시뮬레이터 v9 화면}
+\end{figure}
+
+\subsection{센서 검색 도구}
+
+자연어로 원하는 것을 입력하면 적합한 센서를 추천해 줍니다.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.8\textwidth]{강의교재_2주차_캡처04_센서검색도구.png}
+\caption{센서 검색 도구 화면}
+\end{figure}
+
+\subsection{I2C 연결도}
+
+센서별 I2C 주소와 연결 구조를 시각적으로 보여줍니다.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.75\textwidth]{강의교재_2주차_캡처03_I2C연결도.png}
+\caption{I2C 연결도 화면}
+\end{figure}
+
+% ============================================================
+\section{프로젝트 브레인스토밍 안내}
+% ============================================================
+
+\subsection{다음 주 예고: 프로젝트 기획}
+
+다음 주(3주차)에는 프로젝트 주제를 정합니다. 실습학교(5\textasciitilde8주차)에서 실제로 데이터를 수집할 프로젝트를 기획하는 시간입니다.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.95\textwidth]{강의교재_2주차_그림11_프로젝트예시.pdf}
+\caption{학교 현장 프로젝트 예시}
+\end{figure}
+
+\subsection{좋은 프로젝트 주제의 조건}
+
+\begin{table}[H]\centering
+\caption{좋은 프로젝트 주제의 조건}
+\begin{tabular}{p{2.5cm}p{5cm}p{5cm}}\toprule
+\textbf{조건} & \textbf{설명} & \textbf{예시} \\\midrule
+측정 가능 & 센서로 측정할 수 있는 데이터 & ``교실 온도'' / ``학생 기분'' \\
+비교 가능 & 두 가지 이상을 비교 & ``수업 시간 vs 쉬는 시간'' \\
+학교 현장 & 실습학교에서 수집 가능 & ``교실'', ``복도'', ``운동장'' \\
+충분한 양 & 최소 3일 이상 수집 권장 & 하루 기록은 부족 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{다음 주까지 생각해 올 것}
+
+\begin{itemize}[leftmargin=1.5em]
+\item 내가 실습학교에서 측정하고 싶은 것은?
+\item 어떤 센서가 필요할까?
+\item 데이터를 모으면 어떤 질문에 답할 수 있을까?
+\end{itemize}
+
+% ============================================================
+\section{오늘 수업 정리}
+% ============================================================
+
+\subsection{핵심 정리}
+
+\textbf{바이브코딩}은 코드를 직접 짜지 않고, AI에게 자연어로 설명하여 코드를 만드는 방법입니다. 프롬프트를 구체적으로, 단계적으로, 예시를 포함해서 작성하면 좋은 결과를 얻을 수 있습니다.
+
+\textbf{마이크로비트 V2}에는 온도, 소음, 빛, 가속도, 나침반, 터치 6가지 센서가 내장되어 있습니다.
+
+\textbf{Grove 확장 센서}는 I2C 방식의 플러그앤플레이 센서입니다. SHT40(온습도), TSL2561(조도), TCS34725(색상), VL53L0X(거리), BMP280(기압), BME680(환경 종합), LIS3DHTR(가속도) 등을 추가할 수 있습니다.
+
+\subsection{핵심 메시지 되새기기}
+
+\begin{table}[H]\centering
+\caption{핵심 메시지와 2주차 수업에서의 의미}
+\begin{tabular}{p{5cm}p{7.5cm}}\toprule
+\textbf{핵심 메시지} & \textbf{오늘 수업에서의 의미} \\\midrule
+``AI는 판단하지 않는다, 계산할 뿐이다'' & Claude가 코드를 `이해'하는 게 아니라 패턴으로 생성합니다 \\
+``코딩을 의심하는 방법을 가르친다'' & 바이브코딩 결과물을 무조건 믿지 말고 확인하세요 \\
+``데이터는 원인을 말하지 않는다'' & 센서가 측정하는 것과 우리가 알고 싶은 것은 다릅니다 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{과제 안내}
+% ============================================================
+
+\begin{table}[H]\centering
+\caption{2주차 과제 개요}
+\begin{tabular}{ll}\toprule
+\textbf{항목} & \textbf{내용} \\\midrule
+과제명 & 바이브코딩 체험 + 센서 탐색 \\
+내용 & Claude로 자기소개 홈페이지 만들기 \\
+배점 & 5\% \\
+제출 기한 & 일요일 자정 (LMS) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]\centering
+\caption{제출물 목록}
+\begin{tabular}{clll}\toprule
+\textbf{\#} & \textbf{제출물} & \textbf{형식} & \textbf{생성 방법} \\\midrule
+1 & 자기소개 홈페이지 & HTML & Claude Artifact에서 다운로드 \\
+2 & 대화목록 전문 & PDF & Claude에게 프롬프트로 요청 \\
+3 & 대화목록 요약본 & PDF & Claude에게 프롬프트로 요청 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]\centering
+\caption{등급 기준}
+\begin{tabular}{ccp{8cm}}\toprule
+\textbf{등급} & \textbf{점수} & \textbf{기준} \\\midrule
+A & 100\% & 홈페이지 완성 + 대화목록 충실 + 추가 시도/통찰 \\
+B & 85\% & 홈페이지 완성 + 대화목록 충실 \\
+C & 70\% & 홈페이지 기본 완성 + 대화목록 기본 작성 \\
+D & 55\% & 홈페이지 미흡 또는 대화목록 부실 \\
+F & 0\% & 미제출 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\newpage
+\section*{참고자료}
+\addcontentsline{toc}{section}{참고자료}
+
+\begin{table}[H]\centering
+\begin{tabular}{clll}\toprule
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\\midrule
+1 & 강의계획서 v1.5.3.0 & 문서 & 2주차 상세 계획 \\
+2 & 2주차 강의개요 v1.0.0.0 & 문서 & 강의개요 \\
+3 & 2주차 강의노트 v1.0.0.0 & 문서 & 강의노트 \\
+4 & 센서 시뮬레이터 v9.1.0.0 & HTML & 참고 도구 \\
+5 & 센서 검색 도구 v1.0.2.0 & HTML & 참고 도구 \\
+6 & I2C 연결도 v1.0.2.0 & HTML & 참고 도구 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section*{생성/수정 이력}
+\addcontentsline{toc}{section}{생성/수정 이력}
+
+\begin{table}[H]\centering
+\begin{tabular}{llllll}\toprule
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{수준} & \textbf{변경 내용} & \textbf{작성자} \\\midrule
+v1.0.0.0 & 2026-02-19 & 22:00 & 최초 & 2주차 강의교재 작성 & Claude \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

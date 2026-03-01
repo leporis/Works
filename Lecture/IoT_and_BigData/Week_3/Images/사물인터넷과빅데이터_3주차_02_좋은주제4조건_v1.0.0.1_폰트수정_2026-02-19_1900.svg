@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" font-family="'Noto Sans CJK KR', sans-serif">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="600" height="450" rx="16" fill="#FAFAFA"/>
+
+  <!-- 제목 -->
+  <text x="300" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#333">✅ 좋은 프로젝트 주제의 4가지 조건</text>
+
+  <!-- 조건 1: 좌상 - 블루 -->
+  <rect x="30" y="55" width="240" height="120" rx="14" fill="#E3F2FD" stroke="#1976D2" stroke-width="2" filter="url(#shadow)"/>
+  <text x="55" y="88" font-size="28">📊</text>
+  <text x="92" y="88" font-size="14" font-weight="bold" fill="#1565C0">조건 1</text>
+  <text x="92" y="110" font-size="15" font-weight="bold" fill="#0D47A1">센서로 측정 가능</text>
+  <text x="92" y="130" font-size="11" fill="#555">숫자로 바꿀 수 있는 것</text>
+  <text x="92" y="148" font-size="11" fill="#888">예: 온도, 소음, 밝기, 거리</text>
+
+  <!-- 조건 2: 우상 - 그린 -->
+  <rect x="330" y="55" width="240" height="120" rx="14" fill="#E8F5E9" stroke="#388E3C" stroke-width="2" filter="url(#shadow)"/>
+  <text x="355" y="88" font-size="28">🏫</text>
+  <text x="392" y="88" font-size="14" font-weight="bold" fill="#2E7D32">조건 2</text>
+  <text x="392" y="110" font-size="15" font-weight="bold" fill="#1B5E20">학교에서 수집 가능</text>
+  <text x="392" y="130" font-size="11" fill="#555">실습학교(5~8주차)에서 실행</text>
+  <text x="392" y="148" font-size="11" fill="#888">예: 교실, 복도, 도서관</text>
+
+  <!-- 중앙 교집합 -->
+  <rect x="195" y="185" width="210" height="80" rx="40" fill="#388E3C" stroke="#2E7D32" stroke-width="3" filter="url(#shadow)"/>
+  <text x="300" y="220" text-anchor="middle" font-size="22" font-weight="bold" fill="white">✅ 좋은 주제!</text>
+  <text x="300" y="248" text-anchor="middle" font-size="12" fill="#C8E6C9">4가지 조건 충족</text>
+
+  <!-- 화살표: 4방향 → 중앙 -->
+  <line x1="150" y1="175" x2="210" y2="200" stroke="#1976D2" stroke-width="2" opacity="0.5"/>
+  <line x1="450" y1="175" x2="390" y2="200" stroke="#388E3C" stroke-width="2" opacity="0.5"/>
+  <line x1="150" y1="280" x2="210" y2="255" stroke="#FFA000" stroke-width="2" opacity="0.5"/>
+  <line x1="450" y1="280" x2="390" y2="255" stroke="#7B1FA2" stroke-width="2" opacity="0.5"/>
+
+  <!-- 조건 3: 좌하 - 앰버 -->
+  <rect x="30" y="280" width="240" height="120" rx="14" fill="#FFF8E1" stroke="#FFA000" stroke-width="2" filter="url(#shadow)"/>
+  <text x="55" y="313" font-size="28">📈</text>
+  <text x="92" y="313" font-size="14" font-weight="bold" fill="#F57F17">조건 3</text>
+  <text x="92" y="335" font-size="15" font-weight="bold" fill="#E65100">비교·분석 가능</text>
+  <text x="92" y="355" font-size="11" fill="#555">시간/장소/조건별 차이 존재</text>
+  <text x="92" y="373" font-size="11" fill="#888">예: 오전 vs 오후, 1층 vs 3층</text>
+
+  <!-- 조건 4: 우하 - 퍼플 -->
+  <rect x="330" y="280" width="240" height="120" rx="14" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2" filter="url(#shadow)"/>
+  <text x="355" y="313" font-size="28">🎓</text>
+  <text x="392" y="313" font-size="14" font-weight="bold" fill="#7B1FA2">조건 4</text>
+  <text x="392" y="335" font-size="15" font-weight="bold" fill="#4A148C">교육적 의미</text>
+  <text x="392" y="355" font-size="11" fill="#555">학교 생활 개선에 기여</text>
+  <text x="392" y="373" font-size="11" fill="#888">예: 쾌적한 학습 환경</text>
+
+  <!-- 하단 주석 -->
+  <text x="300" y="430" text-anchor="middle" font-size="11" fill="#999">💡 조건 1(측정 가능)과 조건 2(학교 수집)는 반드시 충족해야 합니다</text>
+</svg>

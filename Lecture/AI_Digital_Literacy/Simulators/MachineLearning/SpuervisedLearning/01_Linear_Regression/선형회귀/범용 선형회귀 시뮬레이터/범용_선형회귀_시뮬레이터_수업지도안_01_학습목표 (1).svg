@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .title { font-family: 'Noto Sans KR', sans-serif; font-size: 18px; font-weight: 700; fill: #3E2723; }
+      .subtitle { font-family: 'Noto Sans KR', sans-serif; font-size: 12px; font-weight: 600; fill: #5D4037; }
+      .label { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; font-weight: 500; fill: #5D4037; }
+      .small { font-family: 'Noto Sans KR', sans-serif; font-size: 10px; fill: #5D4037; }
+      .hint { font-family: 'Noto Sans KR', sans-serif; font-size: 9px; fill: #8D6E63; }
+      .white { fill: #FFFFFF; }
+    </style>
+  </defs>
+  
+  <rect width="800" height="400" fill="url(#bgGrad)"/>
+  
+  <text x="400" y="32" text-anchor="middle" class="title">🎯 학습 목표 (Knowledge-Skill-Attitude)</text>
+  
+  <!-- 지식 영역 -->
+  <rect x="30" y="55" width="240" height="320" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="30" y="55" width="240" height="40" rx="12" fill="#E53935"/>
+  <rect x="30" y="83" width="240" height="12" fill="#E53935"/>
+  <text x="150" y="82" text-anchor="middle" class="subtitle white">📚 지식 (Knowledge)</text>
+  
+  <circle cx="55" cy="120" r="12" fill="#FFEBEE"/>
+  <text x="55" y="124" text-anchor="middle" class="small" style="fill:#C62828;font-weight:600">1</text>
+  <text x="75" y="118" class="small" style="font-weight:500">선형 회귀의 개념</text>
+  <text x="75" y="132" class="hint">(기울기, 절편)을 설명할 수 있다</text>
+  
+  <circle cx="55" cy="165" r="12" fill="#FFEBEE"/>
+  <text x="55" y="169" text-anchor="middle" class="small" style="fill:#C62828;font-weight:600">2</text>
+  <text x="75" y="163" class="small" style="font-weight:500">Y = wX + b 회귀식의</text>
+  <text x="75" y="177" class="hint">각 요소의 의미를 설명할 수 있다</text>
+  
+  <circle cx="55" cy="210" r="12" fill="#FFEBEE"/>
+  <text x="55" y="214" text-anchor="middle" class="small" style="fill:#C62828;font-weight:600">3</text>
+  <text x="75" y="208" class="small" style="font-weight:500">손실 함수(MSE)와 R² 점수의</text>
+  <text x="75" y="222" class="hint">의미를 설명할 수 있다</text>
+  
+  <rect x="45" y="245" width="210" height="55" rx="6" fill="#FFEBEE"/>
+  <text x="150" y="265" text-anchor="middle" class="hint" style="fill:#C62828">📝 평가: 개념 설명, 용어 정의</text>
+  <text x="150" y="280" text-anchor="middle" class="hint" style="fill:#C62828">회귀식 해석 문제</text>
+  <text x="150" y="295" text-anchor="middle" class="hint" style="fill:#C62828;font-weight:600">배점: 50점</text>
+  
+  <rect x="45" y="310" width="210" height="55" rx="6" fill="#FFF3E0"/>
+  <text x="150" y="330" text-anchor="middle" class="hint">💡 핵심 질문</text>
+  <text x="150" y="345" text-anchor="middle" class="hint">"w=15, b=500의 의미는?"</text>
+  <text x="150" y="358" text-anchor="middle" class="hint">"R²가 0.9라면 어떤 의미?"</text>
+  
+  <!-- 기능 영역 -->
+  <rect x="280" y="55" width="240" height="320" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="280" y="55" width="240" height="40" rx="12" fill="#43A047"/>
+  <rect x="280" y="83" width="240" height="12" fill="#43A047"/>
+  <text x="400" y="82" text-anchor="middle" class="subtitle white">🔧 기능 (Skill)</text>
+  
+  <circle cx="305" cy="120" r="12" fill="#E8F5E9"/>
+  <text x="305" y="124" text-anchor="middle" class="small" style="fill:#2E7D32;font-weight:600">1</text>
+  <text x="325" y="118" class="small" style="font-weight:500">시뮬레이터를 사용하여</text>
+  <text x="325" y="132" class="hint">데이터를 생성하고 모델을 학습</text>
+  
+  <circle cx="305" cy="165" r="12" fill="#E8F5E9"/>
+  <text x="305" y="169" text-anchor="middle" class="small" style="fill:#2E7D32;font-weight:600">2</text>
+  <text x="325" y="163" class="small" style="font-weight:500">학습률과 에포크를 조절하여</text>
+  <text x="325" y="177" class="hint">모델 성능을 개선할 수 있다</text>
+  
+  <circle cx="305" cy="210" r="12" fill="#E8F5E9"/>
+  <text x="305" y="214" text-anchor="middle" class="small" style="fill:#2E7D32;font-weight:600">3</text>
+  <text x="325" y="208" class="small" style="font-weight:500">여러 변수를 조합하여</text>
+  <text x="325" y="222" class="hint">예측 모델을 구성할 수 있다</text>
+  
+  <rect x="295" y="245" width="210" height="55" rx="6" fill="#E8F5E9"/>
+  <text x="400" y="265" text-anchor="middle" class="hint" style="fill:#2E7D32">📝 평가: 실습 과제 수행</text>
+  <text x="400" y="280" text-anchor="middle" class="hint" style="fill:#2E7D32">탐구 활동 결과 기록</text>
+  <text x="400" y="295" text-anchor="middle" class="hint" style="fill:#2E7D32;font-weight:600">배점: 30점</text>
+  
+  <rect x="295" y="310" width="210" height="55" rx="6" fill="#FFF3E0"/>
+  <text x="400" y="330" text-anchor="middle" class="hint">💡 핵심 활동</text>
+  <text x="400" y="345" text-anchor="middle" class="hint">학습률 실험, 다중 변수 선택</text>
+  <text x="400" y="358" text-anchor="middle" class="hint">가중치 조절, 예측 실습</text>
+  
+  <!-- 태도 영역 -->
+  <rect x="530" y="55" width="240" height="320" rx="12" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="530" y="55" width="240" height="40" rx="12" fill="#1565C0"/>
+  <rect x="530" y="83" width="240" height="12" fill="#1565C0"/>
+  <text x="650" y="82" text-anchor="middle" class="subtitle white">💭 태도 (Attitude)</text>
+  
+  <circle cx="555" cy="120" r="12" fill="#E3F2FD"/>
+  <text x="555" y="124" text-anchor="middle" class="small" style="fill:#1565C0;font-weight:600">1</text>
+  <text x="575" y="118" class="small" style="font-weight:500">AI 예측의 한계를 인식하고</text>
+  <text x="575" y="132" class="hint">비판적으로 평가하는 태도</text>
+  
+  <circle cx="555" cy="165" r="12" fill="#E3F2FD"/>
+  <text x="555" y="169" text-anchor="middle" class="small" style="fill:#1565C0;font-weight:600">2</text>
+  <text x="575" y="163" class="small" style="font-weight:500">데이터 기반 의사결정의</text>
+  <text x="575" y="177" class="hint">중요성을 인식한다</text>
+  
+  <circle cx="555" cy="210" r="12" fill="#E3F2FD"/>
+  <text x="555" y="214" text-anchor="middle" class="small" style="fill:#1565C0;font-weight:600">3</text>
+  <text x="575" y="208" class="small" style="font-weight:500">실험과 탐구를 통해</text>
+  <text x="575" y="222" class="hint">문제를 해결하려는 태도</text>
+  
+  <rect x="545" y="245" width="210" height="55" rx="6" fill="#E3F2FD"/>
+  <text x="650" y="265" text-anchor="middle" class="hint" style="fill:#1565C0">📝 평가: 성찰 일지</text>
+  <text x="650" y="280" text-anchor="middle" class="hint" style="fill:#1565C0">토론 참여도, 동료 협력</text>
+  <text x="650" y="295" text-anchor="middle" class="hint" style="fill:#1565C0;font-weight:600">배점: 20점</text>
+  
+  <rect x="545" y="310" width="210" height="55" rx="6" fill="#FFF3E0"/>
+  <text x="650" y="330" text-anchor="middle" class="hint">💡 핵심 질문</text>
+  <text x="650" y="345" text-anchor="middle" class="hint">"AI는 항상 맞을까?"</text>
+  <text x="650" y="358" text-anchor="middle" class="hint">"오차선이 의미하는 것은?"</text>
+</svg>

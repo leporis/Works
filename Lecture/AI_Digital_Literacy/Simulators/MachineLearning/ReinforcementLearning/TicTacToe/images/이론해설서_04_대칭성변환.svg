@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadowSm">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.5" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="420" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-family="Noto Sans KR" font-size="17" font-weight="700" fill="#1a1a2e">틱택토 보드의 8가지 대칭 변환</text>
+  <text x="400" y="47" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="#888">8 Symmetry Transformations — 전략적으로 동일한 보드</text>
+
+  <!-- Row 1 label -->
+  <text x="40" y="80" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#555">회전 (Rotation)</text>
+
+  <!-- Board template: 3x3 grid macro, cell=28px -->
+  <!-- BOARD 1: Original (highlighted) -->
+  <g transform="translate(55, 90)">
+    <rect x="-8" y="-8" width="106" height="118" rx="10" fill="white" stroke="#2980b9" stroke-width="2" filter="url(#shadow)"/>
+    <text x="45" y="-14" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="700" fill="#2980b9">⭐ 원본</text>
+    <!-- cells -->
+    <rect x="0" y="0" width="28" height="28" rx="3" fill="#D6EAF8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="31" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="62" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <!-- marks -->
+    <text x="14" y="20" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#2980b9">X</text>
+    <text x="45" y="51" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="76" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="45" y="106" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">0°</text>
+  </g>
+
+  <!-- Arrow -->
+  <text x="168" y="145" font-family="Noto Sans KR" font-size="14" fill="#888">→</text>
+
+  <!-- BOARD 2: 90° rotation -->
+  <g transform="translate(195, 90)">
+    <rect x="-8" y="-8" width="106" height="118" rx="10" fill="white" stroke="#ddd" stroke-width="1" filter="url(#shadowSm)"/>
+    <text x="45" y="-14" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#555">90° 회전</text>
+    <rect x="0" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="0" width="28" height="28" rx="3" fill="#D6EAF8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="31" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="62" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <text x="76" y="20" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#2980b9">X</text>
+    <text x="45" y="51" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="14" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="45" y="106" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">90°</text>
+  </g>
+
+  <text x="308" y="145" font-family="Noto Sans KR" font-size="14" fill="#888">→</text>
+
+  <!-- BOARD 3: 180° rotation -->
+  <g transform="translate(335, 90)">
+    <rect x="-8" y="-8" width="106" height="118" rx="10" fill="white" stroke="#ddd" stroke-width="1" filter="url(#shadowSm)"/>
+    <text x="45" y="-14" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#555">180° 회전</text>
+    <rect x="0" y="0" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="31" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="62" width="28" height="28" rx="3" fill="#D6EAF8" stroke="#bbb" stroke-width="0.8"/>
+    <text x="14" y="20" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="45" y="51" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="76" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#2980b9">X</text>
+    <text x="45" y="106" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">180°</text>
+  </g>
+
+  <text x="448" y="145" font-family="Noto Sans KR" font-size="14" fill="#888">→</text>
+
+  <!-- BOARD 4: 270° rotation -->
+  <g transform="translate(475, 90)">
+    <rect x="-8" y="-8" width="106" height="118" rx="10" fill="white" stroke="#ddd" stroke-width="1" filter="url(#shadowSm)"/>
+    <text x="45" y="-14" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#555">270° 회전</text>
+    <rect x="0" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="0" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="31" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="62" width="28" height="28" rx="3" fill="#D6EAF8" stroke="#bbb" stroke-width="0.8"/>
+    <text x="76" y="20" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="45" y="51" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="76" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#2980b9">X</text>
+    <text x="45" y="106" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">270°</text>
+  </g>
+
+  <!-- Row 2 label -->
+  <text x="40" y="238" font-family="Noto Sans KR" font-size="10" font-weight="600" fill="#555">좌우 반사 + 회전 (Reflection + Rotation)</text>
+
+  <!-- BOARD 5: Horizontal flip -->
+  <g transform="translate(55, 248)">
+    <rect x="-8" y="-8" width="106" height="118" rx="10" fill="white" stroke="#ddd" stroke-width="1" filter="url(#shadowSm)"/>
+    <text x="45" y="-14" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#555">좌우 반사</text>
+    <rect x="0" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="0" width="28" height="28" rx="3" fill="#D6EAF8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="31" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="62" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <text x="76" y="20" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#2980b9">X</text>
+    <text x="45" y="51" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="14" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="45" y="106" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">↔ 반사</text>
+  </g>
+
+  <!-- BOARD 6 -->
+  <g transform="translate(195, 248)">
+    <rect x="-8" y="-8" width="106" height="118" rx="10" fill="white" stroke="#ddd" stroke-width="1" filter="url(#shadowSm)"/>
+    <text x="45" y="-14" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#555">반사+90°</text>
+    <rect x="0" y="0" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="31" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="62" width="28" height="28" rx="3" fill="#D6EAF8" stroke="#bbb" stroke-width="0.8"/>
+    <text x="14" y="20" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="45" y="51" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="76" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#2980b9">X</text>
+    <text x="45" y="106" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">↔+90°</text>
+  </g>
+
+  <!-- BOARD 7 -->
+  <g transform="translate(335, 248)">
+    <rect x="-8" y="-8" width="106" height="118" rx="10" fill="white" stroke="#ddd" stroke-width="1" filter="url(#shadowSm)"/>
+    <text x="45" y="-14" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#555">반사+180°</text>
+    <rect x="0" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="0" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="31" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="62" width="28" height="28" rx="3" fill="#D6EAF8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <text x="76" y="20" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="45" y="51" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="14" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#2980b9">X</text>
+    <text x="45" y="106" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">↔+180°</text>
+  </g>
+
+  <!-- BOARD 8 -->
+  <g transform="translate(475, 248)">
+    <rect x="-8" y="-8" width="106" height="118" rx="10" fill="white" stroke="#ddd" stroke-width="1" filter="url(#shadowSm)"/>
+    <text x="45" y="-14" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#555">반사+270°</text>
+    <rect x="0" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="0" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="31" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="31" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="0" y="62" width="28" height="28" rx="3" fill="#D6EAF8" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="31" y="62" width="28" height="28" rx="3" fill="#f0f0f0" stroke="#bbb" stroke-width="0.8"/>
+    <rect x="62" y="62" width="28" height="28" rx="3" fill="#FADBD8" stroke="#bbb" stroke-width="0.8"/>
+    <text x="45" y="51" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="14" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#2980b9">X</text>
+    <text x="76" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c0392b">O</text>
+    <text x="45" y="106" text-anchor="middle" font-family="Noto Sans KR" font-size="8" fill="#888">↔+270°</text>
+  </g>
+
+  <!-- Result box -->
+  <g transform="translate(610, 120)">
+    <rect width="160" height="110" rx="12" fill="#1a1a2e" filter="url(#shadow)"/>
+    <text x="80" y="28" text-anchor="middle" font-family="Noto Sans KR" font-size="12" font-weight="700" fill="#00c8ff">8가지 보드</text>
+    <text x="80" y="45" text-anchor="middle" font-family="Noto Sans KR" font-size="11" fill="white">= 전략적으로 동일</text>
+    <line x1="20" y1="55" x2="140" y2="55" stroke="#00c8ff" stroke-width="1" opacity="0.4"/>
+    <text x="80" y="73" text-anchor="middle" font-family="Noto Sans KR" font-size="18" fill="#f39c12">→ 1개</text>
+    <text x="80" y="92" text-anchor="middle" font-family="Noto Sans KR" font-size="10" fill="rgba(255,255,255,0.7)">정규 상태로 통합</text>
+    <text x="80" y="106" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="rgba(255,255,255,0.5)">학습 효율 ~7배 ↑</text>
+  </g>
+
+  <!-- Efficiency comparison -->
+  <g transform="translate(610, 265)">
+    <rect width="160" height="75" rx="8" fill="white" stroke="#ddd" stroke-width="1" filter="url(#shadowSm)"/>
+    <text x="80" y="18" text-anchor="middle" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#555">정규화 효과</text>
+    <text x="15" y="36" font-family="Noto Sans KR" font-size="9" fill="#e74c3c">정규화 없음: ~5,000 상태</text>
+    <text x="15" y="52" font-family="Noto Sans KR" font-size="9" fill="#27ae60">정규화 적용:   ~765 상태</text>
+    <text x="15" y="68" font-family="Noto Sans KR" font-size="9" font-weight="600" fill="#2980b9">빈 보드 첫수: 9개 → 3개</text>
+  </g>
+
+  <!-- Bottom caption -->
+  <text x="400" y="412" text-anchor="middle" font-family="Noto Sans KR" font-size="9" fill="#999">그림 4. 틱택토 보드의 8가지 대칭 변환 — 회전 4가지 + 반사+회전 4가지 = 1개의 정규 상태</text>
+</svg>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-auto">
+      <path d="M 0 0 L 10 3.5 L 0 7 z" fill="#666"/>
+    </marker>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="800" height="300" rx="12" fill="url(#bgGrad)"/>
+  <text x="400" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#333">🎬 AI 사과 농장 이야기 — 장면 전환 흐름 (후반)</text>
+  <text x="400" y="46" text-anchor="middle" font-size="9" fill="#795548">4장에서 에필로그까지의 학습 여정</text>
+  <rect x="160" y="70" width="140" height="80" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="160" y="70" width="140" height="24" rx="10" fill="#1976D2" opacity="0.15"/>
+  <rect x="160" y="86" width="140" height="8" fill="#1976D2" opacity="0.15"/>
+  <text x="230" y="87" text-anchor="middle" font-size="9" font-weight="600" fill="#1976D2">STEP 1</text>
+  <text x="230" y="112" text-anchor="middle" font-size="10" font-weight="600" fill="#333">4장: 가격</text>
+  <text x="230" y="128" text-anchor="middle" font-size="7" fill="#888">선형회귀로</text>
+  <text x="230" y="141" text-anchor="middle" font-size="7" fill="#888">가격 예측</text>
+  <line x1="302" y1="110" x2="328" y2="110" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="330" y="70" width="140" height="80" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="330" y="70" width="140" height="24" rx="10" fill="#1565C0" opacity="0.15"/>
+  <rect x="330" y="86" width="140" height="8" fill="#1565C0" opacity="0.15"/>
+  <text x="400" y="87" text-anchor="middle" font-size="9" font-weight="600" fill="#1565C0">STEP 2</text>
+  <text x="400" y="112" text-anchor="middle" font-size="10" font-weight="600" fill="#333">5장: 출하</text>
+  <text x="400" y="128" text-anchor="middle" font-size="7" fill="#888">의사결정트리로</text>
+  <text x="400" y="141" text-anchor="middle" font-size="7" fill="#888">출하처 결정</text>
+  <line x1="472" y1="110" x2="498" y2="110" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="500" y="70" width="140" height="80" rx="10" fill="#FFF" filter="url(#shadow)"/>
+  <rect x="500" y="70" width="140" height="24" rx="10" fill="#E53935" opacity="0.15"/>
+  <rect x="500" y="86" width="140" height="8" fill="#E53935" opacity="0.15"/>
+  <text x="570" y="87" text-anchor="middle" font-size="9" font-weight="600" fill="#E53935">STEP 3</text>
+  <text x="570" y="112" text-anchor="middle" font-size="10" font-weight="600" fill="#333">에필로그</text>
+  <text x="570" y="128" text-anchor="middle" font-size="7" fill="#888">스마트 과수원 완성</text>
+  <text x="570" y="141" text-anchor="middle" font-size="7" fill="#888">전체 정리</text>
+  <rect x="60" y="240" width="680" height="40" rx="8" fill="#FFF8E1" opacity="0.6"/>
+  <text x="400" y="265" text-anchor="middle" font-size="8" fill="#795548">💡 각 단계를 순서대로 수행하며, 결과를 확인한 후 다음 단계로 진행합니다.</text>
+</svg>

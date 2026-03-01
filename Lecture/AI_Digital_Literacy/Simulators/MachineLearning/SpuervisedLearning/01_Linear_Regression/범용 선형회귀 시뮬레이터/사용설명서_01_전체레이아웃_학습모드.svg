@@ -1,0 +1,238 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFBF5"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <linearGradient id="sidebarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF8F0"/>
+      <stop offset="100%" style="stop-color:#FFF3E0"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-opacity="0.10"/>
+    </filter>
+    <filter id="shadowSm" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0.5" dy="1" stdDeviation="1.5" flood-opacity="0.08"/>
+    </filter>
+    <!-- 번호 원 마커 -->
+    <style>
+      
+      text { font-family: 'Noto Sans CJK KR', sans-serif; }
+    </style>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="800" height="480" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- 상단 제목 바 -->
+  <rect x="16" y="12" width="768" height="44" rx="10" fill="white" filter="url(#shadow)"/>
+  <text x="32" y="40" font-size="15" font-weight="700" fill="#E53935">선형 회귀 학습 시뮬레이터</text>
+  <text x="260" y="40" font-size="10.5" font-weight="400" fill="#8D6E63">v2.0.0.0</text>
+
+  <!-- 모드 탭 -->
+  <rect x="320" y="20" width="100" height="28" rx="6" fill="#E53935"/>
+  <text x="370" y="39" font-size="11" font-weight="600" fill="white" text-anchor="middle">학습 모드</text>
+  <rect x="426" y="20" width="100" height="28" rx="6" fill="#F5F5F5" stroke="#BCAAA4" stroke-width="0.8"/>
+  <text x="476" y="39" font-size="11" font-weight="500" fill="#8D6E63" text-anchor="middle">추론 모드</text>
+
+  <!-- ===== 3열 레이아웃 ===== -->
+
+  <!-- [1] 좌측 사이드바 (240px 비율) -->
+  <rect x="16" y="64" width="185" height="400" rx="10" fill="url(#sidebarGrad)" filter="url(#shadow)"/>
+
+  <!-- 번호 원 [1] -->
+  <circle cx="36" cy="78" r="10" fill="#E53935"/>
+  <text x="36" y="82" font-size="10" font-weight="700" fill="white" text-anchor="middle">1</text>
+  <text x="50" y="82" font-size="10" font-weight="600" fill="#3E2723">좌측 사이드바</text>
+
+  <!-- 데이터셋 드롭다운 -->
+  <rect x="28" y="94" width="160" height="38" rx="6" fill="white" filter="url(#shadowSm)"/>
+  <text x="38" y="109" font-size="9" font-weight="600" fill="#5D4037">데이터셋</text>
+  <rect x="36" y="115" width="144" height="14" rx="3" fill="#F5F5F5" stroke="#BCAAA4" stroke-width="0.6"/>
+  <text x="44" y="125" font-size="8" fill="#8D6E63">보스턴 주택가격 ▼</text>
+
+  <!-- X/Y 변수 선택 -->
+  <rect x="28" y="140" width="160" height="54" rx="6" fill="white" filter="url(#shadowSm)"/>
+  <text x="38" y="155" font-size="9" font-weight="600" fill="#5D4037">변수 선택</text>
+  <rect x="36" y="161" width="68" height="13" rx="2.5" fill="#E8F5E9" stroke="#43A047" stroke-width="0.5"/>
+  <text x="42" y="170.5" font-size="7.5" fill="#2E7D32">☑ X: 면적</text>
+  <rect x="110" y="161" width="68" height="13" rx="2.5" fill="#E3F2FD" stroke="#1E88E5" stroke-width="0.5"/>
+  <text x="116" y="170.5" font-size="7.5" fill="#1565C0">Y: 가격 ▼</text>
+  <rect x="36" y="178" width="144" height="10" rx="2" fill="#F5F5F5"/>
+  <text x="42" y="186" font-size="7" fill="#8D6E63">가중치 ━━━●━━━━━</text>
+
+  <!-- 범주형 필터 -->
+  <rect x="28" y="202" width="160" height="48" rx="6" fill="white" filter="url(#shadowSm)"/>
+  <text x="38" y="217" font-size="9" font-weight="600" fill="#5D4037">범주형 필터</text>
+  <rect x="36" y="224" width="38" height="14" rx="7" fill="#1E88E5"/>
+  <text x="55" y="234" font-size="7" fill="white" text-anchor="middle">setosa</text>
+  <rect x="78" y="224" width="50" height="14" rx="7" fill="#1E88E5"/>
+  <text x="103" y="234" font-size="7" fill="white" text-anchor="middle">versicolor</text>
+  <rect x="132" y="224" width="46" height="14" rx="7" fill="#E0E0E0"/>
+  <text x="155" y="234" font-size="7" fill="#757575" text-anchor="middle">virginica</text>
+
+  <!-- 데이터 테이블 -->
+  <rect x="28" y="258" width="160" height="86" rx="6" fill="white" filter="url(#shadowSm)"/>
+  <text x="38" y="273" font-size="9" font-weight="600" fill="#5D4037">데이터 테이블</text>
+  <!-- 테이블 헤더 -->
+  <rect x="36" y="280" width="144" height="12" rx="2" fill="#FFF3E0"/>
+  <text x="62" y="289" font-size="7" fill="#5D4037" text-anchor="middle">X</text>
+  <text x="108" y="289" font-size="7" fill="#5D4037" text-anchor="middle">Y</text>
+  <text x="146" y="289" font-size="7" fill="#5D4037" text-anchor="middle">분할</text>
+  <!-- 행들 -->
+  <line x1="36" y1="294" x2="180" y2="294" stroke="#FFCCBC" stroke-width="0.4"/>
+  <text x="62" y="303" font-size="7" fill="#8D6E63" text-anchor="middle">6.5</text>
+  <text x="108" y="303" font-size="7" fill="#8D6E63" text-anchor="middle">296</text>
+  <text x="146" y="303" font-size="7" fill="#1E88E5" text-anchor="middle">훈련</text>
+  <line x1="36" y1="307" x2="180" y2="307" stroke="#FFCCBC" stroke-width="0.3"/>
+  <text x="62" y="316" font-size="7" fill="#8D6E63" text-anchor="middle">7.2</text>
+  <text x="108" y="316" font-size="7" fill="#8D6E63" text-anchor="middle">312</text>
+  <text x="146" y="316" font-size="7" fill="#FF5722" text-anchor="middle">테스트</text>
+  <line x1="36" y1="320" x2="180" y2="320" stroke="#FFCCBC" stroke-width="0.3"/>
+  <text x="108" y="334" font-size="7" fill="#BCAAA4" text-anchor="middle">⋮</text>
+
+  <!-- 데이터 건수 배지 -->
+  <rect x="28" y="348" width="160" height="22" rx="6" fill="white" filter="url(#shadowSm)"/>
+  <text x="108" y="363" font-size="8" fill="#5D4037" text-anchor="middle">전체 506건 · 훈련 404 · 테스트 102</text>
+
+  <!-- [3] 중앙 차트 영역 -->
+  <rect x="210" y="64" width="372" height="400" rx="10" fill="white" filter="url(#shadow)"/>
+
+  <!-- 번호 원 [3] -->
+  <circle cx="230" cy="78" r="10" fill="#E53935"/>
+  <text x="230" y="82" font-size="10" font-weight="700" fill="white" text-anchor="middle">3</text>
+  <text x="244" y="82" font-size="10" font-weight="600" fill="#3E2723">중앙 차트 영역</text>
+
+  <!-- 필터 배너 (주황) -->
+  <rect x="222" y="92" width="348" height="18" rx="4" fill="#FFF3E0" stroke="#FF5722" stroke-width="0.6"/>
+  <text x="396" y="104" font-size="8" font-weight="500" fill="#FF5722" text-anchor="middle">필터 적용 중: 품종 = setosa, versicolor (102건)</text>
+
+  <!-- 손실 그래프 -->
+  <rect x="222" y="116" width="168" height="130" rx="6" fill="#FAFAFA" stroke="#FFCCBC" stroke-width="0.5"/>
+  <text x="306" y="131" font-size="9" font-weight="600" fill="#5D4037" text-anchor="middle">손실 그래프</text>
+  <!-- 미니 손실 곡선 -->
+  <polyline points="240,230 260,210 280,190 300,180 320,176 340,174 360,173 375,172" fill="none" stroke="#E53935" stroke-width="1.8" stroke-linecap="round"/>
+  <polyline points="240,234 260,216 280,198 300,188 320,184 340,183 360,182 375,181" fill="none" stroke="#1E88E5" stroke-width="1.2" stroke-dasharray="3,2" stroke-linecap="round"/>
+  <!-- 축 -->
+  <line x1="238" y1="138" x2="238" y2="236" stroke="#BCAAA4" stroke-width="0.5"/>
+  <line x1="238" y1="236" x2="378" y2="236" stroke="#BCAAA4" stroke-width="0.5"/>
+  <text x="234" y="190" font-size="6.5" fill="#8D6E63" text-anchor="end" transform="rotate(-90 234 190)">Loss</text>
+  <text x="308" y="244" font-size="6.5" fill="#8D6E63" text-anchor="middle">Epoch</text>
+
+  <!-- 산점도 -->
+  <rect x="398" y="116" width="172" height="130" rx="6" fill="#FAFAFA" stroke="#FFCCBC" stroke-width="0.5"/>
+  <text x="484" y="131" font-size="9" font-weight="600" fill="#5D4037" text-anchor="middle">X vs Y</text>
+  <!-- 축 -->
+  <line x1="416" y1="138" x2="416" y2="236" stroke="#BCAAA4" stroke-width="0.5"/>
+  <line x1="416" y1="236" x2="556" y2="236" stroke="#BCAAA4" stroke-width="0.5"/>
+  <!-- 데이터 점 -->
+  <circle cx="430" cy="220" r="2.5" fill="#1E88E5" opacity="0.6"/>
+  <circle cx="442" cy="210" r="2.5" fill="#1E88E5" opacity="0.6"/>
+  <circle cx="455" cy="205" r="2.5" fill="#1E88E5" opacity="0.6"/>
+  <circle cx="462" cy="195" r="2.5" fill="#1E88E5" opacity="0.6"/>
+  <circle cx="475" cy="188" r="2.5" fill="#1E88E5" opacity="0.6"/>
+  <circle cx="488" cy="175" r="2.5" fill="#1E88E5" opacity="0.6"/>
+  <circle cx="500" cy="168" r="2.5" fill="#1E88E5" opacity="0.6"/>
+  <circle cx="510" cy="162" r="2.5" fill="#1E88E5" opacity="0.6"/>
+  <circle cx="522" cy="155" r="2.5" fill="#1E88E5" opacity="0.6"/>
+  <circle cx="535" cy="148" r="2.5" fill="#1E88E5" opacity="0.6"/>
+  <!-- 테스트 데이터 점 -->
+  <circle cx="448" cy="215" r="2" fill="#FF5722" opacity="0.4"/>
+  <circle cx="480" cy="182" r="2" fill="#FF5722" opacity="0.4"/>
+  <circle cx="515" cy="158" r="2" fill="#FF5722" opacity="0.4"/>
+  <!-- 회귀선 -->
+  <line x1="425" y1="226" x2="545" y2="142" stroke="#E53935" stroke-width="2" stroke-linecap="round"/>
+  <!-- 오차선 예시 -->
+  <line x1="462" y1="195" x2="462" y2="202" stroke="#FFC107" stroke-width="0.8" stroke-dasharray="2,1" opacity="0.7"/>
+  <line x1="500" y1="168" x2="500" y2="176" stroke="#FFC107" stroke-width="0.8" stroke-dasharray="2,1" opacity="0.7"/>
+  <text x="484" y="244" font-size="6.5" fill="#8D6E63" text-anchor="middle">X (면적)</text>
+
+  <!-- 범례 -->
+  <circle cx="420" cy="130" r="2" fill="#1E88E5"/>
+  <text x="426" y="133" font-size="6" fill="#8D6E63">훈련</text>
+  <circle cx="450" cy="130" r="2" fill="#FF5722" opacity="0.5"/>
+  <text x="456" y="133" font-size="6" fill="#8D6E63">테스트</text>
+  <line x1="478" y1="130" x2="490" y2="130" stroke="#E53935" stroke-width="1.5"/>
+  <text x="494" y="133" font-size="6" fill="#8D6E63">회귀선</text>
+
+  <!-- 학습 결과 패널 -->
+  <rect x="222" y="254" width="348" height="100" rx="6" fill="white" stroke="#FFCCBC" stroke-width="0.6"/>
+  <text x="236" y="270" font-size="9" font-weight="600" fill="#5D4037">학습 결과</text>
+
+  <!-- 결과 테이블 -->
+  <rect x="232" y="278" width="328" height="14" rx="2" fill="#FFF3E0"/>
+  <text x="270" y="288.5" font-size="7.5" font-weight="600" fill="#5D4037" text-anchor="middle">에포크</text>
+  <text x="334" y="288.5" font-size="7.5" font-weight="600" fill="#5D4037" text-anchor="middle">훈련 MSE</text>
+  <text x="404" y="288.5" font-size="7.5" font-weight="600" fill="#5D4037" text-anchor="middle">테스트 MSE</text>
+  <text x="468" y="288.5" font-size="7.5" font-weight="600" fill="#5D4037" text-anchor="middle">R²</text>
+  <text x="524" y="288.5" font-size="7.5" font-weight="600" fill="#5D4037" text-anchor="middle">상태</text>
+
+  <text x="270" y="304" font-size="8" fill="#3E2723" text-anchor="middle">500</text>
+  <text x="334" y="304" font-size="8" fill="#3E2723" text-anchor="middle">22.34</text>
+  <text x="404" y="304" font-size="8" fill="#3E2723" text-anchor="middle">24.87</text>
+  <text x="468" y="304" font-size="8" fill="#43A047" font-weight="600" text-anchor="middle">0.74</text>
+  <text x="524" y="304" font-size="8" fill="#FFC107" text-anchor="middle">△ 보통</text>
+
+  <!-- 오차선 + 재생 컨트롤 영역 -->
+  <rect x="232" y="316" width="155" height="30" rx="4" fill="#FAFAFA" stroke="#FFCCBC" stroke-width="0.4"/>
+  <text x="240" y="328" font-size="7.5" font-weight="500" fill="#5D4037">☑ 오차선 표시</text>
+  <text x="240" y="340" font-size="6.5" fill="#8D6E63">· 오차선 = 실제값과 예측값의 차이</text>
+
+  <rect x="395" y="316" width="165" height="30" rx="4" fill="#FAFAFA" stroke="#FFCCBC" stroke-width="0.4"/>
+  <text x="403" y="328" font-size="7.5" font-weight="500" fill="#5D4037">학습 과정 재생</text>
+  <rect x="403" y="333" width="26" height="10" rx="2" fill="#E53935"/>
+  <text x="416" y="341" font-size="6" fill="white" text-anchor="middle">▶</text>
+  <rect x="433" y="333" width="20" height="10" rx="2" fill="#F5F5F5" stroke="#BCAAA4" stroke-width="0.4"/>
+  <text x="443" y="341" font-size="6" fill="#8D6E63" text-anchor="middle">⏸</text>
+  <rect x="457" y="333" width="20" height="10" rx="2" fill="#F5F5F5" stroke="#BCAAA4" stroke-width="0.4"/>
+  <text x="467" y="341" font-size="6" fill="#8D6E63" text-anchor="middle">⏹</text>
+  <text x="485" y="341" font-size="6" fill="#8D6E63">속도 ━●━</text>
+
+  <!-- [2] 우측 사이드바 (260px 비율) -->
+  <rect x="590" y="64" width="194" height="400" rx="10" fill="url(#sidebarGrad)" filter="url(#shadow)"/>
+
+  <!-- 번호 원 [2] -->
+  <circle cx="610" cy="78" r="10" fill="#E53935"/>
+  <text x="610" y="82" font-size="10" font-weight="700" fill="white" text-anchor="middle">2</text>
+  <text x="624" y="82" font-size="10" font-weight="600" fill="#3E2723">우측 사이드바</text>
+
+  <!-- 학습률 -->
+  <rect x="602" y="94" width="170" height="56" rx="6" fill="white" filter="url(#shadowSm)"/>
+  <text x="612" y="109" font-size="9" font-weight="600" fill="#5D4037">학습률 (Learning Rate)</text>
+  <text x="757" y="109" font-size="8" fill="#E53935" font-weight="600" text-anchor="end">0.01</text>
+  <rect x="612" y="116" width="150" height="6" rx="3" fill="#F5F5F5"/>
+  <rect x="612" y="116" width="55" height="6" rx="3" fill="#E53935" opacity="0.3"/>
+  <circle cx="667" cy="119" r="5" fill="#E53935"/>
+  <text x="612" y="140" font-size="6.5" fill="#8D6E63">0.001</text>
+  <text x="762" y="140" font-size="6.5" fill="#8D6E63" text-anchor="end">0.1</text>
+
+  <!-- 에포크 -->
+  <rect x="602" y="158" width="170" height="56" rx="6" fill="white" filter="url(#shadowSm)"/>
+  <text x="612" y="173" font-size="9" font-weight="600" fill="#5D4037">에포크 (Epochs)</text>
+  <text x="757" y="173" font-size="8" fill="#E53935" font-weight="600" text-anchor="end">500</text>
+  <rect x="612" y="180" width="150" height="6" rx="3" fill="#F5F5F5"/>
+  <rect x="612" y="180" width="50" height="6" rx="3" fill="#E53935" opacity="0.3"/>
+  <circle cx="662" cy="183" r="5" fill="#E53935"/>
+  <text x="612" y="204" font-size="6.5" fill="#8D6E63">100</text>
+  <text x="762" y="204" font-size="6.5" fill="#8D6E63" text-anchor="end">2,000</text>
+
+  <!-- 훈련/테스트 분할 바 -->
+  <rect x="602" y="222" width="170" height="36" rx="6" fill="white" filter="url(#shadowSm)"/>
+  <text x="612" y="237" font-size="9" font-weight="600" fill="#5D4037">훈련/테스트 분할</text>
+  <rect x="612" y="242" width="150" height="10" rx="4" fill="#FFCCBC"/>
+  <rect x="612" y="242" width="120" height="10" rx="4" fill="#1E88E5" opacity="0.7"/>
+  <text x="672" y="250" font-size="6.5" fill="white" font-weight="600" text-anchor="middle">훈련 80%</text>
+  <text x="747" y="250" font-size="6" fill="#5D4037" text-anchor="middle">20%</text>
+
+  <!-- 학습 실행 버튼 -->
+  <rect x="602" y="268" width="170" height="34" rx="8" fill="#E53935" filter="url(#shadowSm)"/>
+  <text x="687" y="290" font-size="12" font-weight="700" fill="white" text-anchor="middle">학습 실행</text>
+
+  <!-- 재분할 버튼 -->
+  <rect x="602" y="310" width="170" height="28" rx="6" fill="white" stroke="#FFCCBC" stroke-width="0.8"/>
+  <text x="687" y="328" font-size="10" font-weight="500" fill="#5D4037" text-anchor="middle">재분할 &amp; 재학습</text>
+
+  <!-- 하단 범례 바 -->
+  <rect x="16" y="452" width="768" height="20" rx="4" fill="white" opacity="0.7"/>
+  <text x="400" y="466" font-size="8" fill="#8D6E63" text-anchor="middle">[1] 좌측: 데이터 선택·필터·테이블  ·  [2] 우측: 하이퍼파라미터·학습 실행  ·  [3] 중앙: 차트·결과 패널·재생</text>
+</svg>

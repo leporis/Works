@@ -1,0 +1,357 @@
+% 사과 가격 예측 시뮬레이터 - 수학식 LaTeX 문서 (초등학생용)
+% 문서 버전: v1.0.0.0
+% 대상: 초등학생 (5-6학년)
+% 작성일: 2026-02-02
+% 컴파일: xelatex 파일명.tex
+
+\documentclass[12pt,a4paper]{article}
+
+% 한글 지원
+\usepackage{fontspec}
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+
+% 컬러 이모지 (twemojis 패키지)
+\usepackage{twemojis}
+
+% 수학 패키지
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% 색상
+\usepackage{xcolor}
+\definecolor{teal}{RGB}{0,131,143}
+\definecolor{darkblue}{RGB}{21,101,192}
+\definecolor{lightcyan}{RGB}{224,247,250}
+\definecolor{lightblue}{RGB}{227,242,253}
+\definecolor{lightyellow}{RGB}{255,249,196}
+\definecolor{lightgreen}{RGB}{232,245,233}
+\definecolor{lightpink}{RGB}{252,228,236}
+
+% 박스
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+% 페이지 설정 (여백 넓게)
+\usepackage[margin=2.5cm]{geometry}
+
+% 줄간격
+\usepackage{setspace}
+\setstretch{1.3}
+
+% 제목 스타일
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries\color{teal}}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries\color{darkblue}}{\thesubsection}{1em}{}
+
+% 하이퍼링크
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=teal,urlcolor=darkblue}
+
+\title{\Huge\textbf{\texttwemoji{red apple} 사과 가격 맞추기!}\\[0.5em]
+\Large 수학 공식 모음 \textbf{(초등학생용)}}
+\author{문서 버전: v1.0.0.0}
+\date{2026년 2월 2일}
+
+\begin{document}
+
+\maketitle
+
+\begin{tcolorbox}[colback=lightpink,colframe=magenta!50!black,title=\textbf{\texttwemoji{waving hand} 이 문서는요...}]
+\large
+사과 가격 예측 시뮬레이터에서 사용하는 \textbf{수학 공식}을 쉽게 정리했어요!
+
+어려운 공식도 있지만, \textbf{계산 예시}를 따라하면 이해할 수 있어요 \texttwemoji{flexed biceps}
+\end{tcolorbox}
+
+\tableofcontents
+\newpage
+
+%=============================================
+\section{\texttwemoji{star} 품질 점수 계산하기}
+%=============================================
+
+사과의 ``좋은 정도''를 숫자로 나타내요!
+
+\subsection{\texttwemoji{thinking face} 품질 점수란?}
+
+\begin{tcolorbox}[colback=lightcyan,colframe=teal,title=\textbf{\texttwemoji{sparkles} 품질 점수 = 당도 점수 + 무게 점수}]
+\Large
+\begin{equation}
+\boxed{\text{품질} = \text{당도점수} + \text{무게점수}}
+\end{equation}
+\normalsize
+
+\begin{itemize}
+    \item \textbf{당도}: 사과가 얼마나 달콤한지 (0~50점)
+    \item \textbf{무게}: 사과가 얼마나 무거운지 (0~50점)
+    \item \textbf{품질}: 둘을 합친 점수 (0~100점)
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{\texttwemoji{honey pot} 당도 점수 계산}
+
+\begin{tcolorbox}[colback=lightblue,colframe=darkblue,title=\textbf{당도 점수 공식}]
+\Large
+\begin{equation}
+\text{당도점수} = \frac{\text{당도} - 10}{8} \times 50
+\end{equation}
+\normalsize
+
+\textbf{당도 범위}: 10 ~ 18 (Brix라는 단위를 써요)
+\end{tcolorbox}
+
+\subsubsection*{\texttwemoji{pencil} 함께 계산해봐요!}
+
+\begin{tcolorbox}[colback=lightyellow,colframe=orange]
+\textbf{문제}: 당도가 \textbf{14 Brix}인 사과의 당도점수는?
+
+\large
+\begin{align}
+\text{당도점수} &= \frac{14 - 10}{8} \times 50 \\[0.3em]
+&= \frac{4}{8} \times 50 \\[0.3em]
+&= 0.5 \times 50 \\[0.3em]
+&= \boxed{25\text{점}}
+\end{align}
+\normalsize
+\end{tcolorbox}
+
+\subsection{\texttwemoji{balance scale} 무게 점수 계산}
+
+\begin{tcolorbox}[colback=lightblue,colframe=darkblue,title=\textbf{무게 점수 공식}]
+\Large
+\begin{equation}
+\text{무게점수} = \frac{\text{무게} - 150}{200} \times 50
+\end{equation}
+\normalsize
+
+\textbf{무게 범위}: 150g ~ 350g
+\end{tcolorbox}
+
+\subsubsection*{\texttwemoji{pencil} 함께 계산해봐요!}
+
+\begin{tcolorbox}[colback=lightyellow,colframe=orange]
+\textbf{문제}: 무게가 \textbf{250g}인 사과의 무게점수는?
+
+\large
+\begin{align}
+\text{무게점수} &= \frac{250 - 150}{200} \times 50 \\[0.3em]
+&= \frac{100}{200} \times 50 \\[0.3em]
+&= 0.5 \times 50 \\[0.3em]
+&= \boxed{25\text{점}}
+\end{align}
+\normalsize
+\end{tcolorbox}
+
+\subsection{\texttwemoji{party popper} 품질 점수 완성!}
+
+\begin{tcolorbox}[colback=lightgreen,colframe=green!50!black,title=\textbf{종합 예시}]
+\textbf{당도 14 Brix, 무게 250g인 사과}
+
+\large
+\begin{align}
+\text{당도점수} &= 25\text{점} \\
+\text{무게점수} &= 25\text{점} \\[0.3em]
+\text{품질} &= 25 + 25 = \boxed{50\text{점}}
+\end{align}
+\normalsize
+
+\texttwemoji{light bulb} 품질 50점은 ``중간 정도'' 좋은 사과예요!
+\end{tcolorbox}
+
+%=============================================
+\section{\texttwemoji{crystal ball} 가격 예측하기}
+%=============================================
+
+품질 점수로 사과 가격을 맞춰봐요!
+
+\subsection{\texttwemoji{brain} AI가 배우는 공식}
+
+\begin{tcolorbox}[colback=lightcyan,colframe=teal,title=\textbf{\texttwemoji{robot} AI의 예측 공식}]
+\Large
+\begin{equation}
+\boxed{\text{가격} = w \times \text{품질} + b}
+\end{equation}
+\normalsize
+
+\begin{itemize}
+    \item $w$ (가중치): 품질 1점이 가격에 얼마나 영향을 주는지
+    \item $b$ (기본값): 품질이 0점일 때의 기본 가격
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{\texttwemoji{chart increasing} 학습 전 vs 학습 후}
+
+\begin{center}
+\large
+\begin{tabular}{|c|c|c|c|}
+\hline
+& \textbf{$w$ (가중치)} & \textbf{$b$ (기본값)} & \textbf{예측 정확도} \\
+\hline
+\texttwemoji{hatching chick} 학습 전 & 아무 숫자 & 0 & \texttwemoji{cross mark} 엉터리 \\
+\hline
+\texttwemoji{eagle} 학습 후 & 약 30 & 약 1000 & \texttwemoji{check mark button} 정확! \\
+\hline
+\end{tabular}
+\normalsize
+\end{center}
+
+\subsection{\texttwemoji{pencil} 가격 예측 계산}
+
+\begin{tcolorbox}[colback=lightyellow,colframe=orange,title=\textbf{예시: 품질 50점 사과의 가격은?}]
+학습된 AI: $w = 30$, $b = 1000$
+
+\large
+\begin{align}
+\text{가격} &= 30 \times 50 + 1000 \\[0.3em]
+&= 1500 + 1000 \\[0.3em]
+&= \boxed{2500\text{원}}
+\end{align}
+\normalsize
+
+\texttwemoji{light bulb} 품질 50점 사과는 약 2,500원이에요!
+\end{tcolorbox}
+
+%=============================================
+\section{\texttwemoji{rocket} AI는 어떻게 배울까?}
+%=============================================
+
+\subsection{\texttwemoji{thinking face} 학습의 원리}
+
+\begin{tcolorbox}[colback=lightpink,colframe=magenta!50!black]
+\large
+\begin{enumerate}
+    \item AI가 처음에 \textbf{아무렇게나} 가격을 예측해요
+    \item 실제 가격과 \textbf{얼마나 틀렸는지} 확인해요 (오차)
+    \item 오차를 줄이는 방향으로 $w$와 $b$를 \textbf{조금씩 바꿔요}
+    \item 이 과정을 \textbf{수백 번} 반복해요
+    \item 점점 예측이 정확해져요! \texttwemoji{party popper}
+\end{enumerate}
+\normalsize
+\end{tcolorbox}
+
+\subsection{\texttwemoji{turtle} vs \texttwemoji{rabbit} 학습 속도}
+
+\begin{center}
+\large
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{학습률} & \textbf{비유} & \textbf{결과} \\
+\hline
+너무 작으면 & \texttwemoji{turtle} 거북이 & 너무 느려요 \\
+\hline
+적당하면 & \texttwemoji{person walking} 사람 & \texttwemoji{check mark button} 딱 좋아요! \\
+\hline
+너무 크면 & \texttwemoji{rabbit} 토끼 & 목표를 지나쳐요 \texttwemoji{dizzy} \\
+\hline
+\end{tabular}
+\normalsize
+\end{center}
+
+%=============================================
+\section{\texttwemoji{trophy} 얼마나 잘 맞췄을까?}
+%=============================================
+
+\subsection{\texttwemoji{hundred points} R² 점수}
+
+\begin{tcolorbox}[colback=lightcyan,colframe=teal,title=\textbf{R² 점수란?}]
+\large
+AI가 \textbf{얼마나 잘 예측했는지} 알려주는 점수예요!
+
+\begin{itemize}
+    \item \textbf{1에 가까우면}: 아주 잘 맞췄어요! \texttwemoji{star}
+    \item \textbf{0에 가까우면}: 그냥 평균이랑 비슷해요
+    \item \textbf{0보다 작으면}: 평균보다 못 맞췄어요 \texttwemoji{crying face}
+\end{itemize}
+\normalsize
+\end{tcolorbox}
+
+\subsection{\texttwemoji{magnifying glass tilted left} R² 점수 읽는 법}
+
+\begin{center}
+\large
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{R² 점수} & \textbf{의미} & \textbf{상태} \\
+\hline
+0.8 이상 & 아주 잘 맞췄어요! & \texttwemoji{check mark button} 양호 \\
+\hline
+0.5 ~ 0.8 & 그럭저럭 맞췄어요 & \texttwemoji{warning} 보통 \\
+\hline
+0.5 이하 & 더 연습이 필요해요 & \texttwemoji{cross mark} 부족 \\
+\hline
+\end{tabular}
+\normalsize
+\end{center}
+
+%=============================================
+\section{\texttwemoji{light bulb} 핵심 정리}
+%=============================================
+
+\begin{tcolorbox}[colback=lightgreen,colframe=green!50!black,title=\textbf{\texttwemoji{memo} 오늘 배운 공식들}]
+\large
+
+\textbf{1. 품질 점수}
+\begin{equation}
+\text{품질} = \text{당도점수} + \text{무게점수}
+\end{equation}
+
+\textbf{2. 당도 점수}
+\begin{equation}
+\text{당도점수} = \frac{\text{당도} - 10}{8} \times 50
+\end{equation}
+
+\textbf{3. 무게 점수}
+\begin{equation}
+\text{무게점수} = \frac{\text{무게} - 150}{200} \times 50
+\end{equation}
+
+\textbf{4. 가격 예측}
+\begin{equation}
+\text{가격} = w \times \text{품질} + b
+\end{equation}
+
+\normalsize
+\end{tcolorbox}
+
+%=============================================
+\section{\texttwemoji{books} 참고자료}
+%=============================================
+
+\begin{center}
+\begin{tabular}{|c|l|l|}
+\hline
+\textbf{\#} & \textbf{자료명} & \textbf{설명} \\
+\hline
+1 & 사과 가격 예측 시뮬레이터 & 직접 실습해볼 수 있어요! \\
+\hline
+2 & 수업지도안 (초등학생용) & 수업 내용 정리 \\
+\hline
+\end{tabular}
+\end{center}
+
+%=============================================
+\section{\texttwemoji{memo} 문서 정보}
+%=============================================
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|l|c|}
+\hline
+\textbf{버전} & \textbf{날짜} & \textbf{시간} & \textbf{변경} & \textbf{내용} & \textbf{작성자} \\
+\hline
+v1.0.0.0 & 2026-02-02 & 11:30 & 최초 & 초안 작성 (초등학생용) & Claude \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+\begin{center}
+\Large
+\textit{\texttwemoji{red apple} 사과 가격 맞추기 - 수학 공식 모음 (초등학생용)}
+
+\vspace{0.5cm}
+\normalsize
+\texttwemoji{waving hand} 수고했어요! 이제 시뮬레이터로 직접 실험해봐요!
+\end{center}
+
+\end{document}

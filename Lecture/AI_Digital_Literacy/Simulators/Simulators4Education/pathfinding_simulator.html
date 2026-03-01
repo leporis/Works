@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗺️ 최단 경로 찾기 시뮬레이터 v1.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --house: #ec4899;
+            --road: #64748b;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Nanum Gothic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            margin-top: 10px;
+            opacity: 0.95;
+        }
+
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            gap: 20px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .map-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        #mapCanvas {
+            width: 100%;
+            height: 700px;
+            border-radius: 15px;
+            background: #f8fafc;
+            border: 3px solid #e2e8f0;
+            cursor: crosshair;
+        }
+
+        .tool-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-btn:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+
+        .tool-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 8px 0;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #0284c7;
+        }
+
+        .info-box h4 {
+            margin: 0 0 10px 0;
+            color: #0369a1;
+        }
+
+        .stat-item {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .house-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .house-item {
+            background: #fce7f3;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .house-item:hover {
+            border-color: #ec4899;
+            background: #fbcfe8;
+        }
+
+        .house-item.selected {
+            background: #ec4899;
+            color: white;
+            border-color: #db2777;
+        }
+
+        .house-name {
+            font-weight: bold;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+
+        .path-info {
+            background: #d1fae5;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid #10b981;
+        }
+
+        .path-steps {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .path-step {
+            padding: 8px;
+            margin: 5px 0;
+            background: #f0fdf4;
+            border-radius: 5px;
+            border-left: 3px solid #10b981;
+        }
+
+        .legend {
+            background: #fff7ed;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .legend-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .mode-indicator {
+            background: #fef3c7;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+            color: #92400e;
+            border: 2px solid #fbbf24;
+        }
+
+        .algorithm-select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            font-size: 1rem;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 1400px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🗺️ 최단 경로 찾기 시뮬레이터</h1>
+    <p class="subtitle">집과 도로를 그려서 최단 경로를 찾아보세요!</p>
+</header>
+
+<div class="main-container">
+    <!-- 왼쪽: 도구 패널 -->
+    <aside class="panel">
+        <h2 style="margin-top: 0;">🛠️ 편집 도구</h2>
+
+        <div class="mode-indicator" id="modeIndicator">
+            모드를 선택하세요
+        </div>
+
+        <button class="tool-btn" id="houseMode" onclick="SimApp.setMode('house')">
+            🏠 집 추가하기
+        </button>
+
+        <button class="tool-btn" id="roadMode" onclick="SimApp.setMode('road')">
+            🛣️ 도로 그리기
+        </button>
+
+        <button class="tool-btn" id="selectMode" onclick="SimApp.setMode('select')">
+            👆 선택 모드
+        </button>
+
+        <hr style="margin: 20px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+        <h3 style="margin: 15px 0 10px 0;">🏢 건물 종류 선택</h3>
+        <select class="algorithm-select" id="buildingType">
+            <option value="house">🏠 집</option>
+            <option value="school">🏫 학교</option>
+            <option value="hospital">🏥 병원</option>
+            <option value="store">🏪 상점</option>
+            <option value="park">🏞️ 공원</option>
+            <option value="library">📚 도서관</option>
+            <option value="restaurant">🍽️ 음식점</option>
+            <option value="cafe">☕ 카페</option>
+            <option value="bank">🏦 은행</option>
+            <option value="post">📮 우체국</option>
+        </select>
+
+        <hr style="margin: 20px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+        <button class="btn btn-primary" onclick="SimApp.generateRandomMap()">
+            🎲 랜덤 지도 생성
+        </button>
+
+        <button class="btn btn-success" onclick="SimApp.quickStart()">
+            ⚡ 빠른 시작 (지도 생성 + 선택)
+        </button>
+
+        <hr style="margin: 20px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+        <button class="btn btn-danger" onclick="SimApp.clearAll()">
+            🗑️ 전체 지우기
+        </button>
+
+        <button class="btn btn-warning" onclick="SimApp.clearPath()">
+            ↩️ 경로만 지우기
+        </button>
+
+        <div class="info-box">
+            <h4>💡 사용법</h4>
+            <p style="font-size: 0.9rem; line-height: 1.8; margin: 0;">
+                <strong>수동 모드:</strong><br>
+                1. 🏢 건물 종류 선택<br>
+                2. 🏠 지도 클릭하여 배치<br>
+                3. 🛣️ 건물 드래그로 도로 연결<br>
+                <br>
+                <strong>자동 모드:</strong><br>
+                1. 🎲 랜덤 지도 생성 클릭<br>
+                <br>
+                <strong>경로 찾기:</strong><br>
+                1. 👆 선택 모드 클릭<br>
+                2. 건물 클릭 (1번: 출발지)<br>
+                3. 건물 클릭 (2번: 도착지)<br>
+                4. 🔍 최단 경로 찾기!
+            </p>
+        </div>
+
+        <div class="legend">
+            <h4 style="margin-top: 0;">📖 건물 종류</h4>
+            <div class="legend-item">
+                <div class="legend-icon" style="background: #ec4899;">🏠</div>
+                <span>집</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon" style="background: #3b82f6;">🏫</div>
+                <span>학교</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon" style="background: #ef4444;">🏥</div>
+                <span>병원</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon" style="background: #f59e0b;">🏪</div>
+                <span>상점</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon" style="background: #10b981;">🏞️</div>
+                <span>공원</span>
+            </div>
+            <hr style="margin: 10px 0; border: none; border-top: 1px solid #e2e8f0;">
+            <div class="legend-item">
+                <div class="legend-icon" style="background: #64748b; width: 40px; height: 4px;"></div>
+                <span>도로</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon" style="background: #fbbf24; width: 40px; height: 6px;"></div>
+                <span>최단 경로</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 중앙: 지도 -->
+    <main class="map-container">
+        <canvas id="mapCanvas"></canvas>
+    </main>
+
+    <!-- 오른쪽: 정보 패널 -->
+    <aside class="panel">
+        <h2 style="margin-top: 0;">📊 정보</h2>
+
+        <div class="stat-item">
+            <span class="stat-label">건물 개수</span>
+            <span class="stat-value" id="houseCount">0</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-label">도로 개수</span>
+            <span class="stat-value" id="roadCount">0</span>
+        </div>
+
+        <h3 style="margin-top: 25px;">🏘️ 건물 목록</h3>
+        <div class="house-list" id="houseList">
+            <p style="color: #94a3b8; text-align: center;">건물을 추가해주세요</p>
+        </div>
+
+        <hr style="margin: 20px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+        <h3>🎯 경로 찾기</h3>
+
+        <div style="margin: 10px 0;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">알고리즘 선택:</label>
+            <select class="algorithm-select" id="algorithmSelect">
+                <option value="dijkstra">다익스트라 (Dijkstra)</option>
+                <option value="bfs">너비 우선 탐색 (BFS)</option>
+            </select>
+        </div>
+
+        <div style="margin: 15px 0;">
+            <label style="font-weight: bold;">출발지:</label>
+            <select class="algorithm-select" id="startSelect">
+                <option value="">선택하세요</option>
+            </select>
+        </div>
+
+        <div style="margin: 15px 0;">
+            <label style="font-weight: bold;">도착지:</label>
+            <select class="algorithm-select" id="endSelect">
+                <option value="">선택하세요</option>
+            </select>
+        </div>
+
+        <button class="btn btn-success" onclick="SimApp.findPath()">
+            🔍 최단 경로 찾기
+        </button>
+
+        <div id="pathResult" style="display: none;">
+            <div class="path-info">
+                <h4 style="margin: 0 0 10px 0; color: #065f46;">📍 경로 정보</h4>
+                <div class="stat-item" style="margin: 5px 0;">
+                    <span>총 거리</span>
+                    <span style="color: #10b981; font-weight: bold;" id="pathDistance">0</span>
+                </div>
+                <div class="stat-item" style="margin: 5px 0;">
+                    <span>경유지 수</span>
+                    <span style="color: #10b981; font-weight: bold;" id="pathStops">0</span>
+                </div>
+                <h4 style="margin: 15px 0 10px 0; color: #065f46;">🗺️ 경로 순서</h4>
+                <div class="path-steps" id="pathSteps"></div>
+            </div>
+        </div>
+
+        <div class="info-box" style="margin-top: 20px;">
+            <h4>🧮 알고리즘 설명</h4>
+            <div id="algorithmExplanation" style="font-size: 0.9rem; line-height: 1.6;">
+                <strong>다익스트라:</strong><br>
+                가장 짧은 거리를 보장하는 최적의 알고리즘입니다. 
+                각 지점까지의 최단 거리를 계산합니다.
+            </div>
+        </div>
+    </aside>
+</div>
+
+<script>
+const SimApp = {
+    mode: 'house', // house, road, select
+    houses: [],
+    roads: [],
+    houseIdCounter: 0,
+    
+    roadStart: null,
+    selectedStart: null,
+    selectedEnd: null,
+    currentPath: [],
+
+    buildingTypes: {
+        house: { icon: '🏠', name: '집', color: '#ec4899' },
+        school: { icon: '🏫', name: '학교', color: '#3b82f6' },
+        hospital: { icon: '🏥', name: '병원', color: '#ef4444' },
+        store: { icon: '🏪', name: '상점', color: '#f59e0b' },
+        park: { icon: '🏞️', name: '공원', color: '#10b981' },
+        library: { icon: '📚', name: '도서관', color: '#8b5cf6' },
+        restaurant: { icon: '🍽️', name: '음식점', color: '#f97316' },
+        cafe: { icon: '☕', name: '카페', color: '#a78bfa' },
+        bank: { icon: '🏦', name: '은행', color: '#06b6d4' },
+        post: { icon: '📮', name: '우체국', color: '#84cc16' }
+    },
+
+    viz: {
+        ctx: null,
+        canvas: null,
+        scale: 1,
+        hoveredHouse: null,
+
+        init() {
+            this.canvas = document.getElementById('mapCanvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.resize();
+            window.addEventListener('resize', () => this.resize());
+            
+            // 마우스 이벤트
+            this.canvas.addEventListener('click', (e) => this.handleClick(e));
+            this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+            this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+            this.canvas.addEventListener('mouseup', (e) => this.handleMouseUp(e));
+            
+            this.draw();
+        },
+
+        resize() {
+            const parent = this.canvas.parentElement;
+            this.canvas.width = parent.clientWidth - 40;
+            this.canvas.height = 700;
+            this.draw();
+        },
+
+        getMousePos(e) {
+            const rect = this.canvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        },
+
+        handleClick(e) {
+            const pos = this.getMousePos(e);
+
+            if (SimApp.mode === 'house') {
+                SimApp.addHouse(pos.x, pos.y);
+            } else if (SimApp.mode === 'select') {
+                const house = SimApp.getHouseAt(pos.x, pos.y);
+                if (house) {
+                    // 출발지가 없으면 출발지로 설정
+                    if (!SimApp.selectedStart) {
+                        SimApp.selectedStart = house;
+                        SimApp.updateSelects();
+                    } 
+                    // 출발지는 있지만 도착지가 없으면 도착지로 설정
+                    else if (!SimApp.selectedEnd && house !== SimApp.selectedStart) {
+                        SimApp.selectedEnd = house;
+                        SimApp.updateSelects();
+                    } 
+                    // 둘 다 있으면 클릭한 건물을 새로운 출발지로 설정
+                    else {
+                        SimApp.selectedStart = house;
+                        SimApp.selectedEnd = null;
+                        SimApp.clearPath();
+                        SimApp.updateSelects();
+                    }
+                    this.draw();
+                }
+            }
+        },
+
+        handleMouseDown(e) {
+            if (SimApp.mode === 'road') {
+                const pos = this.getMousePos(e);
+                const house = SimApp.getHouseAt(pos.x, pos.y);
+                if (house) {
+                    SimApp.roadStart = house;
+                }
+            }
+        },
+
+        handleMouseMove(e) {
+            const pos = this.getMousePos(e);
+            
+            if (SimApp.mode === 'road' && SimApp.roadStart) {
+                this.tempMousePos = pos;
+                this.draw();
+            } else if (SimApp.mode === 'select') {
+                // 선택 모드에서 건물 위에 마우스가 있으면 하이라이트
+                const house = SimApp.getHouseAt(pos.x, pos.y);
+                if (this.hoveredHouse !== house) {
+                    this.hoveredHouse = house;
+                    this.draw();
+                }
+            }
+        },
+
+        handleMouseUp(e) {
+            if (SimApp.mode === 'road' && SimApp.roadStart) {
+                const pos = this.getMousePos(e);
+                const house = SimApp.getHouseAt(pos.x, pos.y);
+                if (house && house !== SimApp.roadStart) {
+                    SimApp.addRoad(SimApp.roadStart, house);
+                }
+                SimApp.roadStart = null;
+                this.tempMousePos = null;
+                this.draw();
+            }
+        },
+
+        draw() {
+            const ctx = this.ctx;
+            const w = this.canvas.width;
+            const h = this.canvas.height;
+
+            // 배경
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, w, h);
+
+            // 그리드
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            const gridSize = 50;
+            for (let x = 0; x < w; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, h);
+                ctx.stroke();
+            }
+            for (let y = 0; y < h; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(w, y);
+                ctx.stroke();
+            }
+
+            // 도로 그리기
+            SimApp.roads.forEach(road => {
+                ctx.strokeStyle = '#94a3b8';
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(road.from.x, road.from.y);
+                ctx.lineTo(road.to.x, road.to.y);
+                ctx.stroke();
+
+                // 거리 표시 (더 작게)
+                const midX = (road.from.x + road.to.x) / 2;
+                const midY = (road.from.y + road.to.y) / 2;
+                ctx.fillStyle = 'rgba(255,255,255,0.9)';
+                ctx.fillRect(midX - 18, midY - 10, 36, 20);
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(midX - 18, midY - 10, 36, 20);
+                ctx.fillStyle = '#475569';
+                ctx.font = 'bold 11px Nanum Gothic';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`${road.distance}m`, midX, midY);
+            });
+
+            // 임시 도로 (드래그 중)
+            if (this.tempMousePos && SimApp.roadStart) {
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([8, 4]);
+                ctx.beginPath();
+                ctx.moveTo(SimApp.roadStart.x, SimApp.roadStart.y);
+                ctx.lineTo(this.tempMousePos.x, this.tempMousePos.y);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // 최단 경로 그리기
+            if (SimApp.currentPath.length > 1) {
+                ctx.strokeStyle = '#fbbf24';
+                ctx.lineWidth = 6;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                
+                ctx.beginPath();
+                ctx.moveTo(SimApp.currentPath[0].x, SimApp.currentPath[0].y);
+                for (let i = 1; i < SimApp.currentPath.length; i++) {
+                    ctx.lineTo(SimApp.currentPath[i].x, SimApp.currentPath[i].y);
+                }
+                ctx.stroke();
+
+                // 경로에 화살표 추가
+                for (let i = 0; i < SimApp.currentPath.length - 1; i++) {
+                    const from = SimApp.currentPath[i];
+                    const to = SimApp.currentPath[i + 1];
+                    this.drawArrow(ctx, from.x, from.y, to.x, to.y);
+                }
+            }
+
+            // 건물 그리기
+            SimApp.houses.forEach(house => {
+                // 호버 효과 (선택 모드일 때)
+                if (SimApp.mode === 'select' && house === this.hoveredHouse) {
+                    ctx.fillStyle = 'rgba(59, 130, 246, 0.2)';
+                    ctx.beginPath();
+                    ctx.arc(house.x, house.y, 35, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // 건물 아이콘 (원 없이 바로 표시)
+                ctx.font = '32px Nanum Gothic';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(house.icon, house.x, house.y);
+
+                // 선택 표시 (원 대신 테두리)
+                if (house === SimApp.selectedStart) {
+                    ctx.strokeStyle = '#10b981';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.arc(house.x, house.y, 28, 0, Math.PI * 2);
+                    ctx.stroke();
+                    
+                    // 점선 원 추가
+                    ctx.strokeStyle = '#10b981';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([5, 5]);
+                    ctx.beginPath();
+                    ctx.arc(house.x, house.y, 35, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                } else if (house === SimApp.selectedEnd) {
+                    ctx.strokeStyle = '#ef4444';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.arc(house.x, house.y, 28, 0, Math.PI * 2);
+                    ctx.stroke();
+                    
+                    // 점선 원 추가
+                    ctx.strokeStyle = '#ef4444';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([5, 5]);
+                    ctx.beginPath();
+                    ctx.arc(house.x, house.y, 35, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+
+                // 이름 (더 작게)
+                ctx.fillStyle = '#1e293b';
+                ctx.font = 'bold 13px Nanum Gothic';
+                ctx.fillText(house.name, house.x, house.y + 35);
+
+                // 출발지/도착지 표시
+                if (house === SimApp.selectedStart) {
+                    ctx.fillStyle = '#10b981';
+                    ctx.font = 'bold 14px Nanum Gothic';
+                    ctx.fillText('🚩 출발', house.x, house.y - 35);
+                } else if (house === SimApp.selectedEnd) {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.font = 'bold 14px Nanum Gothic';
+                    ctx.fillText('🎯 도착', house.x, house.y - 35);
+                }
+            });
+        },
+
+        drawArrow(ctx, fromX, fromY, toX, toY) {
+            const headlen = 15;
+            const angle = Math.atan2(toY - fromY, toX - fromX);
+            
+            const midX = (fromX + toX) / 2;
+            const midY = (fromY + toY) / 2;
+
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.moveTo(midX, midY);
+            ctx.lineTo(midX - headlen * Math.cos(angle - Math.PI / 6), 
+                       midY - headlen * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(midX - headlen * Math.cos(angle + Math.PI / 6), 
+                       midY - headlen * Math.sin(angle + Math.PI / 6));
+            ctx.closePath();
+            ctx.fill();
+        }
+    },
+
+    init() {
+        this.viz.init();
+        this.setMode('house');
+        this.updateDisplay();
+    },
+
+    setMode(mode) {
+        this.mode = mode;
+        
+        // 버튼 활성화 상태
+        document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(mode + 'Mode').classList.add('active');
+
+        // 모드 표시
+        const modeText = {
+            house: '🏠 건물 추가 모드 - 클릭하여 건물을 배치하세요',
+            road: '🛣️ 도로 그리기 모드 - 건물을 드래그하여 연결하세요',
+            select: '👆 선택 모드 - 건물을 클릭하여 출발지와 도착지를 선택하세요\n(첫 번째 클릭: 출발지, 두 번째 클릭: 도착지)'
+        };
+        document.getElementById('modeIndicator').textContent = modeText[mode];
+        
+        // 선택 모드일 때 커서 변경
+        const canvas = this.viz.canvas;
+        if (mode === 'select') {
+            canvas.style.cursor = 'pointer';
+        } else if (mode === 'house') {
+            canvas.style.cursor = 'crosshair';
+        } else {
+            canvas.style.cursor = 'grab';
+        }
+    },
+
+    addHouse(x, y, buildingType = null) {
+        const id = ++this.houseIdCounter;
+        const type = buildingType || document.getElementById('buildingType').value;
+        const typeInfo = this.buildingTypes[type];
+        
+        const house = {
+            id: id,
+            name: `${typeInfo.name}${this.houses.filter(h => h.type === type).length + 1}`,
+            type: type,
+            icon: typeInfo.icon,
+            color: typeInfo.color,
+            x: x,
+            y: y
+        };
+        this.houses.push(house);
+        this.updateDisplay();
+        this.viz.draw();
+    },
+
+    getHouseAt(x, y) {
+        const radius = 20; // 아이콘 크기 기준
+        return this.houses.find(h => {
+            const dx = h.x - x;
+            const dy = h.y - y;
+            return Math.sqrt(dx * dx + dy * dy) <= radius;
+        });
+    },
+
+    addRoad(from, to) {
+        // 이미 연결되어 있는지 확인
+        const exists = this.roads.some(r => 
+            (r.from === from && r.to === to) || 
+            (r.from === to && r.to === from)
+        );
+
+        if (!exists) {
+            const dx = to.x - from.x;
+            const dy = to.y - from.y;
+            const distance = Math.round(Math.sqrt(dx * dx + dy * dy));
+
+            this.roads.push({
+                from: from,
+                to: to,
+                distance: distance
+            });
+            this.updateDisplay();
+            this.viz.draw();
+        }
+    },
+
+    deleteHouse(house) {
+        // 관련 도로 삭제
+        this.roads = this.roads.filter(r => r.from !== house && r.to !== house);
+        
+        // 집 삭제
+        this.houses = this.houses.filter(h => h !== house);
+        
+        // 선택 초기화
+        if (this.selectedStart === house) this.selectedStart = null;
+        if (this.selectedEnd === house) this.selectedEnd = null;
+        
+        this.updateDisplay();
+        this.viz.draw();
+    },
+
+    updateDisplay() {
+        // 통계
+        document.getElementById('houseCount').textContent = this.houses.length;
+        document.getElementById('roadCount').textContent = this.roads.length;
+
+        // 집 목록
+        const listHtml = this.houses.length === 0 
+            ? '<p style="color: #94a3b8; text-align: center;">건물을 추가해주세요</p>'
+            : this.houses.map(h => `
+                <div class="house-item ${h === this.selectedStart ? 'selected' : ''}" 
+                     onclick="SimApp.selectHouseFromList(${h.id})"
+                     style="background: ${h.color}20; border-color: ${h.color};">
+                    <span class="house-name">${h.icon} ${h.name}</span>
+                    <button class="delete-btn" onclick="event.stopPropagation(); SimApp.deleteHouse(SimApp.getHouseById(${h.id}))">삭제</button>
+                </div>
+            `).join('');
+        document.getElementById('houseList').innerHTML = listHtml;
+
+        // 선택 목록 업데이트
+        this.updateSelects();
+    },
+
+    updateSelects() {
+        const startSelect = document.getElementById('startSelect');
+        const endSelect = document.getElementById('endSelect');
+
+        const options = '<option value="">선택하세요</option>' + 
+            this.houses.map(h => 
+                `<option value="${h.id}">${h.icon} ${h.name}</option>`
+            ).join('');
+
+        startSelect.innerHTML = options;
+        endSelect.innerHTML = options;
+
+        if (this.selectedStart) {
+            startSelect.value = this.selectedStart.id;
+        }
+        if (this.selectedEnd) {
+            endSelect.value = this.selectedEnd.id;
+        }
+
+        // 이벤트 리스너
+        startSelect.onchange = (e) => {
+            this.selectedStart = this.getHouseById(parseInt(e.target.value));
+            this.viz.draw();
+        };
+
+        endSelect.onchange = (e) => {
+            this.selectedEnd = this.getHouseById(parseInt(e.target.value));
+            this.viz.draw();
+        };
+    },
+
+    getHouseById(id) {
+        return this.houses.find(h => h.id === id);
+    },
+
+    selectHouseFromList(id) {
+        const house = this.getHouseById(id);
+        if (!this.selectedStart) {
+            this.selectedStart = house;
+        } else if (!this.selectedEnd && house !== this.selectedStart) {
+            this.selectedEnd = house;
+        } else {
+            this.selectedStart = house;
+            this.selectedEnd = null;
+        }
+        this.updateDisplay();
+        this.viz.draw();
+    },
+
+    findPath() {
+        if (!this.selectedStart || !this.selectedEnd) {
+            alert('출발지와 도착지를 모두 선택해주세요!');
+            return;
+        }
+
+        const algorithm = document.getElementById('algorithmSelect').value;
+        
+        let path, distance;
+        if (algorithm === 'dijkstra') {
+            const result = this.dijkstra(this.selectedStart, this.selectedEnd);
+            path = result.path;
+            distance = result.distance;
+        } else {
+            const result = this.bfs(this.selectedStart, this.selectedEnd);
+            path = result.path;
+            distance = result.distance;
+        }
+
+        if (path.length === 0) {
+            alert('경로를 찾을 수 없습니다! 도로로 연결되어 있는지 확인해주세요.');
+            return;
+        }
+
+        this.currentPath = path;
+        this.displayPathResult(path, distance);
+        this.viz.draw();
+    },
+
+    dijkstra(start, end) {
+        const distances = {};
+        const previous = {};
+        const unvisited = new Set();
+
+        // 초기화
+        this.houses.forEach(h => {
+            distances[h.id] = Infinity;
+            previous[h.id] = null;
+            unvisited.add(h.id);
+        });
+        distances[start.id] = 0;
+
+        while (unvisited.size > 0) {
+            // 최소 거리 노드 찾기
+            let minNode = null;
+            let minDist = Infinity;
+            unvisited.forEach(id => {
+                if (distances[id] < minDist) {
+                    minDist = distances[id];
+                    minNode = id;
+                }
+            });
+
+            if (minNode === null || minDist === Infinity) break;
+            unvisited.delete(minNode);
+
+            const current = this.getHouseById(minNode);
+            if (current === end) break;
+
+            // 이웃 노드 업데이트
+            const neighbors = this.getNeighbors(current);
+            neighbors.forEach(({ node, distance }) => {
+                const alt = distances[current.id] + distance;
+                if (alt < distances[node.id]) {
+                    distances[node.id] = alt;
+                    previous[node.id] = current.id;
+                }
+            });
+        }
+
+        // 경로 재구성
+        const path = [];
+        let current = end.id;
+        while (current !== null) {
+            path.unshift(this.getHouseById(current));
+            current = previous[current];
+        }
+
+        return {
+            path: path[0] === start ? path : [],
+            distance: distances[end.id]
+        };
+    },
+
+    bfs(start, end) {
+        const queue = [[start]];
+        const visited = new Set([start.id]);
+
+        while (queue.length > 0) {
+            const path = queue.shift();
+            const current = path[path.length - 1];
+
+            if (current === end) {
+                let totalDistance = 0;
+                for (let i = 0; i < path.length - 1; i++) {
+                    const road = this.roads.find(r =>
+                        (r.from === path[i] && r.to === path[i + 1]) ||
+                        (r.from === path[i + 1] && r.to === path[i])
+                    );
+                    if (road) totalDistance += road.distance;
+                }
+                return { path, distance: totalDistance };
+            }
+
+            const neighbors = this.getNeighbors(current);
+            neighbors.forEach(({ node }) => {
+                if (!visited.has(node.id)) {
+                    visited.add(node.id);
+                    queue.push([...path, node]);
+                }
+            });
+        }
+
+        return { path: [], distance: Infinity };
+    },
+
+    getNeighbors(house) {
+        const neighbors = [];
+        this.roads.forEach(road => {
+            if (road.from === house) {
+                neighbors.push({ node: road.to, distance: road.distance });
+            } else if (road.to === house) {
+                neighbors.push({ node: road.from, distance: road.distance });
+            }
+        });
+        return neighbors;
+    },
+
+    displayPathResult(path, distance) {
+        document.getElementById('pathResult').style.display = 'block';
+        document.getElementById('pathDistance').textContent = `${distance}m`;
+        document.getElementById('pathStops').textContent = `${path.length - 2}개`;
+
+        const stepsHtml = path.map((house, idx) => {
+            if (idx === 0) {
+                return `<div class="path-step">🚩 <strong>출발:</strong> ${house.name}</div>`;
+            } else if (idx === path.length - 1) {
+                return `<div class="path-step">🎯 <strong>도착:</strong> ${house.name}</div>`;
+            } else {
+                return `<div class="path-step">${idx}. ${house.name}</div>`;
+            }
+        }).join('');
+
+        document.getElementById('pathSteps').innerHTML = stepsHtml;
+    },
+
+    clearPath() {
+        this.currentPath = [];
+        this.selectedStart = null;
+        this.selectedEnd = null;
+        document.getElementById('pathResult').style.display = 'none';
+        this.updateDisplay();
+        this.viz.draw();
+    },
+
+    clearAll() {
+        if (confirm('모든 집과 도로를 삭제하시겠습니까?')) {
+            this.houses = [];
+            this.roads = [];
+            this.currentPath = [];
+            this.selectedStart = null;
+            this.selectedEnd = null;
+            this.houseIdCounter = 0;
+            document.getElementById('pathResult').style.display = 'none';
+            this.updateDisplay();
+            this.viz.draw();
+        }
+    },
+
+    darkenColor(color, percent) {
+        const num = parseInt(color.replace('#', ''), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = Math.max(0, (num >> 16) - amt);
+        const G = Math.max(0, ((num >> 8) & 0x00FF) - amt);
+        const B = Math.max(0, (num & 0x0000FF) - amt);
+        return `#${((R << 16) | (G << 8) | B).toString(16).padStart(6, '0')}`;
+    },
+
+    generateRandomMap() {
+        if (this.houses.length > 0) {
+            if (!confirm('기존 지도를 삭제하고 새로운 랜덤 지도를 생성하시겠습니까?')) {
+                return;
+            }
+        }
+
+        // 초기화
+        this.houses = [];
+        this.roads = [];
+        this.currentPath = [];
+        this.selectedStart = null;
+        this.selectedEnd = null;
+        this.houseIdCounter = 0;
+
+        const canvas = this.viz.canvas;
+        const w = canvas.width;
+        const h = canvas.height;
+
+        // 건물 타입들
+        const buildingTypeKeys = Object.keys(this.buildingTypes);
+        const numBuildings = buildingTypeKeys.length;
+
+        // 각 건물 타입을 하나씩 배치 (더 작은 마진으로 전체 공간 활용)
+        const margin = 60; // 100에서 60으로 줄임
+        const usedPositions = [];
+
+        buildingTypeKeys.forEach((type, index) => {
+            let x, y;
+            let attempts = 0;
+            
+            // 겹치지 않는 위치 찾기
+            do {
+                x = margin + Math.random() * (w - 2 * margin);
+                y = margin + Math.random() * (h - 2 * margin);
+                attempts++;
+                
+                // 너무 많이 시도하면 강제로 배치
+                if (attempts > 100) break;
+                
+            } while (usedPositions.some(pos => {
+                const dx = pos.x - x;
+                const dy = pos.y - y;
+                return Math.sqrt(dx * dx + dy * dy) < 100; // 120에서 100으로 줄임
+            }));
+
+            usedPositions.push({ x, y });
+            this.addHouse(x, y, type);
+        });
+
+        // 도로 생성 (각 건물을 2-4개의 다른 건물과 연결)
+        this.houses.forEach((house, index) => {
+            const numConnections = 2 + Math.floor(Math.random() * 3); // 2-4개 연결
+            const availableHouses = this.houses.filter(h => h !== house);
+            
+            // 거리순으로 정렬
+            availableHouses.sort((a, b) => {
+                const distA = Math.sqrt((a.x - house.x) ** 2 + (a.y - house.y) ** 2);
+                const distB = Math.sqrt((b.x - house.x) ** 2 + (b.y - house.y) ** 2);
+                return distA - distB;
+            });
+
+            // 가까운 건물들과 연결
+            for (let i = 0; i < Math.min(numConnections, availableHouses.length); i++) {
+                const target = availableHouses[i];
+                
+                // 이미 연결되어 있는지 확인
+                const alreadyConnected = this.roads.some(r =>
+                    (r.from === house && r.to === target) ||
+                    (r.from === target && r.to === house)
+                );
+
+                if (!alreadyConnected) {
+                    this.addRoad(house, target);
+                }
+            }
+        });
+
+        // 모든 건물이 연결되어 있는지 확인 (연결성 보장)
+        this.ensureConnectivity();
+
+        this.updateDisplay();
+        this.viz.draw();
+
+        // 성공 메시지
+        alert(`🎉 랜덤 지도가 생성되었습니다!\n\n건물: ${this.houses.length}개\n도로: ${this.roads.length}개`);
+    },
+
+    ensureConnectivity() {
+        // BFS로 모든 노드가 연결되어 있는지 확인
+        if (this.houses.length === 0) return;
+
+        const visited = new Set();
+        const queue = [this.houses[0]];
+        visited.add(this.houses[0].id);
+
+        while (queue.length > 0) {
+            const current = queue.shift();
+            const neighbors = this.getNeighbors(current);
+            
+            neighbors.forEach(({ node }) => {
+                if (!visited.has(node.id)) {
+                    visited.add(node.id);
+                    queue.push(node);
+                }
+            });
+        }
+
+        // 연결되지 않은 노드들을 연결
+        this.houses.forEach(house => {
+            if (!visited.has(house.id)) {
+                // 가장 가까운 연결된 노드와 연결
+                let closest = null;
+                let minDist = Infinity;
+
+                this.houses.forEach(other => {
+                    if (visited.has(other.id)) {
+                        const dist = Math.sqrt(
+                            (house.x - other.x) ** 2 + 
+                            (house.y - other.y) ** 2
+                        );
+                        if (dist < minDist) {
+                            minDist = dist;
+                            closest = other;
+                        }
+                    }
+                });
+
+                if (closest) {
+                    this.addRoad(house, closest);
+                    visited.add(house.id);
+                }
+            }
+        });
+    },
+
+    quickStart() {
+        // 랜덤 지도 생성
+        this.generateRandomMap();
+        
+        // 잠시 후 자동으로 출발지와 도착지 선택
+        setTimeout(() => {
+            if (this.houses.length >= 2) {
+                // 랜덤하게 두 건물 선택
+                const randomIndex1 = Math.floor(Math.random() * this.houses.length);
+                let randomIndex2 = Math.floor(Math.random() * this.houses.length);
+                
+                // 같은 건물이 선택되지 않도록
+                while (randomIndex2 === randomIndex1) {
+                    randomIndex2 = Math.floor(Math.random() * this.houses.length);
+                }
+                
+                this.selectedStart = this.houses[randomIndex1];
+                this.selectedEnd = this.houses[randomIndex2];
+                
+                this.updateSelects();
+                this.viz.draw();
+                
+                // 선택 모드로 전환
+                this.setMode('select');
+                
+                // 알림
+                alert(`✅ 준비 완료!\n\n출발지: ${this.selectedStart.name}\n도착지: ${this.selectedEnd.name}\n\n이제 "최단 경로 찾기" 버튼을 눌러보세요!`);
+            }
+        }, 500);
+    }
+};
+
+// 알고리즘 설명 업데이트
+document.getElementById('algorithmSelect').onchange = function(e) {
+    const explanations = {
+        dijkstra: '<strong>다익스트라:</strong><br>가장 짧은 거리를 보장하는 최적의 알고리즘입니다. 각 지점까지의 최단 거리를 계산합니다.',
+        bfs: '<strong>너비 우선 탐색 (BFS):</strong><br>가까운 곳부터 차례로 탐색합니다. 경유지 수가 가장 적은 경로를 찾습니다.'
+    };
+    document.getElementById('algorithmExplanation').innerHTML = explanations[e.target.value];
+};
+
+// 초기화
+window.onload = () => {
+    SimApp.init();
+};
+</script>
+</body>
+</html>

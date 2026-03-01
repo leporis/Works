@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧠 Tetris DQN - AI 강화학습</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: linear-gradient(135deg, #0d0d1a, #1a1a2e); min-height: 100vh; }
+    #root { min-height: 100vh; }
+  </style>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+const { useState, useEffect, useCallback, useRef, useMemo } = React;
+
+// ============================================
+// 설정
+// ============================================
+const BOARD_WIDTH = 10;
+const BOARD_HEIGHT = 20;
+
+const TETROMINOES = {
+  I: { shape: [[1,1,1,1]], color: '#00f5ff' },
+  O: { shape: [[1,1],[1,1]], color: '#ffd700' },
+  T: { shape: [[0,1,0],[1,1,1]], color: '#9b59b6' },
+  S: { shape: [[0,1,1],[1,1,0]], color: '#2ecc71' },
+  Z: { shape: [[1,1,0],[0,1,1]], color: '#e74c3c' },
+  J: { shape: [[1,0,0],[1,1,1]], color: '#3498db' },
+  L: { shape: [[0,0,1],[1,1,1]], color: '#e67e22' }
+};
+
+const STAGES = [
+  { name: '초기', min: 0, max: 100, color: '#e74c3c', icon: '🌱' },
+  { name: '탐색', min: 100, max: 500, color: '#e67e22', icon: '🔍' },
+  { name: '학습', min: 500, max: 2000, color: '#f1c40f', icon: '📚' },
+  { name: '응용', min: 2000, max: 5000, color: '#2ecc71', icon: '🎯' },
+  { name: '숙련', min: 5000, max: 10000, color: '#00f5ff', icon: '🏆' }
+];
+
+const STORAGE_KEY = 'tetris-dqn-save-v3';
+
+const SUCCESS_CRITERIA = {
+  maxPieces: 200,
+  maxScore: 5000,
+  maxLines: 20
+};
+
+// ============================================
+// 툴팁 버튼 컴포넌트
+// ============================================
+const TooltipButton = ({ onClick, icon, label, tooltip, color, disabled = false, size = 'medium' }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  
+  const sizes = {
+    small: { padding: '6px 10px', fontSize: '0.7rem', minWidth: '45px' },
+    medium: { padding: '10px 14px', fontSize: '0.8rem', minWidth: '100%' },
+    large: { padding: '12px 20px', fontSize: '0.9rem', minWidth: '120px' }
+  };
+  
+  const s = sizes[size];
+  
+  return (
+    <div style={{ position: 'relative', width: '100%' }}>
+      <button
+        onClick={onClick}
+        disabled={disabled}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        style={{
+          width: '100%',
+          padding: s.padding,
+          fontSize: s.fontSize,
+          minWidth: s.minWidth,
+          background: color,
+          border: 'none',
+          borderRadius: '6px',
+          color: 'white',
+          fontWeight: 'bold',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          opacity: disabled ? 0.5 : 1,
+          transition: 'all 0.2s ease',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '6px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
+        }}
+        onMouseOver={(e) => { if (!disabled) e.target.style.transform = 'translateY(-1px)'; e.target.style.boxShadow = '0 4px 8px rgba(0,0,0,0.4)'; }}
+        onMouseOut={(e) => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)'; }}
+      >
+        <span>{icon}</span>
+        <span>{label}</span>
+      </button>
+      
+      {showTooltip && tooltip && (
+        <div style={{
+          position: 'absolute',
+          bottom: '100%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          marginBottom: '8px',
+          padding: '8px 12px',
+          background: 'rgba(0,0,0,0.9)',
+          border: '1px solid rgba(255,255,255,0.2)',
+          borderRadius: '6px',
+          fontSize: '0.7rem',
+          color: '#fff',
+          whiteSpace: 'nowrap',
+          zIndex: 100,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
+        }}>
+          {tooltip}
+          <div style={{
+            position: 'absolute',
+            top: '100%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 0,
+            height: 0,
+            borderLeft: '6px solid transparent',
+            borderRight: '6px solid transparent',
+            borderTop: '6px solid rgba(0,0,0,0.9)'
+          }} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const IconButton = ({ onClick, icon, tooltip, color }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  
+  return (
+    <div style={{ position: 'relative' }}>
+      <button
+        onClick={onClick}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        style={{
+          width: '100%',
+          padding: '8px',
+          background: `${color}20`,
+          border: `1px solid ${color}50`,
+          borderRadius: '5px',
+          color: color,
+          cursor: 'pointer',
+          fontSize: '0.8rem',
+          transition: 'all 0.2s ease'
+        }}
+        onMouseOver={(e) => { e.target.style.background = `${color}40`; }}
+        onMouseOut={(e) => { e.target.style.background = `${color}20`; }}
+      >
+        {icon}
+      </button>
+      
+      {showTooltip && tooltip && (
+        <div style={{
+          position: 'absolute',
+          bottom: '100%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          marginBottom: '6px',
+          padding: '6px 10px',
+          background: 'rgba(0,0,0,0.9)',
+          border: '1px solid rgba(255,255,255,0.2)',
+          borderRadius: '4px',
+          fontSize: '0.65rem',
+          color: '#fff',
+          whiteSpace: 'nowrap',
+          zIndex: 100
+        }}>
+          {tooltip}
+          <div style={{
+            position: 'absolute',
+            top: '100%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 0,
+            height: 0,
+            borderLeft: '5px solid transparent',
+            borderRight: '5px solid transparent',
+            borderTop: '5px solid rgba(0,0,0,0.9)'
+          }} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ============================================
+// 신경망
+// ============================================
+class NeuralNetwork {
+  constructor(layers) {
+    this.layers = layers;
+    this.weights = [];
+    this.biases = [];
+    
+    for (let i = 0; i < layers.length - 1; i++) {
+      const std = Math.sqrt(2.0 / layers[i]);
+      this.weights.push(Array(layers[i]).fill().map(() => Array(layers[i+1]).fill().map(() => (Math.random() - 0.5) * 2 * std)));
+      this.biases.push(Array(layers[i+1]).fill(0));
+    }
+    
+    this.m_w = this.weights.map(w => w.map(row => row.map(() => 0)));
+    this.v_w = this.weights.map(w => w.map(row => row.map(() => 0)));
+    this.m_b = this.biases.map(b => b.map(() => 0));
+    this.v_b = this.biases.map(b => b.map(() => 0));
+    this.t = 0;
+  }
+
+  forward(input, training = false) {
+    const acts = [input], pres = [input];
+    let cur = input;
+    for (let l = 0; l < this.weights.length; l++) {
+      const z = this.biases[l].map((b, j) => {
+        let sum = b;
+        for (let i = 0; i < cur.length; i++) sum += cur[i] * this.weights[l][i][j];
+        return sum;
+      });
+      pres.push(z);
+      cur = l === this.weights.length - 1 ? z : z.map(x => Math.max(0, x));
+      acts.push(cur);
+    }
+    return training ? { output: cur, acts, pres } : cur;
+  }
+
+  backward(acts, pres, targets, lr = 0.001) {
+    const n = this.weights.length;
+    let delta = acts[n].map((o, i) => o - targets[i]);
+    for (let l = n - 1; l >= 0; l--) {
+      const gW = this.weights[l].map(row => row.map(() => 0));
+      const gB = delta.slice();
+      for (let i = 0; i < acts[l].length; i++)
+        for (let j = 0; j < delta.length; j++)
+          gW[i][j] = acts[l][i] * delta[j];
+      if (l > 0) {
+        const newD = [];
+        for (let i = 0; i < this.weights[l].length; i++) {
+          let sum = 0;
+          for (let j = 0; j < delta.length; j++) sum += this.weights[l][i][j] * delta[j];
+          newD.push(sum * (pres[l][i] > 0 ? 1 : 0));
+        }
+        delta = newD;
+      }
+      this.adam(l, gW, gB, lr);
+    }
+    return targets.reduce((s, t, i) => s + (acts[n][i] - t) ** 2, 0) / targets.length;
+  }
+
+  adam(l, gW, gB, lr, b1 = 0.9, b2 = 0.999, e = 1e-8) {
+    this.t++;
+    const c1 = 1 - b1 ** this.t, c2 = 1 - b2 ** this.t;
+    for (let i = 0; i < this.weights[l].length; i++) {
+      for (let j = 0; j < this.weights[l][i].length; j++) {
+        this.m_w[l][i][j] = b1 * this.m_w[l][i][j] + (1 - b1) * gW[i][j];
+        this.v_w[l][i][j] = b2 * this.v_w[l][i][j] + (1 - b2) * gW[i][j] ** 2;
+        this.weights[l][i][j] -= lr * (this.m_w[l][i][j] / c1) / (Math.sqrt(this.v_w[l][i][j] / c2) + e);
+      }
+    }
+    for (let j = 0; j < this.biases[l].length; j++) {
+      this.m_b[l][j] = b1 * this.m_b[l][j] + (1 - b1) * gB[j];
+      this.v_b[l][j] = b2 * this.v_b[l][j] + (1 - b2) * gB[j] ** 2;
+      this.biases[l][j] -= lr * (this.m_b[l][j] / c1) / (Math.sqrt(this.v_b[l][j] / c2) + e);
+    }
+  }
+
+  clone() {
+    const nn = new NeuralNetwork(this.layers);
+    nn.weights = this.weights.map(w => w.map(r => [...r]));
+    nn.biases = this.biases.map(b => [...b]);
+    return nn;
+  }
+
+  analyzeWeights() {
+    const firstLayer = this.weights[0];
+    const importance = firstLayer.map(inputWeights => 
+      inputWeights.reduce((sum, w) => sum + Math.abs(w), 0) / inputWeights.length
+    );
+    return {
+      heightImportance: importance[0],
+      holesImportance: importance[1],
+      bumpinessImportance: importance[2],
+      maxHeightImportance: importance[3]
+    };
+  }
+
+  toJSON() { return { layers: this.layers, weights: this.weights, biases: this.biases, m_w: this.m_w, v_w: this.v_w, m_b: this.m_b, v_b: this.v_b, t: this.t }; }
+  loadFrom(data) {
+    this.layers = data.layers; this.weights = data.weights; this.biases = data.biases;
+    this.m_w = data.m_w || this.weights.map(w => w.map(row => row.map(() => 0)));
+    this.v_w = data.v_w || this.weights.map(w => w.map(row => row.map(() => 0)));
+    this.m_b = data.m_b || this.biases.map(b => b.map(() => 0));
+    this.v_b = data.v_b || this.biases.map(b => b.map(() => 0));
+    this.t = data.t || 0;
+  }
+}
+
+// ============================================
+// 게임 로직
+// ============================================
+const createBoard = () => Array(BOARD_HEIGHT).fill().map(() => Array(BOARD_WIDTH).fill(null));
+const rotate = (s) => { const r = Array(s[0].length).fill().map(() => Array(s.length).fill(0)); for (let y = 0; y < s.length; y++) for (let x = 0; x < s[y].length; x++) r[x][s.length - 1 - y] = s[y][x]; return r; };
+const getRotations = (s) => { const rots = [s]; let c = s; for (let i = 0; i < 3; i++) { c = rotate(c); if (!rots.some(r => JSON.stringify(r) === JSON.stringify(c))) rots.push(c); } return rots; };
+const valid = (b, s, x, y) => { for (let py = 0; py < s.length; py++) for (let px = 0; px < s[py].length; px++) if (s[py][px]) { const nx = x + px, ny = y + py; if (nx < 0 || nx >= BOARD_WIDTH || ny >= BOARD_HEIGHT || (ny >= 0 && b[ny][nx])) return false; } return true; };
+const place = (b, s, c, x, y) => { const nb = b.map(r => [...r]); for (let py = 0; py < s.length; py++) for (let px = 0; px < s[py].length; px++) if (s[py][px] && y + py >= 0) nb[y + py][x + px] = c; return nb; };
+const clear = (b) => { let lines = 0; const nb = b.filter(r => { if (r.every(c => c)) { lines++; return false; } return true; }); while (nb.length < BOARD_HEIGHT) nb.unshift(Array(BOARD_WIDTH).fill(null)); return { board: nb, lines }; };
+const drop = (b, s, x) => { let y = 0; while (valid(b, s, x, y + 1)) y++; return y; };
+const features = (b) => { let h = 0, holes = 0, bump = 0, maxH = 0; const hs = []; for (let x = 0; x < BOARD_WIDTH; x++) { let ch = 0, found = false; for (let y = 0; y < BOARD_HEIGHT; y++) { if (b[y][x]) { if (!found) { ch = BOARD_HEIGHT - y; found = true; } } else if (found) holes++; } hs.push(ch); h += ch; maxH = Math.max(maxH, ch); } for (let i = 0; i < hs.length - 1; i++) bump += Math.abs(hs[i] - hs[i + 1]); return [h / 200, holes / 50, bump / 20, maxH / 20]; };
+const placements = (b, type) => { const p = TETROMINOES[type], rots = getRotations(p.shape), result = []; for (let ri = 0; ri < rots.length; ri++) { const s = rots[ri]; for (let x = 0; x <= BOARD_WIDTH - s[0].length; x++) { if (valid(b, s, x, 0)) { const y = drop(b, s, x); const nb = place(b, s, p.color, x, y); const { board: cb, lines } = clear(nb); result.push({ x, y, s, c: p.color, board: cb, lines, feat: features(cb), rotIndex: ri }); } } } return result; };
+
+// ============================================
+// DQN Agent
+// ============================================
+class Agent {
+  constructor() {
+    this.net = new NeuralNetwork([4, 64, 32, 1]);
+    this.target = this.net.clone();
+    this.eps = 1.0;
+    this.epsMin = 0.01;
+    this.epsDecay = 0.9992;
+    this.gamma = 0.99;
+    this.lr = 0.001;
+    this.mem = [];
+    this.maxMem = 30000;
+    this.batch = 32;
+    this.updateEvery = 500;
+    this.steps = 0;
+  }
+
+  choose(ps, forceExploit = false) {
+    if (!ps.length) return null;
+    if (!forceExploit && Math.random() < this.eps) return ps[Math.floor(Math.random() * ps.length)];
+    let best = ps[0], bestQ = this.net.forward(ps[0].feat)[0];
+    for (let i = 1; i < ps.length; i++) { const q = this.net.forward(ps[i].feat)[0]; if (q > bestQ) { bestQ = q; best = ps[i]; } }
+    return best;
+  }
+
+  remember(s, r, ns, d) { this.mem.push({ s, r, ns, d }); if (this.mem.length > this.maxMem) this.mem.shift(); }
+
+  replay() {
+    if (this.mem.length < this.batch) return 0;
+    let loss = 0;
+    for (let i = 0; i < this.batch; i++) {
+      const { s, r, ns, d } = this.mem[Math.floor(Math.random() * this.mem.length)];
+      const tgt = d ? r : r + this.gamma * this.target.forward(ns)[0];
+      const { acts, pres } = this.net.forward(s, true);
+      loss += this.net.backward(acts, pres, [tgt], this.lr);
+    }
+    if (this.eps > this.epsMin) this.eps *= this.epsDecay;
+    this.steps++;
+    if (this.steps % this.updateEvery === 0) this.target = this.net.clone();
+    return loss / this.batch;
+  }
+
+  getInsights() { return this.net.analyzeWeights(); }
+  toJSON() { return { net: this.net.toJSON(), target: this.target.toJSON(), eps: this.eps, steps: this.steps, mem: this.mem.slice(-5000) }; }
+  loadFrom(data) { this.net.loadFrom(data.net); this.target.loadFrom(data.target); this.eps = data.eps; this.steps = data.steps; this.mem = data.mem || []; }
+}
+
+// ============================================
+// 유틸리티
+// ============================================
+const calculateSuccessScore = (pieces, score, lines) => {
+  const pieceScore = Math.min(100, (pieces / SUCCESS_CRITERIA.maxPieces) * 100);
+  const gameScore = Math.min(100, (score / SUCCESS_CRITERIA.maxScore) * 100);
+  const lineScore = Math.min(100, (lines / SUCCESS_CRITERIA.maxLines) * 100);
+  return Math.round(pieceScore * 0.5 + gameScore * 0.3 + lineScore * 0.2);
+};
+
+const getScoreGrade = (score) => {
+  if (score >= 90) return { grade: 'S', color: '#ffd700', desc: '완벽!' };
+  if (score >= 80) return { grade: 'A', color: '#2ecc71', desc: '훌륭함' };
+  if (score >= 70) return { grade: 'B', color: '#3498db', desc: '좋음' };
+  if (score >= 50) return { grade: 'C', color: '#f1c40f', desc: '보통' };
+  if (score >= 30) return { grade: 'D', color: '#e67e22', desc: '부족' };
+  return { grade: 'F', color: '#e74c3c', desc: '더 학습 필요' };
+};
+
+// 학습 결과 보고서 생성
+const generateLearningReport = (agent, stats) => {
+  const { gen, bestScore, scores, pieces, lines, successScores, startTime } = stats;
+  
+  const avg = (arr, n = 50) => arr.length ? arr.slice(-n).reduce((a, b) => a + b, 0) / Math.min(arr.length, n) : 0;
+  const avgScore = avg(scores);
+  const avgPieces = avg(pieces);
+  const avgLines = avg(lines);
+  const avgSuccess = avg(successScores, 20);
+  const grade = getScoreGrade(avgSuccess);
+  
+  const weights = agent.getInsights();
+  const total = weights.heightImportance + weights.holesImportance + weights.bumpinessImportance + weights.maxHeightImportance;
+  const lessons = [
+    { name: '구멍 회피', pct: (weights.holesImportance / total) * 100 },
+    { name: '높이 관리', pct: (weights.heightImportance / total) * 100 },
+    { name: '평탄화', pct: (weights.bumpinessImportance / total) * 100 },
+    { name: '최대높이 제한', pct: (weights.maxHeightImportance / total) * 100 },
+  ].sort((a, b) => b.pct - a.pct);
+  
+  const totalSeconds = Math.floor((Date.now() - startTime) / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  const timeStr = hours > 0 ? `${hours}시간 ${minutes}분 ${seconds}초` : minutes > 0 ? `${minutes}분 ${seconds}초` : `${seconds}초`;
+  const gamesPerSecond = gen / (totalSeconds || 1);
+  
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+  const timeStamp = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+
+  return `# 🧠 Tetris DQN 학습 결과 보고서
+
+**생성일시:** ${dateStr} ${timeStamp}
+
+---
+
+## 📊 학습 개요
+
+| 항목 | 값 |
+|------|-----|
+| 총 학습 게임 수 | ${gen.toLocaleString()}게임 |
+| 총 학습 시간 | ${timeStr} |
+| 학습 속도 | ${gamesPerSecond.toFixed(1)}게임/초 |
+| 최종 탐색률 (ε) | ${(agent.eps * 100).toFixed(1)}% |
+
+---
+
+## 🏆 성과 요약
+
+| 지표 | 값 |
+|------|-----|
+| **최고 점수** | ${bestScore.toLocaleString()}점 |
+| **평균 점수** | ${avgScore.toFixed(0)}점 |
+| **평균 생존 피스** | ${avgPieces.toFixed(1)}개 |
+| **평균 라인 클리어** | ${avgLines.toFixed(1)}줄 |
+| **성공 점수** | ${avgSuccess.toFixed(0)}/100점 |
+| **최종 등급** | ${grade.grade} (${grade.desc}) |
+
+---
+
+## 🧠 AI가 배운 전략
+
+| 순위 | 전략 | 중요도 |
+|:----:|------|--------|
+| 1 | ${lessons[0].name} | ${lessons[0].pct.toFixed(1)}% |
+| 2 | ${lessons[1].name} | ${lessons[1].pct.toFixed(1)}% |
+| 3 | ${lessons[2].name} | ${lessons[2].pct.toFixed(1)}% |
+| 4 | ${lessons[3].name} | ${lessons[3].pct.toFixed(1)}% |
+
+---
+
+*이 보고서는 Tetris DQN 학습 시스템에 의해 자동 생성되었습니다.*
+`;
+};
+
+// ============================================
+// 모달 컴포넌트들
+// ============================================
+const HelpModal = ({ onClose }) => (
+  <div style={{
+    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+    background: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000,
+    padding: '20px', overflow: 'auto'
+  }} onClick={onClose}>
+    <div style={{
+      background: 'linear-gradient(135deg, #1a1a2e, #0d0d1a)', borderRadius: '16px', padding: '24px',
+      maxWidth: '700px', width: '100%', maxHeight: '90vh', overflow: 'auto',
+      border: '1px solid rgba(0,245,255,0.3)', boxShadow: '0 0 30px rgba(0,245,255,0.2)'
+    }} onClick={e => e.stopPropagation()}>
+      
+      <h2 style={{ margin: '0 0 20px 0', background: 'linear-gradient(90deg, #00f5ff, #ff00ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+        📖 Tetris DQN 사용 가이드
+      </h2>
+
+      <section style={{ marginBottom: '20px' }}>
+        <h3 style={{ color: '#00f5ff', fontSize: '1rem', marginBottom: '10px' }}>🧠 DQN이란?</h3>
+        <div style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '8px', fontSize: '0.85rem', lineHeight: 1.6, color: '#e0e0e0' }}>
+          <strong>Deep Q-Network</strong>의 약자로, AI가 스스로 게임을 배우는 방법입니다.
+          <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
+            <li>처음에는 <strong>무작위</strong>로 블록을 놓습니다</li>
+            <li>결과가 좋으면 <strong>보상</strong>, 나쁘면 <strong>패널티</strong>를 받습니다</li>
+            <li>이 경험을 <strong>기억</strong>하고 <strong>신경망</strong>으로 학습합니다</li>
+            <li>점점 더 좋은 결과를 내는 행동을 선택하게 됩니다!</li>
+          </ul>
+        </div>
+      </section>
+
+      <section style={{ marginBottom: '20px' }}>
+        <h3 style={{ color: '#f1c40f', fontSize: '1rem', marginBottom: '10px' }}>⚠️ 중요: 창을 활성화 상태로 유지하세요!</h3>
+        <div style={{ background: 'rgba(241,196,15,0.1)', padding: '12px', borderRadius: '8px', fontSize: '0.85rem', border: '1px solid rgba(241,196,15,0.3)', color: '#e0e0e0' }}>
+          <p style={{ margin: 0 }}>브라우저 탭이 백그라운드로 가면 학습이 <strong style={{ color: '#e74c3c' }}>100배 이상 느려집니다!</strong></p>
+          <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
+            <li>이 창을 <strong>별도 창으로 분리</strong>해서 화면 한쪽에 띄워두세요</li>
+            <li>다른 작업은 <strong>다른 창</strong>에서 하세요</li>
+          </ul>
+        </div>
+      </section>
+
+      <section style={{ marginBottom: '20px' }}>
+        <h3 style={{ color: '#2ecc71', fontSize: '1rem', marginBottom: '10px' }}>💡 사용 팁</h3>
+        <div style={{ background: 'rgba(46,204,113,0.1)', padding: '12px', borderRadius: '8px', fontSize: '0.85rem', border: '1px solid rgba(46,204,113,0.3)', color: '#e0e0e0' }}>
+          <ol style={{ margin: 0, paddingLeft: '20px', lineHeight: 1.8 }}>
+            <li><strong>속도는 5~10ms</strong>로 설정하면 빠르게 학습</li>
+            <li><strong>500게임</strong> 이상 학습해야 효과가 보임</li>
+            <li><strong>테스트</strong>로 중간중간 실력 확인 (실제 테트리스처럼 블록 낙하)</li>
+            <li><strong>리포트</strong>에서 AI 전략 확인</li>
+          </ol>
+        </div>
+      </section>
+
+      <button onClick={onClose} style={{
+        width: '100%', padding: '12px', background: 'linear-gradient(90deg, #00f5ff, #ff00ff)',
+        border: 'none', borderRadius: '8px', color: '#000', fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem'
+      }}>확인</button>
+    </div>
+  </div>
+);
+
+const LearningReportModal = ({ agent, gen, avgScore, avgPieces, avgLines, successScore, onClose }) => {
+  const weights = agent.getInsights();
+  const total = weights.heightImportance + weights.holesImportance + weights.bumpinessImportance + weights.maxHeightImportance;
+  
+  const lessons = [
+    { name: '구멍 회피', pct: (weights.holesImportance / total) * 100, icon: '🕳️', color: '#e74c3c' },
+    { name: '높이 관리', pct: (weights.heightImportance / total) * 100, icon: '📏', color: '#3498db' },
+    { name: '평탄화', pct: (weights.bumpinessImportance / total) * 100, icon: '🏔️', color: '#2ecc71' },
+    { name: '최대높이 제한', pct: (weights.maxHeightImportance / total) * 100, icon: '⚠️', color: '#f1c40f' },
+  ].sort((a, b) => b.pct - a.pct);
+
+  const grade = getScoreGrade(successScore);
+
+  return (
+    <div style={{
+      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+      background: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000,
+      padding: '20px', overflow: 'auto'
+    }} onClick={onClose}>
+      <div style={{
+        background: 'linear-gradient(135deg, #1a1a2e, #0d0d1a)', borderRadius: '16px', padding: '24px',
+        maxWidth: '550px', width: '100%', maxHeight: '90vh', overflow: 'auto',
+        border: `2px solid ${grade.color}`, boxShadow: `0 0 30px ${grade.color}50`, color: '#e0e0e0'
+      }} onClick={e => e.stopPropagation()}>
+        
+        <h2 style={{ margin: '0 0 16px 0', textAlign: 'center', background: 'linear-gradient(90deg, #00f5ff, #ff00ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          📋 AI 학습 리포트
+        </h2>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '16px' }}>
+          {[
+            { label: '학습량', value: `${gen}게임`, color: '#3498db' },
+            { label: '평균 점수', value: avgScore.toFixed(0), color: '#2ecc71' },
+            { label: '성공 점수', value: successScore.toFixed(0), color: grade.color },
+            { label: '등급', value: grade.grade, color: grade.color },
+          ].map((m, i) => (
+            <div key={i} style={{ background: `${m.color}20`, border: `1px solid ${m.color}50`, borderRadius: '6px', padding: '8px', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.65rem', opacity: 0.7 }}>{m.label}</div>
+              <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: m.color }}>{m.value}</div>
+            </div>
+          ))}
+        </div>
+
+        <section style={{ marginBottom: '16px' }}>
+          <h3 style={{ color: '#00f5ff', fontSize: '0.9rem', marginBottom: '8px' }}>🧠 AI가 배운 것</h3>
+          <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px', borderRadius: '6px' }}>
+            {lessons.map((lesson, i) => (
+              <div key={i} style={{ marginBottom: i < lessons.length - 1 ? '10px' : 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}>
+                    <span>{lesson.icon}</span>
+                    <span style={{ color: lesson.color }}>{lesson.name}</span>
+                  </span>
+                  <span style={{ fontSize: '0.75rem', color: lesson.color }}>{lesson.pct.toFixed(0)}%</span>
+                </div>
+                <div style={{ height: '6px', background: 'rgba(0,0,0,0.3)', borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{ width: `${lesson.pct * 2.5}%`, height: '100%', background: lesson.color, borderRadius: '3px' }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <button onClick={onClose} style={{
+          width: '100%', padding: '12px', background: grade.color,
+          border: 'none', borderRadius: '8px', color: '#000', fontWeight: 'bold', cursor: 'pointer'
+        }}>확인</button>
+      </div>
+    </div>
+  );
+};
+
+const ResetConfirmModal = ({ gen, onConfirm, onCancel }) => {
+  const [downloadBeforeReset, setDownloadBeforeReset] = useState(true);
+  
+  return (
+    <div style={{
+      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+      background: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+    }}>
+      <div style={{
+        background: 'linear-gradient(135deg, #1a1a2e, #0d0d1a)', borderRadius: '16px', padding: '28px',
+        border: '2px solid #e74c3c', boxShadow: '0 0 40px rgba(231,76,60,0.4)', textAlign: 'center', minWidth: '320px', maxWidth: '400px', color: '#e0e0e0'
+      }}>
+        <div style={{ fontSize: '3rem', marginBottom: '10px' }}>⚠️</div>
+        <h2 style={{ margin: '0 0 10px 0', color: '#e74c3c', fontSize: '1.3rem' }}>학습 초기화</h2>
+        <p style={{ margin: '0 0 16px 0', opacity: 0.8, fontSize: '0.9rem', lineHeight: 1.5 }}>
+          정말로 학습을 초기화하시겠습니까?<br/>
+          <strong style={{ color: '#e74c3c' }}>{gen.toLocaleString()}게임</strong>의 학습 데이터가 삭제됩니다.
+        </p>
+        
+        <label style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          gap: '8px', 
+          marginBottom: '16px',
+          cursor: 'pointer',
+          padding: '10px',
+          background: downloadBeforeReset ? 'rgba(46,204,113,0.15)' : 'rgba(0,0,0,0.2)',
+          borderRadius: '8px',
+          border: downloadBeforeReset ? '1px solid rgba(46,204,113,0.4)' : '1px solid transparent'
+        }}>
+          <input 
+            type="checkbox" 
+            checked={downloadBeforeReset} 
+            onChange={(e) => setDownloadBeforeReset(e.target.checked)}
+            style={{ width: '18px', height: '18px', accentColor: '#2ecc71' }}
+          />
+          <span style={{ fontSize: '0.85rem', color: downloadBeforeReset ? '#2ecc71' : '#888' }}>
+            📄 리셋 전 학습 보고서 저장
+          </span>
+        </label>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <button onClick={() => onConfirm(downloadBeforeReset)} style={{
+            padding: '12px', background: '#e74c3c', border: 'none', borderRadius: '8px',
+            color: '#fff', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.9rem'
+          }}>
+            🗑️ 초기화 실행
+          </button>
+          <button onClick={onCancel} style={{
+            padding: '12px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.3)',
+            borderRadius: '8px', color: '#fff', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.9rem'
+          }}>
+            ← 취소
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const GoalReachedModal = ({ successScore, gen, onContinue, onStop, onDownloadReport }) => {
+  const grade = getScoreGrade(successScore);
+  
+  return (
+    <div style={{
+      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+      background: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+    }}>
+      <div style={{
+        background: 'linear-gradient(135deg, #1a1a2e, #0d0d1a)', borderRadius: '16px', padding: '28px',
+        border: '2px solid #ffd700', boxShadow: '0 0 40px rgba(255,215,0,0.4)', textAlign: 'center', minWidth: '320px', color: '#e0e0e0'
+      }}>
+        <div style={{ fontSize: '3rem', marginBottom: '10px' }}>🎉</div>
+        <h2 style={{ margin: '0 0 10px 0', color: '#ffd700', fontSize: '1.3rem' }}>목표 달성!</h2>
+        <p style={{ margin: '0 0 16px 0', opacity: 0.8, fontSize: '0.9rem' }}>
+          AI가 설정한 목표 성공률에 도달했습니다
+        </p>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '20px' }}>
+          <div style={{ background: 'rgba(255,215,0,0.15)', padding: '12px', borderRadius: '8px' }}>
+            <div style={{ fontSize: '0.7rem', opacity: 0.7 }}>성공 점수</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: grade.color }}>{successScore.toFixed(0)}</div>
+          </div>
+          <div style={{ background: 'rgba(255,215,0,0.15)', padding: '12px', borderRadius: '8px' }}>
+            <div style={{ fontSize: '0.7rem', opacity: 0.7 }}>학습량</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3498db' }}>{gen}게임</div>
+          </div>
+        </div>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <button onClick={onDownloadReport} style={{
+            padding: '12px', background: 'linear-gradient(135deg, #00f5ff, #0080ff)', border: 'none', borderRadius: '8px',
+            color: '#000', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.9rem'
+          }}>
+            📄 학습 보고서 다운로드
+          </button>
+          <button onClick={onContinue} style={{
+            padding: '12px', background: '#2ecc71', border: 'none', borderRadius: '8px',
+            color: '#000', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.9rem'
+          }}>
+            ▶️ 학습 계속하기
+          </button>
+          <button onClick={onStop} style={{
+            padding: '12px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.3)',
+            borderRadius: '8px', color: '#fff', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.9rem'
+          }}>
+            ⏹ 여기서 멈추기
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const GameOverCard = ({ pieces, score, lines, onClose }) => {
+  const successScore = calculateSuccessScore(pieces, score, lines);
+  const grade = getScoreGrade(successScore);
+  
+  return (
+    <div style={{
+      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+      background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+    }} onClick={onClose}>
+      <div style={{
+        background: 'linear-gradient(135deg, #1a1a2e, #0d0d1a)', borderRadius: '16px', padding: '24px',
+        border: `2px solid ${grade.color}`, boxShadow: `0 0 30px ${grade.color}50`, textAlign: 'center', minWidth: '280px', color: '#e0e0e0'
+      }} onClick={e => e.stopPropagation()}>
+        <div style={{ fontSize: '0.8rem', opacity: 0.7, marginBottom: '8px' }}>테스트 결과</div>
+        <div style={{ fontSize: '4rem', fontWeight: 'bold', color: grade.color, textShadow: `0 0 20px ${grade.color}`, lineHeight: 1 }}>{grade.grade}</div>
+        <div style={{ fontSize: '2rem', fontWeight: 'bold', margin: '10px 0' }}>{successScore}<span style={{ fontSize: '1rem', opacity: 0.6 }}>/100</span></div>
+        <div style={{ color: grade.color, marginBottom: '16px' }}>{grade.desc}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '16px' }}>
+          {[{ label: '생존', value: pieces, icon: '🧩' }, { label: '점수', value: score, icon: '📊' }, { label: '라인', value: lines, icon: '📏' }].map((m, i) => (
+            <div key={i} style={{ background: 'rgba(0,0,0,0.3)', padding: '10px', borderRadius: '8px' }}>
+              <div style={{ fontSize: '0.7rem', opacity: 0.6 }}>{m.icon} {m.label}</div>
+              <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{m.value}</div>
+            </div>
+          ))}
+        </div>
+        <button onClick={onClose} style={{ padding: '10px 30px', background: grade.color, border: 'none', borderRadius: '8px', color: '#000', fontWeight: 'bold', cursor: 'pointer' }}>확인</button>
+      </div>
+    </div>
+  );
+};
+
+// ============================================
+// 그래프 컴포넌트
+// ============================================
+const Graph = ({ data, color, height = 60, title, goodDirection = 'up' }) => {
+  if (data.length < 2) return <div style={{ height, opacity: 0.3, fontSize: '0.7rem', color: '#e0e0e0' }}>데이터 수집 중...</div>;
+  const max = Math.max(...data), min = Math.min(...data), range = max - min || 1;
+  const avg = data.reduce((a, b) => a + b, 0) / data.length;
+  const n = data.length, xMean = (n - 1) / 2;
+  let num = 0, den = 0;
+  for (let i = 0; i < n; i++) { num += (i - xMean) * (data[i] - avg); den += (i - xMean) ** 2; }
+  const slope = den ? num / den : 0;
+  const isGood = (goodDirection === 'up' && slope > 0.1) || (goodDirection === 'down' && slope < -0.1);
+  const isBad = (goodDirection === 'up' && slope < -0.1) || (goodDirection === 'down' && slope > 0.1);
+  const status = data.length < 30 ? { t: '수집중', c: '#888', i: '⏳' } : isGood ? { t: '좋음!', c: '#2ecc71', i: '✅' } : isBad ? { t: '주의', c: '#e74c3c', i: '⚠️' } : { t: '안정', c: '#f1c40f', i: '➡️' };
+  
+  return (
+    <div style={{ marginBottom: '8px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', marginBottom: '2px', color: '#e0e0e0' }}>
+        <span style={{ fontWeight: 'bold' }}>{title}</span>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          <span style={{ color: status.c, background: `${status.c}20`, padding: '1px 4px', borderRadius: '3px', fontSize: '0.55rem' }}>{status.i} {status.t}</span>
+          <span style={{ opacity: 0.6 }}>avg:{avg.toFixed(0)}</span>
+        </div>
+      </div>
+      <div style={{ height, background: 'rgba(0,0,0,0.3)', borderRadius: '4px', padding: '2px', display: 'flex', alignItems: 'flex-end', gap: '1px' }}>
+        {data.slice(-60).map((v, i) => (
+          <div key={i} style={{ flex: 1, height: `${Math.max(2, ((v - min) / range) * 100)}%`, background: color, borderRadius: '1px 1px 0 0' }} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const EfficiencyGraph = ({ efficiencyData, optimalPoint }) => {
+  if (efficiencyData.length < 5) return null;
+  const maxSuccess = Math.max(...efficiencyData.map(d => d.success), 1);
+  
+  return (
+    <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '8px', padding: '10px', marginTop: '8px' }}>
+      <div style={{ fontSize: '0.7rem', fontWeight: 'bold', marginBottom: '6px', color: '#e0e0e0' }}>📈 학습량 vs 성공률</div>
+      <div style={{ height: '50px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px', padding: '4px', position: 'relative' }}>
+        <svg width="100%" height="100%" style={{ overflow: 'visible' }}>
+          <polyline fill="none" stroke="#2ecc71" strokeWidth="2"
+            points={efficiencyData.map((d, i) => `${(i / (efficiencyData.length - 1)) * 100}%,${100 - (d.success / maxSuccess) * 100}%`).join(' ')} />
+          {optimalPoint && (
+            <circle cx={`${(optimalPoint.index / (efficiencyData.length - 1)) * 100}%`} cy={`${100 - (optimalPoint.success / maxSuccess) * 100}%`} r="4" fill="#ffd700" stroke="#fff" strokeWidth="1.5" />
+          )}
+        </svg>
+      </div>
+      {optimalPoint && (
+        <div style={{ marginTop: '6px', padding: '5px 8px', background: 'rgba(255,215,0,0.15)', borderRadius: '4px', fontSize: '0.65rem', color: '#e0e0e0' }}>
+          <span style={{ color: '#ffd700' }}>⭐</span> 최적: <strong>{optimalPoint.games}게임</strong> (성공 {optimalPoint.success}점)
+        </div>
+      )}
+    </div>
+  );
+};
+
+const LearningInsightsMini = ({ agent, gen, avgPieces }) => {
+  const insights = useMemo(() => {
+    if (gen < 50) return null;
+    const weights = agent.getInsights();
+    const total = weights.heightImportance + weights.holesImportance + weights.bumpinessImportance + weights.maxHeightImportance;
+    return [
+      { icon: '🕳️', text: '구멍 회피', level: (weights.holesImportance / total) * 100 * 2.5, color: '#e74c3c' },
+      { icon: '📏', text: '낮게 쌓기', level: (weights.heightImportance / total) * 100 * 2.5, color: '#3498db' },
+      { icon: '🏔️', text: '평탄화', level: (weights.bumpinessImportance / total) * 100 * 2.5, color: '#2ecc71' },
+    ].sort((a, b) => b.level - a.level).slice(0, 3);
+  }, [agent, gen]);
+
+  if (!insights) return null;
+
+  return (
+    <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '6px', padding: '8px', marginTop: '8px' }}>
+      <div style={{ fontSize: '0.65rem', fontWeight: 'bold', marginBottom: '6px', color: '#e0e0e0' }}>🧠 AI가 배운 것</div>
+      {insights.map((item, i) => (
+        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+          <span style={{ fontSize: '0.75rem' }}>{item.icon}</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ height: '4px', background: 'rgba(0,0,0,0.3)', borderRadius: '2px' }}>
+              <div style={{ width: `${Math.min(100, item.level)}%`, height: '100%', background: item.color, borderRadius: '2px' }} />
+            </div>
+          </div>
+          <span style={{ fontSize: '0.5rem', opacity: 0.6, width: '35px', color: '#e0e0e0' }}>{item.text}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// ============================================
+// 게임 보드 (떨어지는 블록 지원)
+// ============================================
+const GameBoard = ({ board, cellSize, showGlow = false, fallingBlock = null }) => {
+  // 보드와 떨어지는 블록을 합친 디스플레이 생성
+  const displayBoard = useMemo(() => {
+    const display = board.map(row => [...row]);
+    
+    if (fallingBlock && fallingBlock.shape) {
+      const { x, y, shape, color } = fallingBlock;
+      for (let py = 0; py < shape.length; py++) {
+        for (let px = 0; px < shape[py].length; px++) {
+          if (shape[py][px]) {
+            const ny = y + py;
+            const nx = x + px;
+            if (ny >= 0 && ny < BOARD_HEIGHT && nx >= 0 && nx < BOARD_WIDTH) {
+              display[ny][nx] = color;
+            }
+          }
+        }
+      }
+    }
+    
+    return display;
+  }, [board, fallingBlock]);
+
+  return (
+    <div style={{
+      display: 'grid', gridTemplateColumns: `repeat(${BOARD_WIDTH}, ${cellSize}px)`, gap: cellSize > 15 ? '1px' : '0px',
+      background: 'rgba(0,0,0,0.5)', padding: cellSize > 15 ? '8px' : '4px', borderRadius: '8px',
+      border: showGlow ? '2px solid rgba(0,245,255,0.5)' : '1px solid rgba(255,255,255,0.1)',
+      boxShadow: showGlow ? '0 0 20px rgba(0,245,255,0.3)' : 'none'
+    }}>
+      {displayBoard.map((row, y) => row.map((cell, x) => (
+        <div key={`${x}-${y}`} style={{ 
+          width: cellSize, 
+          height: cellSize, 
+          background: cell || 'rgba(30,30,50,0.8)', 
+          borderRadius: cellSize > 15 ? '3px' : '1px', 
+          boxShadow: cell && cellSize > 15 ? `0 0 ${cellSize/2}px ${cell}` : 'none',
+          transition: 'background 0.05s'
+        }} />
+      )))}
+    </div>
+  );
+};
+
+// ============================================
+// 메인 컴포넌트
+// ============================================
+function TetrisRL() {
+  const [board, setBoard] = useState(createBoard);
+  const [piece, setPiece] = useState(null);
+  const [next, setNext] = useState(null);
+  const [mode, setMode] = useState('idle');
+  const [speed, setSpeed] = useState(20);
+  const [watchSpeed, setWatchSpeed] = useState(150);
+  const [agent] = useState(() => new Agent());
+  
+  const [gen, setGen] = useState(0);
+  const [scores, setScores] = useState([]);
+  const [lines, setLines] = useState([]);
+  const [pieces, setPieces] = useState([]);
+  const [losses, setLosses] = useState([]);
+  const [successScores, setSuccessScores] = useState([]);
+  const [efficiencyData, setEfficiencyData] = useState([]);
+  
+  const [bestScore, setBest] = useState(0);
+  const [currentScore, setCurrentScore] = useState(0);
+  const [currentLines, setCurrentLines] = useState(0);
+  const [saveStatus, setSaveStatus] = useState('');
+  
+  const [showHelp, setShowHelp] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+  const [showGameOver, setShowGameOver] = useState(false);
+  const [gameOverData, setGameOverData] = useState(null);
+  const [optimalPoint, setOptimalPoint] = useState(null);
+  
+  const [autoStopEnabled, setAutoStopEnabled] = useState(false);
+  const [targetSuccessScore, setTargetSuccessScore] = useState(70);
+  const [showGoalReached, setShowGoalReached] = useState(false);
+  const [reportStatus, setReportStatus] = useState('');
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  
+  // 애니메이션용 상태 (테스트/관전 모드)
+  const [fallingBlock, setFallingBlock] = useState(null);
+  const [targetPlacement, setTargetPlacement] = useState(null);
+  const [animPhase, setAnimPhase] = useState('idle'); // 'idle', 'moving', 'falling', 'placed'
+  
+  const loopRef = useRef(null);
+  const prevFeat = useRef(null);
+  const pieceCount = useRef(0);
+  const startTime = useRef(Date.now());
+  const fileInputRef = useRef(null);
+
+  const randPiece = () => Object.keys(TETROMINOES)[Math.floor(Math.random() * 7)];
+
+  const reset = useCallback(() => {
+    setBoard(createBoard()); setPiece(randPiece()); setNext(randPiece());
+    setCurrentScore(0); setCurrentLines(0);
+    prevFeat.current = features(createBoard()); pieceCount.current = 0;
+    setFallingBlock(null);
+    setTargetPlacement(null);
+    setAnimPhase('idle');
+  }, []);
+
+  useEffect(() => {
+    if (successScores.length >= 5) {
+      const newData = [];
+      for (let i = 0; i < successScores.length; i += 10) {
+        const slice = successScores.slice(Math.max(0, i - 20), i + 1);
+        const avgSuccess = slice.reduce((a, b) => a + b, 0) / slice.length;
+        newData.push({ games: (i + 1), success: Math.round(avgSuccess), efficiency: avgSuccess / Math.log10((i + 1) * 10 + 1) });
+      }
+      setEfficiencyData(newData);
+      
+      if (newData.length >= 3) {
+        let optIdx = newData.length - 1;
+        for (let i = 2; i < newData.length; i++) {
+          const improvementRate = (newData[i].success - newData[i-1].success) / (newData[i-1].success || 1);
+          if (improvementRate < 0.05 && newData[i].success > 30) { optIdx = i; break; }
+        }
+        setOptimalPoint({ index: optIdx, games: newData[optIdx].games, success: newData[optIdx].success, efficiency: newData[optIdx].efficiency });
+      }
+    }
+  }, [successScores]);
+
+  const getSaveData = useCallback(() => ({
+    version: 3, timestamp: Date.now(), agent: agent.toJSON(),
+    stats: { gen, bestScore, scores: scores.slice(-200), lines: lines.slice(-200), pieces: pieces.slice(-200), losses: losses.slice(-200), successScores: successScores.slice(-500) }
+  }), [agent, gen, bestScore, scores, lines, pieces, losses, successScores]);
+
+  const loadSaveData = useCallback((data) => {
+    if (!data || ![1, 2, 3].includes(data.version)) return false;
+    agent.loadFrom(data.agent);
+    setGen(data.stats.gen); setBest(data.stats.bestScore);
+    setScores(data.stats.scores || []); setLines(data.stats.lines || []);
+    setPieces(data.stats.pieces || []); setLosses(data.stats.losses || []);
+    setSuccessScores(data.stats.successScores || []);
+    return true;
+  }, [agent]);
+
+  const autoSave = useCallback(() => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(getSaveData())); setSaveStatus('✅'); setTimeout(() => setSaveStatus(''), 2000); } catch(e) {}
+  }, [getSaveData]);
+
+  const autoLoad = useCallback(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved && loadSaveData(JSON.parse(saved))) {
+        setSaveStatus('📂');
+        setTimeout(() => setSaveStatus(''), 2000);
+        return true;
+      }
+    } catch(e) {}
+    return false;
+  }, [loadSaveData]);
+
+  const exportToFile = useCallback(() => {
+    const blob = new Blob([JSON.stringify(getSaveData())], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `tetris-dqn-${gen}games.json`; a.click();
+    setSaveStatus('📤'); setTimeout(() => setSaveStatus(''), 2000);
+  }, [getSaveData, gen]);
+
+  const downloadReport = useCallback(() => {
+    const report = generateLearningReport(agent, {
+      gen, bestScore, scores, pieces, lines, successScores, startTime: startTime.current
+    });
+    const blob = new Blob([report], { type: 'text/markdown;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    const timeStr = `${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+    a.download = `TetrisDQN_학습보고서_${gen}games_${dateStr}_${timeStr}.md`;
+    a.click();
+    setReportStatus('📄'); 
+    setTimeout(() => setReportStatus(''), 2000);
+  }, [agent, gen, bestScore, scores, pieces, lines, successScores]);
+
+  const resetLearning = useCallback((downloadFirst) => {
+    if (downloadFirst && gen >= 10) downloadReport();
+    setMode('idle');
+    agent.net = new NeuralNetwork([4, 64, 32, 1]);
+    agent.target = agent.net.clone();
+    agent.eps = 1.0;
+    agent.steps = 0;
+    agent.mem = [];
+    setGen(0); setBest(0); setScores([]); setLines([]); setPieces([]); setLosses([]); setSuccessScores([]); setEfficiencyData([]); setOptimalPoint(null);
+    setBoard(createBoard()); setPiece(null); setNext(null); setCurrentScore(0); setCurrentLines(0);
+    prevFeat.current = null; pieceCount.current = 0; startTime.current = Date.now();
+    setFallingBlock(null); setTargetPlacement(null); setAnimPhase('idle');
+    try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+    setShowResetConfirm(false);
+    setSaveStatus('🗑️'); setTimeout(() => setSaveStatus(''), 2000);
+  }, [agent, gen, downloadReport]);
+
+  const importFromFile = useCallback((e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { try { if (loadSaveData(JSON.parse(ev.target.result))) setSaveStatus('📥'); } catch {} };
+    reader.readAsText(file); e.target.value = '';
+  }, [loadSaveData]);
+
+  useEffect(() => {
+    const loaded = autoLoad();
+    if (!loaded) setShowHelp(true);
+  }, []);
+  
+  useEffect(() => { if (gen > 0 && gen % 100 === 0) autoSave(); }, [gen, autoSave]);
+
+  // 학습 모드 게임 루프 (즉시 배치)
+  useEffect(() => {
+    if (mode !== 'training') return;
+    if (!piece) { reset(); return; }
+
+    loopRef.current = setInterval(() => {
+      const ps = placements(board, piece);
+      if (!ps.length) {
+        if (prevFeat.current) agent.remember(prevFeat.current, -5, features(board), true);
+        agent.replay();
+        
+        const successScore = calculateSuccessScore(pieceCount.current, currentScore, currentLines);
+        
+        setGen(g => g + 1);
+        setScores(s => [...s.slice(-500), currentScore]);
+        setLines(l => [...l.slice(-500), currentLines]);
+        setPieces(p => [...p.slice(-500), pieceCount.current]);
+        setSuccessScores(ss => {
+          const newScores = [...ss.slice(-500), successScore];
+          
+          if (autoStopEnabled && newScores.length >= 20) {
+            const recent20Avg = newScores.slice(-20).reduce((a, b) => a + b, 0) / 20;
+            if (recent20Avg >= targetSuccessScore) {
+              setTimeout(() => {
+                setShowGoalReached(true);
+                setMode('idle');
+              }, 0);
+            }
+          }
+          
+          return newScores;
+        });
+        if (currentScore > bestScore) setBest(currentScore);
+        reset();
+        return;
+      }
+      
+      const chosen = agent.choose(ps, false);
+      const pf = prevFeat.current || features(board);
+      const reward = chosen.lines ** 2 * 10 + (pf[1] - chosen.feat[1]) * 5 + (pf[0] - chosen.feat[0]) * 2 + (pf[2] - chosen.feat[2]) * 1 + 0.1;
+      
+      if (prevFeat.current) agent.remember(prevFeat.current, reward, chosen.feat, false);
+      
+      prevFeat.current = chosen.feat;
+      setBoard(chosen.board);
+      setCurrentScore(s => s + [0, 100, 300, 500, 800][chosen.lines]);
+      setCurrentLines(l => l + chosen.lines);
+      setPiece(next);
+      setNext(randPiece());
+      pieceCount.current++;
+      
+      if (pieceCount.current % 5 === 0) {
+        const loss = agent.replay();
+        if (loss > 0) setLosses(l => [...l.slice(-500), loss]);
+      }
+    }, speed);
+    
+    return () => { if (loopRef.current) clearInterval(loopRef.current); };
+  }, [mode, piece, next, board, currentScore, currentLines, bestScore, agent, speed, reset, autoStopEnabled, targetSuccessScore]);
+
+  // 테스트/관전 모드 게임 루프 (애니메이션)
+  useEffect(() => {
+    if (mode !== 'testing' && mode !== 'watching') return;
+    if (!piece) { reset(); return; }
+
+    const animSpeed = Math.max(30, watchSpeed / 3); // 애니메이션 속도
+
+    loopRef.current = setInterval(() => {
+      // 게임 오버 체크
+      const ps = placements(board, piece);
+      if (!ps.length) {
+        const successScore = calculateSuccessScore(pieceCount.current, currentScore, currentLines);
+        
+        if (mode === 'testing') {
+          setGameOverData({ pieces: pieceCount.current, score: currentScore, lines: currentLines });
+          setShowGameOver(true);
+          setMode('idle');
+        } else {
+          // 관전 모드에서는 자동 리셋
+          reset();
+        }
+        return;
+      }
+
+      // 새 블록 시작
+      if (animPhase === 'idle' || !fallingBlock) {
+        const chosen = agent.choose(ps, true);
+        const pieceData = TETROMINOES[piece];
+        const startX = Math.floor((BOARD_WIDTH - pieceData.shape[0].length) / 2);
+        
+        setFallingBlock({
+          x: startX,
+          y: -pieceData.shape.length,
+          shape: pieceData.shape,
+          color: pieceData.color
+        });
+        setTargetPlacement(chosen);
+        setAnimPhase('moving');
+        return;
+      }
+
+      // 이동/회전 단계
+      if (animPhase === 'moving' && targetPlacement) {
+        let newX = fallingBlock.x;
+        let newShape = fallingBlock.shape;
+        let needMove = false;
+
+        // 회전 체크 (목표 shape과 다르면 회전)
+        if (JSON.stringify(newShape) !== JSON.stringify(targetPlacement.s)) {
+          newShape = rotate(newShape);
+          needMove = true;
+        }
+        // X 이동
+        else if (newX < targetPlacement.x) {
+          newX++;
+          needMove = true;
+        } else if (newX > targetPlacement.x) {
+          newX--;
+          needMove = true;
+        }
+
+        if (needMove) {
+          setFallingBlock(prev => ({ ...prev, x: newX, shape: newShape }));
+        } else {
+          // 이동/회전 완료, 낙하 시작
+          setAnimPhase('falling');
+        }
+        return;
+      }
+
+      // 낙하 단계
+      if (animPhase === 'falling') {
+        const newY = fallingBlock.y + 1;
+        
+        // 바닥 또는 다른 블록에 닿았는지 체크
+        if (!valid(board, fallingBlock.shape, fallingBlock.x, newY)) {
+          // 배치
+          const finalY = fallingBlock.y;
+          if (finalY < 0) {
+            // 게임 오버
+            if (mode === 'testing') {
+              setGameOverData({ pieces: pieceCount.current, score: currentScore, lines: currentLines });
+              setShowGameOver(true);
+              setMode('idle');
+            } else {
+              reset();
+            }
+            return;
+          }
+          
+          const newBoard = place(board, fallingBlock.shape, fallingBlock.color, fallingBlock.x, finalY);
+          const { board: clearedBoard, lines: clearedLines } = clear(newBoard);
+          
+          setBoard(clearedBoard);
+          setCurrentScore(s => s + [0, 100, 300, 500, 800][clearedLines]);
+          setCurrentLines(l => l + clearedLines);
+          setPiece(next);
+          setNext(randPiece());
+          pieceCount.current++;
+          setFallingBlock(null);
+          setTargetPlacement(null);
+          setAnimPhase('idle');
+        } else {
+          // 계속 낙하
+          setFallingBlock(prev => ({ ...prev, y: newY }));
+        }
+      }
+    }, animSpeed);
+    
+    return () => { if (loopRef.current) clearInterval(loopRef.current); };
+  }, [mode, piece, next, board, currentScore, currentLines, agent, watchSpeed, reset, animPhase, fallingBlock, targetPlacement]);
+
+  useEffect(() => { if (!piece) reset(); }, [piece, reset]);
+
+  const stage = STAGES.find(s => gen >= s.min && gen < s.max) || STAGES[STAGES.length - 1];
+  const avg = (arr, n = 50) => arr.length ? arr.slice(-n).reduce((a, b) => a + b, 0) / Math.min(arr.length, n) : 0;
+  const gps = gen / ((Date.now() - startTime.current) / 1000 || 1);
+  const avgSuccessScore = avg(successScores, 20);
+
+  const hiddenInput = <input type="file" ref={fileInputRef} onChange={importFromFile} accept=".json" style={{ display: 'none' }} />;
+
+  const modals = (
+    <>
+      {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
+      {showReport && <LearningReportModal agent={agent} gen={gen} avgScore={avg(scores)} avgPieces={avg(pieces)} avgLines={avg(lines)} successScore={avgSuccessScore} onClose={() => setShowReport(false)} />}
+      {showGameOver && gameOverData && <GameOverCard {...gameOverData} onClose={() => setShowGameOver(false)} />}
+      {showGoalReached && (
+        <GoalReachedModal 
+          successScore={avgSuccessScore} 
+          gen={gen}
+          onContinue={() => { setShowGoalReached(false); setMode('training'); }}
+          onStop={() => setShowGoalReached(false)}
+          onDownloadReport={() => { downloadReport(); }}
+        />
+      )}
+      {showResetConfirm && (
+        <ResetConfirmModal
+          gen={gen}
+          onConfirm={(downloadFirst) => resetLearning(downloadFirst)}
+          onCancel={() => setShowResetConfirm(false)}
+        />
+      )}
+    </>
+  );
+
+  // 테스트/관전 모드
+  if (mode === 'testing' || mode === 'watching') {
+    const isTest = mode === 'testing';
+    return (
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0d0d1a, #1a1a2e)', fontFamily: "'Segoe UI', sans-serif", color: '#e0e0e0', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {hiddenInput}{modals}
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <h1 style={{ fontSize: '1.2rem', background: 'linear-gradient(90deg, #00f5ff, #ff00ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>
+            {isTest ? '🧪 테스트' : '👁️ 관전'}
+          </h1>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <TooltipButton onClick={() => setMode('idle')} icon="📊" label="대시보드" tooltip="메인 화면으로 돌아갑니다" color="rgba(255,255,255,0.15)" size="small" />
+            {isTest && <TooltipButton onClick={() => { setMode('training'); reset(); startTime.current = Date.now(); }} icon="▶️" label="학습 재개" tooltip="테스트를 끝내고 학습을 계속합니다" color="rgba(46,204,113,0.4)" size="small" />}
+            <TooltipButton onClick={() => setShowReport(true)} icon="📋" label="리포트" tooltip="AI가 배운 전략을 확인합니다" color="rgba(241,196,15,0.4)" size="small" />
+            <TooltipButton onClick={downloadReport} icon="📄" label="저장" tooltip="학습 결과 보고서 다운로드" color="rgba(0,245,255,0.4)" size="small" />
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <div>
+            <GameBoard board={board} cellSize={20} showGlow={true} fallingBlock={fallingBlock} />
+            <div style={{ marginTop: '12px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+              {[{ l: 'Score', v: currentScore, c: '#00f5ff' }, { l: 'Lines', v: currentLines, c: '#ff00ff' }, { l: 'Pieces', v: pieceCount.current, c: '#ffd700' }].map((m, i) => (
+                <div key={i} style={{ background: `${m.c}20`, border: `1px solid ${m.c}50`, borderRadius: '6px', padding: '8px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '0.65rem', opacity: 0.7 }}>{m.l}</div>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: m.c }}>{m.v}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: '8px', background: 'rgba(0,0,0,0.4)', borderRadius: '6px', padding: '8px', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.65rem', opacity: 0.7 }}>성공 점수</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: getScoreGrade(calculateSuccessScore(pieceCount.current, currentScore, currentLines)).color }}>
+                {calculateSuccessScore(pieceCount.current, currentScore, currentLines)}<span style={{ fontSize: '0.7rem', opacity: 0.5 }}>/100</span>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ width: '260px' }}>
+            <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '8px', padding: '12px', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                <span style={{ fontSize: '1.3rem' }}>{stage.icon}</span>
+                <div><div style={{ fontWeight: 'bold', color: stage.color, fontSize: '0.9rem' }}>{stage.name}</div><div style={{ fontSize: '0.7rem', opacity: 0.7 }}>#{gen}게임 학습됨</div></div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '0.75rem' }}>
+                {[{ l: '🏆 Best', v: bestScore, c: '#2ecc71' }, { l: '📊 평균', v: avgSuccessScore.toFixed(0), c: '#3498db' }, { l: '🎲 탐색률', v: `${(agent.eps*100).toFixed(0)}%`, c: '#f1c40f' }, { l: '🎖️ 등급', v: getScoreGrade(avgSuccessScore).grade, c: getScoreGrade(avgSuccessScore).color }].map((m, i) => (
+                  <div key={i} style={{ background: 'rgba(0,0,0,0.3)', padding: '6px', borderRadius: '4px' }}><div style={{ opacity: 0.6, fontSize: '0.65rem' }}>{m.l}</div><div style={{ color: m.c, fontWeight: 'bold' }}>{m.v}</div></div>
+                ))}
+              </div>
+            </div>
+            
+            <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '8px', padding: '10px', marginBottom: '12px' }}>
+              <div style={{ fontSize: '0.7rem', opacity: 0.7, marginBottom: '4px' }}>속도: {watchSpeed}ms</div>
+              <input type="range" min="50" max="500" value={watchSpeed} onChange={e => setWatchSpeed(Number(e.target.value))} style={{ width: '100%', accentColor: '#00f5ff' }} />
+            </div>
+
+            <LearningInsightsMini agent={agent} gen={gen} avgPieces={avg(pieces)} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 대시보드 모드
+  return (
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0d0d1a, #1a1a2e)', fontFamily: "'Segoe UI', sans-serif", color: '#e0e0e0', padding: '12px' }}>
+      {hiddenInput}{modals}
+      
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '10px', flexWrap: 'wrap' }}>
+        <h1 style={{ fontSize: '1.2rem', background: 'linear-gradient(90deg, #00f5ff, #ff00ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>🧠 Tetris DQN</h1>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <TooltipButton onClick={() => setShowHelp(true)} icon="❓" label="도움말" tooltip="프로그램 사용 방법을 확인합니다" color="rgba(230,126,34,0.5)" size="small" />
+          <TooltipButton onClick={() => setShowReport(true)} icon="📋" label="리포트" tooltip="AI가 배운 전략을 분석합니다" color="rgba(241,196,15,0.5)" size="small" />
+        </div>
+      </div>
+      
+      <div style={{ display: 'flex', gap: '12px', maxWidth: '1000px', margin: '0 auto' }}>
+        {/* 왼쪽 컨트롤 */}
+        <div style={{ width: '140px', flexShrink: 0 }}>
+          <GameBoard board={board} cellSize={8} />
+          <div style={{ background: 'rgba(0,0,0,0.3)', padding: '6px', borderRadius: '5px', fontSize: '0.6rem', marginTop: '6px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}><span style={{ opacity: 0.6 }}>Score</span><span style={{ color: '#00f5ff' }}>{currentScore}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ opacity: 0.6 }}>성공점수</span><span style={{ color: getScoreGrade(calculateSuccessScore(pieceCount.current, currentScore, currentLines)).color }}>{calculateSuccessScore(pieceCount.current, currentScore, currentLines)}</span></div>
+          </div>
+          
+          <div style={{ marginBottom: '8px' }}>
+            <div style={{ fontSize: '0.55rem', opacity: 0.6, marginBottom: '2px' }}>속도: {speed}ms</div>
+            <input type="range" min="5" max="100" value={speed} onChange={e => setSpeed(Number(e.target.value))} style={{ width: '100%', accentColor: '#00f5ff' }} />
+          </div>
+          
+          {/* 자동 정지 설정 */}
+          <div style={{ 
+            background: autoStopEnabled ? 'rgba(46,204,113,0.15)' : 'rgba(0,0,0,0.3)', 
+            border: autoStopEnabled ? '1px solid rgba(46,204,113,0.4)' : '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '6px', 
+            padding: '8px', 
+            marginBottom: '8px',
+            transition: 'all 0.2s'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <span style={{ fontSize: '0.6rem', fontWeight: 'bold', color: autoStopEnabled ? '#2ecc71' : '#888' }}>
+                🎯 목표 도달 시 정지
+              </span>
+              <button
+                onClick={() => setAutoStopEnabled(!autoStopEnabled)}
+                style={{
+                  padding: '2px 8px',
+                  background: autoStopEnabled ? '#2ecc71' : 'rgba(255,255,255,0.1)',
+                  border: 'none',
+                  borderRadius: '10px',
+                  color: autoStopEnabled ? '#000' : '#888',
+                  fontSize: '0.55rem',
+                  fontWeight: 'bold',
+                  cursor: 'pointer'
+                }}
+              >
+                {autoStopEnabled ? 'ON' : 'OFF'}
+              </button>
+            </div>
+            {autoStopEnabled && (
+              <>
+                <div style={{ fontSize: '0.5rem', opacity: 0.7, marginBottom: '3px' }}>
+                  목표: {targetSuccessScore}점
+                </div>
+                <input 
+                  type="range" 
+                  min="30" 
+                  max="95" 
+                  value={targetSuccessScore} 
+                  onChange={e => setTargetSuccessScore(Number(e.target.value))} 
+                  style={{ width: '100%', accentColor: '#2ecc71' }} 
+                />
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.45rem', opacity: 0.5, marginTop: '2px' }}>
+                  <span>30</span>
+                  <span>95</span>
+                </div>
+              </>
+            )}
+          </div>
+          
+          {/* 버튼들 */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '10px' }}>
+            <TooltipButton 
+              onClick={() => { if (mode === 'training') setMode('idle'); else { setMode('training'); startTime.current = Date.now(); reset(); } }} 
+              icon={mode === 'training' ? '⏹' : '▶️'} 
+              label={mode === 'training' ? '정지' : '학습'} 
+              tooltip={mode === 'training' ? '학습을 일시정지합니다' : 'AI가 시행착오를 통해 배웁니다'}
+              color={mode === 'training' ? '#e74c3c' : '#2ecc71'} 
+            />
+            <TooltipButton 
+              onClick={() => { setMode('testing'); reset(); }} 
+              icon="🧪" 
+              label="테스트" 
+              tooltip="실제 테트리스처럼 블록이 내려옵니다"
+              color="linear-gradient(135deg, #9b59b6, #8e44ad)" 
+            />
+            <TooltipButton 
+              onClick={() => { setMode('watching'); reset(); }} 
+              icon="👁️" 
+              label="관전" 
+              tooltip="AI 플레이를 실시간으로 관찰합니다"
+              color="linear-gradient(135deg, #3498db, #2980b9)" 
+            />
+          </div>
+          
+          {/* 저장 버튼들 */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px', marginBottom: '6px' }}>
+            <IconButton onClick={autoSave} icon="💾" tooltip="브라우저에 저장" color="#2ecc71" />
+            <IconButton onClick={exportToFile} icon="📤" tooltip="파일로 내보내기" color="#9b59b6" />
+            <IconButton onClick={autoLoad} icon="📂" tooltip="저장된 데이터 불러오기" color="#3498db" />
+            <IconButton onClick={() => fileInputRef.current?.click()} icon="📥" tooltip="파일에서 가져오기" color="#e67e22" />
+          </div>
+          
+          <TooltipButton 
+            onClick={downloadReport}
+            icon="📄"
+            label="보고서 저장"
+            tooltip="학습 결과를 마크다운 보고서로 다운로드합니다"
+            color="linear-gradient(135deg, #00f5ff, #0080ff)"
+            disabled={gen < 10}
+          />
+          
+          <div style={{ marginTop: '6px' }}>
+            <TooltipButton 
+              onClick={() => setShowResetConfirm(true)}
+              icon="🗑️"
+              label="학습 초기화"
+              tooltip="모든 학습 데이터를 삭제하고 처음부터 시작합니다"
+              color="rgba(231,76,60,0.6)"
+              disabled={gen < 1}
+            />
+          </div>
+          
+          {(saveStatus || reportStatus) && <div style={{ fontSize: '0.6rem', color: '#2ecc71', textAlign: 'center', marginTop: '4px' }}>{saveStatus || reportStatus}</div>}
+        </div>
+
+        {/* 오른쪽 대시보드 */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {/* 진행바 */}
+          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '8px', borderRadius: '6px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span>{stage.icon}</span><span style={{ fontWeight: 'bold', color: stage.color, fontSize: '0.85rem' }}>{stage.name}</span></div>
+              <div style={{ fontSize: '0.65rem', opacity: 0.7 }}>#{gen} | {gps.toFixed(1)}/sec</div>
+            </div>
+            <div style={{ position: 'relative', height: '12px', background: 'rgba(0,0,0,0.3)', borderRadius: '6px', overflow: 'hidden' }}>
+              {STAGES.map((s, i) => (<div key={i} style={{ position: 'absolute', left: `${(s.min/10000)*100}%`, width: `${((s.max-s.min)/10000)*100}%`, height: '100%', background: gen >= s.max ? s.color : gen >= s.min ? `${s.color}66` : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.5rem', borderRight: '1px solid rgba(0,0,0,0.3)' }}>{s.icon}</div>))}
+              <div style={{ position: 'absolute', left: `${Math.min(100, gen/100)}%`, top: 0, bottom: 0, width: '2px', background: 'white', boxShadow: '0 0 5px white' }} />
+            </div>
+          </div>
+
+          {/* 지표 */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '6px', marginBottom: '8px' }}>
+            {[
+              { l: 'Best', v: bestScore, c: '#2ecc71', i: '🏆' },
+              { l: 'Avg', v: avg(scores).toFixed(0), c: '#3498db', i: '📊' },
+              { l: 'Pieces', v: avg(pieces).toFixed(0), c: '#e67e22', i: '🧩' },
+              { l: 'ε', v: (agent.eps * 100).toFixed(0) + '%', c: '#f1c40f', i: '🎲' },
+              { l: '성공', v: avgSuccessScore.toFixed(0), c: getScoreGrade(avgSuccessScore).color, i: '⭐' },
+              { l: '등급', v: getScoreGrade(avgSuccessScore).grade, c: getScoreGrade(avgSuccessScore).color, i: '🎖️' },
+            ].map((m, i) => (
+              <div key={i} style={{ background: `${m.c}15`, border: `1px solid ${m.c}35`, borderRadius: '5px', padding: '6px', textAlign: 'center' }}><div style={{ fontSize: '0.5rem', opacity: 0.7 }}>{m.i} {m.l}</div><div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: m.c }}>{m.v}</div></div>
+            ))}
+          </div>
+
+          {/* 그래프 */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '8px', borderRadius: '6px' }}>
+              <Graph data={scores} color="#3498db" title="📊 점수" height={50} goodDirection="up" />
+              <Graph data={pieces} color="#2ecc71" title="🧩 생존" height={40} goodDirection="up" />
+            </div>
+            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '8px', borderRadius: '6px' }}>
+              <Graph data={successScores} color="#ffd700" title="⭐ 성공 점수" height={50} goodDirection="up" />
+              <Graph data={losses} color="#e74c3c" title="📉 손실" height={40} goodDirection="down" />
+            </div>
+          </div>
+
+          {/* 하단 패널 */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            <EfficiencyGraph efficiencyData={efficiencyData} optimalPoint={optimalPoint} />
+            <LearningInsightsMini agent={agent} gen={gen} avgPieces={avg(pieces)} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<TetrisRL />);
+  </script>
+</body>
+</html>
