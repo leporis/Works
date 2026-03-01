@@ -27,11 +27,146 @@ description: >
 | 4 | **반복 검토** — 1회로 끝내지 않기 |
 | 5 | **수정 지시 엄수** — 지시받은 것만 정확히 수정, 다른 요소 건드리지 않기 |
 
+### 1.1.1 문서 수정 후 의무 교차 검증 절차
+
+**표준화 관련 문서(VMP·DMPP·DAP·CDMP·GCS-L1·SCS-L2·MLSCS-L3·IOTSCS-L3·ECSCS-L3·SKILL.md·문서정합성점검체계)를 수정할 때마다 아래 스크립트를 실행하여 수정 사항이 0건이 될 때까지 반복한다.**
+
+검증 항목:
+
+| 항목 | 기준 | 자동 수정 |
+|------|------|:--------:|
+| A. 참고자료 표 버전 | 각 문서 표지에서 자동 읽은 마스터 버전 | ✅ |
+| B. 표지 버전 = 이력 마지막 행 | 완전 일치 | ❌ (수동 패치) |
+| C. SKILL.md §6 체계 맵 버전 | 마스터 버전 | ✅ |
+
+```python
+#!/usr/bin/env python3
+"""
+cross_validate.py
+표준화 문서 수정 후 교차 검증 스크립트.
+수정 사항이 0건이 될 때까지 자동 반복.
+실행: python3 cross_validate.py  (문서 디렉터리에서)
+"""
+import re, os
+
+# ── 문서 코드 → 한국어 키워드 매핑 ───────────────────────────────────────
+CODE_KW = {
+    "VMP":       "버전관리지침",
+    "DMPP":      "문서관리지침",
+    "DAP":       "문서작성지침서",
+    "CDMP":      "코딩관리지침",
+    "GCS-L1":    "범용코딩표준",
+    "SCS-L2":    "시뮬레이터코딩표준",   # IoT·ML·초등교과 제외
+    "MLSCS-L3":  "ML시뮬레이터코딩표준",
+    "IOTSCS-L3": "IoT시뮬레이터코딩표준",
+    "ECSCS-L3":  "초등교과시뮬레이터코딩표준",
+}
+
+# ── 파일명 → 코드 매핑 (표지 버전 읽기용) ───────────────────────────────
+# 파일명 매칭 — 긴 키워드 우선 (ML·IoT·초등교과가 SCS-L2에 먹히지 않도록)
+FILE_CODE_ORDERED = [
+    ("ML시뮬레이터코딩표준",        "MLSCS-L3"),
+    ("IoT시뮬레이터코딩표준",       "IOTSCS-L3"),
+    ("초등교과시뮬레이터코딩표준",   "ECSCS-L3"),
+    ("시뮬레이터코딩표준",          "SCS-L2"),
+    ("범용코딩표준",               "GCS-L1"),
+    ("코딩관리지침",               "CDMP"),
+    ("문서작성지침서",              "DAP"),
+    ("문서관리지침",               "DMPP"),
+    ("버전관리지침",               "VMP"),
+]
+
+def is_match(code, kw, line):
+    """SCS-L2 오탐지 방지: 상위 키워드가 하위 문서 행에 매칭되는 것 차단"""
+    if code == "SCS-L2":
+        return (kw in line and "IoT시뮬레이터" not in line
+                and "ML시뮬레이터" not in line
+                and "초등교과시뮬레이터" not in line)
+    return kw in line
+
+def extract_ref(text):
+    """참고자료 섹션 행만 추출"""
+    lines, in_ref, result = text.splitlines(), False, []
+    for line in lines:
+        if re.match(r'^## 참고자료', line):    in_ref = True
+        elif re.match(r'^## ', line) and in_ref: break
+        if in_ref and line.startswith('|'):      result.append(line)
+    return result
+
+def fix_ref(fname, code, old_ver, new_ver):
+    """참고자료 섹션의 버전만 교체 (이력 표 보호)"""
+    kw = CODE_KW[code]
+    lines, in_ref = open(fname, encoding='utf-8').read().splitlines(), False
+    out = []
+    for line in lines:
+        if re.match(r'^## 참고자료', line):    in_ref = True
+        elif re.match(r'^## ', line) and in_ref: in_ref = False
+        if in_ref and line.startswith('|') and kw in line and old_ver in line:
+            line = line.replace(old_ver, new_ver)
+        out.append(line)
+    open(fname, 'w', encoding='utf-8').write('\n'.join(out))
+
+def read_master():
+    """각 문서 표지에서 현재 버전을 읽어 마스터 버전표 생성 (긴 키워드 우선 매칭)"""
+    master = {}
+    for fname in os.listdir('.'):
+        if not fname.endswith('.md'): continue
+        text = open(fname, encoding='utf-8').read()
+        m = re.search(r'^\*\*문서 버전: (v[\d.]+)\*\*', text, re.MULTILINE)
+        if not m: continue
+        ver = m.group(1)
+        for kw, code in FILE_CODE_ORDERED:
+            if kw in fname:
+                master[code] = ver
+                break
+    return master
+
+def run():
+    master = read_master()
+    print("마스터 버전표:", master)
+    round_n = 0
+    while True:
+        round_n += 1
+        ref_errors, hist_errors = [], []
+        for fname in sorted(os.listdir('.')):
+            if not fname.endswith('.md'): continue
+            text = open(fname, encoding='utf-8').read()
+            # 검증 A: 참고자료 표
+            for code, kw in CODE_KW.items():
+                if code not in master: continue
+                for line in extract_ref(text):
+                    if not is_match(code, kw, line): continue
+                    found = re.findall(r'v\d+\.\d+\.\d+\.\d+', line)
+                    if not found: continue
+                    if found[0] != master[code]:
+                        ref_errors.append((fname, code, master[code], found[0]))
+            # 검증 B: 표지 vs 이력 마지막
+            cm = re.search(r'^\*\*문서 버전: (v[\d.]+)\*\*', text, re.MULTILINE)
+            if not cm: continue
+            hist = re.findall(r'^\| (v\d+\.\d+\.\d+\.\d+) \|', text, re.MULTILINE)
+            if hist and cm.group(1) != hist[-1]:
+                hist_errors.append((fname, cm.group(1), hist[-1]))
+        total = len(ref_errors) + len(hist_errors)
+        print(f"\nRound {round_n}: A={len(ref_errors)}건, B={len(hist_errors)}건")
+        if total == 0:
+            print("✅ 수정 사항 없음 — 완전 정합"); break
+        for fname, code, exp, act in ref_errors:
+            fix_ref(fname, code, act, exp)
+            print(f"  [A] {fname}: {code} {act}→{exp}")
+        for fname, cover, hist in hist_errors:
+            print(f"  [B] 수동 확인 필요: {fname} 표지={cover} 이력={hist}")
+
+if __name__ == '__main__':
+    run()
+```
+
 ### 1.2 버전·파일명
 
 - 버전: **vX.Y.Z.W** (메이저.마이너.리비전.패치)
-- 파일명: `주요내용_v버전번호_수정사항키워드_날짜_시간.확장자`
-  - 버전번호는 점(.)으로 구분: `v1.0.0.0`, `v17.4.2.4`
+- 파일명: `주요내용(약어)_v버전번호_수정사항키워드_날짜.확장자`
+  - 버전번호는 점(.)으로 구분: `v1.0.0.0`, `v1.3.0.1`
+  - ⚠️ OS 호환성 문제 발생 시 언더스코어 허용: `v1_0_0_0`
+  - 문서 **표지·푸터에 영문명과 약어 병기** 필수: `문서관리지침 (DMPP)`
 - 모든 문서 끝에 **참고자료 표 + 생성/수정 이력 표** 필수
 - 저자명: **Changmo Yang & Claude AI**
 
@@ -116,10 +251,10 @@ L1: 범용코딩표준 ─── 모든 프로젝트 공통 (네이밍, 구조, 
 
 | 트리거 | 참조 문서 | 핵심 |
 |--------|----------|------|
-| **세션 인계** | `버전관리지침` §8 | 7섹션 인계 문서 구조 |
-| **버전 판단** 애매 | `버전관리지침` §5~6 | Claude가 판단 후 안내, 또는 먼저 확인 |
-| **문서 간 정합성** | `코딩관리지침` §19 | 5개 항목 동기화 체크리스트 |
-| **배포 전 점검** | `코딩관리지침` 부록 A | 6종 체크리스트 (개발·교육·시각화·문서화·품질·배포) |
+| **세션 인계** | `버전관리지침(VMP)` §8 | 7섹션 인계 문서 구조 |
+| **버전 판단** 애매 | `버전관리지침(VMP)` §5~6 | Claude가 판단 후 안내, 또는 먼저 확인 |
+| **문서 간 정합성** | `문서정합성점검체계` + `코딩관리지침(CDMP)` §19 | 마스터 버전표 → 참고자료 표 → SKILL.md 순서로 점검 |
+| **배포 전 점검** | `코딩관리지침(CDMP)` 부록 A | 6종 체크리스트 (개발·교육·시각화·문서화·품질·배포) |
 
 ---
 
@@ -187,23 +322,27 @@ MD 작성 (내용 확정) → LaTeX/Beamer 변환 (형식 적용)
 ## 6. 문서 체계 맵
 
 ```
-프로젝트 문서 14개
-├── 관리 지침 (어떻게 관리하는가)
-│   ├── 버전관리지침 v1.3.0 ─── 버전 체계, 파일명, 세션 인계, 문서 구성요소
-│   ├── 문서관리지침 v2.2.0.0 ─ 협업 원칙, 이미지 8단계, 코드 리뷰 7단계
-│   └── 코딩관리지침 v4.1.0.0 ─ 리팩토링 9패턴, SVG, 문서화 6종 템플릿, 체크리스트
+교육용 시뮬레이터 프로젝트 문서 체계
 │
-├── 작성 지침 (어떻게 작성하는가)
-│   ├── 문서작성지침서 v1.13.0.0 ─ LaTeX/Beamer/Pandoc 기술 규칙, 강의자료 절차
-│   └── 코딩작성지침 v1.0.0.0 ── UI/UX, 시뮬레이션, 교육 기능, 코드 템플릿
+├── [Policy] — 전체 강제, 운영 원칙
+│   ├── VMP  버전관리지침(VMP)       v1.3.1.0 ─ 버전 체계, 파일명, 세션 인계
+│   └── DMPP 문서관리지침(DMPP)      v2.3.0.1 ─ 협업 원칙, 이미지 8단계, 코드 리뷰 7단계
 │
-└── 코딩 표준 (무엇을 지키는가) — L1→L2→L3 계층
-    ├── L1: 범용코딩표준 v1.0.0.0 ──── 모든 프로젝트 공통
-    ├── L2: 시뮬레이터코딩표준 v1.0.0.0 ─ 시뮬레이터 공통
-    ├── L3-ML: ML시뮬레이터코딩표준 v1.0.0.0
-    ├── L3-IoT: IoT시뮬레이터코딩표준 v1.0.0.0
-    └── L3-초등교과: 초등교과시뮬레이터코딩표준 v1.0.0.0
+├── [Procedure] — 해당 작업 시 강제, 수행 절차
+│   ├── DAP  문서작성지침서(DAP)      v1.14.0.2 ─ LaTeX/Beamer/Pandoc 기술 규칙, 강의자료 절차
+│   └── CDMP 코딩관리지침(CDMP)      v4.0.0.2 ─ 리팩토링 9패턴, SVG, 문서화 6종 템플릿, 체크리스트
+│
+└── [Standard] — 코드 품질 기준선, L1→L2→L3 계층 상속
+    ├── GCS-L1  범용코딩표준(GCS-L1)              v1.0.0.2 ─ 모든 프로젝트 공통
+    └── SCS-L2  시뮬레이터코딩표준(SCS-L2)        v1.0.0.2 ─ 시뮬레이터 공통
+        ├── MLSCS-L3  ML시뮬레이터코딩표준        v1.0.0.2
+        ├── IOTSCS-L3 IoT시뮬레이터코딩표준       v0.2.0.1
+        └── ECSCS-L3  초등교과시뮬레이터코딩표준  v1.0.0.2
 ```
+
+> **Standard vs Procedure 역할 구분**
+> - Standard(GCS·SCS·L3): 신규 작성 시 "목표 상태(What)" 정의
+> - CDMP(코딩관리지침): 기존 코드 변경·확장 시 "수행 절차(How)" 정의
 
 ---
 
@@ -217,25 +356,36 @@ MD 작성 (내용 확정) → LaTeX/Beamer 변환 (형식 적용)
 4. **산출물에 참고자료 + 생성/수정 이력이 포함되었는가?**
 5. **최종 검토를 수행했는가?** (무의식적 반응 금지)
 
+### 7.1 표준화 문서 수정 후 추가 체크
+
+표준화 관련 문서를 수정한 경우:
+
+6. **§1.1.1 교차 검증을 수정 사항 0건까지 반복 실행했는가?**
+7. **SKILL.md §6 체계 맵 버전을 동기화했는가?**
+8. **문서정합성점검체계 §2 마스터 버전표를 갱신했는가?**
+
 ---
 
 ## 참고자료
 
-| # | 자료명 | 버전 | 역할 |
-|:-:|--------|------|------|
-| 1 | 버전관리지침 | v1.3.0 | 버전 체계, 파일명, 세션 인계 |
-| 2 | 문서관리지침 | v2.2.0.0 | 협업 원칙, 이미지 관리, 코드 리뷰 |
-| 3 | 코딩관리지침 | v4.1.0.0 | 리팩토링, SVG, 문서화, 품질 점검 |
-| 4 | 문서작성지침서 | v1.13.0.0 | LaTeX/Beamer/Pandoc 기술 지침 |
-| 5 | 코딩작성지침 | v1.0.0.0 | UI/UX, 시뮬레이션, 교육 기능 |
-| 6 | 범용코딩표준 | v1.0.0.0 | L1: 모든 프로젝트 공통 |
-| 7 | 시뮬레이터코딩표준 | v1.0.0.0 | L2: 시뮬레이터 공통 |
-| 8 | ML시뮬레이터코딩표준 | v1.0.0.0 | L3-ML: ML 특화 |
-| 9 | IoT시뮬레이터코딩표준 | v1.0.0.0 | L3-IoT: IoT 특화 |
-| 10 | 초등교과시뮬레이터코딩표준 | v1.0.0.0 | L3-초등교과: 초등교과 특화 |
+| # | 자료명 (약어) | 버전 | 유형 | 역할 |
+|:-:|--------------|------|:----:|------|
+| 1 | 버전관리지침 (VMP) | v1.3.1.0 | Policy | 버전 체계, 파일명, 세션 인계 |
+| 2 | 문서관리지침 (DMPP) | v2.3.0.1 | Policy & Procedure | 협업 원칙, 이미지 관리, 코드 리뷰 |
+| 3 | 코딩관리지침 (CDMP) | v4.0.0.2 | Procedure | 리팩토링, SVG, 문서화, 품질 점검 |
+| 4 | 문서작성지침서 (DAP) | v1.14.0.2 | Procedure | LaTeX/Beamer/Pandoc 기술 지침 |
+| 5 | 범용코딩표준 (GCS-L1) | v1.0.0.2 | Standard L1 | 모든 프로젝트 공통 |
+| 6 | 시뮬레이터코딩표준 (SCS-L2) | v1.0.0.2 | Standard L2 | 시뮬레이터 공통 |
+| 7 | ML시뮬레이터코딩표준 (MLSCS-L3) | v1.0.0.2 | Standard L3 | ML 특화 |
+| 8 | IoT시뮬레이터코딩표준 (IOTSCS-L3) | v0.2.0.1 | Standard L3 | IoT 특화 |
+| 9 | 초등교과시뮬레이터코딩표준 (ECSCS-L3) | v1.0.0.2 | Standard L3 | 초등교과 특화 |
 
 ## 생성/수정 이력
 
-| 버전 | 날짜 | 변경 내용 | 작성자 |
-|------|------|----------|--------|
-| v1.0.0.0 | 2026-02-20 | 14개 지침 문서에서 핵심 규칙·트리거 맵 추출하여 SKILL.md 초안 작성 | Claude |
+| 버전 | 날짜 | 시간 | 변경 수준 | 변경 내용 | 작성자 |
+|------|------|------|-----------|-----------|--------|
+| v1.0.0.0 | 2026-02-20 | — | 최초 | 14개 지침 문서에서 핵심 규칙·트리거 맵 추출하여 SKILL.md 초안 작성 | Claude |
+| v1.1.0.0 | 2026-02-21 | — | 마이너 | §6 문서 체계 맵 전면 개편: Policy·Procedure·Standard 3계층 분류 체계 반영, 영문명·약어(VMP/DMPP/DAP/CDMP/GCS-L1/SCS-L2/MLSCS-L3/IOTSCS-L3/ECSCS-L3) 병기, 실제 버전 동기화. 참고자료 표 유형 열 추가. Standard vs Procedure 역할 구분 설명 추가 | Changmo Yang & Claude AI |
+| v1.1.1.0 | 2026-02-21 | — | 리비전 | IOTSCS-L3 버전 v0.1.0.1→v0.2.0.0 동기화, ⚠️Draft 표기 해제 (§7 유형별 가이드 완성으로 정식 Standard 승격) | Changmo Yang & Claude AI |
+| v1.2.0.0 | 2026-02-22 | — | 마이너 | 2차 정합성 검증 반영: 참고자료 버전 전면 동기화(CDMP v4.0.0.2, DAP v1.14.0.2, GCS-L1 v1.0.0.2, SCS-L2 v1.0.0.2, MLSCS-L3 v1.0.0.2, IOTSCS-L3 v0.2.0.1, ECSCS-L3 v1.0.0.2). §6 문서 체계 맵 버전 동기화 | Changmo Yang & Claude AI |
+| v1.3.0.0 | 2026-02-22 | — | 마이너 | §1.1.1 교차 검증 절차를 실제 동작하는 완전한 Python 스크립트로 교체. FILE_CODE 매핑, SCS-L2 오탐지 방지, 참고자료 자동 수정 로직 포함. §7.1 체크리스트 추가 | Changmo Yang & Claude AI |
