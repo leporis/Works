@@ -3,10 +3,10 @@ name: Generate Public Index
 on:
   push:
     paths:
-      - 'Lecture/IoT_and_BigData/public/**'
-      - '!Lecture/IoT_and_BigData/public/index.html'
-      - '!Lecture/IoT_and_BigData/public/README.md'
-      - '!Lecture/IoT_and_BigData/public/**/index.html'
+      - 'public/**'
+      - '!public/index.html'
+      - '!public/**/index.html'
+      - '!public/**/README.md'
 
 jobs:
   generate:
