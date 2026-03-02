@@ -1,10 +1,21 @@
 #!/usr/bin/env python3
-"""public/ 디렉토리의 index.html과 README.md를 자동 생성"""
+"""public/ 디렉토리의 index.html과 README.md를 자동 생성
+
+구조:
+  public/
+  ├── index.html              ← 과목 목록
+  ├── IoT_and_BigData/
+  │   ├── index.html          ← 파일 목록
+  │   ├── README.md           ← 파일 설명
+  │   └── Simulators/
+  │       └── index.html      ← 하위 파일 목록
+  └── 다른_과목/
+      └── ...
+"""
 import os, re, subprocess
 from pathlib import Path
 
-PUBLIC = "Lecture/IoT_and_BigData/public"
-TITLE = "사물인터넷과 빅데이터"
+PUBLIC = "public"
 AUTO_FILES = {"index.html", "README.md"}
 
 
@@ -51,8 +62,25 @@ def read_md_heading(md_path):
     return heading, bold
 
 
-def file_description(filepath):
-    """파일의 한글 설명 한 단어 추출 (index.html 용)"""
+def subject_title(dirpath):
+    """과목 폴더에서 한글 과목명 추출"""
+    readme = os.path.join(dirpath, "README.md")
+    if os.path.exists(readme):
+        heading, _ = read_md_heading(readme)
+        if heading:
+            return heading
+
+    for name in sorted(os.listdir(dirpath)):
+        if name.endswith(".md") and not skip(name):
+            heading, _ = read_md_heading(os.path.join(dirpath, name))
+            if heading:
+                return heading
+
+    return Path(dirpath).name
+
+
+def file_description(filepath, title=""):
+    """파일의 한글 설명 추출"""
     p = Path(filepath)
     md = p.with_suffix(".md") if p.suffix != ".md" else p
     if not md.exists():
@@ -60,13 +88,11 @@ def file_description(filepath):
 
     heading, bold = read_md_heading(str(md))
 
-    # 제목이 과목명이면 볼드 부제 사용: "강 의 계 획 서" → "강의계획서"
-    if TITLE in heading and bold:
+    if title and title in heading and bold:
         d = re.sub(r"\[.*?\]\s*", "", bold)
         d = re.sub(r"(?<=[\uac00-\ud7a3])\s+(?=[\uac00-\ud7a3])", "", d)
         return d
 
-    # "... — LED 이름 표시 개발일지" → "개발일지"
     if "—" in heading:
         words = heading.split("—")[-1].strip().split()
         if words:
@@ -87,7 +113,7 @@ def dir_description(dirpath):
 
 
 def file_summary(md_path):
-    """md 파일의 h2 제목들을 모아서 요약 문자열 반환 (README.md 용)"""
+    """md 파일의 h2 제목들 반환"""
     headings = []
     try:
         for line in open(md_path, encoding="utf-8"):
@@ -103,8 +129,8 @@ def file_summary(md_path):
 # ── index.html 생성 ──────────────────────────────────────────────
 
 
-def gen_index(dirpath, rel=""):
-    title = f"Index of /{TITLE}/{rel}/" if rel else f"Index of /{TITLE}/"
+def gen_index(dirpath, title, breadcrumb=""):
+    page_title = f"Index of /{breadcrumb}/" if breadcrumb else f"Index of /{title}/"
 
     dirs, files = [], []
     for n in sorted(os.listdir(dirpath)):
@@ -112,11 +138,15 @@ def gen_index(dirpath, rel=""):
             continue
         f = os.path.join(dirpath, n)
         if os.path.isdir(f):
-            dirs.append((n + "/", "-", git_date(f), dir_description(f)))
+            desc = subject_title(f) if not breadcrumb else dir_description(f)
+            dirs.append((n + "/", "-", git_date(f), desc))
         else:
-            files.append((n, size_str(f), git_date(f), file_description(f)))
+            files.append((n, size_str(f), git_date(f), file_description(f, title)))
 
     entries = dirs + files
+    if not entries:
+        return
+
     w = max((len(e[0]) for e in entries), default=4) + 2
 
     lines = []
@@ -124,10 +154,10 @@ def gen_index(dirpath, rel=""):
     lines.append("<html>")
     lines.append("<head>")
     lines.append('<meta charset="UTF-8">')
-    lines.append(f"<title>{title}</title>")
+    lines.append(f"<title>{page_title}</title>")
     lines.append("</head>")
     lines.append("<body>")
-    lines.append(f"<h1>{title}</h1>")
+    lines.append(f"<h1>{page_title}</h1>")
     lines.append("<hr>")
     lines.append("<pre>")
 
@@ -135,7 +165,7 @@ def gen_index(dirpath, rel=""):
     lines.append(header)
     lines.append("─" * len(header))
 
-    if rel:
+    if breadcrumb:
         lines.append('<a href="../">../</a>')
 
     for name, size, date, desc in entries:
@@ -156,16 +186,27 @@ def gen_index(dirpath, rel=""):
 # ── README.md 생성 ───────────────────────────────────────────────
 
 
-def gen_readme(dirpath):
+def gen_readme(dirpath, title):
     lines = []
-    lines.append(f"# {TITLE}")
+    lines.append(f"# {title}")
     lines.append("")
-    lines.append("청주교육대학교 컴퓨터교육과 강의 공개 자료입니다.")
-    lines.append("")
+
+    for name in sorted(os.listdir(dirpath)):
+        if name.endswith(".md") and not skip(name):
+            heading, bold = read_md_heading(os.path.join(dirpath, name))
+            if title in heading and bold:
+                d = re.sub(r"\[.*?\]\s*", "", bold)
+                d = re.sub(r"(?<=[\uac00-\ud7a3])\s+(?=[\uac00-\ud7a3])", "", d)
+                lines.append(f"{d} 등 강의 공개 자료입니다.")
+                lines.append("")
+                break
+    else:
+        lines.append("강의 공개 자료입니다.")
+        lines.append("")
+
     lines.append("## 파일 목록")
     lines.append("")
 
-    # 루트 파일: stem 기준으로 그룹
     seen = set()
     for name in sorted(os.listdir(dirpath)):
         if skip(name) or os.path.isdir(os.path.join(dirpath, name)):
@@ -176,7 +217,7 @@ def gen_readme(dirpath):
         seen.add(stem)
 
         md = os.path.join(dirpath, stem + ".md")
-        desc = file_description(md) if os.path.exists(md) else ""
+        desc = file_description(md, title) if os.path.exists(md) else ""
         headings = file_summary(md) if os.path.exists(md) else []
 
         label = f"**{stem}** ({desc})" if desc else f"**{stem}**"
@@ -187,7 +228,6 @@ def gen_readme(dirpath):
             lines.append(f"- {label}")
     lines.append("")
 
-    # 하위 폴더
     for name in sorted(os.listdir(dirpath)):
         sub = os.path.join(dirpath, name)
         if skip(name) or not os.path.isdir(sub):
@@ -208,7 +248,7 @@ def gen_readme(dirpath):
             seen_sub.add(stem)
 
             md = os.path.join(sub, stem + ".md")
-            desc = file_description(md) if os.path.exists(md) else ""
+            desc = file_description(md, title) if os.path.exists(md) else ""
             headings = file_summary(md) if os.path.exists(md) else []
 
             label = f"**{stem}** ({desc})" if desc else f"**{stem}**"
@@ -229,19 +269,41 @@ def gen_readme(dirpath):
 # ── 메인 ─────────────────────────────────────────────────────────
 
 
-def main():
-    print(f"[public index 생성] {PUBLIC}")
+def process_subject(subject_dir, folder_name):
+    title = subject_title(subject_dir)
+    print(f"\n[과목] {folder_name} → {title}")
 
-    # 루트
-    gen_index(PUBLIC)
-    gen_readme(PUBLIC)
+    gen_index(subject_dir, title, title)
+    gen_readme(subject_dir, title)
 
-    # 하위 폴더
-    for name in sorted(os.listdir(PUBLIC)):
-        sub = os.path.join(PUBLIC, name)
+    for name in sorted(os.listdir(subject_dir)):
+        sub = os.path.join(subject_dir, name)
         if skip(name) or not os.path.isdir(sub):
             continue
-        gen_index(sub, name)
+        gen_index(sub, title, f"{title}/{name}")
+
+
+def main():
+    if not os.path.isdir(PUBLIC):
+        print(f"[오류] {PUBLIC} 폴더가 없습니다.")
+        return
+
+    subjects = []
+    for name in sorted(os.listdir(PUBLIC)):
+        path = os.path.join(PUBLIC, name)
+        if skip(name) or not os.path.isdir(path):
+            continue
+        subjects.append((name, path))
+
+    if not subjects:
+        print("[알림] public/ 에 과목 폴더가 없습니다.")
+        return
+
+    print(f"[루트] {PUBLIC}/")
+    gen_index(PUBLIC, "공개 자료")
+
+    for folder_name, subject_dir in subjects:
+        process_subject(subject_dir, folder_name)
 
 
 if __name__ == "__main__":
