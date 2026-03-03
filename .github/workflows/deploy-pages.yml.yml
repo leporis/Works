@@ -3,35 +3,38 @@ name: Deploy public to GitHub Pages
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:  # ← 브라우저에서 수동 테스트 가능하게 추가 (Actions 탭 → Run workflow)
+  workflow_dispatch:   # 수동 실행 버튼으로 테스트 가능
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create site root and copy public contents
+        run: |
+          mkdir -p _site
+          cp -r public/. _site/   # public 안 모든 파일·폴더를 _site 루트로 복사 (숨김파일 포함)
+          ls -la _site            # 로그에서 내용 확인용
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site             # ← _site 폴더를 업로드 → 이게 사이트 루트가 됨
+
   deploy:
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3   # 또는 v4 (v3가 안정적일 수 있음)
-        with:
-          path: public   # ← public 폴더 안 내용이 사이트의 루트(/)가 됩니다. (폴더 이름 public은 URL에 안 보임)
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
