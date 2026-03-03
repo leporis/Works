@@ -1,0 +1,437 @@
+% ============================================================
+% 사물인터넷과 빅데이터 1주차 강의슬라이드
+% LuaLaTeX 컴파일 필수
+% ============================================================
+\documentclass[aspectratio=169]{beamer}
+
+% === 필수 패키지 ===
+\usepackage{fontspec}
+\usepackage{kotex}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{emoji}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+% === 테마 설정 (metropolis) ===
+\usetheme[progressbar=frametitle]{metropolis}
+
+% === 폰트 설정 ===
+\setmainfont{Noto Sans CJK KR}
+\setsansfont{Noto Sans CJK KR}
+\setmonofont{Noto Sans Mono CJK KR}[Scale=0.9]
+\setemojifont{Noto Color Emoji}
+
+% === 색상 정의 ===
+\definecolor{primary}{HTML}{1976D2}
+\definecolor{teal}{HTML}{00897B}
+\definecolor{purple}{HTML}{7B1FA2}
+\definecolor{amber}{HTML}{FFA000}
+\definecolor{green}{HTML}{388E3C}
+\definecolor{lightblue}{HTML}{E3F2FD}
+\definecolor{lightgreen}{HTML}{E8F5E9}
+\definecolor{cream}{HTML}{FFF3E0}
+\definecolor{lightmint}{HTML}{E0F2F1}
+\definecolor{darktext}{HTML}{333333}
+
+% === metropolis 색상 커스터마이징 ===
+\setbeamercolor{frametitle}{bg=primary, fg=white}
+\setbeamercolor{progress bar}{fg=primary}
+\setbeamercolor{title separator}{fg=primary}
+\setbeamercolor{alerted text}{fg=primary}
+
+% === 슬라이드 번호 ===
+\setbeamertemplate{frame numbering}[fraction]
+
+% === tcolorbox 스타일 ===
+\tcbset{
+  keybox/.style={
+    enhanced, colback=lightblue, colframe=primary,
+    boxrule=0.5pt, arc=3pt, left=6pt, right=6pt, top=4pt, bottom=4pt,
+    fonttitle=\bfseries\color{primary}
+  },
+  tipbox/.style={
+    enhanced, colback=cream, colframe=amber,
+    boxrule=0.5pt, arc=3pt, left=6pt, right=6pt, top=4pt, bottom=4pt
+  },
+  warnbox/.style={
+    enhanced, colback=lightgreen, colframe=green,
+    boxrule=0.5pt, arc=3pt, left=6pt, right=6pt, top=4pt, bottom=4pt
+  }
+}
+
+% === 문서 정보 ===
+\title{\emoji{seedling} 사물인터넷과 빅데이터}
+\subtitle{1주차: 오리엔테이션 및 강좌 소개}
+\author{양창모}
+\institute{청주교육대학교 컴퓨터교육과}
+\date{2026년 1월 28일}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% --- 표지 ---
+\begin{frame}
+\titlepage
+\end{frame}
+
+% --- 목차 ---
+\begin{frame}{\emoji{clipboard} 목차}
+\tableofcontents
+\end{frame}
+
+% ============================================================
+\section{\emoji{waving-hand} 강좌 소개}
+% ============================================================
+
+\begin{frame}{\emoji{seedling} 이 강좌에서 배우는 것}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+    \begin{tcolorbox}[keybox, title=핵심 흐름]
+      {\small 센서 → 수집 → 시각화 → 분석 → AI 모델}
+    \end{tcolorbox}
+    \vspace{0.4cm}
+    \begin{tcolorbox}[tipbox]
+      {\small \emoji{sparkles} \textbf{코드를 한 줄도 직접 작성하지 않아요!}\\[0.15cm]
+      AI와의 대화로 프로그램을 만드는 \mbox{\textbf{바이브코딩}} 덕분이에요.}
+    \end{tcolorbox}
+  \end{column}
+  \begin{column}{0.45\textwidth}
+    \begin{itemize}
+      \item \emoji{thermometer} 교실 온도·소음 측정
+      \item \emoji{bar-chart} 데이터 시각화·분석
+      \item \emoji{robot} AI 집중도 예측 모델
+      \item \emoji{graduation-cap} 초등 수업 활용 방법
+    \end{itemize}
+  \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{\emoji{calendar} 강좌 기본 정보}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{ll}
+\toprule
+\textbf{항목} & \textbf{내용} \\
+\midrule
+수업 시간 & 수요일 6--7교시 (100분) \\
+학점/시수 & 2학점 / 주~2시간 \\
+대상 & 컴퓨터교육과 4학년 \\
+강의실 & 컴퓨팅교육실습실 (정306호) \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+% ============================================================
+\section{\emoji{light-bulb} 핵심 메시지 3가지}
+% ============================================================
+
+\begin{frame}{\emoji{light-bulb} 메시지 1: 데이터는 원인을 말하지 않아요}
+\begin{center}
+\Large
+\begin{tcolorbox}[keybox]
+  \centering
+  \textbf{"데이터는 원인을 말하지 않는다.}\\
+  \textbf{우리가 원인을 '추정'할 뿐이다."}
+\end{tcolorbox}
+\end{center}
+\vspace{0.3cm}
+온도가 28°C이고 집중도가 2.3점이라고 해서\\
+\medskip
+\emoji{x} "온도 \textbf{때문에} 집중도가 떨어졌다" \hspace{0.5cm}
+\emoji{check-mark-button} "온도와 집중도는 \textbf{관련이 있는 것 같다}"
+\end{frame}
+
+\begin{frame}{\emoji{robot} 메시지 2: AI는 판단하지 않아요}
+\begin{center}
+\begin{tcolorbox}[keybox]
+  \centering
+  \textbf{"AI는 집중도를 판단하지 않는다.}\\
+  \textbf{우리가 만든 기준을 계산할 뿐이다."}
+\end{tcolorbox}
+\end{center}
+\vspace{0.5cm}
+\begin{columns}
+  \begin{column}{0.45\textwidth}
+    \emoji{x} AI가 스스로 판단\\
+    \emoji{x} AI가 도덕적 결정
+  \end{column}
+  \begin{column}{0.45\textwidth}
+    \emoji{check-mark-button} \textbf{규칙을 정하는 건 사람}\\
+    \emoji{check-mark-button} AI는 그 규칙을 빠르게 계산
+  \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{\emoji{magnifying-glass-tilted-left} 메시지 3: 코딩을 의심하세요}
+\begin{center}
+\begin{tcolorbox}[keybox]
+  \centering
+  \textbf{"이 수업은 코딩을 가르치지 않는다.}\\
+  \textbf{코딩을 의심하는 방법을 가르친다."}
+\end{tcolorbox}
+\end{center}
+\vspace{0.4cm}
+\begin{tcolorbox}[tipbox]
+  AI가 만든 코드가 항상 맞지는 않아요.\\
+  \textbf{결과를 검증하고 수정 요청하는 방법}을 배워요.
+\end{tcolorbox}
+\end{frame}
+
+% ============================================================
+\section{\emoji{world-map} 15주 전체 흐름}
+% ============================================================
+
+\begin{frame}{\emoji{world-map} 15주 전체 흐름}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{images/그림01_흐름도.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{\emoji{round-pushpin} 지금 우리는 1주차!}
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{ccll}
+\toprule
+\textbf{단계} & \textbf{주차} & \textbf{내용} & \textbf{운영} \\
+\midrule
+기초 & 1--2주 & 오리엔테이션, 바이브코딩 체험 & 대면 \\
+기획 & 3--4주 & 프로젝트 기획, 데이터수집기 제작 & 대면 \\
+수집 & 5--8주 & \textbf{실습학교에서 데이터 수집} & \textbf{실습} \\
+분석 & 9--13주 & 바이브코딩으로 시각화·분석 & 대면 \\
+발표 & 14--15주 & 보고서 작성, 최종 발표 & 대면 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+% ============================================================
+\section{\emoji{bar-chart} 예시 프로젝트: 수업 집중도}
+% ============================================================
+
+\begin{frame}{\emoji{thinking-face} 핵심 질문}
+\begin{center}
+{\LARGE \textbf{"온도가 높으면 집중도가 낮아질까?"}}
+\vspace{0.5cm}
+\begin{tcolorbox}[warnbox]
+  \emoji{check-mark-button} 센서로 온도·소음 \textbf{측정}\\
+  \emoji{check-mark-button} 설문으로 집중도 \textbf{수집}\\
+  \emoji{check-mark-button} 데이터로 \textbf{관계} 탐색
+\end{tcolorbox}
+\end{center}
+\end{frame}
+
+\begin{frame}{\emoji{chart-increasing} 상관관계 vs 인과관계}
+\begin{center}
+\includegraphics[width=0.97\textwidth]{images/그림02_상관관계.png}
+\end{center}
+\end{frame}
+
+% ============================================================
+\section{\emoji{desktop-computer} 수업 집중도 시뮬레이터}
+% ============================================================
+
+\begin{frame}{\emoji{desktop-computer} 시뮬레이터 5탭 구성}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+    \begin{tcolorbox}[keybox, title=5개 탭]
+      \begin{enumerate}
+        \item \emoji{pencil} 데이터 입력
+        \item \emoji{bar-chart} 데이터 분석
+        \item \emoji{pencil} 학생 모델 (규칙 기반)
+        \item \emoji{graduation-cap} 교수 모델 (머신러닝)
+        \item \emoji{bar-chart} 모델 비교
+      \end{enumerate}
+    \end{tcolorbox}
+  \end{column}
+  \begin{column}{0.45\textwidth}
+    \begin{tcolorbox}[tipbox]
+      \emoji{sparkles} \textbf{이 시뮬레이터로}\\
+      전체 강좌 흐름을 미리 체험해요!
+    \end{tcolorbox}
+  \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{\emoji{pencil} 탭 1: 데이터 입력}
+\begin{center}
+\includegraphics[width=0.97\textwidth]{images/그림_탭1.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{\emoji{bar-chart} 탭 2: 데이터 분석}
+\begin{center}
+\includegraphics[width=0.97\textwidth]{images/그림_탭2.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{\emoji{pencil} 탭 3 vs \emoji{graduation-cap} 탭 4}
+\begin{columns}[c]
+  \begin{column}{0.50\textwidth}
+    \begin{center}
+    \textbf{학생 모델 (규칙 기반)}
+    \includegraphics[width=\textwidth]{images/그림_탭3.png}
+    \end{center}
+  \end{column}
+  \begin{column}{0.50\textwidth}
+    \begin{center}
+    \textbf{교수 모델 (머신러닝)}
+    \includegraphics[width=\textwidth]{images/그림_탭4.png}
+    \end{center}
+  \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{\emoji{bar-chart} 탭 5: 모델 비교}
+\begin{center}
+\includegraphics[width=0.97\textwidth]{images/그림_탭5.png}
+\end{center}
+\end{frame}
+
+\begin{frame}[standout]
+\emoji{light-bulb} 핵심!
+
+\vspace{0.4cm}
+\large 머신러닝이 더 정확하지만,\\
+"왜 그런 결과가 나왔는지" 설명하기 어려워요.\\[0.3cm]
+\normalsize \textbf{블랙박스 문제} — 교육 현장에서는 "왜?"를 설명할 수 있어야 해요!
+\end{frame}
+
+% ============================================================
+\section{\emoji{technologist} 바이브코딩이란?}
+% ============================================================
+
+\begin{frame}{\emoji{technologist} 바이브코딩}
+\begin{center}
+\includegraphics[width=0.97\textwidth]{images/그림08_바이브코딩.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{\emoji{speech-balloon} 좋은 프롬프트의 특징}
+\begin{tcolorbox}[keybox, title=\emoji{check-mark-button} 좋은 프롬프트]
+  \begin{itemize}
+    \item \textbf{구체적}: "마이크로비트 LED에 '홍길동'을 표시해줘"
+    \item \textbf{상세한 동작 설명}: "한 글자씩 1초간 표시되고 무한 반복"
+    \item \textbf{조건 명시}: "MakeCode 블록 코드로 알려줘"
+  \end{itemize}
+\end{tcolorbox}
+\vspace{0.3cm}
+\begin{tcolorbox}[tipbox]
+  \emoji{sparkles} 프롬프트를 잘 쓰는 것이 \textbf{새로운 프로그래밍 능력}이에요!
+\end{tcolorbox}
+\end{frame}
+
+% ============================================================
+\section{\emoji{mobile-phone} 마이크로비트 + Grove 센서}
+% ============================================================
+
+\begin{frame}{\emoji{mobile-phone} 마이크로비트 V2}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{images/그림04.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{\emoji{high-voltage} Grove I2C 확장}
+\begin{center}
+\includegraphics[width=0.50\textwidth]{images/그림05.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{\emoji{camera} Grove 센서 갤러리 (10종)}
+\begin{center}
+\includegraphics[width=0.88\textwidth]{images/그림12.png}
+\end{center}
+\end{frame}
+
+% ============================================================
+\section{\emoji{puzzle-piece} MakeCode 소개}
+% ============================================================
+
+\begin{frame}{\emoji{puzzle-piece} MakeCode 화면 구성}
+\begin{center}
+\includegraphics[width=0.97\textwidth]{images/그림09_makecode.png}
+\end{center}
+\end{frame}
+
+% ============================================================
+\section{\emoji{pencil} 오늘의 실습 + 평가 안내}
+% ============================================================
+
+\begin{frame}{\emoji{pencil} 오늘의 실습: LED 이름 표시}
+\begin{center}
+\includegraphics[width=0.97\textwidth]{images/그림10_led실습.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{\emoji{memo} 1주차 과제 안내}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+    \begin{tcolorbox}[keybox, title=과제 내용]
+      \emoji{sparkles} LED에 자신의 이름(이니셜) 표시\\[0.2cm]
+      \emoji{calendar} 마감: \textbf{강의 종료 후 10분 이내}\\
+      \emoji{envelope} 제출: LMS
+    \end{tcolorbox}
+  \end{column}
+  \begin{column}{0.45\textwidth}
+    \textbf{제출물 3가지:}
+    \begin{enumerate}
+      \item 실행 사진
+      \item 대화목록 전문 (PDF)
+      \item 대화목록 요약본 (PDF)
+    \end{enumerate}
+    \vspace{0.3cm}
+    \begin{tcolorbox}[warnbox]
+      \emoji{check-mark-button} 1주차는 \textbf{점검용}!\\
+      제출만 하면 10\% 만점 \emoji{party-popper}
+    \end{tcolorbox}
+  \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{\emoji{sparkles} 2주차 예고}
+\begin{tcolorbox}[keybox, title=\emoji{books} 다음 주에는...]
+  \begin{itemize}
+    \item \emoji{robot} 바이브코딩 개념 심화
+    \item \emoji{desktop-computer} Claude 사용법 시연
+    \item \emoji{world-map} 자기소개 웹페이지 만들기
+    \item \emoji{seedling} 센서 탐색
+  \end{itemize}
+\end{tcolorbox}
+\vspace{0.3cm}
+\begin{tcolorbox}[tipbox]
+  \emoji{books} \textbf{준비물}: 노트북/PC, Claude 계정, 마이크로비트~V2
+\end{tcolorbox}
+\end{frame}
+
+% --- 마무리 ---
+\begin{frame}[standout]
+\emoji{clapping-hands} 수고하셨어요!
+
+\vspace{0.5cm}
+질문이 있으신가요?
+\end{frame}
+
+% ============================================================
+\section*{참고자료}
+% ============================================================
+\begin{frame}{\emoji{books} 참고자료}
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{clll}
+\toprule
+\textbf{\#} & \textbf{자료명} & \textbf{유형} & \textbf{비고} \\
+\midrule
+1 & 사물인터넷과빅데이터\_강의계획서\_v1.5.4.0 & 문서 & 평가 기준 참조 \\
+2 & 수업집중도 시뮬레이터 (HTML) & 파일 & 1주차 실습 도구 \\
+3 & MakeCode (makecode.microbit.org) & 웹 & 블록 코딩 환경 \\
+4 & Claude (claude.ai) & 웹 & 바이브코딩 도구 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+\end{document}
