@@ -33,10 +33,12 @@ jobs:
           git add docs/**/*.html
           git commit -m "chore: auto update index.html files" || echo "No changes to commit"
           git push
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: true   # ← 추가          
+          
       - name: Generate index files
         run: |
           echo "Current directory: $(pwd)"
