@@ -3,7 +3,7 @@ name: Deploy public to GitHub Pages
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:   # 수동 실행 버튼으로 테스트 가능
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -17,16 +17,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create site root and copy public contents
+      - name: Prepare site directory
         run: |
           mkdir -p _site
-          cp -r public/. _site/   # public 안 모든 파일·폴더를 _site 루트로 복사 (숨김파일 포함)
-          ls -la _site            # 로그에서 내용 확인용
+          # public 폴더 안 모든 내용 복사 (폴더 구조 유지, 숨김파일 포함)
+          rsync -av --exclude='.git*' public/ _site/
+          # 디버깅: _site 내용 확인 (로그에 출력됨)
+          tree _site || ls -R _site
+          # 루트에 .nojekyll 추가 (Jekyll 빌드 방지)
+          touch _site/.nojekyll
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site             # ← _site 폴더를 업로드 → 이게 사이트 루트가 됨
+          path: _site
 
   deploy:
     needs: build
