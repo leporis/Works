@@ -1,5 +1,8 @@
 name: Generate index.html files
 
+permissions:
+  contents: write   # git push 권한 필수!
+
 on:
   push:
     branches: [ main ]
